@@ -203,26 +203,27 @@ export function OnboardingWizard() {
             let profileData: any = null;
             let quizDone = isQuizDone();
 
-            if (!isNew && !user.id.toString().startsWith('offline-')) {
-                try {
-                    const { data } = await withTimeout(
-                        supabase.from('personality_profiles').select('*').eq('user_id', user.id)
-                    );
-                    profileData = data && data.length > 0 ? data[0] : null;
-                } catch { /* non-critical */ }
-
-                // Check quiz completion
-                quizDone = quizDone || !!profileData;
-                if (!quizDone) {
+            if (!isNew) {
+                if (!user.id.toString().startsWith('offline-')) {
                     try {
-                        const { data: qr } = await withTimeout(
-                            supabase.from('quiz_responses').select('id').eq('user_id', user.id).limit(1)
+                        const { data } = await withTimeout(
+                            supabase.from('personality_profiles').select('*').eq('user_id', user.id)
                         );
-                        quizDone = !!(qr && qr.length > 0);
-                        if (quizDone) markQuizDone();
+                        profileData = data && data.length > 0 ? data[0] : null;
                     } catch { /* non-critical */ }
+
+                    // Check quiz completion
+                    quizDone = quizDone || !!profileData;
+                    if (!quizDone) {
+                        try {
+                            const { data: qr } = await withTimeout(
+                                supabase.from('quiz_responses').select('id').eq('user_id', user.id).limit(1)
+                            );
+                            quizDone = !!(qr && qr.length > 0);
+                            if (quizDone) markQuizDone();
+                        } catch { /* non-critical */ }
+                    }
                 }
-            }
 
                 const traits = profileData ? {
                     discipline: 50, resilience: 50,
