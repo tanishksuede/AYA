@@ -308,13 +308,8 @@ const ShootingStarsLayer = ({ isActive = true }: { isActive?: boolean }) => {
 };
 
 // --- Constellation Lines Layer ---
-const ConstellationLayer = ({ scrollY, isActive = true }: { scrollY: number, isActive?: boolean }) => {
+const ConstellationLayer = ({ scrollY, isActive = true }: { scrollY: any, isActive?: boolean }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const scrollRef = useRef(scrollY);
-
-    useEffect(() => {
-        scrollRef.current = scrollY;
-    }, [scrollY]);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -395,7 +390,7 @@ const ConstellationLayer = ({ scrollY, isActive = true }: { scrollY: number, isA
                 return;
             }
             const now = Date.now();
-            const currentScrollY = scrollRef.current;
+            const currentScrollY = scrollY ? scrollY.get() : 0;
             
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.save();
@@ -494,12 +489,12 @@ const ConstellationLayer = ({ scrollY, isActive = true }: { scrollY: number, isA
             stars = [];
             lines = [];
         };
-    }, []);
+    }, [scrollY]);
 
     return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />;
 };
 
-export const MapAmbience = ({ scrollY, isActive = true }: { scrollY: number, isActive?: boolean }) => {
+export const MapAmbience = ({ scrollY, isActive = true }: { scrollY: any, isActive?: boolean }) => {
     return (
         <div className="fixed inset-0 w-full h-full pointer-events-none z-[15]">
             <div style={{

@@ -27,7 +27,7 @@ const FloatingParticle = ({ style, animationDuration }: { style: any, animationD
 );
 
 const AnimatedHelix = () => (
-    <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-30 blur-[1px]">
+    <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-20">
         {/* Simple CSS-based double helix illusion */}
         <div className="relative w-40 h-[600px] flex flex-col justify-between items-center py-20">
             {Array.from({ length: 15 }).map((_, i) => (

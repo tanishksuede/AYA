@@ -152,7 +152,6 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const [windowHeight, setWindowHeight] = useState(typeof window !== 'undefined' ? window.innerHeight : 800);
     const [canvasReady, setCanvasReady] = useState(false);
-    const [scrollY, setScrollY] = useState(0);
 
     const handleCanvasReady = useCallback(() => {
         setCanvasReady(true);
@@ -164,7 +163,7 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const { scrollYProgress } = useScroll({ container: containerRef });
+    const { scrollYProgress, scrollY: motionScrollY } = useScroll({ container: containerRef });
 
     // The "Liquid Scroll" feel
     const smoothProgress = useSpring(scrollYProgress, {
@@ -386,7 +385,6 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
             {/* --- SCROLLABLE MAP CONTENT --- */}
             <div
                 ref={containerRef}
-                onScroll={(e) => setScrollY(e.currentTarget.scrollTop)}
                 className="w-full h-full overflow-y-auto overflow-x-hidden relative scroll-smooth"
             >
                 {/* Dummy div to enforce native scroll height */}
@@ -398,7 +396,7 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
                     onReady={handleCanvasReady}
                 />
 
-                <MapAmbience scrollY={scrollY} />
+                <MapAmbience scrollY={motionScrollY} />
 
                 {!isMobile && canvasReady && (
                     <div className="fixed inset-0 bg-gradient-to-t from-pink-200/20 via-transparent to-slate-900/50 mix-blend-overlay pointer-events-none z-10" />

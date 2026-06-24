@@ -79,12 +79,10 @@ export function FutureSelfCard({ futureMatch, storiesCompleted, decisionsCount, 
         <div
             className="w-full rounded-[2rem] relative overflow-hidden mb-10"
             style={{
-                background: 'rgba(25,25,36,0.75)',
-                backdropFilter: 'blur(24px)',
-                WebkitBackdropFilter: 'blur(24px)',
+                background: 'rgba(25,25,36,0.95)',
                 border: '1.5px solid transparent',
                 backgroundClip: 'padding-box',
-                boxShadow: `0 0 0 1.5px #8300b4, 0 0 0 1.5px #00e2ee, 0 30px 60px rgba(0,0,0,0.6), 0 0 40px rgba(131,0,180,0.15), 0 0 40px rgba(0,226,238,0.1)`,
+                boxShadow: `0 30px 60px rgba(0,0,0,0.6), 0 0 40px rgba(131,0,180,0.15)`,
             }}
         >
             {/* Gradient border overlay */}
