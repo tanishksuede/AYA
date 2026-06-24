@@ -2,9 +2,7 @@ import { useState, useRef, useEffect, useMemo } from 'react';
 import { useUserStore } from '../../store/userStore';
 import { audioSynth } from '../../utils/audioSynth';
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
-import { supabase } from '../../utils/supabase';
-import { saveSession, markQuizDone, isQuizDone } from '../../utils/session';
-import { withTimeout } from '../../utils/withTimeout';
+import { saveSession } from '../../utils/session';
 
 import { motion, AnimatePresence, useMotionValue, animate } from 'framer-motion';
 
@@ -110,7 +108,6 @@ const AgeDial = ({ value, onChange }: { value: number; onChange: (val: number) =
 
 export function OnboardingWizard() {
     const setProfile = useUserStore((state) => state.setProfile);
-    const completeAssessment = useUserStore((state) => state.completeAssessment);
 
     const [name, setName] = useState("");
     const [age, setAge] = useState<number>(20);

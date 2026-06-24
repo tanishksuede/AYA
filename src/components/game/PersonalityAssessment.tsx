@@ -185,7 +185,7 @@ export function PersonalityAssessment() {
     }, []);
 
     const cyanParticles = useMemo(() => {
-        return Array.from({ length: 30 }).map((_, i) => ({
+        return Array.from({ length: 30 }).map(() => ({
             x: Math.random() * window.innerWidth,
             y: Math.random() * window.innerHeight,
             opacity: Math.random() * 0.5 + 0.1,

@@ -506,7 +506,7 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
                                                     isCandyMode
                                                         ? (isUnlocked ? "bg-gradient-to-r from-yellow-300 to-yellow-500 border-white text-yellow-900" : "bg-slate-700 border-slate-600 text-slate-400")
                                                         : (isUnlocked 
-                                                            ? (isCurrent ? "bg-amber-500 border-amber-300 text-amber-950 shadow-[0_0_10px_rgba(245,158,11,0.5)]" : "bg-[rgba(10,15,40,0.75)] border-[#4DD9FF]/70 text-[#E8E0FF] backdrop-blur-md shadow-[0_0_8px_rgba(77,217,255,0.3)]")
+                                                            ? (isCurrent ? "bg-amber-500 border-amber-300 text-amber-950 shadow-[0_0_10px_rgba(245,158,11,0.5)]" : "bg-[rgba(10,15,40,0.95)] border-[#4DD9FF]/70 text-[#E8E0FF] shadow-[0_0_8px_rgba(77,217,255,0.3)]")
                                                             : "bg-slate-800 border-slate-700 text-slate-500")
                                                 )}>
                                                     <span className="text-[10px] md:text-sm font-black uppercase tracking-blacker drop-shadow-sm personality-name-label">
@@ -523,7 +523,7 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
                                                     : (isUnlocked
                                                         ? (isCurrent 
                                                             ? "bg-gradient-to-r from-amber-500 to-amber-600 border-b-[3px] md:border-b-4 border-amber-800 shadow-[0_0_20px_rgba(245,158,11,0.4)]"
-                                                            : "bg-[rgba(10,15,40,0.75)] backdrop-blur-md border border-[#4DD9FF]/60 shadow-[0_0_15px_rgba(77,217,255,0.15)]")
+                                                            : "bg-[rgba(10,15,40,0.95)] border border-[#4DD9FF]/60 shadow-[0_0_15px_rgba(77,217,255,0.15)]")
                                                         : "bg-slate-800/80 border-b-[3px] md:border-b-4 border-slate-900")
                                             )}>
                                                 <span className={clsx(
