@@ -28,6 +28,16 @@ export function SettingsPage() {
         }
     }, [profile]);
 
+    // Live sync audio while in settings
+    useEffect(() => {
+        bgmManager.setVolume(isMusicMuted ? 0 : musicVolume);
+        audioSynth.setMusicVolume(isMusicMuted ? 0 : musicVolume);
+    }, [musicVolume, isMusicMuted]);
+
+    useEffect(() => {
+        audioSynth.setSfxVolume(isSfxMuted ? 0 : sfxVolume);
+    }, [sfxVolume, isSfxMuted]);
+
     const handleAgeSave = () => {
         if (profile) {
             setProfile({ ...profile, age: newAge });

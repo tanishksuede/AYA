@@ -164,22 +164,42 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
         const fetchScenario = async () => {
             setIsLoadingScenario(true);
             const targetId = level?.scenarioId || 'lvl_age_19';
-            const { data, error } = await supabase.from('scenarios').select('*').eq('id', targetId).maybeSingle();
             
-            if (error || !data) {
-                console.error("Failed to fetch scenario", error);
-                // Fallback to error state or retry logic
-                // For now we'll set a dummy to prevent crashing
-                setScenario({ frames: [{ id: 'intro', text: 'Error loading scenario.', choices: [] }] });
-            } else {
+            try {
+                const { data, error } = await supabase.from('scenarios').select('*').eq('id', targetId).maybeSingle();
+                
+                if (error || !data) {
+                    throw new Error("Supabase fetch failed or returned null");
+                }
+                
                 setScenario({
                     id: data.id,
                     title: data.title,
                     source: data.source,
                     frames: data.frames
                 });
+            } catch (err) {
+                console.warn("[Scenario] Falling back to local story data due to Supabase error:", err);
+                
+                // Fallback to local data
+                import('../../data/scenarios').then((module) => {
+                    const localData = module.STORY_DATABASE[targetId];
+                    if (localData) {
+                        setScenario({
+                            id: targetId,
+                            title: localData.title,
+                            source: localData.source,
+                            frames: localData.frames
+                        });
+                    } else {
+                        setScenario({ frames: [{ id: 'intro', text: 'Scenario coming soon.', choices: [] }] });
+                    }
+                }).catch(() => {
+                    setScenario({ frames: [{ id: 'intro', text: 'Error loading scenario.', choices: [] }] });
+                });
+            } finally {
+                setIsLoadingScenario(false);
             }
-            setIsLoadingScenario(false);
         };
         fetchScenario();
     }, [level?.scenarioId]);
