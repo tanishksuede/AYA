@@ -183,7 +183,7 @@ export const useUserStore = create<UserState>()(
                 return { mapTheme: next };
             }),
             // Deprecated shims — kept for backward compatibility
-            get isCandyMode(): boolean { return (useUserStore.getState().mapTheme === 'light'); },
+            get isCandyMode(): boolean { return (get().mapTheme === 'light'); },
             toggleCandyMode: () => set((state) => {
                 const order: MapTheme[] = ['city_dark', 'light']; // solar removed
                 const safeCurrentIndex = order.indexOf(state.mapTheme) === -1 ? 0 : order.indexOf(state.mapTheme);
