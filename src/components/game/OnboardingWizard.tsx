@@ -148,7 +148,6 @@ export function OnboardingWizard() {
                 attempt++;
                 try {
                     // Open Registration Flow for ALL inputs
-                    let isDbOnline = true;
                     try {
                         const { data: existing, error: fetchErr } = await withTimeout(
                             supabase.from('users').select('*').eq('mobile', cleanMobile)
@@ -179,7 +178,6 @@ export function OnboardingWizard() {
                             }
                         }
                     } catch (dbErr: any) {
-                        isDbOnline = false;
                         console.warn('[Offline Mode] DB error caught. Generating local session.', dbErr);
                         result = {
                             user: { id: `offline-${Date.now()}`, name: name.trim(), age, mobile: cleanMobile },
