@@ -1,12 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, Navigate } from 'react-router-dom';
 import { supabase } from '../utils/supabase';
 import { getSession, clearSession, markQuizDone, isQuizDone } from '../utils/session';
 import { withTimeout } from '../utils/withTimeout';
 import { useUserStore } from '../store/userStore';
-import { OnboardingWizard } from '../components/game/OnboardingWizard';
-import { CinematicOnboarding } from '../components/game/CinematicOnboarding';
-import { PersonalityAssessment } from '../components/game/PersonalityAssessment';
 import { LevelUpCelebration } from '../components/game/LevelUpCelebration';
 import { StreakCelebration } from '../components/game/StreakCelebration';
 import { calculateLevelInfo } from '../utils/levelSystem';
@@ -215,7 +212,7 @@ export function GameRoot() {
 
     const prevLevelRef = useRef(profile?.level || 1);
     const [showLevelUp, setShowLevelUp] = useState(false);
-    const [onboardingComplete, setOnboardingComplete] = useState(false);
+    const [onboardingComplete] = useState(() => localStorage.getItem('onboarding_done') === 'true');
 
     useEffect(() => {
         if (profile?.level && profile.level > prevLevelRef.current) {
@@ -240,16 +237,16 @@ export function GameRoot() {
         )
     }
 
-    if (!profile) {
-        return <OnboardingWizard />;
+    if (!profile && location.pathname !== '/game/welcome') {
+        return <Navigate to="/game/welcome" replace />;
     }
 
-    if (!profile.assessmentCompleted && !onboardingComplete) {
-        return <CinematicOnboarding onComplete={() => setOnboardingComplete(true)} />;
+    if (profile && !profile.assessmentCompleted && !onboardingComplete && location.pathname !== '/game/intro' && location.pathname !== '/game/welcome') {
+        return <Navigate to="/game/intro" replace />;
     }
 
-    if (!profile.assessmentCompleted) {
-        return <PersonalityAssessment />;
+    if (profile && !profile.assessmentCompleted && onboardingComplete && !location.pathname.startsWith('/game/assessment')) {
+        return <Navigate to="/game/assessment/1" replace />;
     }
 
     return (

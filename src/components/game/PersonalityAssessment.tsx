@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useUserStore } from '../../store/userStore';
 import { audioSynth } from '../../utils/audioSynth';
 import { Flame, Briefcase, Eye, Shield, Award, Zap, Check } from 'lucide-react';
@@ -128,10 +129,12 @@ const QUESTIONS = [
 ];
 
 // Helper to generate some shapes
-const SHAPES = ['triangle', 'hexagon', 'diamond'];
 
 export function PersonalityAssessment() {
-    const [step, setStep] = useState(0);
+    const { step: stepParam } = useParams<{ step: string }>();
+    const navigate = useNavigate();
+    const step = (parseInt(stepParam || '1') || 1) - 1;
+
     const completeAssessment = useUserStore(state => state.completeAssessment);
     const userProfile = useUserStore(state => state.profile);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -157,42 +160,7 @@ export function PersonalityAssessment() {
         };
     }, []);
 
-    const geometryParticles = useMemo(() => {
-        return Array.from({ length: 15 }).map((_, i) => ({
-            width: Math.random() * 50 + 20,
-            height: Math.random() * 50 + 20,
-            shape: SHAPES[i%3],
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
-            rotateZ: Math.random() * 360,
-            rotateX: Math.random() * 360,
-            rotateY: Math.random() * 360,
-            animY: Math.random() * window.innerHeight,
-            duration: Math.random() * 20 + 20
-        }));
-    }, []);
-
-    const parallaxParticles = useMemo(() => {
-        return Array.from({ length: 40 }).map((_, i) => ({
-            size: i % 3 === 0 ? 3 : 1.5,
-            blur: i % 3 === 0 ? 0 : 2,
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
-            opacity: Math.random() * 0.5 + 0.1,
-            animY: Math.random() * window.innerHeight - 500,
-            duration: (i % 3 === 0 ? 10 : 20) + Math.random() * 5
-        }));
-    }, []);
-
-    const cyanParticles = useMemo(() => {
-        return Array.from({ length: 30 }).map(() => ({
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
-            opacity: Math.random() * 0.5 + 0.1,
-            animY: Math.random() * window.innerHeight,
-            duration: Math.random() * 8 + 8
-        }));
-    }, []);
+    // Removed heavy particles for performance optimization
 
     const toggleOption = (option: any) => {
         audioSynth.playClick();
@@ -245,7 +213,7 @@ export function PersonalityAssessment() {
         setCurrentSelection([]);
 
         if (step < QUESTIONS.length - 1) {
-            setStep(step + 1);
+            navigate('/game/assessment/' + (step + 2));
         } else {
             setIsSaving(true);
             try {
@@ -293,6 +261,7 @@ export function PersonalityAssessment() {
                 };
 
                 completeAssessment(newTraits, finalProfile);
+                navigate('/game');
             }
         }
     };
@@ -306,79 +275,19 @@ export function PersonalityAssessment() {
     return (
         <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center font-sans overflow-hidden transition-colors duration-1000 bg-[#0d0d16]">
             
-            {/* Background Layer */}
+            {/* Clean Background Layer - Removed heavy particles and blurs */}
             <div className={`absolute inset-0 bg-[#0d0d16] pointer-events-none transition-opacity duration-1000 z-0`}>
                 <div className="absolute inset-0 shadow-[inset_0_0_150px_rgba(0,0,0,0.9)] z-20 pointer-events-none" />
                 
                 {isViolet && (
                     <>
-                        <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_30%,rgba(147,51,234,0.06)_40%,rgba(147,51,234,0.12)_50%,transparent_60%)] MixBlendMode-screen" />
-                        <div className="absolute inset-0 bg-[linear-gradient(-35deg,transparent_30%,rgba(168,85,247,0.08)_40%,transparent_50%)] MixBlendMode-screen" />
-                        
-                        <div className="absolute -top-[50%] -left-[50%] w-[200%] h-[200%] opacity-30 MixBlendMode-screen" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(147, 51, 234, 0.4) 0%, transparent 50%)' }} />
-                        
-                        {/* 3D Floating Geometry Array */}
-                        {geometryParticles.map((p, i) => (
-                            <motion.div
-                                key={`geo-${i}`}
-                                className="absolute MixBlendMode-screen opacity-20 border border-purple-500 rounded-sm"
-                                style={{ 
-                                    width: p.width, 
-                                    height: p.height,
-                                    clipPath: p.shape === 'triangle' ? 'polygon(50% 0%, 0% 100%, 100% 100%)' : p.shape === 'diamond' ? 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' : 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)' 
-                                }}
-                                initial={{ x: p.x, y: p.y, rotateZ: p.rotateZ, rotateX: p.rotateX, rotateY: p.rotateY }}
-                                animate={{ y: [null, p.animY], rotateZ: '+=180', rotateY: '+=180' }}
-                                transition={{ duration: p.duration, repeat: Infinity, ease: 'linear' }}
-                            />
-                        ))}
-
-                        {/* Parallax Particles */}
-                        {parallaxParticles.map((p, i) => (
-                            <motion.div
-                                key={`p-${i}`}
-                                className="absolute rounded-full bg-[#a855f7] drop-shadow-[0_0_5px_#a855f7]"
-                                style={{ 
-                                    width: p.size, 
-                                    height: p.size, 
-                                    filter: `blur(${p.blur}px)` 
-                                }}
-                                initial={{ x: p.x, y: p.y, opacity: p.opacity }}
-                                animate={{ y: [null, p.animY], opacity: [0.1, 0.8, 0.1] }}
-                                transition={{ duration: p.duration, repeat: Infinity, ease: "linear" }}
-                            />
-                        ))}
-
-                        {/* Large Background Silhouette varying by step */}
-                        <motion.div
-                            key={`sil-${step}`}
-                            initial={{ opacity: 0, scale: 0.8, x: -50 }}
-                            animate={{ opacity: 0.15, scale: 1, x: 0 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 1.5 }}
-                            className="absolute top-10 right-10 w-96 h-96 bg-[#9333ea] rounded-[40px] blur-[60px] mix-blend-overlay border-[4px] border-[#d8b4fe]"
-                            style={{ 
-                                clipPath: step % 2 === 0 ? 'polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)' : 'polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%)',
-                                borderRadius: `${(step * 10) + 10}%`
-                            }}
-                        />
+                        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(147,51,234,0.15)_0%,transparent_70%)]" />
                     </>
                 )}
 
                 {isCyan && (
                      <>
-                        <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_30%,rgba(0,241,254,0.03)_40%,rgba(0,241,254,0.08)_50%,transparent_60%)] MixBlendMode-screen" />
-                        <div className="absolute inset-0 bg-[linear-gradient(-45deg,transparent_40%,rgba(213,117,255,0.05)_50%,transparent_60%)] MixBlendMode-screen" />
-                        {cyanParticles.map((p, i) => (
-                            <motion.div
-                                key={i}
-                                className="absolute w-1 h-1 bg-[#00f1fe] rounded-full drop-shadow-[0_0_5px_#00f1fe]"
-                                style={{ filter: 'blur(1px)' }}
-                                initial={{ x: p.x, y: p.y, opacity: p.opacity }}
-                                animate={{ y: [null, p.animY], opacity: [0.1, 0.6, 0.1] }}
-                                transition={{ duration: p.duration, repeat: Infinity, ease: "linear" }}
-                            />
-                        ))}
+                        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(0,241,254,0.1)_0%,transparent_70%)]" />
                     </>
                 )}
             </div>
@@ -460,11 +369,11 @@ export function PersonalityAssessment() {
                                 return (
                                     <motion.button
                                         key={`${step}-${i}`}
-                                        initial={{ opacity: 0, y: 30 }}
+                                        initial={{ opacity: 0, y: 15 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: i * 0.1, type: "spring", stiffness: 300, damping: 20 }}
-                                        whileHover={{ y: -8, z: 20 }}
-                                        whileTap={{ scale: 0.95 }}
+                                        whileHover={{ y: -2 }}
+                                        whileTap={{ scale: 0.98 }}
                                         onClick={() => {
                                             if (currentQ.multiSelect || isViolet || isCyan) {
                                                 toggleOption(opt);
@@ -481,12 +390,12 @@ export function PersonalityAssessment() {
                                             "absolute inset-0 rounded-2xl flex items-center justify-between px-6 transition-all shadow-xl overflow-hidden",
                                             isViolet ? (
                                                 isSelected
-                                                    ? "bg-[#3b0764] border-2 border-[#d8b4fe] shadow-[0_0_30px_rgba(168,85,247,0.8),0_15px_30px_rgba(0,0,0,0.8)]"
-                                                    : "bg-[#1f1f2a]/80 border border-[#4c1d95] hover:border-[#a855f7] hover:shadow-[0_15px_30px_rgba(147,51,234,0.3)]"
+                                                    ? "bg-[#3b0764] border-2 border-[#d8b4fe] shadow-[0_0_15px_rgba(168,85,247,0.5)]"
+                                                    : "bg-[#1f1f2a] border border-[#4c1d95] hover:border-[#a855f7]"
                                             ) : (
                                                 isSelected
-                                                    ? "bg-slate-800 border-[3px] border-[#00f1fe] shadow-[0_0_30px_rgba(0,241,254,0.8),inset_0_0_10px_rgba(0,241,254,0.3)]"
-                                                    : "bg-slate-900/80 border border-slate-700 hover:border-[#00f1fe]/50 hover:bg-slate-800"
+                                                    ? "bg-slate-800 border-[3px] border-[#00f1fe] shadow-[0_0_15px_rgba(0,241,254,0.5)]"
+                                                    : "bg-slate-900 border border-slate-700 hover:border-[#00f1fe]/50"
                                             )
                                         )}>
                                             {/* Accent Line */}

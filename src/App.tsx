@@ -5,6 +5,9 @@ import { HomePage } from './pages/Home';
 import { GameRoot } from './pages/GameRoot';
 import { bgmManager } from './utils/bgmManager';
 import { MapRouteHandler, IntroRouteHandler, PlayRouteHandler, ReportRouteHandler, DnaRouteHandler, SelectionRouteHandler } from './pages/GameRouteHandlers';
+import { OnboardingWizard } from './components/game/OnboardingWizard';
+import { CinematicOnboarding } from './components/game/CinematicOnboarding';
+import { PersonalityAssessment } from './components/game/PersonalityAssessment';
 import { SettingsPage } from './pages/SettingsPage';
 import { JournalPage } from './pages/JournalPage';
 import { ThemeSwitcherPage } from './pages/ThemeSwitcherPage';
@@ -36,6 +39,9 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/game" element={<GameRoot />}>
             <Route index element={<MapRouteHandler />} />
+            <Route path="welcome" element={<OnboardingWizard />} />
+            <Route path="intro" element={<CinematicOnboarding />} />
+            <Route path="assessment/:step" element={<PersonalityAssessment />} />
             <Route path="intro/:id" element={<IntroRouteHandler />} />
             <Route path="play/:id" element={<PlayRouteHandler />} />
             <Route path="report/:id" element={<ReportRouteHandler />} />

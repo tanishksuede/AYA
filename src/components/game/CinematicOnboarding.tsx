@@ -8,6 +8,7 @@ import { NotificationPrompt } from '../ui/NotificationPrompt';
 import { subscribeUserToPush } from '../../utils/pushNotifications';
 import { safeStorage } from '../../utils/storage';
 import { bgmManager } from '../../utils/bgmManager';
+import { useNavigate } from 'react-router-dom';
 
 const STRUGGLES = [
   { id: 'heartbreak', label: 'Heartbreak & Relationships', icon: '💔' },
@@ -18,12 +19,19 @@ const STRUGGLES = [
   { id: 'loneliness', label: 'Loneliness & Connection', icon: '🌙' },
 ];
 
-export function CinematicOnboarding({ onComplete }: { onComplete: () => void }) {
+export function CinematicOnboarding({ onComplete }: { onComplete?: () => void }) {
   const profile = useUserStore((state) => state.profile);
+  const navigate = useNavigate();
   const [slide, setSlide] = useState(1);
   const [selectedStruggle, setSelectedStruggle] = useState<typeof STRUGGLES[0] | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
+
+  const completeFlow = () => {
+      localStorage.setItem('onboarding_done', 'true');
+      if (onComplete) onComplete();
+      else navigate('/game/assessment/1');
+  };
 
   useEffect(() => {
     bgmManager.play('onboarding');
@@ -59,7 +67,7 @@ export function CinematicOnboarding({ onComplete }: { onComplete: () => void }) 
       if ((profile?.stories_completed || 0) > 0) {
         setShowNotificationPrompt(true);
       } else {
-        onComplete();
+        completeFlow();
       }
     } else {
       nextSlide();
@@ -70,13 +78,13 @@ export function CinematicOnboarding({ onComplete }: { onComplete: () => void }) 
     await subscribeUserToPush();
     safeStorage.set('notificationPromptShown', 'true');
     setShowNotificationPrompt(false);
-    onComplete();
+    completeFlow();
   };
 
   const onDeclineNotifications = () => {
     safeStorage.set('notificationPromptShown', 'true');
     setShowNotificationPrompt(false);
-    onComplete();
+    completeFlow();
   };
 
 
@@ -149,7 +157,7 @@ export function CinematicOnboarding({ onComplete }: { onComplete: () => void }) 
         </button>
       )}
       {(slide === 1 || slide === 2) && (
-        <button onClick={() => onComplete()} className="fixed top-6 right-6 z-[200] text-[#acaab5] hover:text-[#99f7ff] transition-colors text-sm uppercase tracking-widest font-bold">
+        <button onClick={completeFlow} className="fixed top-6 right-6 z-[200] text-[#acaab5] hover:text-[#99f7ff] transition-colors text-sm uppercase tracking-widest font-bold">
             Skip
         </button>
       )}

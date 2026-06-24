@@ -311,7 +311,7 @@ export function DnaProfile({ onBack }: DnaProfileProps) {
                 </div>
 
                 {/* Trait Bars Card */}
-                <div className="w-full bg-[#191923] border-t border-l border-[#8300b4]/30 border-r border-b border-[#00e2ee]/30 rounded-[2rem] p-6 sm:p-8 mb-10 shadow-lg transform perspective-[1000px] hover:rotate-x-1 hover:rotate-y-1 transition-transform duration-500">
+                <div className="w-full bg-[#191923] border-t border-l border-[#8300b4]/30 border-r border-b border-[#00e2ee]/30 rounded-[2rem] p-6 sm:p-8 mb-10 shadow-lg transition-colors duration-500 hover:border-[#00e2ee]/50">
                     <h3 className="text-sm font-black uppercase tracking-widest text-[#acaab5] mb-6">Core Telemetry</h3>
                     
                     <NeonTraitBar label="Risk Taker" value={userTraits.risk} neonColor="#ff51fa" />
@@ -322,7 +322,7 @@ export function DnaProfile({ onBack }: DnaProfileProps) {
                 </div>
 
                 {/* Progression Hub Card */}
-                <div className="w-full bg-[#191923] border-t border-l border-[#00ff9d]/30 border-r border-b border-[#00f2ff]/30 rounded-[2rem] p-6 sm:p-8 mb-10 shadow-lg transform perspective-[1000px] hover:rotate-x-1 hover:rotate-y-1 transition-transform duration-500">
+                <div className="w-full bg-[#191923] border-t border-l border-[#00ff9d]/30 border-r border-b border-[#00f2ff]/30 rounded-[2rem] p-6 sm:p-8 mb-10 shadow-lg transition-colors duration-500 hover:border-[#00f2ff]/50">
                     <h3 className="text-sm font-black uppercase tracking-widest text-[#acaab5] mb-6">Experience Protocol</h3>
                     
                     <div className="flex flex-col items-center mb-6 mt-2">
@@ -359,7 +359,7 @@ export function DnaProfile({ onBack }: DnaProfileProps) {
                 </div>
 
                 {/* Streak Protocol Card */}
-                <div className="w-full bg-[#191923] border-t border-l border-[#ff51fa]/30 border-r border-b border-[#fe3c3c]/30 rounded-[2rem] p-6 sm:p-8 mb-10 shadow-lg transform perspective-[1000px] hover:rotate-x-1 hover:rotate-y-1 transition-transform duration-500">
+                <div className="w-full bg-[#191923] border-t border-l border-[#ff51fa]/30 border-r border-b border-[#fe3c3c]/30 rounded-[2rem] p-6 sm:p-8 mb-10 shadow-lg transition-colors duration-500 hover:border-[#ff51fa]/50">
                     <h3 className="text-sm font-black uppercase tracking-widest text-[#acaab5] mb-6 flex items-center gap-2">
                         <Flame size={16} className="text-[#ff51fa]" /> Streak Protocol
                     </h3>

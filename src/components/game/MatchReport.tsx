@@ -571,16 +571,16 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
                             )}
 
                             {/* Honey Mission Box / Cyber Directive */}
-                            <div className="relative w-full max-w-2xl transform hover:scale-[1.02] transition-transform">
+                            <div className="relative w-full max-w-2xl transition-all duration-300 hover:shadow-[0_0_20px_rgba(251,191,36,0.3)] rounded-2xl">
                                 <div className={clsx(
-                                    "absolute -inset-2 rounded-2xl blur opacity-70 animate-pulse",
+                                    "absolute -inset-2 rounded-2xl blur opacity-50",
                                     isCandyMode ? "bg-gradient-to-r from-yellow-400 to-orange-500" : "bg-gradient-to-r from-amber-500 to-yellow-600"
                                 )}></div>
                                 <div className={clsx(
-                                    "relative rounded-xl border-[4px] p-1",
+                                    "relative rounded-xl border-[4px] p-1 transition-colors duration-300",
                                     isCandyMode
-                                        ? "bg-gradient-to-b from-yellow-300 to-orange-400 border-white/60"
-                                        : "bg-[#0a0f28] border-amber-500/50"
+                                        ? "bg-gradient-to-b from-yellow-300 to-orange-400 border-white/60 hover:border-white"
+                                        : "bg-[#0a0f28] border-amber-500/50 hover:border-amber-400/80"
                                 )}>
                                     <div className={clsx(
                                         "rounded-lg p-6 flex items-center gap-6",
