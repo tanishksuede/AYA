@@ -1,9 +1,9 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { UserProfile, Level, Lesson, PersonalityTraits, PsychologicalProfile } from '../types/gameTypes';
-import { generateLevels } from '../utils/levelGenerator';
 import { calculateLevelInfo } from '../utils/levelSystem';
 import { safeStorage } from '../utils/storage';
+import { supabase } from '../utils/supabase';
 
 export type MapTheme = 'city_dark' | 'solar' | 'light';
 
@@ -23,7 +23,7 @@ interface UserState {
     addSessionProgression: (sessionXp: number) => void;
     updateXpLocally: (amount: number) => void;
     
-    syncLevels: () => void;
+    syncLevels: () => Promise<void>;
 
     // Daily Challenge & Streak Actions
     checkStreak: () => void;
@@ -80,7 +80,7 @@ interface UserState {
 
 export const useUserStore = create<UserState>()(
     persist(
-        (set) => ({
+        (set, get) => ({
             profile: null,
             completedOnboarding: false,
             levels: [], // Start empty
@@ -188,36 +188,63 @@ export const useUserStore = create<UserState>()(
             setPendingStreakData: (data) => set({ pendingStreakData: data }),
 
             setProfile: (profile) => {
-                // Generate levels dynamically based on Age & Interests
-                const dynamicLevels = generateLevels(profile.age);
-
                 set({
                     profile,
-                    completedOnboarding: true,
-                    levels: dynamicLevels
+                    completedOnboarding: true
                 });
+                get().syncLevels();
             },
 
-            syncLevels: () => set((state) => {
-                // generateLevels now returns ALL levels (age param ignored but required by signature)
-                const latestMasterLevels = generateLevels(0);
+            syncLevels: async () => {
+                const { data, error } = await supabase.from('levels').select('*');
+                if (error || !data) {
+                    console.error('[Store] Failed to fetch levels:', error);
+                    return;
+                }
 
-                // Merge latest codebase levels with the locally cached progress
-                const mergedLevels = latestMasterLevels.map(latestLevel => {
-                    const cachedLevel = state.levels.find(l => l.id === latestLevel.id);
-                    if (cachedLevel) {
-                        return {
-                            ...latestLevel,
-                            status: cachedLevel.status,
-                            isLocked: cachedLevel.isLocked,
-                            stars: cachedLevel.stars
-                        };
-                    }
-                    return latestLevel;
+                const latestMasterLevels: Level[] = data.map(row => ({
+                    id: row.id,
+                    day_number: row.day_number,
+                    title: row.title,
+                    description: row.description,
+                    personality: row.personality,
+                    requiredStars: row.required_stars,
+                    year: row.year,
+                    age: row.age,
+                    theme: row.theme,
+                    archetype: row.archetype,
+                    bio: row.bio,
+                    fame: row.fame,
+                    achievements: row.achievements,
+                    lesson: row.lesson,
+                    avatarUrl: row.avatar_url,
+                    scenarioId: row.scenario_id,
+                    idolTraits: row.idol_traits,
+                    status: row.status,
+                    isLocked: row.is_locked,
+                    stars: row.stars,
+                    part1: row.part1,
+                    part2: row.part2,
+                    placeholder: row.placeholder
+                }));
+
+                set((state) => {
+                    const mergedLevels = latestMasterLevels.map(latestLevel => {
+                        const cachedLevel = state.levels.find(l => l.id === latestLevel.id);
+                        if (cachedLevel) {
+                            return {
+                                ...latestLevel,
+                                status: cachedLevel.status,
+                                isLocked: cachedLevel.isLocked !== undefined ? cachedLevel.isLocked : latestLevel.isLocked,
+                                stars: cachedLevel.stars !== undefined ? cachedLevel.stars : latestLevel.stars
+                            };
+                        }
+                        return latestLevel;
+                    });
+
+                    return { levels: mergedLevels };
                 });
-
-                return { levels: mergedLevels };
-            }),
+            },
 
             // Daily Challenge & Streak Logic
             checkStreak: () => set((state) => {

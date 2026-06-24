@@ -5,7 +5,6 @@ import { detectEmotion, EMOTION_THEMES } from '../../utils/storyEmotion';
 import type { EmotionTheme } from '../../utils/storyEmotion';
 import { bgmManager } from '../../utils/bgmManager';
 import type { Level, Lesson } from '../../types/gameTypes';
-import { STORY_DATABASE } from '../../data/scenarios';
 import clsx from 'clsx';
 import { ChevronRight, Star, AlertCircle, CheckCircle, Palette, Loader2 } from 'lucide-react';
 import { supabase } from '../../utils/supabase';
@@ -51,11 +50,6 @@ interface SessionChoiceData {
         ambitious: number;
     };
 }
-
-// Enhanced Scenario Data with Scoring
-// TODO: Move this to a separate data file in the next step
-// SCENARIO_DATA Removed - Using STORY_DATABASE from data/scenarios
-
 
 export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComplete }: ScenarioGameProps) {
     // DEBUG: Confirms this component is the active one (check console on game load)
@@ -162,8 +156,43 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
         return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
     }, [pauseStartTime, bgmEnabled]);
 
-    // Load Scenario dynamically
-    const scenario = STORY_DATABASE[level.scenarioId] || STORY_DATABASE['lvl_age_19'];
+    // Load Scenario dynamically from backend
+    const [scenario, setScenario] = useState<any>(null);
+    const [isLoadingScenario, setIsLoadingScenario] = useState(true);
+
+    useEffect(() => {
+        const fetchScenario = async () => {
+            setIsLoadingScenario(true);
+            const targetId = level?.scenarioId || 'lvl_age_19';
+            const { data, error } = await supabase.from('scenarios').select('*').eq('id', targetId).maybeSingle();
+            
+            if (error || !data) {
+                console.error("Failed to fetch scenario", error);
+                // Fallback to error state or retry logic
+                // For now we'll set a dummy to prevent crashing
+                setScenario({ frames: [{ id: 'intro', text: 'Error loading scenario.', choices: [] }] });
+            } else {
+                setScenario({
+                    id: data.id,
+                    title: data.title,
+                    source: data.source,
+                    frames: data.frames
+                });
+            }
+            setIsLoadingScenario(false);
+        };
+        fetchScenario();
+    }, [level?.scenarioId]);
+
+    if (isLoadingScenario || !scenario) {
+        return (
+            <div className="w-full h-screen bg-slate-950 flex flex-col items-center justify-center">
+                <Loader2 className="w-8 h-8 text-cyan-400 animate-spin mb-4" />
+                <p className="text-cyan-400 text-sm tracking-widest animate-pulse">LOADING SCENARIO...</p>
+            </div>
+        );
+    }
+
     const frame = scenario.frames.find((f: any) => f.id === currentFrameId) || scenario.frames[0];
     const isLearningScreen = currentFrameId.startsWith('LEARNING');
 

@@ -11,8 +11,6 @@ import { useNavigate } from 'react-router-dom';
 import { bgmManager } from '../../utils/bgmManager';
 import { MapAmbience } from './MapAmbience';
 import { VibeSpinnerButton } from '../MoodWheel/VibeSpinnerButton';
-import { jeeStories } from '../../data/jeeStories';
-import { neetStories } from '../../data/neetStories';
 import { getUnlockedDayCount } from '../../utils/storyUnlock';
 
 interface LevelMapProps {
@@ -77,9 +75,9 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
 
     let ageLevels = processedLevels;
     if (profile?.preferred_map === 'jee') {
-        ageLevels = jeeStories;
+        ageLevels = levels.filter(l => l.theme === 'JEE').sort((a, b) => (a.day_number || 0) - (b.day_number || 0));
     } else if (profile?.preferred_map === 'neet') {
-        ageLevels = neetStories;
+        ageLevels = levels.filter(l => l.theme === 'NEET').sort((a, b) => (a.day_number || 0) - (b.day_number || 0));
     }
     
     const unlockedDays = getUnlockedDayCount(profile?.access_type, profile?.access_start_date);
