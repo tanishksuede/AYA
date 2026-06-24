@@ -179,16 +179,12 @@ export function OnboardingWizard() {
                             }
                         }
                     } catch (dbErr: any) {
-                        if (dbErr.message?.includes('Failed to fetch') || dbErr.message?.includes('NetworkError') || !import.meta.env.VITE_SUPABASE_URL) {
-                            isDbOnline = false;
-                            console.warn('[Offline Mode] Supabase connection failed. Generating local session.');
-                            result = {
-                                user: { id: `offline-${Date.now()}`, name: name.trim(), age, mobile: cleanMobile },
-                                isNew: true
-                            };
-                        } else {
-                            throw dbErr;
-                        }
+                        isDbOnline = false;
+                        console.warn('[Offline Mode] DB error caught. Generating local session.', dbErr);
+                        result = {
+                            user: { id: `offline-${Date.now()}`, name: name.trim(), age, mobile: cleanMobile },
+                            isNew: true
+                        };
                     }
                 } catch (e) {
                     lastErr = e;
