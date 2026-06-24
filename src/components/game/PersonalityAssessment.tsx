@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useUserStore } from '../../store/userStore';
 import { audioSynth } from '../../utils/audioSynth';
 import { Flame, Briefcase, Eye, Shield, Award, Zap, Check } from 'lucide-react';
@@ -157,6 +157,43 @@ export function PersonalityAssessment() {
         };
     }, []);
 
+    const geometryParticles = useMemo(() => {
+        return Array.from({ length: 15 }).map((_, i) => ({
+            width: Math.random() * 50 + 20,
+            height: Math.random() * 50 + 20,
+            shape: SHAPES[i%3],
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            rotateZ: Math.random() * 360,
+            rotateX: Math.random() * 360,
+            rotateY: Math.random() * 360,
+            animY: Math.random() * window.innerHeight,
+            duration: Math.random() * 20 + 20
+        }));
+    }, []);
+
+    const parallaxParticles = useMemo(() => {
+        return Array.from({ length: 40 }).map((_, i) => ({
+            size: i % 3 === 0 ? 3 : 1.5,
+            blur: i % 3 === 0 ? 0 : 2,
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            opacity: Math.random() * 0.5 + 0.1,
+            animY: Math.random() * window.innerHeight - 500,
+            duration: (i % 3 === 0 ? 10 : 20) + Math.random() * 5
+        }));
+    }, []);
+
+    const cyanParticles = useMemo(() => {
+        return Array.from({ length: 30 }).map((_, i) => ({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            opacity: Math.random() * 0.5 + 0.1,
+            animY: Math.random() * window.innerHeight,
+            duration: Math.random() * 8 + 8
+        }));
+    }, []);
+
     const toggleOption = (option: any) => {
         audioSynth.playClick();
         const currentQ = QUESTIONS[step] as any;
@@ -281,34 +318,34 @@ export function PersonalityAssessment() {
                         <div className="absolute -top-[50%] -left-[50%] w-[200%] h-[200%] opacity-30 MixBlendMode-screen" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(147, 51, 234, 0.4) 0%, transparent 50%)' }} />
                         
                         {/* 3D Floating Geometry Array */}
-                        {Array.from({ length: 15 }).map((_, i) => (
+                        {geometryParticles.map((p, i) => (
                             <motion.div
                                 key={`geo-${i}`}
                                 className="absolute MixBlendMode-screen opacity-20 border border-purple-500 rounded-sm"
                                 style={{ 
-                                    width: Math.random() * 50 + 20, 
-                                    height: Math.random() * 50 + 20,
-                                    clipPath: SHAPES[i%3] === 'triangle' ? 'polygon(50% 0%, 0% 100%, 100% 100%)' : SHAPES[i%3] === 'diamond' ? 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' : 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)' 
+                                    width: p.width, 
+                                    height: p.height,
+                                    clipPath: p.shape === 'triangle' ? 'polygon(50% 0%, 0% 100%, 100% 100%)' : p.shape === 'diamond' ? 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' : 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)' 
                                 }}
-                                initial={{ x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, rotateZ: Math.random() * 360, rotateX: Math.random() * 360, rotateY: Math.random() * 360 }}
-                                animate={{ y: [null, Math.random() * window.innerHeight], rotateZ: '+=180', rotateY: '+=180' }}
-                                transition={{ duration: Math.random() * 20 + 20, repeat: Infinity, ease: 'linear' }}
+                                initial={{ x: p.x, y: p.y, rotateZ: p.rotateZ, rotateX: p.rotateX, rotateY: p.rotateY }}
+                                animate={{ y: [null, p.animY], rotateZ: '+=180', rotateY: '+=180' }}
+                                transition={{ duration: p.duration, repeat: Infinity, ease: 'linear' }}
                             />
                         ))}
 
                         {/* Parallax Particles */}
-                        {Array.from({ length: 40 }).map((_, i) => (
+                        {parallaxParticles.map((p, i) => (
                             <motion.div
                                 key={`p-${i}`}
                                 className="absolute rounded-full bg-[#a855f7] drop-shadow-[0_0_5px_#a855f7]"
                                 style={{ 
-                                    width: i % 3 === 0 ? 3 : 1.5, 
-                                    height: i % 3 === 0 ? 3 : 1.5, 
-                                    filter: `blur(${i % 3 === 0 ? 0 : 2}px)` 
+                                    width: p.size, 
+                                    height: p.size, 
+                                    filter: `blur(${p.blur}px)` 
                                 }}
-                                initial={{ x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, opacity: Math.random() * 0.5 + 0.1 }}
-                                animate={{ y: [null, Math.random() * window.innerHeight - 500], opacity: [0.1, 0.8, 0.1] }}
-                                transition={{ duration: (i % 3 === 0 ? 10 : 20) + Math.random() * 5, repeat: Infinity, ease: "linear" }}
+                                initial={{ x: p.x, y: p.y, opacity: p.opacity }}
+                                animate={{ y: [null, p.animY], opacity: [0.1, 0.8, 0.1] }}
+                                transition={{ duration: p.duration, repeat: Infinity, ease: "linear" }}
                             />
                         ))}
 
@@ -332,14 +369,14 @@ export function PersonalityAssessment() {
                      <>
                         <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_30%,rgba(0,241,254,0.03)_40%,rgba(0,241,254,0.08)_50%,transparent_60%)] MixBlendMode-screen" />
                         <div className="absolute inset-0 bg-[linear-gradient(-45deg,transparent_40%,rgba(213,117,255,0.05)_50%,transparent_60%)] MixBlendMode-screen" />
-                        {Array.from({ length: 30 }).map((_, i) => (
+                        {cyanParticles.map((p, i) => (
                             <motion.div
                                 key={i}
                                 className="absolute w-1 h-1 bg-[#00f1fe] rounded-full drop-shadow-[0_0_5px_#00f1fe]"
                                 style={{ filter: 'blur(1px)' }}
-                                initial={{ x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, opacity: Math.random() * 0.5 + 0.1 }}
-                                animate={{ y: [null, Math.random() * window.innerHeight], opacity: [0.1, 0.6, 0.1] }}
-                                transition={{ duration: Math.random() * 8 + 8, repeat: Infinity, ease: "linear" }}
+                                initial={{ x: p.x, y: p.y, opacity: p.opacity }}
+                                animate={{ y: [null, p.animY], opacity: [0.1, 0.6, 0.1] }}
+                                transition={{ duration: p.duration, repeat: Infinity, ease: "linear" }}
                             />
                         ))}
                     </>
@@ -357,7 +394,7 @@ export function PersonalityAssessment() {
                     animate={{ opacity: 1, y: 0, rotateX: 0 }}
                     transition={{ duration: 0.6, type: "spring", damping: 20 }}
                     className={clsx(
-                        "flex flex-col overflow-hidden relative transition-all duration-700 backdrop-blur-2xl bg-[#13131c]/80 shadow-2xl",
+                        "flex flex-col overflow-hidden relative transition-all duration-700 bg-[#13131c] shadow-2xl",
                         isViolet ? "border border-[#9333ea]/50 shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_40px_rgba(147,51,234,0.4)] md:h-[85vh]" : "border border-[#00f1fe]/30 shadow-[0_0_40px_rgba(0,241,254,0.15)] md:h-[85vh]",
                         isMobile ? "flex-grow pt-safe-top m-4 rounded-[2.5rem]" : "rounded-[3rem]"
                     )}
@@ -441,7 +478,7 @@ export function PersonalityAssessment() {
                                         )}
                                     >
                                         <div className={clsx(
-                                            "absolute inset-0 rounded-2xl flex items-center justify-between px-6 transition-all shadow-xl overflow-hidden backdrop-blur-md",
+                                            "absolute inset-0 rounded-2xl flex items-center justify-between px-6 transition-all shadow-xl overflow-hidden",
                                             isViolet ? (
                                                 isSelected
                                                     ? "bg-[#3b0764] border-2 border-[#d8b4fe] shadow-[0_0_30px_rgba(168,85,247,0.8),0_15px_30px_rgba(0,0,0,0.8)]"
@@ -494,8 +531,8 @@ export function PersonalityAssessment() {
                                 exit={{ y: 100, opacity: 0 }}
                                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
                                 className={clsx(
-                                    "shrink-0 w-full px-6 md:px-10 pb-6 md:pb-8 pt-4 border-t backdrop-blur-3xl z-50",
-                                    isViolet ? "border-[#9333ea]/30 bg-[#1e1b4b]/90" : "border-[#00f1fe]/30 bg-[#082f49]/90"
+                                    "shrink-0 w-full px-6 md:px-10 pb-6 md:pb-8 pt-4 border-t z-50",
+                                    isViolet ? "border-[#9333ea]/30 bg-[#1e1b4b]" : "border-[#00f1fe]/30 bg-[#082f49]"
                                 )}
                             >
                                 <button
