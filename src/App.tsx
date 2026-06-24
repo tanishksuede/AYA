@@ -1,0 +1,56 @@
+import { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AppLayout } from './layouts/AppLayout';
+import { HomePage } from './pages/Home';
+import { GameRoot } from './pages/GameRoot';
+import { bgmManager } from './utils/bgmManager';
+import { MapRouteHandler, IntroRouteHandler, PlayRouteHandler, ReportRouteHandler, DnaRouteHandler, SelectionRouteHandler } from './pages/GameRouteHandlers';
+import { SettingsPage } from './pages/SettingsPage';
+import { JournalPage } from './pages/JournalPage';
+import { ThemeSwitcherPage } from './pages/ThemeSwitcherPage';
+
+function App() {
+  useEffect(() => {
+    bgmManager.loadPreference()
+    
+    // Unlock on first user interaction
+    const unlock = async () => {
+      await bgmManager.unlock()
+      document.removeEventListener('click', unlock, { capture: true })
+      document.removeEventListener('touchstart', unlock, { capture: true })
+    }
+    
+    document.addEventListener('click', unlock, { capture: true })
+    document.addEventListener('touchstart', unlock, { capture: true })
+    
+    return () => {
+      document.removeEventListener('click', unlock, { capture: true })
+      document.removeEventListener('touchstart', unlock, { capture: true })
+    }
+  }, [])
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route element={<AppLayout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/game" element={<GameRoot />}>
+            <Route index element={<MapRouteHandler />} />
+            <Route path="intro/:id" element={<IntroRouteHandler />} />
+            <Route path="play/:id" element={<PlayRouteHandler />} />
+            <Route path="report/:id" element={<ReportRouteHandler />} />
+            <Route path="dna" element={<DnaRouteHandler />} />
+            <Route path="selection/:age" element={<SelectionRouteHandler />} />
+            <Route path="settings" element={<SettingsPage />} />
+            <Route path="journal" element={<JournalPage />} />
+            <Route path="theme" element={<ThemeSwitcherPage />} />
+            <Route path="*" element={<Navigate to="/game" replace />} />
+          </Route>
+          <Route path="*" element={<Navigate to="/" />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  )
+}
+
+export default App
