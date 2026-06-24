@@ -1,7 +1,7 @@
 import { useUserStore } from '../../store/userStore';
 import { Lock, Star, Settings, BookOpen, Volume2, VolumeX, Sun, Moon } from 'lucide-react';
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { LessonJournal } from './LessonJournal';
+
 import clsx from 'clsx';
 import { AudioController } from '../shared/AudioController';
 import { audioSynth } from '../../utils/audioSynth';
@@ -11,7 +11,7 @@ import { MoodWheel } from '../MoodWheel/MoodWheel';
 import type { MoodArchetype } from '../MoodWheel/MoodWheel';
 import { VibeSpinnerButton } from '../MoodWheel/VibeSpinnerButton';
 import { DailyChallengeReveal } from './DailyChallengeReveal';
-import { ThemeSwitcherModal } from './ThemeSwitcherModal';
+
 import { bgmManager } from '../../utils/bgmManager';
 import { MapAmbience } from './MapAmbience';
 import { jeeStories } from '../../data/jeeStories';
