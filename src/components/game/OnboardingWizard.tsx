@@ -202,7 +202,7 @@ export function OnboardingWizard() {
                         total_xp: 0,
                         level: 1,
                         stories_completed: 0
-                    }).catch(err => console.warn('Supabase personality insert failed', err));
+                    }).catch((err: any) => console.warn('Supabase personality insert failed', err));
                 }
             }
 
