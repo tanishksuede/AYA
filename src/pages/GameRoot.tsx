@@ -195,6 +195,9 @@ export function GameRoot() {
                 const savedTheme = user.preferred_theme || 'city_dark';
                 store.setMapTheme(savedTheme as any);
 
+                // Hydrate level scores from database
+                useUserStore.setState({ levelScores: user.level_scores || {} });
+
                 clearTimeout(maxWait);
                 setSessionStatus('found');
 

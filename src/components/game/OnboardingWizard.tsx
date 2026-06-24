@@ -3,6 +3,7 @@ import { useUserStore } from '../../store/userStore';
 import { audioSynth } from '../../utils/audioSynth';
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { saveSession } from '../../utils/session';
+import { supabase } from '../../utils/supabase';
 
 import { motion, AnimatePresence, useMotionValue, animate } from 'framer-motion';
 
@@ -136,25 +137,81 @@ export function OnboardingWizard() {
         }, 20000);
 
         try {
-            // Completely bypass all backend authentication and force an offline local session instantly
-            const fallbackId = `offline-${Date.now()}`;
-            
-            // Persist session to localStorage + sessionStorage
-            saveSession({ id: fallbackId, mobile: cleanMobile, name: name.trim(), age });
+            // Check if user exists by mobile
+            const { data: existingUser, error: searchError } = await supabase
+                .from('users')
+                .select('*')
+                .eq('mobile', cleanMobile)
+                .maybeSingle();
 
-            // Generate a fresh profile
+            if (searchError) throw searchError;
+
+            let userId;
+            let userData;
+
+            if (existingUser) {
+                userId = existingUser.id;
+                userData = existingUser;
+            } else {
+                // Insert new user
+                const { data: newUser, error: insertError } = await supabase
+                    .from('users')
+                    .insert({
+                        mobile: cleanMobile,
+                        name: name.trim(),
+                        age: age,
+                        access_type: 'open',
+                        access_start_date: new Date().toISOString().split('T')[0],
+                        preferred_theme: 'city_dark',
+                        total_xp: 0,
+                        level: 1,
+                        stories_completed: 0
+                    })
+                    .select()
+                    .single();
+
+                if (insertError) throw insertError;
+
+                userId = newUser.id;
+                userData = newUser;
+
+                // Create default personality profile
+                await supabase.from('personality_profiles').insert({
+                    user_id: userId,
+                    mobile: cleanMobile,
+                    trait_risk_taker: 50,
+                    trait_creative: 50,
+                    trait_analytical: 50,
+                    trait_social: 50,
+                    trait_ambitious: 50,
+                    future_archetype: 'Explorer',
+                    total_xp: 0,
+                    level: 1,
+                    stories_completed: 0
+                });
+            }
+
+            // Persist session to localStorage + sessionStorage
+            saveSession({ id: userId, mobile: userData.mobile, name: userData.name, age: userData.age });
+
+            // Generate a fresh profile or load existing
             setProfile({
-                id: fallbackId, 
-                mobile: cleanMobile, 
-                name: name.trim(), 
-                age,
-                access_type: 'open',
-                access_start_date: new Date().toISOString().split('T')[0],
-                preferred_map: 'solar',
+                id: userId, 
+                mobile: userData.mobile, 
+                name: userData.name, 
+                age: userData.age,
+                access_type: userData.access_type || 'open',
+                access_start_date: userData.access_start_date,
+                preferred_map: userData.preferred_map || 'solar',
                 interests: [], 
                 roleModels: [],
                 traits: { discipline: 50, resilience: 50, risk: 50, leadership: 50, creativity: 50, empathy: 50, vision: 50 },
-                assessmentCompleted: false,
+                assessmentCompleted: false, // They'll do the quiz if not done
+                total_xp: userData.total_xp || 0,
+                level: userData.level || 1,
+                stories_completed: userData.stories_completed || 0,
+                current_streak: userData.current_streak || 0,
+                longest_streak: userData.longest_streak || 0
             } as any);
 
         } catch (err: any) {

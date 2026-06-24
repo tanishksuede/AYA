@@ -77,6 +77,36 @@ interface UserState {
 
     resetProgress: () => void;
 }
+const syncStoreToBackend = async (profile: any, levelScores: Record<string, number>) => {
+    if (!profile || !profile.id || profile.id.startsWith('offline-')) return;
+    try {
+        await supabase.from('users').update({
+            total_xp: profile.total_xp,
+            level: profile.level,
+            stories_completed: profile.stories_completed,
+            current_streak: profile.current_streak,
+            longest_streak: profile.longest_streak,
+            last_active_date: profile.last_active_date,
+            daily_challenge_completed: profile.daily_challenge_completed,
+            level_scores: levelScores
+        }).eq('id', profile.id);
+
+        if (profile.traits) {
+            await supabase.from('personality_profiles').update({
+                total_xp: profile.total_xp,
+                level: profile.level,
+                stories_completed: profile.stories_completed,
+                trait_risk_taker: profile.traits.risk,
+                trait_creative: profile.traits.creativity,
+                trait_analytical: profile.traits.analytical,
+                trait_social: profile.traits.empathy,
+                trait_ambitious: profile.traits.leadership
+            }).eq('user_id', profile.id);
+        }
+    } catch (err) {
+        console.error('[Store] Failed to sync to backend', err);
+    }
+};
 
 export const useUserStore = create<UserState>()(
     persist(
@@ -89,36 +119,44 @@ export const useUserStore = create<UserState>()(
 
             addXp: (amount) => set((state) => ({ xp: state.xp + amount })),
 
-            addSessionProgression: (sessionXp) => set((state) => {
-                if (!state.profile) return state;
+            addSessionProgression: (sessionXp) => {
+                set((state) => {
+                    if (!state.profile) return state;
 
-                const currentXp = state.profile.total_xp || 0;
-                const newXp = currentXp + sessionXp;
-                const levelInfo = calculateLevelInfo(newXp);
-                const currentStories = state.profile.stories_completed || 0;
+                    const currentXp = state.profile.total_xp || 0;
+                    const newXp = currentXp + sessionXp;
+                    const levelInfo = calculateLevelInfo(newXp);
+                    const currentStories = state.profile.stories_completed || 0;
 
-                return {
-                    profile: {
-                        ...state.profile,
-                        total_xp: newXp,
-                        level: levelInfo.level,
-                        stories_completed: currentStories + 1
-                    }
-                };
-            }),
+                    return {
+                        profile: {
+                            ...state.profile,
+                            total_xp: newXp,
+                            level: levelInfo.level,
+                            stories_completed: currentStories + 1
+                        }
+                    };
+                });
+                const { profile, levelScores } = get();
+                if (profile) syncStoreToBackend(profile, levelScores);
+            },
 
-            updateXpLocally: (amount) => set((state) => {
-                if (!state.profile) return state;
-                const newXp = (state.profile.total_xp || 0) + amount;
-                const levelInfo = calculateLevelInfo(newXp);
-                return {
-                    profile: {
-                        ...state.profile,
-                        total_xp: newXp,
-                        level: levelInfo.level
-                    }
-                };
-            }),
+            updateXpLocally: (amount) => {
+                set((state) => {
+                    if (!state.profile) return state;
+                    const newXp = (state.profile.total_xp || 0) + amount;
+                    const levelInfo = calculateLevelInfo(newXp);
+                    return {
+                        profile: {
+                            ...state.profile,
+                            total_xp: newXp,
+                            level: levelInfo.level
+                        }
+                    };
+                });
+                const { profile, levelScores } = get();
+                if (profile) syncStoreToBackend(profile, levelScores);
+            },
 
             // ── Theme (2-way: city_dark | light) ─────────────────────────────
             // 'solar' is preserved in the type but hidden from UI until re-enabled.
@@ -247,46 +285,50 @@ export const useUserStore = create<UserState>()(
             },
 
             // Daily Challenge & Streak Logic
-            checkStreak: () => set((state) => {
-                if (!state.profile) return state;
+            checkStreak: () => {
+                set((state) => {
+                    if (!state.profile) return state;
 
-                const now = new Date();
-                let lastActiveStr = state.profile.last_active_date;
-                let current = state.profile.current_streak || 0;
-                let completedToday = state.profile.daily_challenge_completed || false;
-                
-                if (lastActiveStr) {
-                    const lastActive = new Date(lastActiveStr);
-                    lastActive.setHours(0,0,0,0);
+                    const now = new Date();
+                    let lastActiveStr = state.profile.last_active_date;
+                    let current = state.profile.current_streak || 0;
+                    let completedToday = state.profile.daily_challenge_completed || false;
                     
-                    const today = new Date(now);
-                    today.setHours(0,0,0,0);
-                    
-                    const diffTime = Math.abs(today.getTime() - lastActive.getTime());
-                    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                    if (lastActiveStr) {
+                        const lastActive = new Date(lastActiveStr);
+                        lastActive.setHours(0,0,0,0);
+                        
+                        const today = new Date(now);
+                        today.setHours(0,0,0,0);
+                        
+                        const diffTime = Math.abs(today.getTime() - lastActive.getTime());
+                        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-                    if (diffDays === 0) {
-                        // Same day, no change to streak length, just maintain flags
-                    } else if (diffDays === 1) {
-                        // Active yesterday, reset daily challenge flag
-                        completedToday = false;
-                    } else if (diffDays > 1) {
-                        // Missed a day or more, streak broken!
-                        current = 0;
+                        if (diffDays === 0) {
+                            // Same day, no change to streak length, just maintain flags
+                        } else if (diffDays === 1) {
+                            // Active yesterday, reset daily challenge flag
+                            completedToday = false;
+                        } else if (diffDays > 1) {
+                            // Missed a day or more, streak broken!
+                            current = 0;
+                            completedToday = false;
+                        }
+                    } else {
                         completedToday = false;
                     }
-                } else {
-                    completedToday = false;
-                }
 
-                return {
-                    profile: {
-                        ...state.profile,
-                        current_streak: current,
-                        daily_challenge_completed: completedToday
-                    }
-                };
-            }),
+                    return {
+                        profile: {
+                            ...state.profile,
+                            current_streak: current,
+                            daily_challenge_completed: completedToday
+                        }
+                    };
+                });
+                const { profile, levelScores } = get();
+                if (profile) syncStoreToBackend(profile, levelScores);
+            },
 
             completeDailyChallenge: () => {
                 let result = { xpEarned: 0, oldStreak: 0, newStreak: 0, isMilestone: false };
@@ -335,42 +377,51 @@ export const useUserStore = create<UserState>()(
                         }
                     };
                 });
-                
+                const { profile, levelScores } = get();
+                if (profile) syncStoreToBackend(profile, levelScores);
                 return result;
             },
 
             // Personality Actions
-            updateTraits: (modifiers) => set((state) => {
-                if (!state.profile) return state;
+            updateTraits: (modifiers) => {
+                set((state) => {
+                    if (!state.profile) return state;
 
-                const currentTraits = state.profile.traits;
-                const newTraits = { ...currentTraits };
+                    const currentTraits = state.profile.traits;
+                    const newTraits = { ...currentTraits };
 
-                // Update and Clamp values 0-100
-                (Object.keys(modifiers) as Array<keyof PersonalityTraits>).forEach((key) => {
-                    const change = modifiers[key] || 0;
-                    newTraits[key] = Math.max(0, Math.min(100, (newTraits[key] || 50) + change));
+                    // Update and Clamp values 0-100
+                    (Object.keys(modifiers) as Array<keyof PersonalityTraits>).forEach((key) => {
+                        const change = modifiers[key] || 0;
+                        newTraits[key] = Math.max(0, Math.min(100, (newTraits[key] || 50) + change));
+                    });
+
+                    return {
+                        profile: {
+                            ...state.profile,
+                            traits: newTraits
+                        }
+                    };
                 });
+                const { profile, levelScores } = get();
+                if (profile) syncStoreToBackend(profile, levelScores);
+            },
 
-                return {
-                    profile: {
-                        ...state.profile,
-                        traits: newTraits
-                    }
-                };
-            }),
-
-            completeAssessment: (initialTraits, profile) => set((state) => {
-                if (!state.profile) return state;
-                return {
-                    profile: {
-                        ...state.profile,
-                        traits: initialTraits,
-                        psychologicalProfile: profile,
-                        assessmentCompleted: true
-                    }
-                };
-            }),
+            completeAssessment: (initialTraits, profileData) => {
+                set((state) => {
+                    if (!state.profile) return state;
+                    return {
+                        profile: {
+                            ...state.profile,
+                            traits: initialTraits,
+                            psychologicalProfile: profileData,
+                            assessmentCompleted: true
+                        }
+                    };
+                });
+                const { profile, levelScores } = get();
+                if (profile) syncStoreToBackend(profile, levelScores);
+            },
 
             // The original `unlockedLevels` state and its usage in `unlockLevel` were removed
             // as per the instruction's updated UserState interface and initial state.
@@ -382,10 +433,14 @@ export const useUserStore = create<UserState>()(
                 )
             })),
 
-            completeLevel: (levelId, stars) => set((state) => ({
-                levelScores: { ...state.levelScores, [levelId]: Math.max(state.levelScores[levelId] || 0, stars) },
-                // Auto unlock next level logic could go here
-            })),
+            completeLevel: (levelId, stars) => {
+                set((state) => ({
+                    levelScores: { ...state.levelScores, [levelId]: Math.max(state.levelScores[levelId] || 0, stars) },
+                    // Auto unlock next level logic could go here
+                }));
+                const { profile, levelScores } = get();
+                if (profile) syncStoreToBackend(profile, levelScores);
+            },
 
             resetProgress: () => set({
                 profile: null,
