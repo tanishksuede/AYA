@@ -139,136 +139,26 @@ export function OnboardingWizard() {
         }, 20000);
 
         try {
-            // ---- Attempt up to 3 times ----
-            let attempt = 0;
-            let lastErr: any = null;
-            let result: { user: any; isNew: boolean } | null = null;
-
-            while (attempt < 3 && !result) {
-                attempt++;
-                try {
-                    // Open Registration Flow for ALL inputs
-                    try {
-                        const { data: existing, error: fetchErr } = await withTimeout(
-                            supabase.from('users').select('*').eq('mobile', cleanMobile)
-                        );
-                        if (fetchErr) throw fetchErr;
-
-                        if (existing && existing.length > 0) {
-                            result = { user: existing[0], isNew: false };
-                        } else {
-                            const { data: newUser, error: insertErr } = await withTimeout(
-                                supabase
-                                    .from('users')
-                                    .insert([{ name: name.trim(), age, mobile: cleanMobile }])
-                                    .select()
-                                    .single()
-                            );
-                            if (insertErr) {
-                                if (insertErr.code === '23505') {
-                                    const { data: raceUser } = await withTimeout(
-                                        supabase.from('users').select('*').eq('mobile', cleanMobile)
-                                    );
-                                    if (raceUser && raceUser.length > 0) {
-                                        result = { user: raceUser[0], isNew: false };
-                                    } else throw insertErr;
-                                } else throw insertErr;
-                            } else {
-                                result = { user: newUser, isNew: true };
-                            }
-                        }
-                    } catch (dbErr: any) {
-                        console.warn('[Offline Mode] DB error caught. Generating local session.', dbErr);
-                        result = {
-                            user: { id: `offline-${Date.now()}`, name: name.trim(), age, mobile: cleanMobile },
-                            isNew: true
-                        };
-                    }
-                } catch (e) {
-                    lastErr = e;
-                    if (attempt < 3) await new Promise(r => setTimeout(r, 1000 * attempt)); // exponential back-off
-                }
-            }
-
-            if (!result) throw lastErr || new Error('Registration failed after 3 attempts');
-
-            const { user, isNew } = result;
-
+            // Completely bypass all backend authentication and force an offline local session instantly
+            const fallbackId = `offline-${Date.now()}`;
+            
             // Persist session to localStorage + sessionStorage
-            saveSession({ id: user.id, mobile: user.mobile, name: user.name, age: user.age });
+            saveSession({ id: fallbackId, mobile: cleanMobile, name: name.trim(), age });
 
-            // Load personality profile for returning users (only if DB is online)
-            let profileData: any = null;
-            let quizDone = isQuizDone();
-
-            if (!isNew) {
-                if (!user.id.toString().startsWith('offline-')) {
-                    try {
-                        const { data } = await withTimeout(
-                            supabase.from('personality_profiles').select('*').eq('user_id', user.id)
-                        );
-                        profileData = data && data.length > 0 ? data[0] : null;
-                    } catch { /* non-critical */ }
-
-                    // Check quiz completion
-                    quizDone = quizDone || !!profileData;
-                    if (!quizDone) {
-                        try {
-                            const { data: qr } = await withTimeout(
-                                supabase.from('quiz_responses').select('id').eq('user_id', user.id).limit(1)
-                            );
-                            quizDone = !!(qr && qr.length > 0);
-                            if (quizDone) markQuizDone();
-                        } catch { /* non-critical */ }
-                    }
-                }
-
-                const traits = profileData ? {
-                    discipline: 50, resilience: 50,
-                    risk: profileData.trait_risk_taker || 50,
-                    leadership: profileData.trait_ambitious || 50,
-                    creativity: profileData.trait_creative || 50,
-                    empathy: profileData.trait_social || 50, vision: 50,
-                } : { discipline: 50, resilience: 50, risk: 50, leadership: 50, creativity: 50, empathy: 50, vision: 50 };
-
-                setProfile({
-                    id: user.id, mobile: user.mobile, name: user.name, age: user.age,
-                    access_type: user.access_type,
-                    access_start_date: user.access_start_date,
-                    preferred_map: user.preferred_map,
-                    interests: [], roleModels: [],
-                    traits: traits as any,
-                    assessmentCompleted: quizDone,
-                    ...(profileData ? {
-                        trait_risk_taker: profileData.trait_risk_taker,
-                        trait_creative: profileData.trait_creative,
-                        trait_analytical: profileData.trait_analytical,
-                        trait_social: profileData.trait_social,
-                        trait_ambitious: profileData.trait_ambitious,
-                        future_archetype: profileData.future_archetype,
-                    } : {})
-                } as any);
-
-                if (quizDone) {
-                    completeAssessment(
-                        traits as any,
-                        { motivation: 'Stability', risk: 'Balanced', emotional: 'Resilient', social: 'Supporter', passion: 'Creative', coreValue: 'Success' }
-                    );
-                }
-                // Returning user — setProfile() causes GameRoot to unmount OnboardingWizard naturally
-            } else {
-                // New user — set minimal profile; onboarding flow (CinematicOnboarding + Quiz) continues automatically
-                setProfile({
-                    id: user.id, mobile: user.mobile, name: user.name, age: user.age,
-                    access_type: user.access_type,
-                    access_start_date: user.access_start_date,
-                    preferred_map: user.preferred_map,
-                    interests: [], roleModels: [],
-                    traits: { discipline: 50, resilience: 50, risk: 50, leadership: 50, creativity: 50, empathy: 50, vision: 50 },
-                    assessmentCompleted: false,
-                } as any);
-                // GameRoot will see profile != null and assessmentCompleted = false — shows CinematicOnboarding then Quiz
-            }
+            // Generate a fresh profile
+            setProfile({
+                id: fallbackId, 
+                mobile: cleanMobile, 
+                name: name.trim(), 
+                age,
+                access_type: 'open',
+                access_start_date: new Date().toISOString().split('T')[0],
+                preferred_map: 'solar',
+                interests: [], 
+                roleModels: [],
+                traits: { discipline: 50, resilience: 50, risk: 50, leadership: 50, creativity: 50, empathy: 50, vision: 50 },
+                assessmentCompleted: false,
+            } as any);
 
         } catch (err: any) {
             console.error('[Register] Failed:', err);
