@@ -148,32 +148,46 @@ export function OnboardingWizard() {
                 attempt++;
                 try {
                     // Open Registration Flow for ALL inputs
-                    const { data: existing, error: fetchErr } = await withTimeout(
-                        supabase.from('users').select('*').eq('mobile', cleanMobile)
-                    );
-                    if (fetchErr) throw fetchErr;
-
-                    if (existing && existing.length > 0) {
-                        result = { user: existing[0], isNew: false };
-                    } else {
-                        const { data: newUser, error: insertErr } = await withTimeout(
-                            supabase
-                                .from('users')
-                                .insert([{ name: name.trim(), age, mobile: cleanMobile }])
-                                .select()
-                                .single()
+                    let isDbOnline = true;
+                    try {
+                        const { data: existing, error: fetchErr } = await withTimeout(
+                            supabase.from('users').select('*').eq('mobile', cleanMobile)
                         );
-                        if (insertErr) {
-                            if (insertErr.code === '23505') {
-                                const { data: raceUser } = await withTimeout(
-                                    supabase.from('users').select('*').eq('mobile', cleanMobile)
-                                );
-                                if (raceUser && raceUser.length > 0) {
-                                    result = { user: raceUser[0], isNew: false };
-                                } else throw insertErr;
-                            } else throw insertErr;
+                        if (fetchErr) throw fetchErr;
+
+                        if (existing && existing.length > 0) {
+                            result = { user: existing[0], isNew: false };
                         } else {
-                            result = { user: newUser, isNew: true };
+                            const { data: newUser, error: insertErr } = await withTimeout(
+                                supabase
+                                    .from('users')
+                                    .insert([{ name: name.trim(), age, mobile: cleanMobile }])
+                                    .select()
+                                    .single()
+                            );
+                            if (insertErr) {
+                                if (insertErr.code === '23505') {
+                                    const { data: raceUser } = await withTimeout(
+                                        supabase.from('users').select('*').eq('mobile', cleanMobile)
+                                    );
+                                    if (raceUser && raceUser.length > 0) {
+                                        result = { user: raceUser[0], isNew: false };
+                                    } else throw insertErr;
+                                } else throw insertErr;
+                            } else {
+                                result = { user: newUser, isNew: true };
+                            }
+                        }
+                    } catch (dbErr: any) {
+                        if (dbErr.message?.includes('Failed to fetch') || dbErr.message?.includes('NetworkError') || !import.meta.env.VITE_SUPABASE_URL) {
+                            isDbOnline = false;
+                            console.warn('[Offline Mode] Supabase connection failed. Generating local session.');
+                            result = {
+                                user: { id: `offline-${Date.now()}`, name: name.trim(), age, mobile: cleanMobile },
+                                isNew: true
+                            };
+                        } else {
+                            throw dbErr;
                         }
                     }
                 } catch (e) {
@@ -189,9 +203,11 @@ export function OnboardingWizard() {
             // Persist session to localStorage + sessionStorage
             saveSession({ id: user.id, mobile: user.mobile, name: user.name, age: user.age });
 
-            // Load personality profile for returning users
+            // Load personality profile for returning users (only if DB is online)
             let profileData: any = null;
-            if (!isNew) {
+            let quizDone = isQuizDone();
+
+            if (!isNew && !user.id.toString().startsWith('offline-')) {
                 try {
                     const { data } = await withTimeout(
                         supabase.from('personality_profiles').select('*').eq('user_id', user.id)
@@ -200,7 +216,7 @@ export function OnboardingWizard() {
                 } catch { /* non-critical */ }
 
                 // Check quiz completion
-                let quizDone = isQuizDone() || !!profileData;
+                quizDone = quizDone || !!profileData;
                 if (!quizDone) {
                     try {
                         const { data: qr } = await withTimeout(
@@ -210,6 +226,7 @@ export function OnboardingWizard() {
                         if (quizDone) markQuizDone();
                     } catch { /* non-critical */ }
                 }
+            }
 
                 const traits = profileData ? {
                     discipline: 50, resilience: 50,
