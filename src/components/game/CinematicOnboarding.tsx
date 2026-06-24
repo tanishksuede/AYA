@@ -41,11 +41,11 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
 
   const nextSlide = () => {
     audioSynth.playClick();
-    navigate(`/game/intro/${slide + 1}`);
+    navigate(`/game/onboarding/${slide + 1}`);
   };
   const prevSlide = () => {
     audioSynth.playBack();
-    navigate(`/game/intro/${Math.max(slide - 1, 1)}`);
+    navigate(`/game/onboarding/${Math.max(slide - 1, 1)}`);
   };
 
   const handleFinish = async () => {

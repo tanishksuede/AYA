@@ -40,8 +40,8 @@ function App() {
           <Route path="/game" element={<GameRoot />}>
             <Route index element={<MapRouteHandler />} />
             <Route path="welcome" element={<OnboardingWizard />} />
-            <Route path="intro/:step" element={<CinematicOnboarding />} />
-            <Route path="intro" element={<Navigate to="/game/intro/1" replace />} />
+            <Route path="onboarding/:step" element={<CinematicOnboarding />} />
+            <Route path="onboarding" element={<Navigate to="/game/onboarding/1" replace />} />
             <Route path="assessment/:step" element={<PersonalityAssessment />} />
             <Route path="intro/:id" element={<IntroRouteHandler />} />
             <Route path="play/:id" element={<PlayRouteHandler />} />
