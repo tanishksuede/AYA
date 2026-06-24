@@ -57,7 +57,7 @@ const NeonRainLayer = ({ isActive = true }: { isActive?: boolean }) => {
                 return;
             }
             
-            const isDesktop = window.innerWidth > 768;
+
             frameCount++;
             // Throttle rendering to 30fps for map ambience on desktop and mobile
             if (frameCount % 2 !== 0) {
