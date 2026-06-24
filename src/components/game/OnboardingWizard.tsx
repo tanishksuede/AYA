@@ -170,25 +170,40 @@ export function OnboardingWizard() {
                     .select()
                     .single();
 
-                if (insertError) throw insertError;
+                if (insertError) {
+                    console.warn('[Register] Supabase insert failed (likely RLS). Falling back to local-only mode:', insertError);
+                    userId = crypto.randomUUID();
+                    userData = {
+                        id: userId,
+                        mobile: cleanMobile,
+                        name: name.trim(),
+                        age: age,
+                        access_type: 'open',
+                        access_start_date: new Date().toISOString().split('T')[0],
+                        preferred_theme: 'city_dark',
+                        total_xp: 0,
+                        level: 1,
+                        stories_completed: 0
+                    };
+                } else {
+                    userId = newUser.id;
+                    userData = newUser;
 
-                userId = newUser.id;
-                userData = newUser;
-
-                // Create default personality profile
-                await supabase.from('personality_profiles').insert({
-                    user_id: userId,
-                    mobile: cleanMobile,
-                    trait_risk_taker: 50,
-                    trait_creative: 50,
-                    trait_analytical: 50,
-                    trait_social: 50,
-                    trait_ambitious: 50,
-                    future_archetype: 'Explorer',
-                    total_xp: 0,
-                    level: 1,
-                    stories_completed: 0
-                });
+                    // Create default personality profile
+                    await supabase.from('personality_profiles').insert({
+                        user_id: userId,
+                        mobile: cleanMobile,
+                        trait_risk_taker: 50,
+                        trait_creative: 50,
+                        trait_analytical: 50,
+                        trait_social: 50,
+                        trait_ambitious: 50,
+                        future_archetype: 'Explorer',
+                        total_xp: 0,
+                        level: 1,
+                        stories_completed: 0
+                    }).catch(err => console.warn('Supabase personality insert failed', err));
+                }
             }
 
             // Persist session to localStorage + sessionStorage

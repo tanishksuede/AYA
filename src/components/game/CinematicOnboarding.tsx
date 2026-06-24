@@ -325,7 +325,7 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
                  <motion.button
                    initial={{ opacity: 0, scale: 0.5, y: 50 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: 3, type: "spring", damping: 10 }}
                    onClick={handleFinish}
-                   className="px-8 py-4 sm:px-20 sm:py-8 bg-[#00f1fe] text-[#004145] rounded-full text-base sm:text-3xl font-black uppercase tracking-wider hover:bg-[#99f7ff] hover:scale-110 transition-all shadow-[0_0_60px_rgba(0,241,254,0.8)] relative z-10 flex flex-col items-center"
+                   className="px-8 py-4 sm:px-20 sm:py-8 bg-[#00f1fe] text-[#004145] rounded-full text-base sm:text-3xl font-black uppercase tracking-wider hover:bg-[#99f7ff] hover:scale-110 transition-all shadow-[0_0_60px_rgba(0,241,254,0.8)] relative z-10 flex flex-col items-center mx-auto"
                  >
                    ENTER THE MAP ⚡
                  </motion.button>
