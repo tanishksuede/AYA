@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { audioSynth } from '../../utils/audioSynth';
 import { Flame, Sparkles } from 'lucide-react';
@@ -22,27 +22,35 @@ export const StreakCelebration: React.FC<StreakCelebrationProps> = ({ streak, xp
         return () => clearTimeout(timer);
     }, [onComplete]);
 
+    const particles = useMemo(() => Array.from({ length: 30 }).map(() => ({
+        scale: Math.random() * 2 + 1.5,
+        x: (Math.random() - 0.5) * window.innerWidth * 0.9,
+        y: (Math.random() - 0.5) * window.innerHeight * 0.9,
+        duration: 1.5 + Math.random(),
+        color: ['#f97316', '#ef4444', '#f59e0b', '#dc2626'][Math.floor(Math.random() * 4)]
+    })), []);
+
     return (
         <div 
-            className="fixed inset-0 z-[250] flex flex-col items-center justify-center bg-black/90 backdrop-blur-md overflow-hidden select-none cursor-pointer"
+            className="fixed inset-0 z-[250] flex flex-col items-center justify-center bg-black/95 overflow-hidden select-none cursor-pointer"
             onClick={onComplete}
         >
             {/* Celebration Particles FX */}
             <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-                {Array.from({ length: 30 }).map((_, i) => (
+                {particles.map((p, i) => (
                     <motion.div
                         key={i}
                         initial={{ opacity: 1, scale: 0, x: 0, y: 0 }}
                         animate={{ 
                             opacity: 0, 
-                            scale: Math.random() * 2 + 1.5,
-                            x: (Math.random() - 0.5) * window.innerWidth * 0.9,
-                            y: (Math.random() - 0.5) * window.innerHeight * 0.9
+                            scale: p.scale,
+                            x: p.x,
+                            y: p.y
                         }}
-                        transition={{ duration: 1.5 + Math.random(), ease: "easeOut" }}
+                        transition={{ duration: p.duration, ease: "easeOut" }}
                         className="absolute w-4 h-4 rounded-full"
                         style={{
-                            backgroundColor: ['#f97316', '#ef4444', '#f59e0b', '#dc2626'][Math.floor(Math.random() * 4)],
+                            backgroundColor: p.color,
                             boxShadow: '0 0 15px currentColor'
                         }}
                     />
@@ -52,8 +60,8 @@ export const StreakCelebration: React.FC<StreakCelebrationProps> = ({ streak, xp
             <motion.div 
                 initial={{ scale: 0.5, opacity: 0, y: 50 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 1.5, opacity: 0, filter: "blur(10px)" }}
-                transition={{ type: "spring", damping: 12, stiffness: 100 }}
+                exit={{ scale: 1.1, opacity: 0 }}
+                transition={{ type: "spring", damping: 15, stiffness: 150 }}
                 className="relative flex flex-col items-center z-10"
                 onClick={(e) => {
                     e.stopPropagation();

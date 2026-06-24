@@ -61,13 +61,13 @@ export function DailyChallengeReveal({ mood, onComplete, onClose }: DailyChallen
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[110] flex items-center justify-center bg-black/95 backdrop-blur-3xl px-4"
+                className="fixed inset-0 z-[110] flex items-center justify-center bg-black/95 px-4"
             >
                 {revealPhase === 'analyzing' && (
                     <motion.div
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 1.1, filter: 'blur(10px)' }}
+                        exit={{ opacity: 0, scale: 1.1 }}
                         className="flex flex-col items-center text-center"
                     >
                         <div className="relative w-32 h-32 mb-8 flex items-center justify-center">
@@ -93,7 +93,7 @@ export function DailyChallengeReveal({ mood, onComplete, onClose }: DailyChallen
                     >
                         {/* Cinematic Backdrop within card */}
                         <div className="absolute inset-0 bg-gradient-to-b from-orange-900/40 to-transparent opacity-50 block" />
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-orange-600/20 blur-[100px]" />
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-[radial-gradient(circle_at_top_right,rgba(234,88,12,0.25)_0%,transparent_70%)]" />
                         
                         <p className="relative z-10 text-orange-400 font-bold tracking-widest uppercase mb-6 text-sm flex items-center gap-2">
                             <span className="w-8 h-[1px] bg-orange-400/50" />
@@ -102,8 +102,8 @@ export function DailyChallengeReveal({ mood, onComplete, onClose }: DailyChallen
                         </p>
 
                         <motion.div 
-                            initial={{ scale: 0.8, filter: 'blur(20px)' }}
-                            animate={{ scale: 1, filter: 'blur(0px)' }}
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
                             transition={{ duration: 1, delay: 0.2 }}
                             className="relative w-40 h-40 md:w-56 md:h-56 rounded-full overflow-hidden border-4 border-slate-800 ring-4 ring-orange-500/30 shadow-[0_0_50px_rgba(249,115,22,0.4)] mb-8"
                         >
