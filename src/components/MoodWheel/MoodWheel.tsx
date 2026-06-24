@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useSpinCountdown } from '../../hooks/useSpinCountdown';
-import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, useMotionValue, animate } from 'framer-motion';
 import { supabase } from '../../utils/supabase';
 import { unlockAudio, playTick, playWin, playClick } from '../../utils/audioManager';
@@ -262,7 +261,7 @@ export function MoodWheel({ userId, onMoodSelected, onClose }: MoodWheelProps) {
     phase === 'no-spins'  ? 'NO SPINS LEFT' :
     '🎰  SPIN';
 
-  return createPortal(
+  return (
     <AnimatePresence>
       <motion.div
         className="mw-root"
@@ -537,7 +536,6 @@ export function MoodWheel({ userId, onMoodSelected, onClose }: MoodWheelProps) {
           {btnLabel}
         </button>
       </motion.div>
-    </AnimatePresence>,
-    document.body
+    </AnimatePresence>
   );
 }

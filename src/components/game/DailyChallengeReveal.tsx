@@ -61,7 +61,7 @@ export function DailyChallengeReveal({ mood, onComplete, onClose }: DailyChallen
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[110] flex items-center justify-center bg-black/95 px-4"
+                className="w-full min-h-screen flex items-center justify-center bg-black/90 backdrop-blur-md relative overflow-hidden font-['Space_Grotesk'] text-white"
             >
                 {revealPhase === 'analyzing' && (
                     <motion.div

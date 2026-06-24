@@ -7,13 +7,10 @@ import { AudioController } from '../shared/AudioController';
 import { audioSynth } from '../../utils/audioSynth';
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 import { AntiGravityCanvas } from './AntiGravityCanvas';
-import { MoodWheel } from '../MoodWheel/MoodWheel';
-import type { MoodArchetype } from '../MoodWheel/MoodWheel';
-import { VibeSpinnerButton } from '../MoodWheel/VibeSpinnerButton';
-import { DailyChallengeReveal } from './DailyChallengeReveal';
-
+import { useNavigate } from 'react-router-dom';
 import { bgmManager } from '../../utils/bgmManager';
 import { MapAmbience } from './MapAmbience';
+import { VibeSpinnerButton } from '../MoodWheel/VibeSpinnerButton';
 import { jeeStories } from '../../data/jeeStories';
 import { neetStories } from '../../data/neetStories';
 import { getUnlockedDayCount } from '../../utils/storyUnlock';
@@ -23,7 +20,6 @@ interface LevelMapProps {
     onOpenDnaProfile: () => void;
 }
 
-import { useNavigate } from 'react-router-dom';
 
 export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
     const navigate = useNavigate();
@@ -97,10 +93,6 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
     useEffect(() => {
         checkStreak(); // evaluate streaks on mount
     }, [checkStreak]);
-
-    // Modals
-    const [showMoodWheel, setShowMoodWheel] = useState(false);
-    const [challengeMood, setChallengeMood] = useState<MoodArchetype | null>(null);
 
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const [isBgmEnabled, setIsBgmEnabled] = useState(bgmManager.enabled);
@@ -240,7 +232,7 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
                         userId={profile?.id || ''}
                         onClick={() => {
                             audioSynth.playClick();
-                            setShowMoodWheel(true);
+                            navigate('/game/mood');
                         }}
                     />
                 </div>
@@ -358,30 +350,7 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
                 </button>
             </div>
 
-            {/* Modals (Fixed Overlay) */}
-            {showMoodWheel && (
-                <MoodWheel
-                    userId={profile?.id || ''}
-                    userAge={profile?.age || 18}
-                    onMoodSelected={(mood) => {
-                        setShowMoodWheel(false);
-                        setChallengeMood(mood as MoodArchetype);
-                    }}
-                    onClose={() => setShowMoodWheel(false)}
-                />
-            )}
-            {challengeMood && (
-                <DailyChallengeReveal
-                    mood={challengeMood}
-                    onClose={() => setChallengeMood(null)}
-                    onComplete={(level) => {
-                        setChallengeMood(null);
-                        onPlayLevel(level);
-                    }}
-                />
-            )}
-
-
+            {/* Modals moved to routes */}
             {/* --- SCROLLABLE MAP CONTENT --- */}
             <div
                 ref={containerRef}

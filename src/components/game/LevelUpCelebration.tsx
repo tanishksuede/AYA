@@ -25,7 +25,7 @@ export const LevelUpCelebration: React.FC<LevelUpCelebrationProps> = ({ levelNam
     return (
         <div 
             onClick={onComplete}
-            className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm overflow-hidden select-none cursor-pointer"
+            className="w-full min-h-screen flex items-center justify-center bg-black/80 backdrop-blur-sm overflow-hidden select-none cursor-pointer"
         >
             {/* Celebration Particles FX */}
             <div className="absolute inset-0 pointer-events-none flex items-center justify-center">

@@ -4,7 +4,7 @@ import { AppLayout } from './layouts/AppLayout';
 import { HomePage } from './pages/Home';
 import { GameRoot } from './pages/GameRoot';
 import { bgmManager } from './utils/bgmManager';
-import { MapRouteHandler, IntroRouteHandler, PlayRouteHandler, ReportRouteHandler, DnaRouteHandler, SelectionRouteHandler } from './pages/GameRouteHandlers';
+import { MapRouteHandler, IntroRouteHandler, PlayRouteHandler, ReportRouteHandler, DnaRouteHandler, SelectionRouteHandler, MoodRouteHandler, DailyRevealRouteHandler, StreakRouteHandler, LevelUpRouteHandler } from './pages/GameRouteHandlers';
 import { OnboardingWizard } from './components/game/OnboardingWizard';
 import { CinematicOnboarding } from './components/game/CinematicOnboarding';
 import { PersonalityAssessment } from './components/game/PersonalityAssessment';
@@ -40,13 +40,18 @@ function App() {
           <Route path="/game" element={<GameRoot />}>
             <Route index element={<MapRouteHandler />} />
             <Route path="welcome" element={<OnboardingWizard />} />
-            <Route path="intro" element={<CinematicOnboarding />} />
+            <Route path="intro/:step" element={<CinematicOnboarding />} />
+            <Route path="intro" element={<Navigate to="/game/intro/1" replace />} />
             <Route path="assessment/:step" element={<PersonalityAssessment />} />
             <Route path="intro/:id" element={<IntroRouteHandler />} />
             <Route path="play/:id" element={<PlayRouteHandler />} />
             <Route path="report/:id" element={<ReportRouteHandler />} />
             <Route path="dna" element={<DnaRouteHandler />} />
             <Route path="selection/:age" element={<SelectionRouteHandler />} />
+            <Route path="mood" element={<MoodRouteHandler />} />
+            <Route path="daily-reveal" element={<DailyRevealRouteHandler />} />
+            <Route path="streak" element={<StreakRouteHandler />} />
+            <Route path="level-up" element={<LevelUpRouteHandler />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="journal" element={<JournalPage />} />
             <Route path="theme" element={<ThemeSwitcherPage />} />

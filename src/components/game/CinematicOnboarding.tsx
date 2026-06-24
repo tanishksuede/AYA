@@ -8,7 +8,7 @@ import { NotificationPrompt } from '../ui/NotificationPrompt';
 import { subscribeUserToPush } from '../../utils/pushNotifications';
 import { safeStorage } from '../../utils/storage';
 import { bgmManager } from '../../utils/bgmManager';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const STRUGGLES = [
   { id: 'heartbreak', label: 'Heartbreak & Relationships', icon: '💔' },
@@ -22,7 +22,8 @@ const STRUGGLES = [
 export function CinematicOnboarding({ onComplete }: { onComplete?: () => void }) {
   const profile = useUserStore((state) => state.profile);
   const navigate = useNavigate();
-  const [slide, setSlide] = useState(1);
+  const { step: stepParam } = useParams<{ step: string }>();
+  const slide = parseInt(stepParam || '1') || 1;
   const [selectedStruggle, setSelectedStruggle] = useState<typeof STRUGGLES[0] | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
@@ -40,11 +41,11 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
 
   const nextSlide = () => {
     audioSynth.playClick();
-    setSlide((prev) => Math.min(prev + 1, 4));
+    navigate(`/game/intro/${slide + 1}`);
   };
   const prevSlide = () => {
     audioSynth.playBack();
-    setSlide((prev) => Math.max(prev - 1, 1));
+    navigate(`/game/intro/${Math.max(slide - 1, 1)}`);
   };
 
   const handleFinish = async () => {
@@ -97,57 +98,8 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
       {/* Universal Scene Elements */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
          
-         {/* Diagonal Light Rays */}
-         {(slide === 1 || slide === 4) && (
-            <>
-                <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_30%,rgba(0,241,254,0.06)_40%,rgba(0,241,254,0.1)_50%,transparent_60%)] MixBlendMode-screen" />
-                <div className="absolute inset-0 bg-[linear-gradient(-35deg,transparent_30%,rgba(213,117,255,0.06)_40%,transparent_50%)] MixBlendMode-screen" />
-            </>
-         )}
-
-         {/* Aurora / Northern Lights */}
-         <motion.div 
-           className="absolute -top-[50%] -left-[50%] w-[200%] h-[200%] opacity-30 MixBlendMode-screen"
-           animate={{
-               background: [
-                   'radial-gradient(ellipse at 40% 40%, rgba(153, 247, 255, 0.45) 0%, transparent 40%), radial-gradient(ellipse at 70% 60%, rgba(213, 117, 255, 0.3) 0%, transparent 40%)',
-                   'radial-gradient(ellipse at 60% 30%, rgba(153, 247, 255, 0.3) 0%, transparent 40%), radial-gradient(ellipse at 40% 70%, rgba(213, 117, 255, 0.45) 0%, transparent 40%)',
-                   'radial-gradient(ellipse at 40% 40%, rgba(153, 247, 255, 0.45) 0%, transparent 40%), radial-gradient(ellipse at 70% 60%, rgba(213, 117, 255, 0.3) 0%, transparent 40%)'
-               ]
-           }}
-           transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-         />
-
-         {/* Universal Tech Grid (Opacities varied by slide) */}
-         <div className={`absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px] transition-opacity duration-1000 ${slide === 3 ? 'opacity-100' : 'opacity-0'}`} />
-
-         {/* Particles */}
-         <AnimatePresence>
-            {(slide === 1 || slide === 4) && Array.from({ length: 40 }).map((_, i) => (
-                <motion.div
-                key={`p-${i}`}
-                className="absolute w-1 h-1 bg-[#00f1fe] rounded-full drop-shadow-[0_0_5px_#00f1fe]"
-                initial={{
-                    x: Math.random() * window.innerWidth,
-                    y: slide === 4 ? window.innerHeight / 2 : Math.random() * window.innerHeight,
-                    opacity: 0,
-                    scale: 0
-                }}
-                animate={{
-                    x: slide === 4 ? `calc(${Math.random() * 100}vw)` : undefined,
-                    y: slide === 4 ? `calc(${Math.random() * 100}vh)` : [null, Math.random() * window.innerHeight],
-                    opacity: [0, 0.6, 0],
-                    scale: 1,
-                    rotate: slide === 4 ? Math.random() * 720 : 0
-                }}
-                transition={{
-                    duration: slide === 4 ? (Math.random() * 2 + 1) : (Math.random() * 6 + 4),
-                    repeat: slide === 1 ? Infinity : 0,
-                    ease: slide === 4 ? "easeOut" : "linear"
-                }}
-                />
-            ))}
-         </AnimatePresence>
+         {/* Clean Performance Friendly Background */}
+         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(0,241,254,0.05)_0%,transparent_70%)]" />
       </div>
 
       {/* Top Navigation — FIXED */}

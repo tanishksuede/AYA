@@ -1,12 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { Outlet, useLocation, Navigate } from 'react-router-dom';
+import { Outlet, useLocation, Navigate, useNavigate } from 'react-router-dom';
 import { supabase } from '../utils/supabase';
 import { getSession, clearSession, markQuizDone, isQuizDone } from '../utils/session';
 import { withTimeout } from '../utils/withTimeout';
 import { useUserStore } from '../store/userStore';
-import { LevelUpCelebration } from '../components/game/LevelUpCelebration';
-import { StreakCelebration } from '../components/game/StreakCelebration';
-import { calculateLevelInfo } from '../utils/levelSystem';
 import { safeStorage } from '../utils/storage';
 
 export function GameRoot() {
@@ -15,8 +12,8 @@ export function GameRoot() {
     const mapTheme = useUserStore((state) => state.mapTheme);
     const setMapTheme = useUserStore((state) => state.setMapTheme);
     const pendingStreakData = useUserStore((state) => state.pendingStreakData);
-    const setPendingStreakData = useUserStore((state) => state.setPendingStreakData);
     const location = useLocation();
+    const navigate = useNavigate();
 
     // Sync theme from localStorage on mount; reset 'solar' → 'city_dark'
     useEffect(() => {
@@ -211,15 +208,20 @@ export function GameRoot() {
     }, [])
 
     const prevLevelRef = useRef(profile?.level || 1);
-    const [showLevelUp, setShowLevelUp] = useState(false);
     const [onboardingComplete] = useState(() => localStorage.getItem('onboarding_done') === 'true');
 
     useEffect(() => {
         if (profile?.level && profile.level > prevLevelRef.current) {
-            setShowLevelUp(true);
+            navigate('/game/level-up');
             prevLevelRef.current = profile.level;
         }
-    }, [profile?.level]);
+    }, [profile?.level, navigate]);
+
+    useEffect(() => {
+        if (pendingStreakData) {
+            navigate('/game/streak');
+        }
+    }, [pendingStreakData, navigate]);
 
     if (sessionStatus === 'checking') {
         return (
@@ -241,8 +243,8 @@ export function GameRoot() {
         return <Navigate to="/game/welcome" replace />;
     }
 
-    if (profile && !profile.assessmentCompleted && !onboardingComplete && location.pathname !== '/game/intro' && location.pathname !== '/game/welcome') {
-        return <Navigate to="/game/intro" replace />;
+    if (profile && !profile.assessmentCompleted && !onboardingComplete && !location.pathname.startsWith('/game/intro') && location.pathname !== '/game/welcome') {
+        return <Navigate to="/game/intro/1" replace />;
     }
 
     if (profile && !profile.assessmentCompleted && onboardingComplete && !location.pathname.startsWith('/game/assessment')) {
@@ -252,23 +254,6 @@ export function GameRoot() {
     return (
         <div className="w-full h-screen bg-slate-950 overflow-hidden relative">
             <Outlet />
-
-            {showLevelUp && profile && (
-                <LevelUpCelebration
-                    levelNumber={profile.level || 1}
-                    levelName={calculateLevelInfo(profile.total_xp || 0).title}
-                    onComplete={() => setShowLevelUp(false)}
-                />
-            )}
-
-            {pendingStreakData && (
-                <StreakCelebration
-                    streak={pendingStreakData.newStreak}
-                    xpEarned={pendingStreakData.xpEarned}
-                    isMilestone={pendingStreakData.isMilestone}
-                    onComplete={() => setPendingStreakData(null)}
-                />
-            )}
         </div>
     );
 }

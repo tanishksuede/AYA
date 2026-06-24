@@ -171,32 +171,9 @@ export function OnboardingWizard() {
 
     const cinematicBackground = useMemo(() => (
         <div className="absolute inset-0 z-0 pointer-events-none">
-            {/* Diagonal Light Rays */}
-            <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_30%,rgba(0,241,254,0.03)_40%,rgba(0,241,254,0.08)_50%,transparent_60%)] MixBlendMode-screen" />
-            <div className="absolute inset-0 bg-[linear-gradient(-45deg,transparent_40%,rgba(147,51,234,0.05)_50%,transparent_60%)] MixBlendMode-screen" />
-            
-            {/* Floating Particles */}
-            {Array.from({ length: 40 }).map((_, i) => (
-                <motion.div
-                    key={i}
-                    className="absolute w-1 h-1 bg-[#00f1fe] rounded-full"
-                    style={{ filter: 'blur(1px)' }}
-                    initial={{
-                        x: Math.random() * window.innerWidth,
-                        y: Math.random() * window.innerHeight,
-                        opacity: Math.random() * 0.5 + 0.1
-                    }}
-                    animate={{
-                        y: [null, Math.random() * window.innerHeight],
-                        opacity: [0.1, 0.6, 0.1]
-                    }}
-                    transition={{
-                        duration: Math.random() * 8 + 8,
-                        repeat: Infinity,
-                        ease: "linear"
-                    }}
-                />
-            ))}
+            {/* Simple Clean Gradients for Performance */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(0,241,254,0.1)_0%,transparent_50%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(147,51,234,0.1)_0%,transparent_50%)]" />
         </div>
     ), []);
 

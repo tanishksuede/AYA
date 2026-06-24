@@ -1,4 +1,4 @@
-import { useNavigate, useParams, Navigate } from 'react-router-dom';
+import { useNavigate, useParams, Navigate, useLocation } from 'react-router-dom';
 import { useUserStore } from '../store/userStore';
 import { LevelMap } from '../components/game/LevelMap';
 import { PersonalityIntro } from '../components/game/PersonalityIntro';
@@ -6,6 +6,11 @@ import { ScenarioGame } from '../components/game/ScenarioGame';
 import { MatchReport } from '../components/game/MatchReport';
 import { DnaProfile } from '../components/game/DnaProfile';
 import { CharacterSelection } from '../components/game/CharacterSelection';
+import { MoodWheel } from '../components/MoodWheel/MoodWheel';
+import { DailyChallengeReveal } from '../components/game/DailyChallengeReveal';
+import { StreakCelebration } from '../components/game/StreakCelebration';
+import { LevelUpCelebration } from '../components/game/LevelUpCelebration';
+import { calculateLevelInfo } from '../utils/levelSystem';
 
 export function MapRouteHandler() {
     const navigate = useNavigate();
@@ -107,5 +112,79 @@ export function SelectionRouteHandler() {
             onSelect={(level) => navigate(`/game/intro/${level.id}`)}
             onBack={() => navigate('/game')}
         />
+    );
+}
+
+export function MoodRouteHandler() {
+    const navigate = useNavigate();
+    const profile = useUserStore((state) => state.profile);
+    if (!profile) return <Navigate to="/game" replace />;
+
+    return (
+        <MoodWheel
+            userId={profile.id || ''}
+            userAge={profile.age || 18}
+            onMoodSelected={(mood) => {
+                navigate('/game/daily-reveal', { state: { mood } });
+            }}
+            onClose={() => navigate(-1)}
+        />
+    );
+}
+
+export function DailyRevealRouteHandler() {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const mood = location.state?.mood;
+    
+    if (!mood) return <Navigate to="/game" replace />;
+
+    return (
+        <DailyChallengeReveal
+            mood={mood}
+            onClose={() => navigate(-1)}
+            onComplete={(level) => navigate(`/game/intro/${level.id}`)}
+        />
+    );
+}
+
+export function StreakRouteHandler() {
+    const navigate = useNavigate();
+    const pendingStreakData = useUserStore((state) => state.pendingStreakData);
+    const setPendingStreakData = useUserStore((state) => state.setPendingStreakData);
+
+    if (!pendingStreakData) return <Navigate to="/game" replace />;
+
+    return (
+        <div className="w-full min-h-screen bg-slate-950">
+            <StreakCelebration
+                streak={pendingStreakData.newStreak}
+                xpEarned={pendingStreakData.xpEarned}
+                isMilestone={pendingStreakData.isMilestone}
+                onComplete={() => {
+                    setPendingStreakData(null);
+                    navigate(-1);
+                }}
+            />
+        </div>
+    );
+}
+
+export function LevelUpRouteHandler() {
+    const navigate = useNavigate();
+    const profile = useUserStore((state) => state.profile);
+
+    if (!profile) return <Navigate to="/game" replace />;
+
+    const levelInfo = calculateLevelInfo(profile.level || 1);
+
+    return (
+        <div className="w-full min-h-screen bg-slate-950">
+            <LevelUpCelebration
+                levelName={levelInfo.title}
+                levelNumber={profile.level || 1}
+                onComplete={() => navigate(-1)}
+            />
+        </div>
     );
 }

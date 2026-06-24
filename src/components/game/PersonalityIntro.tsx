@@ -38,14 +38,14 @@ export function PersonalityIntro({ level, onStart, onBack }: PersonalityIntroPro
 
     return (
         <div className={clsx(
-            "fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 backdrop-blur-md transition-opacity duration-500 p-4",
+            "w-full min-h-screen flex items-center justify-center transition-opacity duration-500 p-4 pb-safe",
+            isCandyMode ? "bg-pink-50" : "bg-slate-950",
             isVisible ? "opacity-100" : "opacity-0"
         )}>
-            {/* Main Card */}
             <div className={clsx(
                 "relative w-full max-w-5xl h-[85vh] md:h-[700px] flex flex-col md:flex-row rounded-[3rem] overflow-hidden shadow-2xl transition-all duration-700 transform ring-8",
                 isCandyMode ? "bg-white ring-white/10" : "bg-[#0a0f28] ring-[#4DD9FF]/10 border border-[#4DD9FF]/30",
-                isVisible ? "scale-100 translate-y-0" : "scale-90 translate-y-20"
+                isVisible ? "scale-100 translate-y-0" : "scale-95 translate-y-10"
             )}>
 
                 {/* LEFT: CHARACTER (Vibrant Gradient Background) */}

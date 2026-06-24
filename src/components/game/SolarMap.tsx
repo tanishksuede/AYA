@@ -9,8 +9,7 @@ import { AudioController } from '../shared/AudioController';
 import { audioSynth } from '../../utils/audioSynth';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { DailyChallengeModal } from './DailyChallengeModal';
-import type { MoodArchetype } from './DailyChallengeModal';
-import { DailyChallengeReveal } from './DailyChallengeReveal';
+import { useNavigate } from 'react-router-dom';
 import { ThemeSwitcherModal } from './ThemeSwitcherModal';
 
 // Global cache to keep frames in memory across component mounts
@@ -24,6 +23,7 @@ interface SolarMapProps {
 }
 
 export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: SolarMapProps) {
+    const navigate = useNavigate();
     const levels = useUserStore((state) => state.levels);
     const profile = useUserStore((state) => state.profile);
     const activeAge = profile?.age || 18;
@@ -88,7 +88,6 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
     const [showJournal, setShowJournal] = useState(false);
     const [showChallengeModal, setShowChallengeModal] = useState(false);
     const [showThemeSwitcher, setShowThemeSwitcher] = useState(false);
-    const [challengeMood, setChallengeMood] = useState<MoodArchetype | null>(null);
 
     // Mobile Detection
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -325,7 +324,7 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
                 if (videoRef.current) {
                     videoRef.current.play().catch(err => {
                         if (err.name === 'NotAllowedError' || err.name === 'NotSupportedError') {
-                            setShowPlayButton(true);
+                            navigate('/game/mood');
                         }
                     });
                 }
@@ -548,16 +547,10 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
                 <DailyChallengeModal 
                     isOpen={showChallengeModal} 
                     onClose={() => setShowChallengeModal(false)}
-                    onStartChallenge={(mood) => { setShowChallengeModal(false); setChallengeMood(mood); }}
+                    onStartChallenge={() => { setShowChallengeModal(false); navigate('/game/mood'); }}
                 />
             )}
-            {challengeMood && (
-                <DailyChallengeReveal
-                    mood={challengeMood}
-                    onClose={() => setChallengeMood(null)}
-                    onComplete={(level) => { setChallengeMood(null); onPlayLevel(level); }}
-                />
-            )}
+            {/* Modals moved to routes */}
 
             {/* Loading Bar Overlay */}
             {(!canvasReady && framesLoaded < totalFrames && (navigator.hardwareConcurrency || 4) >= 4) && (
