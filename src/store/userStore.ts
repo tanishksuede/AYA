@@ -240,7 +240,7 @@ export const useUserStore = create<UserState>()(
                     return;
                 }
 
-                const latestMasterLevels: Level[] = data.map(row => ({
+                const latestMasterLevels: Level[] = data.map((row: any) => ({
                     id: row.id,
                     day_number: row.day_number,
                     title: row.title,

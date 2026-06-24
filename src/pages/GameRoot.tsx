@@ -65,7 +65,7 @@ export function GameRoot() {
                     while (attempt < 3 && !user) {
                         attempt++;
                         try {
-                            const { data, error } = await withTimeout(
+                            const { data, error }: any = await withTimeout(
                                 supabase.from('users').select('*').eq('id', session.userId).maybeSingle()
                             );
                             if (error) throw error;
@@ -82,7 +82,7 @@ export function GameRoot() {
                     }
                 } else {
                     try {
-                        const { data, error } = await withTimeout(
+                        const { data, error }: any = await withTimeout(
                             supabase.from('users').select('*').eq('id', session.userId).maybeSingle()
                         );
                         if (error) throw error;
@@ -126,7 +126,7 @@ export function GameRoot() {
 
                 let profileData: any = null;
                 try {
-                    const { data } = await withTimeout(
+                    const { data }: any = await withTimeout(
                         supabase.from('personality_profiles').select('*').eq('user_id', session.userId).maybeSingle()
                     );
                     profileData = data;
@@ -135,7 +135,7 @@ export function GameRoot() {
                 let quizCompleted = isQuizDone() || !!profileData;
                 if (!quizCompleted) {
                     try {
-                        const { data: qr } = await withTimeout(
+                        const { data: qr }: any = await withTimeout(
                             supabase.from('quiz_responses').select('id').eq('user_id', session.userId).limit(1)
                         );
                         quizCompleted = !!(qr && qr.length > 0);

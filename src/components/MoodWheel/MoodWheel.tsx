@@ -123,11 +123,13 @@ export function MoodWheel({ userId, onMoodSelected, onClose }: MoodWheelProps) {
     (async () => {
       if (!userId) { setPhase('idle'); return; }
       try {
-        const { data } = await supabase
+        const { data: rawData } = await supabase
           .from('users')
           .select('daily_spins_used, spin_reset_date')
           .eq('id', userId)
           .maybeSingle();
+
+        const data = rawData as any;
 
         if (!data) { setSpinsUsed(0); setPhase('idle'); return; }
 
@@ -228,7 +230,7 @@ export function MoodWheel({ userId, onMoodSelected, onClose }: MoodWheelProps) {
       supabase.from('users')
         .update({ daily_spins_used: newUsed })
         .eq('id', userId)
-        .then(({ error }) => { if (error) console.warn('[MoodWheel] spin update error', error); });
+        .then(({ error }: any) => { if (error) console.warn('[MoodWheel] spin update error', error); });
     }
 
     // Show result after shudder settles

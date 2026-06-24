@@ -11,7 +11,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.error('[Supabase] Missing environment variables! VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY not set.');
 }
 
-let supabaseInstance: ReturnType<typeof createClient>;
+let supabaseInstance: any;
 
 try {
   supabaseInstance = createClient(
@@ -27,10 +27,7 @@ try {
         headers: {
           'Content-Type': 'application/json',
         },
-      },
-      db: {
-        schema: 'public',
-      },
+      }
     }
   );
 } catch (error) {
