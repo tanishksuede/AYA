@@ -4,8 +4,11 @@ dotenv.config();
 
 // We temporarily use local files as the source of truth for the seed script.
 // The app will continue fetching from Supabase directly.
-import { scenariosMap } from './src/data/scenarios';
-import { masterLevels } from './src/utils/levelGenerator';
+import { STORY_DATABASE } from './src/data/scenarios.js';
+import { generateLevels } from './src/utils/levelGenerator.js';
+
+const scenariosMap = STORY_DATABASE;
+const masterLevels = generateLevels(18);
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
