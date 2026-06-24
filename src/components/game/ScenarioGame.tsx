@@ -184,16 +184,8 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
         fetchScenario();
     }, [level?.scenarioId]);
 
-    if (isLoadingScenario || !scenario) {
-        return (
-            <div className="w-full h-screen bg-slate-950 flex flex-col items-center justify-center">
-                <Loader2 className="w-8 h-8 text-cyan-400 animate-spin mb-4" />
-                <p className="text-cyan-400 text-sm tracking-widest animate-pulse">LOADING SCENARIO...</p>
-            </div>
-        );
-    }
-
-    const frame = scenario.frames.find((f: any) => f.id === currentFrameId) || scenario.frames[0];
+    const safeScenario = scenario || { frames: [{ id: 'intro', text: 'LOADING...', choices: [] }] };
+    const frame = safeScenario.frames.find((f: any) => f.id === currentFrameId) || safeScenario.frames[0];
     const isLearningScreen = currentFrameId.startsWith('LEARNING');
 
     // Preload all images for this scenario
@@ -658,12 +650,21 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
 
     // Extract Lesson Title and Body separately from the LESSON: field
     // Data format: "LESSON: KEYWORD. Body text here."
-    const lessonFrame = isLearningScreen ? frame : scenario.frames.find((f: any) => f.id.startsWith('LEARNING') || f.id === 'lesson');
+    const lessonFrame = isLearningScreen ? frame : safeScenario.frames.find((f: any) => f.id.startsWith('LEARNING') || f.id === 'lesson');
     const lessonRawText: string = lessonFrame?.text || '';
     // Title: the word(s) after "LESSON:" and before the first full stop
     const lessonKeyword = lessonRawText.match(/LESSON:\s*([^.]+)/i)?.[1]?.trim().toUpperCase() || 'LESSON';
     // Body: everything after "LESSON: KEYWORD." — strip the prefix
     const lessonBody = lessonRawText.replace(/^LESSON:\s*[^.]+\.\s*/i, '').trim() || lessonRawText;
+
+    if (isLoadingScenario || !scenario) {
+        return (
+            <div className="w-full h-screen bg-slate-950 flex flex-col items-center justify-center">
+                <Loader2 className="w-8 h-8 text-cyan-400 animate-spin mb-4" />
+                <p className="text-cyan-400 text-sm tracking-widest animate-pulse">LOADING SCENARIO...</p>
+            </div>
+        );
+    }
 
     return (
         <div
