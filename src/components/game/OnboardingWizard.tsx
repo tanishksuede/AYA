@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useUserStore } from '../../store/userStore';
 import { audioSynth } from '../../utils/audioSynth';
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -147,99 +147,33 @@ export function OnboardingWizard() {
             while (attempt < 3 && !result) {
                 attempt++;
                 try {
-                    if (cleanMobile.length === 6) {
-                        // Access Code Flow
-                        const { data: codeData, error: codeErr } = await withTimeout(
-                            supabase.from('access_codes').select('*').eq('code', cleanMobile).maybeSingle()
-                        );
-                        if (codeErr) throw codeErr;
-                        if (!codeData) throw new Error("Invalid access code. Please check and try again.");
-                        if (codeData.uses_count >= codeData.max_uses) throw new Error("This access code has already been used.");
-                        if (codeData.expires_at && new Date(codeData.expires_at) < new Date()) throw new Error("This access code has expired.");
+                    // Open Registration Flow for ALL inputs
+                    const { data: existing, error: fetchErr } = await withTimeout(
+                        supabase.from('users').select('*').eq('mobile', cleanMobile)
+                    );
+                    if (fetchErr) throw fetchErr;
 
-                        if (codeData.used_by_user_id) {
-                            // Returning user
-                            const { data: existingUser, error: fetchUserErr } = await withTimeout(
-                                supabase.from('users').select('*').eq('id', codeData.used_by_user_id).maybeSingle()
-                            );
-                            if (fetchUserErr) throw fetchUserErr;
-                            if (existingUser) {
-                                result = { user: existingUser, isNew: false };
-                            } else {
-                                throw new Error("User associated with this code not found.");
-                            }
-                        } else {
-                            // New user registration
-                            const todayStr = new Date().toISOString().split('T')[0];
-                            const { data: newUser, error: insertErr } = await withTimeout(
-                                supabase
-                                    .from('users')
-                                    .insert([{ 
-                                        name: name.trim(), 
-                                        age, 
-                                        mobile: cleanMobile,
-                                        access_type: codeData.access_type,
-                                        preferred_map: codeData.preferred_map,
-                                        access_start_date: todayStr
-                                    }])
-                                    .select()
-                                    .single()
-                            );
-                            if (insertErr) {
-                                if (insertErr.code === '23505') {
-                                    const { data: raceUser } = await withTimeout(
-                                        supabase.from('users').select('*').eq('mobile', cleanMobile).maybeSingle()
-                                    );
-                                    if (raceUser) {
-                                        result = { user: raceUser, isNew: false };
-                                    } else throw insertErr;
-                                } else throw insertErr;
-                            } else {
-                                // Update access code
-                                const { error: updateCodeErr } = await withTimeout(
-                                    supabase.from('access_codes').update({
-                                        uses_count: codeData.uses_count + 1,
-                                        used_by_user_id: newUser.id
-                                    }).eq('id', codeData.id)
-                                );
-                                if (updateCodeErr) {
-                                    // rollback user creation
-                                    await supabase.from('users').delete().eq('id', newUser.id);
-                                    throw updateCodeErr;
-                                }
-                                result = { user: newUser, isNew: true };
-                            }
-                        }
+                    if (existing && existing.length > 0) {
+                        result = { user: existing[0], isNew: false };
                     } else {
-                        // Check if mobile already exists
-                        const { data: existing, error: fetchErr } = await withTimeout(
-                            supabase.from('users').select('*').eq('mobile', cleanMobile)
+                        const { data: newUser, error: insertErr } = await withTimeout(
+                            supabase
+                                .from('users')
+                                .insert([{ name: name.trim(), age, mobile: cleanMobile }])
+                                .select()
+                                .single()
                         );
-                        if (fetchErr) throw fetchErr;
-
-                        if (existing && existing.length > 0) {
-                            result = { user: existing[0], isNew: false };
-                        } else {
-                            const { data: newUser, error: insertErr } = await withTimeout(
-                                supabase
-                                    .from('users')
-                                    .insert([{ name: name.trim(), age, mobile: cleanMobile }])
-                                    .select()
-                                    .single()
-                            );
-                            if (insertErr) {
-                                // Race condition: another insert snuck in — try to fetch again
-                                if (insertErr.code === '23505') {
-                                    const { data: raceUser } = await withTimeout(
-                                        supabase.from('users').select('*').eq('mobile', cleanMobile)
-                                    );
-                                    if (raceUser && raceUser.length > 0) {
-                                        result = { user: raceUser[0], isNew: false };
-                                    } else throw insertErr;
+                        if (insertErr) {
+                            if (insertErr.code === '23505') {
+                                const { data: raceUser } = await withTimeout(
+                                    supabase.from('users').select('*').eq('mobile', cleanMobile)
+                                );
+                                if (raceUser && raceUser.length > 0) {
+                                    result = { user: raceUser[0], isNew: false };
                                 } else throw insertErr;
-                            } else {
-                                result = { user: newUser, isNew: true };
-                            }
+                            } else throw insertErr;
+                        } else {
+                            result = { user: newUser, isNew: true };
                         }
                     }
                 } catch (e) {
@@ -336,6 +270,37 @@ export function OnboardingWizard() {
 
     const baseInputClasses = "w-full bg-[#13131c]/80 border-2 border-[#2b2b38] rounded-2xl p-4 text-[#f2effb] placeholder-[#acaab5] font-['Manrope'] font-bold outline-none transition-all duration-300";
 
+    const cinematicBackground = useMemo(() => (
+        <div className="absolute inset-0 z-0 pointer-events-none">
+            {/* Diagonal Light Rays */}
+            <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_30%,rgba(0,241,254,0.03)_40%,rgba(0,241,254,0.08)_50%,transparent_60%)] MixBlendMode-screen" />
+            <div className="absolute inset-0 bg-[linear-gradient(-45deg,transparent_40%,rgba(147,51,234,0.05)_50%,transparent_60%)] MixBlendMode-screen" />
+            
+            {/* Floating Particles */}
+            {Array.from({ length: 40 }).map((_, i) => (
+                <motion.div
+                    key={i}
+                    className="absolute w-1 h-1 bg-[#00f1fe] rounded-full"
+                    style={{ filter: 'blur(1px)' }}
+                    initial={{
+                        x: Math.random() * window.innerWidth,
+                        y: Math.random() * window.innerHeight,
+                        opacity: Math.random() * 0.5 + 0.1
+                    }}
+                    animate={{
+                        y: [null, Math.random() * window.innerHeight],
+                        opacity: [0.1, 0.6, 0.1]
+                    }}
+                    transition={{
+                        duration: Math.random() * 8 + 8,
+                        repeat: Infinity,
+                        ease: "linear"
+                    }}
+                />
+            ))}
+        </div>
+    ), []);
+
     return (
         <div className="login-container bg-[#0d0d16] relative font-['Space_Grotesk'] text-[#f2effb] perspective-1000">
             
@@ -347,34 +312,7 @@ export function OnboardingWizard() {
             `}} />
 
             {/* Cinematic Background */}
-            <div className="absolute inset-0 z-0 pointer-events-none">
-                {/* Diagonal Light Rays */}
-                <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_30%,rgba(0,241,254,0.03)_40%,rgba(0,241,254,0.08)_50%,transparent_60%)] MixBlendMode-screen" />
-                <div className="absolute inset-0 bg-[linear-gradient(-45deg,transparent_40%,rgba(147,51,234,0.05)_50%,transparent_60%)] MixBlendMode-screen" />
-                
-                {/* Floating Particles */}
-                {Array.from({ length: 40 }).map((_, i) => (
-                    <motion.div
-                        key={i}
-                        className="absolute w-1 h-1 bg-[#00f1fe] rounded-full"
-                        style={{ filter: 'blur(1px)' }}
-                        initial={{
-                            x: Math.random() * window.innerWidth,
-                            y: Math.random() * window.innerHeight,
-                            opacity: Math.random() * 0.5 + 0.1
-                        }}
-                        animate={{
-                            y: [null, Math.random() * window.innerHeight],
-                            opacity: [0.1, 0.6, 0.1]
-                        }}
-                        transition={{
-                            duration: Math.random() * 8 + 8,
-                            repeat: Infinity,
-                            ease: "linear"
-                        }}
-                    />
-                ))}
-            </div>
+            {cinematicBackground}
 
             <div className="relative z-10 max-w-md mx-auto w-full">
                 <motion.div 
