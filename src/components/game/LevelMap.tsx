@@ -24,7 +24,7 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
     const levels = useUserStore((state) => state.levels);
     const profile = useUserStore((state) => state.profile);
     const activeAge = profile?.age || 18;
-    let processedLevels = levels.filter(l => l.age === activeAge);
+    let processedLevels = (levels || []).filter(l => l.age === activeAge);
 
     // New stories that should be visible to ALL users regardless of interests.
     const alwaysShowPersonalities = new Set([

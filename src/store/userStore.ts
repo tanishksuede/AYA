@@ -268,16 +268,14 @@ export const useUserStore = create<UserState>()(
 
                 set((state) => {
                     const mergedLevels = latestMasterLevels.map(latestLevel => {
-                        const cachedLevel = state.levels.find(l => l.id === latestLevel.id);
-                        if (cachedLevel) {
-                            return {
-                                ...latestLevel,
-                                status: cachedLevel.status,
-                                isLocked: cachedLevel.isLocked !== undefined ? cachedLevel.isLocked : latestLevel.isLocked,
-                                stars: cachedLevel.stars !== undefined ? cachedLevel.stars : latestLevel.stars
-                            };
-                        }
-                        return latestLevel;
+                        const cachedLevel = (state.levels || []).find(l => l.id === latestLevel.id);
+                        if (!cachedLevel) return latestLevel;
+                        return {
+                            ...latestLevel,
+                            status: cachedLevel.status,
+                            isLocked: cachedLevel.isLocked !== undefined ? cachedLevel.isLocked : latestLevel.isLocked,
+                            stars: cachedLevel.stars !== undefined ? cachedLevel.stars : latestLevel.stars
+                        };
                     });
 
                     return { levels: mergedLevels };

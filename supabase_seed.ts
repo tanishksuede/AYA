@@ -23,54 +23,6 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 async function seed() {
   console.log("🌱 Starting Database Seed...");
 
-  // 1. Create Scenarios Table & Disable RLS
-  console.log("Creating 'scenarios' table...");
-  await supabase.rpc('execute_sql', { sql: `
-    CREATE TABLE IF NOT EXISTS public.scenarios (
-      id TEXT PRIMARY KEY,
-      title TEXT,
-      source TEXT,
-      frames JSONB,
-      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-    );
-    ALTER TABLE public.scenarios DISABLE ROW LEVEL SECURITY;
-  `}).catch(() => {
-    // Ignore RPC failure, we assume user ran it manually if RPC doesn't exist
-    console.log("Could not auto-create tables via RPC. Assuming they exist or will be created manually.");
-  });
-
-  // 2. Create Levels Table & Disable RLS
-  console.log("Creating 'levels' table...");
-  await supabase.rpc('execute_sql', { sql: `
-    CREATE TABLE IF NOT EXISTS public.levels (
-      id TEXT PRIMARY KEY,
-      day_number INTEGER,
-      title TEXT,
-      description TEXT,
-      personality TEXT,
-      required_stars INTEGER,
-      year INTEGER,
-      age INTEGER,
-      theme TEXT,
-      archetype TEXT,
-      bio TEXT,
-      fame TEXT,
-      achievements JSONB,
-      lesson TEXT,
-      avatar_url TEXT,
-      scenario_id TEXT,
-      idol_traits JSONB,
-      status TEXT,
-      is_locked BOOLEAN,
-      stars INTEGER,
-      part1 TEXT,
-      part2 TEXT,
-      placeholder BOOLEAN,
-      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-    );
-    ALTER TABLE public.levels DISABLE ROW LEVEL SECURITY;
-  `}).catch(() => {});
-
   // 3. Upsert Scenarios
   console.log("Uploading Scenarios...");
   const scenarioEntries = Object.entries(scenariosMap).map(([id, data]) => ({
