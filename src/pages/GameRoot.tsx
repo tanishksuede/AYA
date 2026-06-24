@@ -208,7 +208,7 @@ export function GameRoot() {
     }, [])
 
     const prevLevelRef = useRef(profile?.level || 1);
-    const [onboardingComplete] = useState(() => localStorage.getItem('onboarding_done') === 'true');
+    const onboardingComplete = localStorage.getItem('onboarding_done') === 'true';
 
     useEffect(() => {
         if (profile?.level && profile.level > prevLevelRef.current) {
