@@ -230,8 +230,9 @@ export function PersonalityAssessment() {
                         }
                     }]);
 
-                    await supabase.from('personality_profiles').insert([{
+                    await supabase.from('personality_profiles').upsert([{
                         user_id: userProfile.id,
+                        mobile: userProfile.mobile,
                         trait_risk_taker: newTraits.risk,
                         trait_creative: newTraits.creativity,
                         trait_analytical: newTraits.vision,
@@ -240,7 +241,7 @@ export function PersonalityAssessment() {
                         interest_goal: newProfile.interest_goal || '',
                         interest_struggle: newProfile.interest_struggle || '',
                         interest_domain: newProfile.interest_domain || ''
-                    }]);
+                    }], { onConflict: 'user_id' });
 
                     markQuizDone();
                 }

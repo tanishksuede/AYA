@@ -151,29 +151,33 @@ export function GameRoot() {
                 }
 
                 // Hydrate level scores: use level_id directly if available, fall back to personality matching
-                const { data: sessionData } = await supabase.from('game_sessions').select('level_id, selected_personality, match_score, stars').eq('user_id', user.id);
                 const restoredScores: Record<string, number> = {};
-                
-                if (sessionData && sessionData.length > 0) {
-                    // Fetch master levels to map personality -> level ID for legacy sessions without level_id
-                    const { data: levelsMaster } = await supabase.from('levels').select('id, personality, archetype');
-                    const allLevels = levelsMaster || [];
+                try {
+                    const { data: sessionData } = await supabase.from('game_sessions').select('level_id, selected_personality, match_score, stars').eq('user_id', user.id);
                     
-                    sessionData.forEach((session: any) => {
-                        // Prefer direct level_id match (new sessions)
-                        let levelId: string | undefined = session.level_id;
+                    if (sessionData && sessionData.length > 0) {
+                        // Fetch master levels to map personality -> level ID for legacy sessions without level_id
+                        const { data: levelsMaster } = await supabase.from('levels').select('id, personality, archetype');
+                        const allLevels = levelsMaster || [];
                         
-                        // Fall back to personality matching for older sessions
-                        if (!levelId && session.selected_personality) {
-                            const levelMatch = allLevels.find(l => (l.personality || l.archetype) === session.selected_personality);
-                            levelId = levelMatch?.id;
-                        }
-                        
-                        if (levelId) {
-                            const stars = session.stars || (session.match_score >= 80 ? 3 : session.match_score >= 50 ? 2 : 1);
-                            restoredScores[levelId] = Math.max(restoredScores[levelId] || 0, stars);
-                        }
-                    });
+                        sessionData.forEach((session: any) => {
+                            // Prefer direct level_id match (new sessions)
+                            let levelId: string | undefined = session.level_id;
+                            
+                            // Fall back to personality matching for older sessions
+                            if (!levelId && session.selected_personality) {
+                                const levelMatch = allLevels.find(l => (l.personality || l.archetype) === session.selected_personality);
+                                levelId = levelMatch?.id;
+                            }
+                            
+                            if (levelId) {
+                                const stars = session.stars || (session.match_score >= 80 ? 3 : session.match_score >= 50 ? 2 : 1);
+                                restoredScores[levelId] = Math.max(restoredScores[levelId] || 0, stars);
+                            }
+                        });
+                    }
+                } catch (e) {
+                    console.warn('[Session] Could not fetch game_sessions for star hydration:', e);
                 }
                 
                 // Merge any legacy level_scores from users table
