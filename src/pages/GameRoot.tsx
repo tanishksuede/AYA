@@ -253,6 +253,10 @@ export function GameRoot() {
         return <Navigate to="/game/welcome" replace />;
     }
 
+    if (profile && profile.assessmentCompleted && location.pathname === '/game/welcome') {
+        return <Navigate to="/game" replace />;
+    }
+
     if (profile && !profile.assessmentCompleted && !onboardingComplete && !location.pathname.startsWith('/game/onboarding')) {
         return <Navigate to="/game/onboarding/1" replace />;
     }
