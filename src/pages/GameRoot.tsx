@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Outlet, useLocation, Navigate, useNavigate } from 'react-router-dom';
 import { SupabaseChecker } from '../components/SupabaseChecker';
+import { StreakCelebration } from '../components/game/StreakCelebration';
 import { supabase } from '../utils/supabase';
 import { getSession, clearSession, markQuizDone, isQuizDone } from '../utils/session';
 import { withTimeout } from '../utils/withTimeout';
@@ -316,12 +317,6 @@ export function GameRoot() {
         }
     }, [profile?.level, navigate]);
 
-    useEffect(() => {
-        if (pendingStreakData) {
-            navigate('/game/streak');
-        }
-    }, [pendingStreakData, navigate]);
-
     if (sessionStatus === 'checking') {
         return (
             <div className="w-full h-screen bg-[#0d0d16] flex flex-col items-center justify-center gap-4 p-6 text-center">
@@ -358,6 +353,16 @@ export function GameRoot() {
         <div className="relative w-full h-[100dvh] bg-slate-900 text-slate-100 overflow-hidden font-sans">
             <SupabaseChecker />
             <Outlet />
+            {pendingStreakData && (
+                <div className="absolute inset-0 z-[9999]">
+                    <StreakCelebration 
+                        streak={pendingStreakData.newStreak}
+                        xpEarned={pendingStreakData.xpEarned}
+                        isMilestone={pendingStreakData.isMilestone}
+                        onComplete={() => setPendingStreakData(null)}
+                    />
+                </div>
+            )}
         </div>
     );
 }

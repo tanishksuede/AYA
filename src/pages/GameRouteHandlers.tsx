@@ -148,28 +148,6 @@ export function DailyRevealRouteHandler() {
     );
 }
 
-export function StreakRouteHandler() {
-    const navigate = useNavigate();
-    const pendingStreakData = useUserStore((state) => state.pendingStreakData);
-    const setPendingStreakData = useUserStore((state) => state.setPendingStreakData);
-
-    if (!pendingStreakData) return <Navigate to="/game" replace />;
-
-    return (
-        <div className="w-full min-h-screen bg-slate-950">
-            <StreakCelebration
-                streak={pendingStreakData.newStreak}
-                xpEarned={pendingStreakData.xpEarned}
-                isMilestone={pendingStreakData.isMilestone}
-                onComplete={() => {
-                    setPendingStreakData(null);
-                    navigate(-1);
-                }}
-            />
-        </div>
-    );
-}
-
 export function LevelUpRouteHandler() {
     const navigate = useNavigate();
     const profile = useUserStore((state) => state.profile);

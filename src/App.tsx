@@ -4,7 +4,7 @@ import { AppLayout } from './layouts/AppLayout';
 import { HomePage } from './pages/Home';
 import { GameRoot } from './pages/GameRoot';
 import { bgmManager } from './utils/bgmManager';
-import { MapRouteHandler, IntroRouteHandler, PlayRouteHandler, ReportRouteHandler, DnaRouteHandler, SelectionRouteHandler, MoodRouteHandler, DailyRevealRouteHandler, StreakRouteHandler, LevelUpRouteHandler } from './pages/GameRouteHandlers';
+import { MapRouteHandler, IntroRouteHandler, PlayRouteHandler, ReportRouteHandler, DnaRouteHandler, SelectionRouteHandler, MoodRouteHandler, DailyRevealRouteHandler, LevelUpRouteHandler } from './pages/GameRouteHandlers';
 import { OnboardingWizard } from './components/game/OnboardingWizard';
 import { CinematicOnboarding } from './components/game/CinematicOnboarding';
 import { PersonalityAssessment } from './components/game/PersonalityAssessment';
@@ -48,7 +48,6 @@ function App() {
             <Route path="selection/:age" element={<SelectionRouteHandler />} />
             <Route path="mood" element={<MoodRouteHandler />} />
             <Route path="daily-reveal" element={<DailyRevealRouteHandler />} />
-            <Route path="streak" element={<StreakRouteHandler />} />
             <Route path="level-up" element={<LevelUpRouteHandler />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="journal" element={<JournalPage />} />
