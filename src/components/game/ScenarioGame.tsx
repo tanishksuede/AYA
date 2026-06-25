@@ -8,6 +8,7 @@ import type { Level, Lesson } from '../../types/gameTypes';
 import clsx from 'clsx';
 import { ChevronRight, Star, AlertCircle, CheckCircle, Palette, Loader2 } from 'lucide-react';
 import { supabase } from '../../utils/supabase';
+import { STORY_DATABASE } from '../../data/scenarios';
 import { IDOL_PROFILES } from '../../data/idolMindsets';
 import { calculateLevelInfo } from '../../utils/levelSystem';
 import { calculateLifeTraits, matchFutureArchetype } from '../../utils/futureSelfMatch';
@@ -182,22 +183,17 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                 console.warn("[Scenario] Falling back to local story data due to Supabase error:", err);
                 
                 // Fallback to local data
-                import('../../data/scenarios').then((module) => {
-                    const localData = module.STORY_DATABASE[targetId];
-                    if (localData) {
-                        setScenario({
-                            id: targetId,
-                            title: localData.title,
-                            source: localData.source,
-                            frames: localData.frames
-                        });
-                    } else {
-                        setScenario({ frames: [{ id: 'intro', text: 'Scenario coming soon.', choices: [] }] });
-                    }
-                }).catch(() => {
-                    setScenario({ frames: [{ id: 'intro', text: 'Error loading scenario.', choices: [] }] });
-                });
-            } finally {
+                const localData = STORY_DATABASE[targetId];
+                if (localData) {
+                    setScenario({
+                        id: targetId,
+                        title: localData.title,
+                        source: localData.source,
+                        frames: localData.frames
+                    });
+                } else {
+                    setScenario({ frames: [{ id: 'intro', text: 'Scenario coming soon.', choices: [] }] });
+                }
                 setIsLoadingScenario(false);
             }
         };
@@ -228,7 +224,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
     const displayedChoices = useMemo(() => {
         if (!frame.choices) return [];
         return [...frame.choices].sort(() => Math.random() - 0.5);
-    }, [currentFrameId]); // Re-shuffle only when moving to a new frame
+    }, [currentFrameId, frame.choices]); // Re-shuffle when frame changes or data loads
 
     // Determine what text to show — on lesson screen show only the body (not the full LESSON: prefix)
     // lessonBody is computed near the return statement where lessonFrame is available.
