@@ -551,6 +551,8 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                         console.log('[AYA] ✓ users updated (XP + level_scores saved)');
                         // Immediately update local store so map reflects new stars
                         useUserStore.setState({ levelScores: updatedLevelScores });
+                        // CRITICAL: Force recalculation of levels array so LevelMap.tsx sees the star!
+                        useUserStore.getState().syncLevels();
                     }
                 } catch (e) { console.error('[AYA] users update threw:', e); }
 

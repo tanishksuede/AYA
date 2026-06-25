@@ -17,7 +17,7 @@ export function SupabaseChecker() {
             }
 
             try {
-                const { error } = await supabase.from('users').select('id').limit(1);
+                const { error } = await supabase.from('users').select('id, level_scores').limit(1);
                 if (error) {
                     if (error.code === 'PGRST301' || error.message?.includes('JWT')) {
                         setStatus('error');
@@ -25,6 +25,9 @@ export function SupabaseChecker() {
                     } else if (error.code === '42P01') {
                          setStatus('error');
                          setDetails(`Supabase connected, but users table is missing! Please run the SQL migrations.`);
+                    } else if (error.code === '42703' || error.message?.includes('level_scores')) {
+                         setStatus('error');
+                         setDetails(`CRITICAL: The 'level_scores' column is missing from your users table! Please run the SQL migration to add it.`);
                     } else {
                         setStatus('error');
                         setDetails(`Supabase connected but returned error: ${error.message}`);
