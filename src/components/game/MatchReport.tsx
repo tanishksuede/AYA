@@ -319,7 +319,7 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
     }, []);
 
     return (
-        <div className="w-full min-h-screen flex flex-col font-sans overflow-hidden bg-black select-none relative pb-safe">
+        <div className="w-full h-[100dvh] flex flex-col font-sans overflow-hidden bg-black select-none relative pb-safe">
             <SugarVortexBackground isCandyMode={isCandyMode} />
 
             {/* SCROLL CONTENT */}

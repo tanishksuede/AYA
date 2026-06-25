@@ -165,8 +165,8 @@ export function PersonalityAssessment() {
     const toggleOption = (option: any) => {
         audioSynth.playClick();
         const currentQ = QUESTIONS[step] as any;
-        if (currentSelection.some(o => o.value === option.value)) {
-            setCurrentSelection(currentSelection.filter(o => o.value !== option.value));
+        if (currentSelection.some(o => o.text === option.text)) {
+            setCurrentSelection(currentSelection.filter(o => o.text !== option.text));
         } else {
             if (currentQ.maxOptions === 1 || !currentQ.multiSelect) {
                 setCurrentSelection([option]);
@@ -367,7 +367,7 @@ export function PersonalityAssessment() {
                     <div className="flex-1 min-h-0 px-6 md:px-10 pb-8 pt-4 space-y-4 overflow-y-auto scrollbar-thin scroll-smooth [transform-style:preserve-3d]">
                         <AnimatePresence>
                             {currentQ.options.map((opt: any, i: number) => {
-                                const isSelected = currentSelection.some(sel => sel.value === opt.value);
+                                const isSelected = currentSelection.some(sel => sel.text === opt.text);
                                 return (
                                     <motion.button
                                         key={`${step}-${i}`}
