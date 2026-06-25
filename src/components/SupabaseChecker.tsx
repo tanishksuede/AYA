@@ -21,20 +21,20 @@ export function SupabaseChecker() {
                 if (error) {
                     if (error.code === 'PGRST301' || error.message?.includes('JWT')) {
                         setStatus('error');
-                        setDetails(Supabase API Key is invalid or expired. Error: );
+                        setDetails(`Supabase API Key is invalid or expired. Error: ${error.message}`);
                     } else if (error.code === '42P01') {
                          setStatus('error');
-                         setDetails(Supabase connected, but users table is missing! Please run the SQL migrations.);
+                         setDetails(`Supabase connected, but users table is missing! Please run the SQL migrations.`);
                     } else {
                         setStatus('error');
-                        setDetails(Supabase connected but returned error: );
+                        setDetails(`Supabase connected but returned error: ${error.message}`);
                     }
                 } else {
                     setStatus('ok');
                 }
             } catch (err: any) {
                 setStatus('error');
-                setDetails(Network error connecting to Supabase: );
+                setDetails(`Network error connecting to Supabase: ${err.message}`);
             }
         };
 
@@ -45,9 +45,8 @@ export function SupabaseChecker() {
 
     return (
         <div className="fixed top-0 left-0 w-full z-[9999] bg-red-600 text-white p-4 text-center font-bold shadow-xl">
-            <h3 className="text-xl mb-1">?? DATABASE CONNECTION FAILED</h3>
+            <h3 className="text-xl mb-1">⚠️ DATABASE CONNECTION FAILED</h3>
             <p className="text-sm opacity-90">{details}</p>
         </div>
     );
 }
-
