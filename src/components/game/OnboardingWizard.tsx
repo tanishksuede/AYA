@@ -236,13 +236,17 @@ export function OnboardingWizard() {
                     empathy: existingProfile.trait_social || 50,
                     vision: existingProfile.trait_vision || 50
                 } : { discipline: 50, resilience: 50, risk: 50, leadership: 50, creativity: 50, empathy: 50, vision: 50 },
-                assessmentCompleted: !!existingProfile,
+                assessmentCompleted: !!existingProfile || (userData.total_xp > 0 || userData.stories_completed > 0 || userData.level > 1),
                 total_xp: userData.total_xp || 0,
                 level: userData.level || 1,
                 stories_completed: userData.stories_completed || 0,
                 current_streak: userData.current_streak || 0,
                 longest_streak: userData.longest_streak || 0
             } as any);
+
+            if (!!existingProfile || (userData.total_xp > 0 || userData.stories_completed > 0 || userData.level > 1)) {
+                localStorage.setItem('onboarding_done', 'true');
+            }
 
         } catch (err: any) {
             console.error('[Register] Failed:', err);

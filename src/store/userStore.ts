@@ -275,13 +275,21 @@ export const useUserStore = create<UserState>()(
 
                 set((state) => {
                     const mergedLevels = latestMasterLevels.map(latestLevel => {
-                        const cachedLevel = (state.levels || []).find(l => l.id === latestLevel.id);
-                        if (!cachedLevel) return latestLevel;
+                        const cachedLevel = (state.levels || []).find(l => String(l.id) === String(latestLevel.id));
+                        const score = state.levelScores[latestLevel.id];
+                        
+                        let computedStatus = latestLevel.status;
+                        if (score !== undefined && score > 0) {
+                            computedStatus = 'completed';
+                        } else if (cachedLevel && cachedLevel.status) {
+                            computedStatus = cachedLevel.status;
+                        }
+
                         return {
                             ...latestLevel,
-                            status: cachedLevel.status,
-                            isLocked: cachedLevel.isLocked !== undefined ? cachedLevel.isLocked : latestLevel.isLocked,
-                            stars: cachedLevel.stars !== undefined ? cachedLevel.stars : latestLevel.stars
+                            status: computedStatus,
+                            isLocked: cachedLevel?.isLocked !== undefined ? cachedLevel.isLocked : latestLevel.isLocked,
+                            stars: score !== undefined ? score : (cachedLevel?.stars !== undefined ? cachedLevel.stars : latestLevel.stars)
                         };
                     });
 
@@ -441,7 +449,7 @@ export const useUserStore = create<UserState>()(
             completeLevel: (levelId, stars) => {
                 set((state) => ({
                     levelScores: { ...state.levelScores, [levelId]: Math.max(state.levelScores[levelId] || 0, stars) },
-                    // Auto unlock next level logic could go here
+                    levels: state.levels.map(l => String(l.id) === String(levelId) ? { ...l, status: 'completed', stars: Math.max(l.stars || 0, stars) } : l)
                 }));
                 const { profile, levelScores } = get();
                 if (profile) syncStoreToBackend(profile, levelScores);

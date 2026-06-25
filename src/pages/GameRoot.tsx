@@ -143,6 +143,13 @@ export function GameRoot() {
                     } catch { }
                 }
 
+                // Fallback: If they have progression data, assume assessment is done even if it failed to save
+                if (!quizCompleted && user && (user.total_xp > 0 || user.stories_completed > 0 || user.level > 1)) {
+                    quizCompleted = true;
+                    markQuizDone();
+                    localStorage.setItem('onboarding_done', 'true');
+                }
+
                 store.setProfile({
                     id: user.id,
                     name: user.name,
