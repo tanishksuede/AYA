@@ -148,10 +148,17 @@ export function OnboardingWizard() {
 
             let userId;
             let userData;
+            let existingProfile: any = null;
 
             if (existingUser) {
                 userId = existingUser.id;
                 userData = existingUser;
+                const { data: profileCheck } = await supabase
+                    .from('personality_profiles')
+                    .select('*')
+                    .eq('user_id', userId)
+                    .maybeSingle();
+                existingProfile = profileCheck;
             } else {
                 // Insert new user
                 const { data: newUser, error: insertError } = await supabase
@@ -220,8 +227,16 @@ export function OnboardingWizard() {
                 preferred_map: userData.preferred_map || 'solar',
                 interests: [], 
                 roleModels: [],
-                traits: { discipline: 50, resilience: 50, risk: 50, leadership: 50, creativity: 50, empathy: 50, vision: 50 },
-                assessmentCompleted: false, // They'll do the quiz if not done
+                traits: existingProfile ? {
+                    discipline: existingProfile.trait_discipline || 50,
+                    resilience: existingProfile.trait_resilience || 50,
+                    risk: existingProfile.trait_risk_taker || 50,
+                    leadership: existingProfile.trait_ambitious || 50,
+                    creativity: existingProfile.trait_creative || 50,
+                    empathy: existingProfile.trait_social || 50,
+                    vision: existingProfile.trait_vision || 50
+                } : { discipline: 50, resilience: 50, risk: 50, leadership: 50, creativity: 50, empathy: 50, vision: 50 },
+                assessmentCompleted: !!existingProfile,
                 total_xp: userData.total_xp || 0,
                 level: userData.level || 1,
                 stories_completed: userData.stories_completed || 0,
