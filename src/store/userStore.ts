@@ -274,9 +274,11 @@ export const useUserStore = create<UserState>()(
                 }));
 
                 set((state) => {
+                    // Re-read levelScores from current state (avoids stale closure from async gap)
+                    const currentScores = state.levelScores;
                     const mergedLevels = latestMasterLevels.map(latestLevel => {
                         const cachedLevel = (state.levels || []).find(l => String(l.id) === String(latestLevel.id));
-                        const score = state.levelScores[latestLevel.id];
+                        const score = currentScores[latestLevel.id];
                         
                         let computedStatus = latestLevel.status;
                         if (score !== undefined && score > 0) {

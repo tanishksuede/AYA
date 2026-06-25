@@ -271,13 +271,27 @@ export function GameRoot() {
         restoreSession();
     }, [])
 
-    const prevLevelRef = useRef(profile?.level || 1);
     const onboardingComplete = localStorage.getItem('onboarding_done') === 'true';
 
+    // Track level for level-up screen — persist across logins so it doesn't
+    // re-trigger every time the user opens the app at level 2+
+    const sessionEstablished = useRef(false);
+    const prevLevelRef = useRef<number>(parseInt(localStorage.getItem('aya_last_seen_level') || '1', 10));
+
     useEffect(() => {
-        if (profile?.level && profile.level > prevLevelRef.current) {
+        if (!profile?.level) return;
+        if (!sessionEstablished.current) {
+            // First load after login — just sync the baseline, never show level-up
+            prevLevelRef.current = profile.level;
+            localStorage.setItem('aya_last_seen_level', String(profile.level));
+            sessionEstablished.current = true;
+            return;
+        }
+        // Only show level-up when level genuinely increases DURING this session
+        if (profile.level > prevLevelRef.current) {
             navigate('/game/level-up');
             prevLevelRef.current = profile.level;
+            localStorage.setItem('aya_last_seen_level', String(profile.level));
         }
     }, [profile?.level, navigate]);
 

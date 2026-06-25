@@ -528,46 +528,50 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
             }
 
             if (userProfile?.id && !hasInsertedSession.current) {
-                // Guard: prevent duplicate inserts from StrictMode double-renders or rapid re-triggers
                 hasInsertedSession.current = true;
+
+                // ── 1. Update users table with final XP, level, stories count ──────────
                 try {
-                    // ── 1. Update users table with final XP, level, stories count ──────────────────
                     const { error: usersErr } = await supabase.from('users').update({
                         total_xp: newTotalXp,
                         level: newLevelInfo.level,
                         stories_completed: currentStories + 1,
                     }).eq('id', userProfile.id);
-                    if (usersErr) console.error('[AYA] users update error:', usersErr);
-                    else console.log('[AYA] users XP/stories updated ✓');
+                    if (usersErr) console.error('[AYA] users update error:', usersErr.message, usersErr.details);
+                    else console.log('[AYA] ✓ users XP/stories updated');
+                } catch (e) { console.error('[AYA] users update threw:', e); }
 
-                    // ── 2. Update personality_profiles with recalibrated traits + future self ──────
-                    const { error: ppErr } = await supabase.from('personality_profiles')
-                        .update({
-                            trait_risk_taker: recalibratedTraits.risk,
-                            trait_creative: recalibratedTraits.creativity,
-                            trait_analytical: recalibratedTraits.vision,
-                            trait_social: recalibratedTraits.empathy,
-                            trait_ambitious: recalibratedTraits.leadership,
-                            total_xp: newTotalXp,
-                            level: newLevelInfo.level,
-                            stories_completed: currentStories + 1,
-                            last_updated: new Date().toISOString(),
-                            future_archetype: futureMatchResult.archetype.name,
-                            future_archetype_score: futureMatchResult.score,
-                            life_resilience: futureLT.resilience,
-                            life_discipline: futureLT.discipline,
-                            life_courage: futureLT.courage,
-                            life_creativity: futureLT.creativity,
-                            life_emotional_control: futureLT.emotional_control,
-                            life_leadership: futureLT.leadership,
-                            life_risk_intelligence: futureLT.risk_intelligence,
-                            life_consistency: futureLT.consistency,
-                        })
-                        .eq('user_id', userProfile.id);
-                    if (ppErr) console.error('[AYA] personality_profiles update error:', ppErr);
-                    else console.log('[AYA] personality_profiles traits updated ✓');
+                // ── 2. Upsert personality_profiles (creates row if missing) ────────────
+                try {
+                    const { error: ppErr } = await supabase.from('personality_profiles').upsert({
+                        user_id: userProfile.id,
+                        mobile: userProfile.mobile,
+                        trait_risk_taker: recalibratedTraits.risk,
+                        trait_creative: recalibratedTraits.creativity,
+                        trait_analytical: recalibratedTraits.vision,
+                        trait_social: recalibratedTraits.empathy,
+                        trait_ambitious: recalibratedTraits.leadership,
+                        total_xp: newTotalXp,
+                        level: newLevelInfo.level,
+                        stories_completed: currentStories + 1,
+                        last_updated: new Date().toISOString(),
+                        future_archetype: futureMatchResult.archetype.name,
+                        future_archetype_score: futureMatchResult.score,
+                        life_resilience: futureLT.resilience,
+                        life_discipline: futureLT.discipline,
+                        life_courage: futureLT.courage,
+                        life_creativity: futureLT.creativity,
+                        life_emotional_control: futureLT.emotional_control,
+                        life_leadership: futureLT.leadership,
+                        life_risk_intelligence: futureLT.risk_intelligence,
+                        life_consistency: futureLT.consistency,
+                    }, { onConflict: 'user_id' });
+                    if (ppErr) console.error('[AYA] personality_profiles upsert error:', ppErr.message, ppErr.details);
+                    else console.log('[AYA] ✓ personality_profiles upserted');
+                } catch (e) { console.error('[AYA] personality_profiles upsert threw:', e); }
 
-                    // ── 3. Streak & Daily Challenge ──────────────────────────────────────────────
+                // ── 3. Streak & Daily Challenge ────────────────────────────────────────
+                try {
                     const streakResult = completeDailyChallenge();
                     if (streakResult && streakResult.newStreak > streakResult.oldStreak) {
                         const { error: streakErr } = await supabase.from('users').update({
@@ -576,30 +580,31 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                             last_active_date: new Date().toISOString().split('T')[0],
                             daily_challenge_completed: true
                         }).eq('id', userProfile.id);
-                        if (streakErr) console.error('[AYA] streak update error:', streakErr);
+                        if (streakErr) console.error('[AYA] streak update error:', streakErr.message);
                         if (onDailyChallengeComplete) onDailyChallengeComplete(streakResult);
                     }
+                } catch (e) { console.error('[AYA] streak update threw:', e); }
 
-                    // ── 4. Insert game_sessions record (source of truth for played stories) ───────
-                    const serializedChoices = JSON.parse(JSON.stringify(finalSessionChoices)) as SessionChoiceData[];
+                // ── 4. Insert game_sessions (source of truth for played stories) ────────
+                try {
+                    const serializedChoices = JSON.parse(JSON.stringify(finalSessionChoices));
                     const { data: insertData, error: insertError } = await supabase.from('game_sessions').insert([{
                         user_id: userProfile.id,
-                        level_id: level.id,                                          // Store level ID directly
-                        selected_personality: level.personality || level.archetype,  // Keep for backward compat
+                        level_id: level.id,
+                        selected_personality: level.personality || level.archetype,
                         scenario_choices: serializedChoices,
                         match_score: matchPercent,
                         stars: starCount
                     }]).select();
 
                     if (insertError) {
-                        console.error('[AYA] game_sessions INSERT ERROR:', insertError);
+                        console.error('[AYA] game_sessions INSERT ERROR:', insertError.message, insertError.details, insertError.hint);
+                        hasInsertedSession.current = false; // allow retry
                     } else {
-                        console.log('[AYA] game_sessions INSERT SUCCESS:', insertData);
+                        console.log('[AYA] ✓ game_sessions inserted:', insertData);
                     }
-                } catch (err) {
-                    hasInsertedSession.current = false; // Reset on failure so user can retry
-                    console.error("[AYA] Failed to save session to Supabase", err);
-                }
+                } catch (e) { console.error('[AYA] game_sessions insert threw:', e); }
+
             } else if (hasInsertedSession.current) {
                 console.log('[AYA] Skipping duplicate game_sessions insert — already saved this session');
             }
