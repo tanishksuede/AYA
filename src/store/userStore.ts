@@ -137,7 +137,7 @@ export const useUserStore = create<UserState>()(
                         }
                     };
                 });
-                const { profile, levelScores } = get();
+                const { profile } = get();
                 if (profile) syncStoreToBackend(profile);
             },
 
@@ -154,7 +154,7 @@ export const useUserStore = create<UserState>()(
                         }
                     };
                 });
-                const { profile, levelScores } = get();
+                const { profile } = get();
                 if (profile) syncStoreToBackend(profile);
             },
 
@@ -341,7 +341,7 @@ export const useUserStore = create<UserState>()(
                         }
                     };
                 });
-                const { profile, levelScores } = get();
+                const { profile } = get();
                 if (profile) syncStoreToBackend(profile);
             },
 
@@ -392,7 +392,7 @@ export const useUserStore = create<UserState>()(
                         }
                     };
                 });
-                const { profile, levelScores } = get();
+                const { profile } = get();
                 if (profile) syncStoreToBackend(profile);
                 return result;
             },
@@ -418,7 +418,7 @@ export const useUserStore = create<UserState>()(
                         }
                     };
                 });
-                const { profile, levelScores } = get();
+                const { profile } = get();
                 if (profile) syncStoreToBackend(profile);
             },
 
@@ -434,7 +434,7 @@ export const useUserStore = create<UserState>()(
                         }
                     };
                 });
-                const { profile, levelScores } = get();
+                const { profile } = get();
                 if (profile) syncStoreToBackend(profile);
             },
 
@@ -453,7 +453,7 @@ export const useUserStore = create<UserState>()(
                     levelScores: { ...state.levelScores, [levelId]: Math.max(state.levelScores[levelId] || 0, stars) },
                     levels: state.levels.map(l => String(l.id) === String(levelId) ? { ...l, status: 'completed', stars: Math.max(l.stars || 0, stars) } : l)
                 }));
-                const { profile, levelScores } = get();
+                const { profile } = get();
                 if (profile) syncStoreToBackend(profile);
             },
 
