@@ -530,22 +530,35 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
             if (userProfile?.id && !hasInsertedSession.current) {
                 hasInsertedSession.current = true;
 
-                // ── 1. Update users table with final XP, level, stories count ──────────
+                // Build updated level_scores for direct save to users table
+                const currentLevelScores = useUserStore.getState().levelScores || {};
+                const updatedLevelScores = {
+                    ...currentLevelScores,
+                    [level.id]: Math.max(currentLevelScores[level.id] || 0, starCount)
+                };
+
+                // ── 1. Update users table: XP + stories + level_scores (most reliable backup) ──
                 try {
                     const { error: usersErr } = await supabase.from('users').update({
                         total_xp: newTotalXp,
                         level: newLevelInfo.level,
                         stories_completed: currentStories + 1,
+                        level_scores: updatedLevelScores,   // Save stars directly here as primary backup
                     }).eq('id', userProfile.id);
-                    if (usersErr) console.error('[AYA] users update error:', usersErr.message, usersErr.details);
-                    else console.log('[AYA] ✓ users XP/stories updated');
+                    if (usersErr) {
+                        console.error('[AYA] users update error:', usersErr.message, usersErr.details);
+                    } else {
+                        console.log('[AYA] ✓ users updated (XP + level_scores saved)');
+                        // Immediately update local store so map reflects new stars
+                        useUserStore.setState({ levelScores: updatedLevelScores });
+                    }
                 } catch (e) { console.error('[AYA] users update threw:', e); }
 
-                // ── 2. Upsert personality_profiles (creates row if missing) ────────────
+                // ── 2. Upsert personality_profiles ────────────────────────────────────────
                 try {
                     const { error: ppErr } = await supabase.from('personality_profiles').upsert({
                         user_id: userProfile.id,
-                        mobile: userProfile.mobile,
+                        mobile: userProfile.mobile || null,
                         trait_risk_taker: recalibratedTraits.risk,
                         trait_creative: recalibratedTraits.creativity,
                         trait_analytical: recalibratedTraits.vision,
@@ -570,41 +583,41 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                     else console.log('[AYA] ✓ personality_profiles upserted');
                 } catch (e) { console.error('[AYA] personality_profiles upsert threw:', e); }
 
-                // ── 3. Streak & Daily Challenge ────────────────────────────────────────
+                // ── 3. Streak & Daily Challenge ────────────────────────────────────────────
                 try {
                     const streakResult = completeDailyChallenge();
                     if (streakResult && streakResult.newStreak > streakResult.oldStreak) {
-                        const { error: streakErr } = await supabase.from('users').update({
+                        await supabase.from('users').update({
                             current_streak: streakResult.newStreak,
                             longest_streak: Math.max(userProfile.longest_streak || 0, streakResult.newStreak),
                             last_active_date: new Date().toISOString().split('T')[0],
                             daily_challenge_completed: true
                         }).eq('id', userProfile.id);
-                        if (streakErr) console.error('[AYA] streak update error:', streakErr.message);
                         if (onDailyChallengeComplete) onDailyChallengeComplete(streakResult);
                     }
                 } catch (e) { console.error('[AYA] streak update threw:', e); }
 
-                // ── 4. Insert game_sessions (source of truth for played stories) ────────
+                // ── 4. Insert game_sessions (history log — no scenario_choices to avoid JSONB errors) ──
                 try {
-                    const serializedChoices = JSON.parse(JSON.stringify(finalSessionChoices));
                     const { data: insertData, error: insertError } = await supabase.from('game_sessions').insert([{
                         user_id: userProfile.id,
-                        level_id: level.id,
-                        selected_personality: level.personality || level.archetype,
-                        scenario_choices: serializedChoices,
+                        level_id: String(level.id),
+                        selected_personality: String(level.personality || level.archetype || ''),
                         match_score: matchPercent,
                         stars: starCount
+                        // scenario_choices intentionally omitted — was causing insert failures
                     }]).select();
 
                     if (insertError) {
-                        console.error('[AYA] game_sessions INSERT ERROR:', insertError.message, insertError.details, insertError.hint);
-                        hasInsertedSession.current = false; // allow retry
+                        console.error('[AYA] game_sessions INSERT ERROR:', insertError.message, '|', insertError.details, '|', insertError.hint);
+                        hasInsertedSession.current = false;
                     } else {
                         console.log('[AYA] ✓ game_sessions inserted:', insertData);
                     }
                 } catch (e) { console.error('[AYA] game_sessions insert threw:', e); }
 
+            } else if (!userProfile?.id) {
+                console.warn('[AYA] No userProfile.id — cannot save to Supabase. Profile:', userProfile);
             } else if (hasInsertedSession.current) {
                 console.log('[AYA] Skipping duplicate game_sessions insert — already saved this session');
             }

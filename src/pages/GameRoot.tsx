@@ -150,38 +150,47 @@ export function GameRoot() {
                     localStorage.setItem('onboarding_done', 'true');
                 }
 
-                // Hydrate level scores: use level_id directly if available, fall back to personality matching
-                const restoredScores: Record<string, number> = {};
+                // PRIMARY: Read level_scores directly from users table (saved after every game completion)
+                const userLevelScores: Record<string, number> = user.level_scores || {};
+                console.log('[Session] users.level_scores from DB:', JSON.stringify(userLevelScores));
+
+                // SECONDARY: Read game_sessions as fallback for any missing entries
+                const sessionScores: Record<string, number> = {};
                 try {
-                    const { data: sessionData } = await supabase.from('game_sessions').select('level_id, selected_personality, match_score, stars').eq('user_id', user.id);
-                    
-                    if (sessionData && sessionData.length > 0) {
-                        // Fetch master levels to map personality -> level ID for legacy sessions without level_id
+                    const { data: sessionData, error: gsErr } = await supabase
+                        .from('game_sessions')
+                        .select('level_id, selected_personality, match_score, stars')
+                        .eq('user_id', user.id);
+
+                    if (gsErr) {
+                        console.warn('[Session] game_sessions fetch error:', gsErr.message);
+                    } else if (sessionData && sessionData.length > 0) {
+                        console.log('[Session] game_sessions rows found:', sessionData.length);
                         const { data: levelsMaster } = await supabase.from('levels').select('id, personality, archetype');
                         const allLevels = levelsMaster || [];
-                        
+
                         sessionData.forEach((session: any) => {
-                            // Prefer direct level_id match (new sessions)
                             let levelId: string | undefined = session.level_id;
-                            
-                            // Fall back to personality matching for older sessions
                             if (!levelId && session.selected_personality) {
-                                const levelMatch = allLevels.find(l => (l.personality || l.archetype) === session.selected_personality);
-                                levelId = levelMatch?.id;
+                                const match = allLevels.find(l => (l.personality || l.archetype) === session.selected_personality);
+                                levelId = match?.id;
                             }
-                            
                             if (levelId) {
                                 const stars = session.stars || (session.match_score >= 80 ? 3 : session.match_score >= 50 ? 2 : 1);
-                                restoredScores[levelId] = Math.max(restoredScores[levelId] || 0, stars);
+                                sessionScores[levelId] = Math.max(sessionScores[levelId] || 0, stars);
                             }
                         });
+                        console.log('[Session] Restored from game_sessions:', JSON.stringify(sessionScores));
+                    } else {
+                        console.log('[Session] No game_sessions found for user');
                     }
                 } catch (e) {
-                    console.warn('[Session] Could not fetch game_sessions for star hydration:', e);
+                    console.warn('[Session] game_sessions fetch threw:', e);
                 }
-                
-                // Merge any legacy level_scores from users table
-                const finalScores = { ...(user.level_scores || {}), ...restoredScores };
+
+                // Merge: users.level_scores takes priority, game_sessions fills gaps
+                const finalScores = { ...sessionScores, ...userLevelScores };
+                console.log('[Session] Final levelScores applied:', JSON.stringify(finalScores));
                 useUserStore.setState({ levelScores: finalScores });
 
                 store.setProfile({
