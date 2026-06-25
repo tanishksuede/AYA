@@ -172,7 +172,7 @@ export function GameRoot() {
                         sessionData.forEach((session: any) => {
                             let levelId: string | undefined = session.level_id;
                             if (!levelId && session.selected_personality) {
-                                const match = allLevels.find(l => (l.personality || l.archetype) === session.selected_personality);
+                                const match = allLevels.find((l: { id: string; personality?: string; archetype?: string }) => (l.personality || l.archetype) === session.selected_personality);
                                 levelId = match?.id;
                             }
                             if (levelId) {
