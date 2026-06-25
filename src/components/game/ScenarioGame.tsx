@@ -179,6 +179,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                     source: data.source,
                     frames: data.frames
                 });
+                setIsLoadingScenario(false);
             } catch (err) {
                 console.warn("[Scenario] Falling back to local story data due to Supabase error:", err);
                 
