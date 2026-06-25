@@ -150,8 +150,25 @@ export function GameRoot() {
                     localStorage.setItem('onboarding_done', 'true');
                 }
 
-                // Hydrate level scores from database BEFORE setting profile so syncLevels picks it up
-                useUserStore.setState({ levelScores: user.level_scores || {} });
+                // Hydrate level scores dynamically from game_sessions since we can't guarantee the users table has a level_scores column
+                const { data: sessionData } = await supabase.from('game_sessions').select('selected_personality, match_score').eq('user_id', user.id);
+                const restoredScores: Record<string, number> = {};
+                
+                if (sessionData && sessionData.length > 0) {
+                    const allLevels = store.levels;
+                    sessionData.forEach((session: any) => {
+                        const levelMatch = allLevels.find(l => (l.personality || l.archetype) === session.selected_personality);
+                        if (levelMatch) {
+                            const matchScore = session.match_score || 0;
+                            const stars = matchScore >= 80 ? 3 : matchScore >= 50 ? 2 : 1;
+                            restoredScores[levelMatch.id] = Math.max(restoredScores[levelMatch.id] || 0, stars);
+                        }
+                    });
+                }
+                
+                // If they had legacy level_scores in the users table, merge them, but prioritize game_sessions
+                const finalScores = { ...(user.level_scores || {}), ...restoredScores };
+                useUserStore.setState({ levelScores: finalScores });
 
                 store.setProfile({
                     id: user.id,

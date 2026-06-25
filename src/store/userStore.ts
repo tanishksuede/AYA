@@ -87,8 +87,8 @@ const syncStoreToBackend = async (profile: any, levelScores: Record<string, numb
             current_streak: profile.current_streak,
             longest_streak: profile.longest_streak,
             last_active_date: profile.last_active_date,
-            daily_challenge_completed: profile.daily_challenge_completed,
-            level_scores: levelScores
+            daily_challenge_completed: profile.daily_challenge_completed
+            // Removed level_scores from here as it requires a DB migration. We hydrate dynamically from game_sessions instead.
         }).eq('id', profile.id);
 
         if (profile.traits) {
