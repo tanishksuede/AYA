@@ -150,26 +150,33 @@ export function GameRoot() {
                     localStorage.setItem('onboarding_done', 'true');
                 }
 
-                // Hydrate level scores dynamically from game_sessions since we can't guarantee the users table has a level_scores column
-                const { data: sessionData } = await supabase.from('game_sessions').select('selected_personality, match_score').eq('user_id', user.id);
+                // Hydrate level scores: use level_id directly if available, fall back to personality matching
+                const { data: sessionData } = await supabase.from('game_sessions').select('level_id, selected_personality, match_score, stars').eq('user_id', user.id);
                 const restoredScores: Record<string, number> = {};
                 
                 if (sessionData && sessionData.length > 0) {
-                    // Fetch master levels to map personality -> level ID (since store.levels might be empty on fresh login)
+                    // Fetch master levels to map personality -> level ID for legacy sessions without level_id
                     const { data: levelsMaster } = await supabase.from('levels').select('id, personality, archetype');
                     const allLevels = levelsMaster || [];
                     
                     sessionData.forEach((session: any) => {
-                        const levelMatch = allLevels.find(l => (l.personality || l.archetype) === session.selected_personality);
-                        if (levelMatch) {
-                            const matchScore = session.match_score || 0;
-                            const stars = matchScore >= 80 ? 3 : matchScore >= 50 ? 2 : 1;
-                            restoredScores[levelMatch.id] = Math.max(restoredScores[levelMatch.id] || 0, stars);
+                        // Prefer direct level_id match (new sessions)
+                        let levelId: string | undefined = session.level_id;
+                        
+                        // Fall back to personality matching for older sessions
+                        if (!levelId && session.selected_personality) {
+                            const levelMatch = allLevels.find(l => (l.personality || l.archetype) === session.selected_personality);
+                            levelId = levelMatch?.id;
+                        }
+                        
+                        if (levelId) {
+                            const stars = session.stars || (session.match_score >= 80 ? 3 : session.match_score >= 50 ? 2 : 1);
+                            restoredScores[levelId] = Math.max(restoredScores[levelId] || 0, stars);
                         }
                     });
                 }
                 
-                // If they had legacy level_scores in the users table, merge them, but prioritize game_sessions
+                // Merge any legacy level_scores from users table
                 const finalScores = { ...(user.level_scores || {}), ...restoredScores };
                 useUserStore.setState({ levelScores: finalScores });
 
@@ -188,6 +195,31 @@ export function GameRoot() {
                     access_type: user.access_type,
                     access_start_date: user.access_start_date,
                     preferred_map: user.preferred_map,
+                    assessmentCompleted: quizCompleted,
+                    // Build the traits object directly so DNA Panel and game calculations work correctly
+                    traits: {
+                        risk: profileData?.trait_risk_taker || 50,
+                        creativity: profileData?.trait_creative || 50,
+                        vision: profileData?.trait_analytical || 50,
+                        empathy: profileData?.trait_social || 50,
+                        leadership: profileData?.trait_ambitious || 50,
+                        discipline: 50,
+                        resilience: 50,
+                    },
+                    // Future Self data
+                    futureArchetype: profileData?.future_archetype || undefined,
+                    futureArchetypeScore: profileData?.future_archetype_score || undefined,
+                    lifeTraits: profileData ? {
+                        resilience: profileData.life_resilience || 50,
+                        discipline: profileData.life_discipline || 50,
+                        courage: profileData.life_courage || 50,
+                        creativity: profileData.life_creativity || 50,
+                        emotional_control: profileData.life_emotional_control || 50,
+                        leadership: profileData.life_leadership || 50,
+                        risk_intelligence: profileData.life_risk_intelligence || 50,
+                        consistency: profileData.life_consistency || 50,
+                    } : undefined,
+                    // Keep raw fields too for any legacy code
                     ...(profileData ? {
                         trait_risk_taker: profileData.trait_risk_taker,
                         trait_creative: profileData.trait_creative,
@@ -204,11 +236,13 @@ export function GameRoot() {
                 if (quizCompleted && profileData) {
                     store.completeAssessment(
                         {
-                            discipline: 50, resilience: 50,
+                            discipline: 50,
+                            resilience: 50,
                             risk: profileData.trait_risk_taker || 50,
                             leadership: profileData.trait_ambitious || 50,
                             creativity: profileData.trait_creative || 50,
-                            empathy: profileData.trait_social || 50, vision: 50
+                            empathy: profileData.trait_social || 50,
+                            vision: profileData.trait_analytical || 50   // Fixed: was hardcoded 50
                         },
                         {
                             motivation: 'Stability', risk: 'Balanced', emotional: 'Resilient',
