@@ -372,7 +372,12 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
                 {/* --- LAYER 2: MIDGROUND HUD (Interactive & Smooth Synced) --- */}
                 <motion.div
                     className="fixed top-0 left-0 w-full layer-mid pb-32 pointer-events-none z-20"
-                    style={{ height: totalHeight, y: hudY, opacity: canvasReady ? 1 : 0 }}
+                    style={{ 
+                        height: totalHeight, 
+                        y: hudY, 
+                        opacity: canvasReady ? 1 : 0,
+                        willChange: "transform" // Force GPU acceleration on mobile
+                    }}
                 >
                     <div className="relative w-full max-w-md mx-auto mt-24 md:mt-32 pointer-events-none h-full map-content">
                         {/* NODES */}

@@ -150,6 +150,9 @@ export function GameRoot() {
                     localStorage.setItem('onboarding_done', 'true');
                 }
 
+                // Hydrate level scores from database BEFORE setting profile so syncLevels picks it up
+                useUserStore.setState({ levelScores: user.level_scores || {} });
+
                 store.setProfile({
                     id: user.id,
                     name: user.name,
@@ -201,9 +204,6 @@ export function GameRoot() {
 
                 const savedTheme = user.preferred_theme || 'city_dark';
                 store.setMapTheme(savedTheme as any);
-
-                // Hydrate level scores from database
-                useUserStore.setState({ levelScores: user.level_scores || {} });
 
                 clearTimeout(maxWait);
                 setSessionStatus('found');

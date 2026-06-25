@@ -21,16 +21,16 @@ class BGMManager {
     return this.audioContext
   }
 
-  // Must be called on first user gesture
+  // Must be called on user gesture to initialize and resume audio
   async unlock() {
-    if (this.isUnlocked) return
     const ctx = this.getContext()
     
-    // Safari requires resume after user gesture
+    // Always attempt to resume if suspended (common on mobile after backgrounding)
     if (ctx.state === 'suspended') {
       await ctx.resume()
     }
     
+    if (this.isUnlocked) return;
     this.isUnlocked = true
     console.log('BGM unlocked, context state:', ctx.state)
     

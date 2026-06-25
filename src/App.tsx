@@ -16,15 +16,13 @@ function App() {
   useEffect(() => {
     bgmManager.loadPreference()
     
-    // Unlock on first user interaction
+    // Unlock on user interactions (keeps audio context alive on mobile)
     const unlock = async () => {
       await bgmManager.unlock()
-      document.removeEventListener('click', unlock, { capture: true })
-      document.removeEventListener('touchstart', unlock, { capture: true })
     }
     
-    document.addEventListener('click', unlock, { capture: true })
-    document.addEventListener('touchstart', unlock, { capture: true })
+    document.addEventListener('click', unlock, { capture: true, passive: true })
+    document.addEventListener('touchstart', unlock, { capture: true, passive: true })
     
     return () => {
       document.removeEventListener('click', unlock, { capture: true })
