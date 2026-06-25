@@ -27,7 +27,7 @@ export function IntroRouteHandler() {
     const navigate = useNavigate();
     const levels = useUserStore((state) => state.levels);
     
-    const level = levels.find((l) => l.id === id);
+    const level = levels.find((l) => String(l.id) === String(id));
     if (!level) return <Navigate to="/game" replace />;
 
     return (
@@ -47,7 +47,7 @@ export function PlayRouteHandler() {
     const unlockLevel = useUserStore((state) => state.unlockLevel);
     const setPendingStreakData = useUserStore((state) => state.setPendingStreakData);
     
-    const level = levels.find((l) => l.id === id);
+    const level = levels.find((l) => String(l.id) === String(id));
     if (!level) return <Navigate to="/game" replace />;
 
     const handleComplete = (stars: number) => {
@@ -75,7 +75,7 @@ export function ReportRouteHandler() {
     const levels = useUserStore((state) => state.levels);
     const profile = useUserStore((state) => state.profile);
     
-    const level = levels.find((l) => l.id === id);
+    const level = levels.find((l) => String(l.id) === String(id));
     if (!level || !profile) return <Navigate to="/game" replace />;
 
     return (
