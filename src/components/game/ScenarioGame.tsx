@@ -236,8 +236,13 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
 
     // Reset bg loaded state when background changes
     useEffect(() => {
-        setIsBgLoaded(false);
-    }, [frame.bg]);
+        const bgUrl = level.background ? `/portraits/${level.background}` : frame?.bg;
+        if (!bgUrl) {
+            setIsBgLoaded(true); // No image to load, so mark as loaded
+        } else {
+            setIsBgLoaded(false);
+        }
+    }, [frame?.bg, level?.background]);
 
     // Emotion detection + ambient music when frame changes
     useEffect(() => {
