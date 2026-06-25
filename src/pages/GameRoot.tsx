@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Outlet, useLocation, Navigate, useNavigate } from 'react-router-dom';
+import { SupabaseChecker } from '../components/SupabaseChecker';
 import { supabase } from '../utils/supabase';
 import { getSession, clearSession, markQuizDone, isQuizDone } from '../utils/session';
 import { withTimeout } from '../utils/withTimeout';
@@ -151,7 +152,14 @@ export function GameRoot() {
                 }
 
                 // PRIMARY: Read level_scores directly from users table (saved after every game completion)
-                const userLevelScores: Record<string, number> = user.level_scores || {};
+                let userLevelScores: Record<string, number> = {};
+                if (user.level_scores) {
+                    if (typeof user.level_scores === 'string') {
+                        try { userLevelScores = JSON.parse(user.level_scores); } catch (e) { console.error('Failed to parse level_scores', e); }
+                    } else {
+                        userLevelScores = user.level_scores;
+                    }
+                }
                 console.log('[Session] users.level_scores from DB:', JSON.stringify(userLevelScores));
 
                 // SECONDARY: Read game_sessions as fallback for any missing entries
@@ -347,7 +355,8 @@ export function GameRoot() {
     }
 
     return (
-        <div className="w-full h-screen bg-slate-950 overflow-hidden relative">
+        <div className="relative w-full h-[100dvh] bg-slate-900 text-slate-100 overflow-hidden font-sans">
+            <SupabaseChecker />
             <Outlet />
         </div>
     );
