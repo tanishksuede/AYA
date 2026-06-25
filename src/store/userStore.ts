@@ -235,8 +235,15 @@ export const useUserStore = create<UserState>()(
 
             syncLevels: async () => {
                 const { data, error } = await supabase.from('levels').select('*');
-                if (error || !data) {
-                    console.error('[Store] Failed to fetch levels:', error);
+                if (error || !data || data.length === 0) {
+                    console.warn('[Store] Failed to fetch levels from Supabase or table empty. Using local fallback.');
+                    const store = get();
+                    if (store.profile) {
+                        import('../utils/levelGenerator').then(({ generateLevels }) => {
+                            const fallbackLevels = generateLevels(store.profile!.age);
+                            set({ levels: fallbackLevels });
+                        }).catch(err => console.error("Failed to load local fallback levels", err));
+                    }
                     return;
                 }
 

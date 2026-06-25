@@ -39,9 +39,16 @@ export function SettingsPage() {
         audioSynth.setSfxVolume(isSfxMuted ? 0 : sfxVolume);
     }, [sfxVolume, isSfxMuted]);
 
-    const handleAgeSave = () => {
+    const handleAgeSave = async () => {
         if (profile) {
             setProfile({ ...profile, age: newAge });
+            try {
+                const { supabase } = await import('../utils/supabase');
+                await supabase.from('users').update({ age: newAge }).eq('id', profile.id);
+            } catch (err) {
+                console.error("Failed to update age in Supabase", err);
+            }
+            useUserStore.getState().syncLevels();
             navigate('/game');
         }
     };
