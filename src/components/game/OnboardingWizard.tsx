@@ -119,7 +119,7 @@ export function OnboardingWizard() {
     const isSubmitting = useRef(false);
 
     const handleComplete = async () => {
-        if (!name.trim() || !mobile.trim() || age < 13) return;
+        if (!mobile.trim() || age < 13) return;
         if (isSubmitting.current) return; // hard block double-tap
         isSubmitting.current = true;
 
@@ -160,6 +160,12 @@ export function OnboardingWizard() {
                     .maybeSingle();
                 existingProfile = profileCheck;
             } else {
+                if (!name.trim()) {
+                    setIsLoading(false);
+                    isSubmitting.current = false;
+                    setError("Please enter your name to create a new account.");
+                    return;
+                }
                 // Insert new user
                 const { data: newUser, error: insertError } = await supabase
                     .from('users')
@@ -345,7 +351,7 @@ export function OnboardingWizard() {
 
                     <motion.button
                         initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }}
-                        disabled={!name.trim() || !mobile.trim() || isLoading}
+                        disabled={!mobile.trim() || isLoading}
                         onClick={handleComplete}
                         className="w-full mt-10 py-5 bg-[#00f1fe] text-[#004145] font-black text-xl rounded-full shadow-[0_0_30px_rgba(0,241,254,0.4)] flex items-center justify-center space-x-2 relative group overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#99f7ff] transition-all"
                     >
