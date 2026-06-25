@@ -220,12 +220,14 @@ export function PersonalityAssessment() {
                 if (userProfile?.id) {
                     await supabase.from('quiz_responses').insert([{
                         user_id: userProfile.id,
-                        question_1: newAnswers[0] || '',
-                        question_2: newAnswers[1] || '',
-                        question_3: newAnswers[2] || '',
-                        question_4: newAnswers[3] || '',
-                        question_5: newAnswers[4] || '',
-                        question_6: newAnswers[5] || ''
+                        responses: {
+                            question_1: newAnswers[0] || '',
+                            question_2: newAnswers[1] || '',
+                            question_3: newAnswers[2] || '',
+                            question_4: newAnswers[3] || '',
+                            question_5: newAnswers[4] || '',
+                            question_6: newAnswers[5] || ''
+                        }
                     }]);
 
                     await supabase.from('personality_profiles').insert([{
