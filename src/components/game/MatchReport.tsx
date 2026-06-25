@@ -672,9 +672,16 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
             {/* FOOTER CTA */}
             <div className="fixed bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/95 via-black/80 to-transparent z-50 flex justify-center">
                 <button
-                    onClick={() => { audioSynth.playClick(); onClose(); }}
+                    disabled={copiedDNA} // repurposing as a generic lock, actually let's just use a local inline check or the existing state
+                    onClick={(e) => {
+                        const target = e.currentTarget;
+                        if (target.disabled) return;
+                        target.disabled = true; // Lock button visually and functionally
+                        audioSynth.playClick(); 
+                        onClose(); 
+                    }}
                     className={clsx(
-                        "group relative w-full max-w-md h-20 rounded-full transition-all hover:scale-105 active:scale-95",
+                        "group relative w-full max-w-md h-20 rounded-full transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:pointer-events-none",
                         isCandyMode ? "shadow-[0_10px_30px_rgba(0,230,118,0.4)]" : "shadow-[0_0_30px_rgba(77,217,255,0.4)]"
                     )}
                 >

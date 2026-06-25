@@ -241,6 +241,9 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
             setIsBgLoaded(true); // No image to load, so mark as loaded
         } else {
             setIsBgLoaded(false);
+            // Fallback: if image onLoad fails to fire (e.g. from cache or network error), force load after 1.5s
+            const timer = setTimeout(() => setIsBgLoaded(true), 1500);
+            return () => clearTimeout(timer);
         }
     }, [frame?.bg, level?.background]);
 
