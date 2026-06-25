@@ -155,7 +155,10 @@ export function GameRoot() {
                 const restoredScores: Record<string, number> = {};
                 
                 if (sessionData && sessionData.length > 0) {
-                    const allLevels = store.levels;
+                    // Fetch master levels to map personality -> level ID (since store.levels might be empty on fresh login)
+                    const { data: levelsMaster } = await supabase.from('levels').select('id, personality, archetype');
+                    const allLevels = levelsMaster || [];
+                    
                     sessionData.forEach((session: any) => {
                         const levelMatch = allLevels.find(l => (l.personality || l.archetype) === session.selected_personality);
                         if (levelMatch) {
