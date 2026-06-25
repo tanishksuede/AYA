@@ -203,7 +203,7 @@ export function OnboardingWizard() {
                     userData = newUser;
 
                     // Create default personality profile
-                    await supabase.from('personality_profiles').insert({
+                    const { error: profileError } = await supabase.from('personality_profiles').insert({
                         user_id: userId,
                         mobile: cleanMobile,
                         trait_risk_taker: 50,
@@ -215,7 +215,8 @@ export function OnboardingWizard() {
                         total_xp: 0,
                         level: 1,
                         stories_completed: 0
-                    }).catch((err: any) => console.warn('Supabase personality insert failed', err));
+                    });
+                    if (profileError) console.warn('Supabase personality insert failed', profileError);
                 }
             }
 
