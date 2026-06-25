@@ -160,7 +160,9 @@ class BGMManager {
   toggle() {
     this.isEnabled = !this.isEnabled
     if (!this.isEnabled) {
+      const lastTrack = this.targetTrack || this.currentTrack;
       this.stop(0.8)
+      this.targetTrack = lastTrack; // remember it for resuming
     } else {
       // Resume whatever should be playing
       if (this.targetTrack) {
