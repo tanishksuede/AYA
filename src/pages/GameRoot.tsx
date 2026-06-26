@@ -10,7 +10,6 @@ import { safeStorage } from '../utils/storage';
 
 export function GameRoot() {
     const profile = useUserStore((state) => state.profile);
-    const syncLevels = useUserStore((state) => state.syncLevels);
     const mapTheme = useUserStore((state) => state.mapTheme);
     const setMapTheme = useUserStore((state) => state.setMapTheme);
     const pendingStreakData = useUserStore((state) => state.pendingStreakData);
@@ -27,9 +26,9 @@ export function GameRoot() {
         }
     }, []);
 
-    useEffect(() => {
-        syncLevels();
-    }, [syncLevels]);
+
+    // NOTE: syncLevels is called explicitly inside restoreSession after scores are loaded.
+    // Do NOT call it here on mount — it would run with empty levelScores and reset everything.
 
     const [sessionStatus, setSessionStatus] = useState<'checking' | 'found' | 'not_found'>('checking');
     const [connectionError, setConnectionError] = useState<string | null>(null);
@@ -153,56 +152,40 @@ export function GameRoot() {
                     localStorage.setItem('onboarding_done', 'true');
                 }
 
-                // PRIMARY: Read level_scores directly from users table (saved after every game completion)
-                let userLevelScores: Record<string, number> = {};
-                if (user.level_scores) {
-                    if (typeof user.level_scores === 'string') {
-                        try { userLevelScores = JSON.parse(user.level_scores); } catch (e) { console.error('Failed to parse level_scores', e); }
-                    } else {
-                        userLevelScores = user.level_scores;
-                    }
-                }
-                console.log('[Session] users.level_scores from DB:', JSON.stringify(userLevelScores));
-
-                // SECONDARY: Read game_sessions as fallback for any missing entries
-                const sessionScores: Record<string, number> = {};
+                // ── STEP 1: Build level scores from game_sessions (reliable — we KNOW this data exists) ──
+                const restoredScores: Record<string, number> = {};
                 try {
                     const { data: sessionData, error: gsErr } = await supabase
                         .from('game_sessions')
-                        .select('level_id, selected_personality, match_score, stars')
+                        .select('level_id, stars, match_score')
                         .eq('user_id', user.id);
 
-                    if (gsErr) {
-                        console.warn('[Session] game_sessions fetch error:', gsErr.message);
-                    } else if (sessionData && sessionData.length > 0) {
+                    if (!gsErr && sessionData && sessionData.length > 0) {
                         console.log('[Session] game_sessions rows found:', sessionData.length);
-                        const { data: levelsMaster } = await supabase.from('levels').select('id, personality, archetype');
-                        const allLevels = levelsMaster || [];
-
                         sessionData.forEach((session: any) => {
-                            let levelId: string | undefined = session.level_id;
-                            if (!levelId && session.selected_personality) {
-                                const match = allLevels.find((l: { id: string; personality?: string; archetype?: string }) => (l.personality || l.archetype) === session.selected_personality);
-                                levelId = match?.id;
-                            }
+                            const levelId = session.level_id;
                             if (levelId) {
                                 const stars = session.stars || (session.match_score >= 80 ? 3 : session.match_score >= 50 ? 2 : 1);
-                                sessionScores[levelId] = Math.max(sessionScores[levelId] || 0, stars);
+                                restoredScores[levelId] = Math.max(restoredScores[levelId] || 0, stars);
                             }
                         });
-                        console.log('[Session] Restored from game_sessions:', JSON.stringify(sessionScores));
-                    } else {
-                        console.log('[Session] No game_sessions found for user');
                     }
                 } catch (e) {
                     console.warn('[Session] game_sessions fetch threw:', e);
                 }
 
-                // Merge: users.level_scores takes priority, game_sessions fills gaps
-                const finalScores = { ...sessionScores, ...userLevelScores };
-                console.log('[Session] Final levelScores applied:', JSON.stringify(finalScores));
-                useUserStore.setState({ levelScores: finalScores });
+                // Also merge any level_scores saved directly on the users table
+                if (user.level_scores) {
+                    const dbScores = typeof user.level_scores === 'string'
+                        ? (() => { try { return JSON.parse(user.level_scores); } catch { return {}; } })()
+                        : user.level_scores;
+                    // DB scores override session-derived scores
+                    Object.assign(restoredScores, dbScores);
+                }
 
+                console.log('[Session] Final restored scores:', JSON.stringify(restoredScores));
+
+                // ── STEP 2: Set profile (this triggers syncLevels internally but we'll override after) ──
                 store.setProfile({
                     id: user.id,
                     name: user.name,
@@ -219,7 +202,6 @@ export function GameRoot() {
                     access_start_date: user.access_start_date,
                     preferred_map: user.preferred_map,
                     assessmentCompleted: quizCompleted,
-                    // Build the traits object directly so DNA Panel and game calculations work correctly
                     traits: {
                         risk: profileData?.trait_risk_taker || 50,
                         creativity: profileData?.trait_creative || 50,
@@ -229,7 +211,6 @@ export function GameRoot() {
                         discipline: 50,
                         resilience: 50,
                     },
-                    // Future Self data
                     futureArchetype: profileData?.future_archetype || undefined,
                     futureArchetypeScore: profileData?.future_archetype_score || undefined,
                     lifeTraits: profileData ? {
@@ -242,7 +223,6 @@ export function GameRoot() {
                         risk_intelligence: profileData.life_risk_intelligence || 50,
                         consistency: profileData.life_consistency || 50,
                     } : undefined,
-                    // Keep raw fields too for any legacy code
                     ...(profileData ? {
                         trait_risk_taker: profileData.trait_risk_taker,
                         trait_creative: profileData.trait_creative,
@@ -265,7 +245,7 @@ export function GameRoot() {
                             leadership: profileData.trait_ambitious || 50,
                             creativity: profileData.trait_creative || 50,
                             empathy: profileData.trait_social || 50,
-                            vision: profileData.trait_analytical || 50   // Fixed: was hardcoded 50
+                            vision: profileData.trait_analytical || 50
                         },
                         {
                             motivation: 'Stability', risk: 'Balanced', emotional: 'Resilient',
@@ -281,6 +261,28 @@ export function GameRoot() {
 
                 const savedTheme = user.preferred_theme || 'city_dark';
                 store.setMapTheme(savedTheme as any);
+
+                // ── STEP 3: FORCE-APPLY scores AFTER all profile/assessment setup ──
+                // This is the nuclear option: we set levelScores last so nothing can overwrite them,
+                // then we explicitly await syncLevels to merge them into the levels array.
+                if (Object.keys(restoredScores).length > 0) {
+                    useUserStore.setState({ levelScores: restoredScores });
+                    // Wait for syncLevels to complete so it picks up our scores
+                    await store.syncLevels();
+                    // Re-apply one more time in case syncLevels reset something
+                    useUserStore.setState({ levelScores: restoredScores });
+                    // Force-mark levels as completed in the levels array directly
+                    useUserStore.setState((state) => ({
+                        levels: state.levels.map(l => {
+                            const score = restoredScores[l.id];
+                            if (score !== undefined && score > 0) {
+                                return { ...l, status: 'completed', stars: score };
+                            }
+                            return l;
+                        })
+                    }));
+                    console.log('[Session] ✓ Force-applied', Object.keys(restoredScores).length, 'completed levels to map');
+                }
 
                 clearTimeout(maxWait);
                 setSessionStatus('found');
