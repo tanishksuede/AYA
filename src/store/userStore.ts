@@ -80,6 +80,9 @@ interface UserState {
 const syncStoreToBackend = async (profile: any) => {
     if (!profile || !profile.id || profile.id.startsWith('offline-')) return;
     try {
+        // Read levelScores from store state (not on profile object)
+        const currentLevelScores = useUserStore.getState().levelScores || {};
+
         await supabase.from('users').update({
             total_xp: profile.total_xp,
             level: profile.level,
@@ -87,8 +90,8 @@ const syncStoreToBackend = async (profile: any) => {
             current_streak: profile.current_streak,
             longest_streak: profile.longest_streak,
             last_active_date: profile.last_active_date,
-            daily_challenge_completed: profile.daily_challenge_completed
-            // Removed level_scores from here as it requires a DB migration. We hydrate dynamically from game_sessions instead.
+            daily_challenge_completed: profile.daily_challenge_completed,
+            level_scores: currentLevelScores,
         }).eq('id', profile.id);
 
         if (profile.traits) {

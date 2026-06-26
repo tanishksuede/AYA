@@ -216,13 +216,8 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
         };
     }, []);
 
-    const levelScores = useUserStore(state => state.levelScores);
-
     return (
         <div className="fixed inset-0 w-full h-[100dvh] bg-slate-900 overflow-hidden">
-            <div className="fixed top-0 left-0 bg-red-600/90 text-white z-[9999] p-2 text-xs font-mono w-full pointer-events-none break-all">
-                DEBUG SCORES: {JSON.stringify(levelScores)}
-            </div>
             <AudioController />
             {/* --- FIXED UI LAYER (Stays on Top) --- */}
 

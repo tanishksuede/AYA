@@ -8,7 +8,6 @@ import { DnaProfile } from '../components/game/DnaProfile';
 import { CharacterSelection } from '../components/game/CharacterSelection';
 import { MoodWheel } from '../components/MoodWheel/MoodWheel';
 import { DailyChallengeReveal } from '../components/game/DailyChallengeReveal';
-import { StreakCelebration } from '../components/game/StreakCelebration';
 import { LevelUpCelebration } from '../components/game/LevelUpCelebration';
 import { calculateLevelInfo } from '../utils/levelSystem';
 

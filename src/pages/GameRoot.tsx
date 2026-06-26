@@ -14,6 +14,7 @@ export function GameRoot() {
     const mapTheme = useUserStore((state) => state.mapTheme);
     const setMapTheme = useUserStore((state) => state.setMapTheme);
     const pendingStreakData = useUserStore((state) => state.pendingStreakData);
+    const setPendingStreakData = useUserStore((state) => state.setPendingStreakData);
     const location = useLocation();
     const navigate = useNavigate();
 

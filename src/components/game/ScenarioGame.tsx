@@ -97,6 +97,9 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
     // Pause state for visibility changes
     const [isPaused, setIsPaused] = useState(false);
     const [pauseStartTime, setPauseStartTime] = useState<number | null>(null);
+
+    // Save status toast state
+    const [saveStatus, setSaveStatus] = useState<'idle' | 'saved' | 'failed'>('idle');
     const toggleCandyMode = useUserStore((state) => state.toggleCandyMode);
     const collectLesson = useUserStore((state) => state.collectLesson);
     const updateTraits = useUserStore((state) => state.updateTraits);
@@ -547,14 +550,19 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                     }).eq('id', userProfile.id);
                     if (usersErr) {
                         console.error('[AYA] users update error:', usersErr.message, usersErr.details);
+                        setSaveStatus('failed');
                     } else {
                         console.log('[AYA] ✓ users updated (XP + level_scores saved)');
+                        setSaveStatus('saved');
                         // Immediately update local store so map reflects new stars
                         useUserStore.setState({ levelScores: updatedLevelScores });
                         // CRITICAL: Force recalculation of levels array so LevelMap.tsx sees the star!
                         useUserStore.getState().syncLevels();
                     }
-                } catch (e) { console.error('[AYA] users update threw:', e); }
+                } catch (e) {
+                    console.error('[AYA] users update threw:', e);
+                    setSaveStatus('failed');
+                }
 
                 // ── 2. Upsert personality_profiles ────────────────────────────────────────
                 try {
@@ -1078,6 +1086,18 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                     {ft.text}
                 </div>
             ))}
+
+            {/* Save Status Toast — visible indicator so user knows if DB save worked */}
+            {saveStatus !== 'idle' && (
+                <div className={clsx(
+                    "fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] px-5 py-2.5 rounded-full font-bold text-sm tracking-wide shadow-2xl border backdrop-blur-md transition-all animate-fade-in-up",
+                    saveStatus === 'saved'
+                        ? "bg-emerald-900/80 border-emerald-400/50 text-emerald-300"
+                        : "bg-red-900/80 border-red-400/50 text-red-300"
+                )}>
+                    {saveStatus === 'saved' ? '✓ Progress Saved' : '✗ Save Failed — check connection'}
+                </div>
+            )}
         </div>
     );
 }
