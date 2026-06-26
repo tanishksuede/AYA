@@ -233,7 +233,9 @@ export const useUserStore = create<UserState>()(
                     profile,
                     completedOnboarding: true
                 });
-                get().syncLevels();
+                // NOTE: syncLevels() is NOT called here anymore.
+                // The caller (e.g. restoreSession in GameRoot) must call it explicitly
+                // so scores can be applied AFTER levels are loaded.
             },
 
             syncLevels: async () => {
@@ -242,10 +244,14 @@ export const useUserStore = create<UserState>()(
                     console.warn('[Store] Failed to fetch levels from Supabase or table empty. Using local fallback.');
                     const store = get();
                     if (store.profile) {
-                        import('../utils/levelGenerator').then(({ generateLevels }) => {
+                        try {
+                            const { generateLevels } = await import('../utils/levelGenerator');
                             const fallbackLevels = generateLevels(store.profile!.age);
                             set({ levels: fallbackLevels });
-                        }).catch(err => console.error("Failed to load local fallback levels", err));
+                            console.log('[Store] Fallback levels generated:', fallbackLevels.length);
+                        } catch (err) {
+                            console.error("Failed to load local fallback levels", err);
+                        }
                     }
                     return;
                 }
