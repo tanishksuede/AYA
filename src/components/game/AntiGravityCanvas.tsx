@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { MotionValue } from 'framer-motion';
 import { useUserStore } from '../../store/userStore';
-
+import { createPortal } from 'react-dom';
 
 export const DISCLAIMER_TEXT = `About The Game
 At Your Age (AYA) is an interactive personality discovery game designed for entertainment and personal reflection 
@@ -49,6 +49,10 @@ Contact
 For questions or concerns about this disclaimer or your data please contact us at: atyourage@gmail.com
 Last updated: April 2026`;
 
+// Global cache to prevent re-fetching the 30MB video every time the map remounts (fixes flickering/repeated loading)
+const globalVideoBlobCache: Record<string, string> = {};
+const globalVideoFetchPromises: Record<string, Promise<string>> = {};
+
 interface AntiGravityCanvasProps {
     progress: MotionValue<number>;
     onReady: () => void;
@@ -62,37 +66,105 @@ export function AntiGravityCanvas({ progress, onReady }: AntiGravityCanvasProps)
 
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isReady, setIsReady] = useState(false);
+    const [loadingProgress, setLoadingProgress] = useState(0);
 
 
     useEffect(() => {
         setIntroVideoCompleted(false);
         setIsReady(false);
+        setLoadingProgress(0);
         
         const video = videoRef.current;
         if (!video) return;
 
+        let isCancelled = false;
+
         const handleCanPlay = () => {
-            if (!isReady) {
+            if (!isReady && !isCancelled) {
                 setIsReady(true);
                 setIntroVideoCompleted(true);
-                video.pause();
+                // Defer pause to ensure iOS Safari paints the first frame
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        if (video && !isCancelled) video.pause();
+                    });
+                });
                 if (onReady) onReady();
             }
         };
 
-        // We use native video buffering instead of manual Blob fetching.
-        // It's much faster for the user to enter the map while it progressively buffers.
+        const setupVideoSource = async () => {
+            // If already cached globally, skip the loading screen entirely!
+            if (globalVideoBlobCache[videoUrl]) {
+                setLoadingProgress(100);
+                video.src = globalVideoBlobCache[videoUrl];
+                video.load();
+                return;
+            }
+
+            try {
+                // Fetch video into a Blob to cache in memory and guarantee lag-free scrubbing (fixes mobile scrolling lag)
+                if (!globalVideoFetchPromises[videoUrl]) {
+                    globalVideoFetchPromises[videoUrl] = new Promise(async (resolve, reject) => {
+                        try {
+                            const response = await fetch(videoUrl);
+                            if (!response.body) throw new Error('No body');
+                            
+                            const reader = response.body.getReader();
+                            const contentLength = +(response.headers.get('Content-Length') || (isCandyMode ? '7000000' : '33000000'));
+                            let receivedLength = 0;
+                            const chunks = [];
+                            
+                            while(true) {
+                                const {done, value} = await reader.read();
+                                if (done) break;
+                                
+                                chunks.push(value);
+                                receivedLength += value.length;
+                                // Update progress only if it's the current active fetch
+                                if (!isCancelled) {
+                                    setLoadingProgress(Math.min(100, Math.round((receivedLength / contentLength) * 100)));
+                                }
+                            }
+                            
+                            const blob = new Blob(chunks, { type: 'video/mp4' });
+                            const blobUrl = URL.createObjectURL(blob);
+                            globalVideoBlobCache[videoUrl] = blobUrl;
+                            resolve(blobUrl);
+                        } catch (err) {
+                            reject(err);
+                        }
+                    });
+                }
+
+                // Wait for the active fetch (whether started by us or a previous mount)
+                const finalBlobUrl = await globalVideoFetchPromises[videoUrl];
+                
+                if (!isCancelled) {
+                    video.src = finalBlobUrl;
+                    video.load();
+                }
+            } catch (err) {
+                console.error("Failed to fetch video into memory cache:", err);
+                // Fallback directly to URL if fetch fails
+                if (!isCancelled) {
+                    video.src = videoUrl;
+                    video.load();
+                }
+            }
+        };
+
+        setupVideoSource();
+
         video.addEventListener('canplaythrough', handleCanPlay);
         video.addEventListener('loadeddata', handleCanPlay);
 
-        // Pre-fetch/buffer the video natively
-        video.load();
-
         return () => {
+            isCancelled = true;
             video.removeEventListener('canplaythrough', handleCanPlay);
             video.removeEventListener('loadeddata', handleCanPlay);
         };
-    }, [videoUrl, isReady, onReady, setIntroVideoCompleted]);
+    }, [videoUrl, onReady, setIntroVideoCompleted, isReady, isCandyMode]);
 
     useEffect(() => {
         const unsubscribe = progress.on('change', (latest: number) => {
@@ -116,10 +188,23 @@ export function AntiGravityCanvas({ progress, onReady }: AntiGravityCanvasProps)
 
     return (
         <>
-            <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-0 overflow-hidden bg-slate-900 opacity-100">
+            {!isReady && createPortal(
+                <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#050814]">
+                    <div className="absolute bottom-1/2 translate-y-1/2 flex flex-col items-center text-cyan-400 font-mono tracking-widest font-bold z-10 w-64 max-w-[80%]">
+                        <div className="text-sm mb-4 animate-pulse">CACHING TIMELINE...</div>
+                        <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden shadow-[0_0_15px_rgba(0,241,254,0.3)]">
+                            <div
+                                className="h-full bg-cyan-400 transition-all duration-200"
+                                style={{ width: `${loadingProgress}%` }}
+                            />
+                        </div>
+                    </div>
+                </div>,
+                document.body
+            )}
+            <div className={`fixed top-0 left-0 w-full h-full pointer-events-none z-0 overflow-hidden bg-slate-900 transition-opacity duration-1000 ${isReady ? 'opacity-100' : 'opacity-0'}`}>
                 <video
                     ref={videoRef}
-                    src={videoUrl}
                     className="w-full h-full object-cover opacity-80"
                     style={{ filter: isCandyMode ? 'contrast(1.1) brightness(1.1)' : 'contrast(1.2)' }}
                     muted
