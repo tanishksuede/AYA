@@ -121,9 +121,11 @@ export function AntiGravityCanvas({ progress, onReady }: AntiGravityCanvasProps)
             if (isCancelled) return;
             // Prevent duplicate triggers
             if (video.readyState >= 3) {
-                setIsReady(true);
-                setIntroVideoCompleted(true);
-                onReady();
+                if (!isReady) {
+                    setIsReady(true);
+                    setIntroVideoCompleted(true);
+                    if (onReady) onReady();
+                }
             }
         };
 
@@ -138,32 +140,27 @@ export function AntiGravityCanvas({ progress, onReady }: AntiGravityCanvasProps)
                 URL.revokeObjectURL(blobUrl);
             }
         };
-    }, [videoUrl, onReady, setIntroVideoCompleted]);
+    }, [videoUrl, onReady, setIntroVideoCompleted, isReady]);
 
     useEffect(() => {
-        const video = videoRef.current;
-        if (!video || !isReady) return;
-
-        let animationFrameId: number;
-        
-        const tick = () => {
-            if (video.duration) {
-                const currentProgress = Math.max(0, Math.min(1, progress.get() || 0));
+        const unsubscribe = progress.on('change', (latest: number) => {
+            const video = videoRef.current;
+            if (video && video.duration && !isNaN(video.duration)) {
+                // Constrain progress between 0 and 1
+                const currentProgress = Math.max(0, Math.min(1, latest));
                 const targetTime = currentProgress * video.duration;
-                // Update precisely without arbitrary threshold
-                if (video.currentTime !== targetTime) {
+                
+                // Update time if it differs to avoid unnecessary DOM writes
+                // A very small threshold to avoid spamming the DOM for micro-pixels,
+                // but low enough to avoid stuttering on scroll.
+                if (Math.abs(video.currentTime - targetTime) > 0.001) {
                     video.currentTime = targetTime;
                 }
             }
-            animationFrameId = requestAnimationFrame(tick);
-        };
-
-        tick();
-
-        return () => {
-            cancelAnimationFrame(animationFrameId);
-        };
-    }, [isReady, progress]);
+        });
+        
+        return () => unsubscribe();
+    }, [progress]);
 
     return (
         <>
@@ -184,7 +181,8 @@ export function AntiGravityCanvas({ progress, onReady }: AntiGravityCanvasProps)
             <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-0 overflow-hidden bg-slate-900">
                 <video
                     ref={videoRef}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover opacity-80"
+                    style={{ filter: isCandyMode ? 'contrast(1.1) brightness(1.1)' : 'contrast(1.2)' }}
                     muted
                     playsInline
                     preload="auto"

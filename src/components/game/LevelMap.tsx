@@ -22,9 +22,19 @@ interface LevelMapProps {
 export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
     const navigate = useNavigate();
     const levels = useUserStore((state) => state.levels);
+    const levelScores = useUserStore((state) => state.levelScores);
     const profile = useUserStore((state) => state.profile);
     const activeAge = profile?.age || 18;
-    let processedLevels = (levels || []).filter(l => l.age === activeAge);
+    
+    // Process levels and forcefully sync with levelScores to guarantee perfect UI reactivity
+    // even if the global levels array gets out of sync with levelScores due to async bugs.
+    let processedLevels = (levels || []).filter(l => l.age === activeAge).map(l => {
+        const localScore = levelScores[l.id];
+        if (localScore !== undefined && localScore > 0) {
+            return { ...l, status: 'completed', stars: Math.max(l.stars || 0, localScore) };
+        }
+        return l;
+    });
 
     // New stories that should be visible to ALL users regardless of interests.
     const alwaysShowPersonalities = new Set([
@@ -75,9 +85,17 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
 
     let ageLevels = processedLevels;
     if (profile?.preferred_map === 'jee') {
-        ageLevels = levels.filter(l => l.theme === 'JEE').sort((a, b) => (a.day_number || 0) - (b.day_number || 0));
+        ageLevels = levels.filter(l => l.theme === 'JEE').sort((a, b) => (a.day_number || 0) - (b.day_number || 0)).map(l => {
+            const localScore = levelScores[l.id];
+            if (localScore !== undefined && localScore > 0) return { ...l, status: 'completed', stars: Math.max(l.stars || 0, localScore) };
+            return l;
+        });
     } else if (profile?.preferred_map === 'neet') {
-        ageLevels = levels.filter(l => l.theme === 'NEET').sort((a, b) => (a.day_number || 0) - (b.day_number || 0));
+        ageLevels = levels.filter(l => l.theme === 'NEET').sort((a, b) => (a.day_number || 0) - (b.day_number || 0)).map(l => {
+            const localScore = levelScores[l.id];
+            if (localScore !== undefined && localScore > 0) return { ...l, status: 'completed', stars: Math.max(l.stars || 0, localScore) };
+            return l;
+        });
     }
     
     const unlockedDays = getUnlockedDayCount(profile?.access_type, profile?.access_start_date);
