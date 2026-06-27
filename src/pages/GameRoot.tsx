@@ -16,6 +16,7 @@ export function GameRoot() {
     const setPendingStreakData = useUserStore((state) => state.setPendingStreakData);
     const location = useLocation();
     const navigate = useNavigate();
+    const safetySyncStarted = useRef(false);
 
     // Sync theme from localStorage on mount; reset 'solar' → 'city_dark'
     useEffect(() => {
@@ -41,6 +42,23 @@ export function GameRoot() {
             }
         }
     }, [location.pathname, sessionStatus]);
+
+    // Safety net: if a user finishes onboarding, GameRoot is already mounted,
+    // so restoreSession() won't run again. We must fetch levels for them.
+    useEffect(() => {
+        const store = useUserStore.getState();
+        if (profile && store.levels.length === 0 && sessionStatus !== 'checking') {
+            if (!safetySyncStarted.current) {
+                safetySyncStarted.current = true;
+                store.syncLevels().finally(() => {
+                    // Reset if it somehow fails, allowing retry
+                    if (useUserStore.getState().levels.length === 0) {
+                        safetySyncStarted.current = false;
+                    }
+                });
+            }
+        }
+    }, [profile, sessionStatus]);
 
     useEffect(() => {
         const restoreSession = async () => {
@@ -189,7 +207,7 @@ export function GameRoot() {
                 store.setProfile({
                     id: user.id,
                     name: user.name,
-                    age: user.age,
+                    age: Number(user.age) || 18,
                     mobile: user.mobile,
                     total_xp: user.total_xp || 0,
                     level: user.level || 1,
