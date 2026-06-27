@@ -170,21 +170,31 @@ export function GameRoot() {
                     localStorage.setItem('onboarding_done', 'true');
                 }
 
-                // ── STEP 1: Build level scores from game_sessions (reliable — we KNOW this data exists) ──
+                // ── STEP 1: Build level scores from game_sessions and user table ──
                 const restoredScores: Record<string, number> = {};
+                
+                // 1a. Grab from users table as primary fallback (since game_sessions insert might fail)
+                if (user && user.level_scores) {
+                    const dbScores = typeof user.level_scores === 'string'
+                        ? (() => { try { return JSON.parse(user.level_scores); } catch { return {}; } })()
+                        : user.level_scores;
+                    Object.entries(dbScores).forEach(([id, stars]) => {
+                        restoredScores[id] = Math.max(restoredScores[id] || 0, Number(stars) || 0);
+                    });
+                }
+
+                // 1b. Grab from game_sessions
                 try {
                     const { data: sessionData, error: gsErr } = await supabase
                         .from('game_sessions')
                         .select('level_id, stars, match_score')
                         .eq('user_id', user.id);
 
-                    if (!gsErr && sessionData && sessionData.length > 0) {
-                        console.log('[Session] game_sessions rows found:', sessionData.length);
-                        sessionData.forEach((session: any) => {
-                            const levelId = session.level_id;
-                            if (levelId) {
-                                const stars = session.stars || (session.match_score >= 80 ? 3 : session.match_score >= 50 ? 2 : 1);
-                                restoredScores[levelId] = Math.max(restoredScores[levelId] || 0, stars);
+                    if (!gsErr && sessionData) {
+                        sessionData.forEach((gs: any) => {
+                            if (gs.level_id) {
+                                const stars = gs.stars || (gs.match_score >= 80 ? 3 : gs.match_score >= 50 ? 2 : 1);
+                                restoredScores[gs.level_id] = Math.max(restoredScores[gs.level_id] || 0, stars);
                             }
                         });
                     }
@@ -285,20 +295,37 @@ export function GameRoot() {
                 await store.syncLevels();
 
                 if (Object.keys(restoredScores).length > 0) {
-                    // Apply scores
-                    useUserStore.setState({ levelScores: restoredScores });
+                    // Apply scores by merging with local state (so we don't wipe progress if DB failed to save previously)
+                    useUserStore.setState((state) => ({ 
+                        levelScores: { ...state.levelScores, ...restoredScores } 
+                    }));
                     // Force-mark levels as completed in the levels array directly
                     useUserStore.setState((state) => ({
                         levels: state.levels.map(l => {
-                            const score = restoredScores[l.id];
-                            if (score !== undefined && score > 0) {
-                                return { ...l, status: 'completed', stars: score };
+                            const dbScore = restoredScores[l.id];
+                            const localScore = state.levelScores[l.id];
+                            const bestScore = Math.max(dbScore || 0, localScore || 0);
+                            
+                            if (bestScore > 0) {
+                                return { ...l, status: 'completed', stars: bestScore };
                             }
                             return l;
                         })
                     }));
-                    console.log('[Session] ✓ Force-applied', Object.keys(restoredScores).length, 'completed levels to map');
+                } else {
+                    // Even if DB has nothing, ensure local levelScores are applied to levels
+                    useUserStore.setState((state) => ({
+                        levels: state.levels.map(l => {
+                            const localScore = state.levelScores[l.id];
+                            if (localScore !== undefined && localScore > 0) {
+                                return { ...l, status: 'completed', stars: localScore };
+                            }
+                            return l;
+                        })
+                    }));
                 }
+                
+                console.log('[Session] ✓ Force-applied', Object.keys(restoredScores).length, 'completed levels to map');
 
                 clearTimeout(maxWait);
                 setSessionStatus('found');
