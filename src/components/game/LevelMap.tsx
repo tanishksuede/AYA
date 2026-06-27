@@ -513,9 +513,22 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
 
                                         {isCompleted && (
                                             <div className="absolute -top-4 md:-top-6 flex gap-1 justify-center w-full">
-                                                {[1, 2, 3].map(s => (
-                                                    <Star key={s} size={16} className="fill-yellow-400 text-yellow-600 drop-shadow-sm animate-bounce md:w-5 md:h-5" style={{ animationDelay: `${s * 100}ms` }} />
-                                                ))}
+                                                {[1, 2, 3].map(s => {
+                                                    const isEarned = s <= (level.stars || 1);
+                                                    return (
+                                                        <Star 
+                                                            key={s} 
+                                                            size={16} 
+                                                            className={clsx(
+                                                                "drop-shadow-sm md:w-5 md:h-5",
+                                                                isEarned 
+                                                                    ? "fill-yellow-400 text-yellow-600 animate-bounce" 
+                                                                    : "fill-slate-400/50 text-slate-500/50"
+                                                            )} 
+                                                            style={isEarned ? { animationDelay: `${s * 100}ms` } : {}} 
+                                                        />
+                                                    );
+                                                })}
                                             </div>
                                         )}
                                     </div>

@@ -609,20 +609,25 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
 
                 // ── 4. Insert game_sessions (history log — no scenario_choices to avoid JSONB errors) ──
                 try {
-                    const { data: insertData, error: insertError } = await supabase.from('game_sessions').insert([{
+                    const insertData = {
                         user_id: userProfile.id,
                         level_id: String(level.id),
                         selected_personality: String(level.personality || level.archetype || ''),
                         match_score: matchPercent,
                         stars: starCount
-                        // scenario_choices intentionally omitted — was causing insert failures
-                    }]).select();
-
+                    };
+                    const { data, error: insertError } = await supabase.from('game_sessions').insert(insertData).select();
+                    
                     if (insertError) {
-                        console.error('[AYA] game_sessions INSERT ERROR:', insertError.message, '|', insertError.details, '|', insertError.hint);
-                        hasInsertedSession.current = false;
+                        console.error('[AYA] game_sessions INSERT ERROR:', insertError.message, insertError.details, insertError.hint);
+                        // Fallback: Try inserting without new columns if they haven't been created yet
+                        const fallbackData = {
+                             user_id: userProfile.id,
+                             match_score: matchPercent,
+                        };
+                        await supabase.from('game_sessions').insert(fallbackData);
                     } else {
-                        console.log('[AYA] ✓ game_sessions inserted:', insertData);
+                        console.log('[AYA] ✓ game_sessions inserted:', data);
                     }
                 } catch (e) { console.error('[AYA] game_sessions insert threw:', e); }
 

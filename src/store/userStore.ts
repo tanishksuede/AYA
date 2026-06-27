@@ -83,7 +83,7 @@ const syncStoreToBackend = async (profile: any) => {
         // Read levelScores from store state (not on profile object)
         const currentLevelScores = useUserStore.getState().levelScores || {};
 
-        await supabase.from('users').update({
+        const { error: userError } = await supabase.from('users').update({
             total_xp: profile.total_xp,
             level: profile.level,
             stories_completed: profile.stories_completed,
@@ -94,8 +94,29 @@ const syncStoreToBackend = async (profile: any) => {
             level_scores: currentLevelScores,
         }).eq('id', profile.id);
 
+        if (userError) {
+            console.error('[Store] Supabase users update error:', userError);
+            // Fallback: Try updating without level_scores in case the column hasn't been created yet
+            const { error: fallbackError } = await supabase.from('users').update({
+                total_xp: profile.total_xp,
+                level: profile.level,
+                stories_completed: profile.stories_completed,
+                current_streak: profile.current_streak,
+                longest_streak: profile.longest_streak,
+                last_active_date: profile.last_active_date,
+                daily_challenge_completed: profile.daily_challenge_completed,
+            }).eq('id', profile.id);
+            if (fallbackError) {
+                 console.error('[Store] Fallback users update also failed:', fallbackError);
+            } else {
+                 console.log('[Store] ✓ Successfully saved profile to backend (fallback, without level_scores)');
+            }
+        } else {
+            console.log('[Store] ✓ Successfully saved profile to backend');
+        }
+
         if (profile.traits) {
-            await supabase.from('personality_profiles').update({
+            const { error: traitError } = await supabase.from('personality_profiles').update({
                 total_xp: profile.total_xp,
                 level: profile.level,
                 stories_completed: profile.stories_completed,
@@ -105,6 +126,10 @@ const syncStoreToBackend = async (profile: any) => {
                 trait_social: profile.traits.empathy,
                 trait_ambitious: profile.traits.leadership
             }).eq('user_id', profile.id);
+
+            if (traitError) {
+                console.error('[Store] Supabase traits update error:', traitError);
+            }
         }
     } catch (err) {
         console.error('[Store] Failed to sync to backend', err);
