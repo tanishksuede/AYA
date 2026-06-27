@@ -633,6 +633,9 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                 console.log('[AYA] Skipping duplicate game_sessions insert — already saved this session');
             }
 
+            // Call completeLevel locally immediately so it syncs to backend right away before timeout!
+            useUserStore.getState().completeLevel(String(level.id), starCount);
+
             // Push final XP + stories_completed to local Zustand store (triggers syncStoreToBackend as backup)
             addSessionProgression(sessionTotalXp);
 

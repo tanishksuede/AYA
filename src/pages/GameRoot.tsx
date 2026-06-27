@@ -187,7 +187,7 @@ export function GameRoot() {
                 try {
                     const { data: sessionData, error: gsErr } = await supabase
                         .from('game_sessions')
-                        .select('level_id, stars, match_score')
+                        .select('*')
                         .eq('user_id', user.id);
 
                     if (!gsErr && sessionData) {
