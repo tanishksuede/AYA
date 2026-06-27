@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { MotionValue } from 'framer-motion';
 import { useUserStore } from '../../store/userStore';
-import { createPortal } from 'react-dom';
+
 
 export const DISCLAIMER_TEXT = `About The Game
 At Your Age (AYA) is an interactive personality discovery game designed for entertainment and personal reflection 
@@ -62,7 +62,7 @@ export function AntiGravityCanvas({ progress, onReady }: AntiGravityCanvasProps)
 
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isReady, setIsReady] = useState(false);
-    const [loadingProgress, setLoadingProgress] = useState(0);
+
 
     useEffect(() => {
         setIntroVideoCompleted(false);
