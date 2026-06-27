@@ -75,6 +75,7 @@ export function AntiGravityCanvas({ progress, onReady }: AntiGravityCanvasProps)
             if (!isReady) {
                 setIsReady(true);
                 setIntroVideoCompleted(true);
+                video.pause();
                 if (onReady) onReady();
             }
         };
@@ -115,7 +116,7 @@ export function AntiGravityCanvas({ progress, onReady }: AntiGravityCanvasProps)
 
     return (
         <>
-            <div className={`fixed top-0 left-0 w-full h-full pointer-events-none z-0 overflow-hidden bg-slate-900 transition-opacity duration-1000 ${isReady ? 'opacity-100' : 'opacity-0'}`}>
+            <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-0 overflow-hidden bg-slate-900 opacity-100">
                 <video
                     ref={videoRef}
                     src={videoUrl}
@@ -123,6 +124,7 @@ export function AntiGravityCanvas({ progress, onReady }: AntiGravityCanvasProps)
                     style={{ filter: isCandyMode ? 'contrast(1.1) brightness(1.1)' : 'contrast(1.2)' }}
                     muted
                     playsInline
+                    autoPlay
                     preload="auto"
                 />
             </div>
