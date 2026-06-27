@@ -393,7 +393,6 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
                     style={{ 
                         height: totalHeight, 
                         y: hudY, 
-                        opacity: canvasReady ? 1 : 0,
                         willChange: "transform" // Force GPU acceleration on mobile
                     }}
                 >
