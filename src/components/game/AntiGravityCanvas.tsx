@@ -67,80 +67,31 @@ export function AntiGravityCanvas({ progress, onReady }: AntiGravityCanvasProps)
     useEffect(() => {
         setIntroVideoCompleted(false);
         setIsReady(false);
-        setLoadingProgress(0);
-
+        
         const video = videoRef.current;
         if (!video) return;
 
-        let blobUrl = '';
-        let isCancelled = false;
-
-        // Fetch video into a Blob to cache in memory and guarantee lag-free scrubbing
-        const fetchVideo = async () => {
-            try {
-                const response = await fetch(videoUrl);
-                if (!response.body) throw new Error('No body');
-                
-                const reader = response.body.getReader();
-                const contentLength = +(response.headers.get('Content-Length') || '14000000'); // Approx 14MB fallback
-                let receivedLength = 0;
-                const chunks = [];
-                
-                while(true) {
-                    const {done, value} = await reader.read();
-                    if (done) break;
-                    
-                    chunks.push(value);
-                    receivedLength += value.length;
-                    if (!isCancelled) {
-                        setLoadingProgress(Math.min(100, Math.round((receivedLength / contentLength) * 100)));
-                    }
-                }
-                
-                if (isCancelled) return;
-
-                const blob = new Blob(chunks, { type: 'video/mp4' });
-                blobUrl = URL.createObjectURL(blob);
-                
-                video.src = blobUrl;
-                video.load();
-                
-            } catch (err) {
-                console.error("Failed to fetch video into memory cache:", err);
-                // Fallback directly to URL if fetch fails
-                if (!isCancelled) {
-                    video.src = videoUrl;
-                    video.load();
-                }
+        const handleCanPlay = () => {
+            if (!isReady) {
+                setIsReady(true);
+                setIntroVideoCompleted(true);
+                if (onReady) onReady();
             }
         };
 
-        fetchVideo();
+        // We use native video buffering instead of manual Blob fetching.
+        // It's much faster for the user to enter the map while it progressively buffers.
+        video.addEventListener('canplaythrough', handleCanPlay);
+        video.addEventListener('loadeddata', handleCanPlay);
 
-        const handleCanPlayThrough = () => {
-            if (isCancelled) return;
-            // Prevent duplicate triggers
-            if (video.readyState >= 3) {
-                if (!isReady) {
-                    setIsReady(true);
-                    setIntroVideoCompleted(true);
-                    if (onReady) onReady();
-                }
-            }
-        };
-
-        video.addEventListener('canplaythrough', handleCanPlayThrough);
-        video.addEventListener('loadeddata', handleCanPlayThrough);
+        // Pre-fetch/buffer the video natively
+        video.load();
 
         return () => {
-            isCancelled = true;
-            video.removeEventListener('canplaythrough', handleCanPlayThrough);
-            video.removeEventListener('loadeddata', handleCanPlayThrough);
-            if (blobUrl) {
-                URL.revokeObjectURL(blobUrl);
-            }
+            video.removeEventListener('canplaythrough', handleCanPlay);
+            video.removeEventListener('loadeddata', handleCanPlay);
         };
-    }, [videoUrl, onReady, setIntroVideoCompleted, isReady]);
+    }, [videoUrl, isReady, onReady, setIntroVideoCompleted]);
 
     useEffect(() => {
         const unsubscribe = progress.on('change', (latest: number) => {
@@ -164,23 +115,10 @@ export function AntiGravityCanvas({ progress, onReady }: AntiGravityCanvasProps)
 
     return (
         <>
-            {!isReady && createPortal(
-                <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#050814]">
-                    <div className="absolute bottom-1/2 translate-y-1/2 flex flex-col items-center text-cyan-400 font-mono tracking-widest font-bold z-10 w-64 max-w-[80%]">
-                        <div className="text-sm mb-4 animate-pulse">CACHING TIMELINE...</div>
-                        <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden shadow-[0_0_15px_rgba(0,241,254,0.3)]">
-                            <div
-                                className="h-full bg-cyan-400 transition-all duration-200"
-                                style={{ width: `${loadingProgress}%` }}
-                            />
-                        </div>
-                    </div>
-                </div>,
-                document.body
-            )}
-            <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-0 overflow-hidden bg-slate-900">
+            <div className={`fixed top-0 left-0 w-full h-full pointer-events-none z-0 overflow-hidden bg-slate-900 transition-opacity duration-1000 ${isReady ? 'opacity-100' : 'opacity-0'}`}>
                 <video
                     ref={videoRef}
+                    src={videoUrl}
                     className="w-full h-full object-cover opacity-80"
                     style={{ filter: isCandyMode ? 'contrast(1.1) brightness(1.1)' : 'contrast(1.2)' }}
                     muted
