@@ -262,14 +262,12 @@ export function GameRoot() {
                 const savedTheme = user.preferred_theme || 'city_dark';
                 store.setMapTheme(savedTheme as any);
 
-                // ── STEP 3: FORCE-APPLY scores AFTER all profile/assessment setup ──
-                // This is the nuclear option: we set levelScores last so nothing can overwrite them,
-                // then we explicitly await syncLevels to merge them into the levels array.
+                // ── STEP 3: SYNC LEVELS AND APPLY SCORES ──
+                // Everyone needs levels, so we always sync them.
+                await store.syncLevels();
+
                 if (Object.keys(restoredScores).length > 0) {
-                    useUserStore.setState({ levelScores: restoredScores });
-                    // Wait for syncLevels to complete so it picks up our scores
-                    await store.syncLevels();
-                    // Re-apply one more time in case syncLevels reset something
+                    // Apply scores
                     useUserStore.setState({ levelScores: restoredScores });
                     // Force-mark levels as completed in the levels array directly
                     useUserStore.setState((state) => ({
