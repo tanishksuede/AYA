@@ -150,8 +150,8 @@ export function AntiGravityCanvas({ progress, onReady }: AntiGravityCanvasProps)
             if (video.duration) {
                 const currentProgress = Math.max(0, Math.min(1, progress.get() || 0));
                 const targetTime = currentProgress * video.duration;
-                // Only update if difference is meaningful (prevent tiny micro-stutters)
-                if (Math.abs(video.currentTime - targetTime) > 0.05) {
+                // Update precisely without arbitrary threshold
+                if (video.currentTime !== targetTime) {
                     video.currentTime = targetTime;
                 }
             }
