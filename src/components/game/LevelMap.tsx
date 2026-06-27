@@ -26,9 +26,10 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
     const profile = useUserStore((state) => state.profile);
     const activeAge = profile?.age || 18;
     
+    let ageLevels: any[] = [];
+    
     // Process levels and forcefully sync with levelScores to guarantee perfect UI reactivity
-    // even if the global levels array gets out of sync with levelScores due to async bugs.
-    let processedLevels = (levels || []).filter(l => l.age === activeAge).map(l => {
+    let processedLevels = (levels || []).map(l => {
         const localScore = levelScores[l.id];
         if (localScore !== undefined && localScore > 0) {
             return { ...l, status: 'completed', stars: Math.max(l.stars || 0, localScore) };
@@ -36,66 +37,72 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
         return l;
     });
 
-    // New stories that should be visible to ALL users regardless of interests.
-    const alwaysShowPersonalities = new Set([
-        'Billie Eilish', 'Justin Bieber', 'MrBeast', 'Ritesh Agarwal', 'Muhammad Ali',
-        'Dhruv Rathee', 'Falguni Nayar', 'Nikola Tesla',
-        'Zendaya', 'Neeraj Chopra', 'Prajakta Koli', 'Selena Gomez', 'Shah Rukh Khan'
-    ]);
-
-    if (profile?.psychologicalProfile) {
-        const { interest_goal = '', interest_domain = '' } = profile.psychologicalProfile as any;
-
-        let allowedNames = new Set<string>();
-        let bypassFilter = false;
-
-        const goals = interest_goal.split(',').map((s: string) => s.trim());
-        const domains = interest_domain.split(',').map((s: string) => s.trim());
-        const interests = [...goals, ...domains];
-
-        if (interests.some((i: string) => i.includes('Success') || i.includes('Leadership'))) {
-            bypassFilter = true;
-        }
-
-        if (!bypassFilter && interests.length > 0) {
-            if (interests.some((i: string) => i.includes('Money') || i.includes('Business'))) {
-                ['Bill Gates', 'Ratan Tata', 'Indra Nooyi', 'Walt Disney'].forEach(n => allowedNames.add(n));
-            }
-            if (interests.some((i: string) => i.includes('Tech'))) {
-                ['Bill Gates', 'Steve Jobs', 'Sundar Pichai'].forEach(n => allowedNames.add(n));
-            }
-            if (interests.some((i: string) => i.includes('Creativity') || i.includes('Love'))) {
-                ['Taylor Swift', 'Shah Rukh Khan', 'Frida Kahlo', 'A.R. Rahman', 'Steven Spielberg', 'J.K. Rowling', 'Mary Shelley'].forEach(n => allowedNames.add(n));
-            }
-            if (interests.some((i: string) => i.includes('Discipline'))) {
-                ['Sachin Tendulkar', 'Virat Kohli', 'Kobe Bryant', 'P.V. Sindhu', 'Arnold'].forEach(n => allowedNames.add(n));
-            }
-
-            if (allowedNames.size > 0) {
-                processedLevels = processedLevels.filter(l => {
-                    const p = l.personality || '';
-                    // Always show the new 7 stories for every user
-                    if (Array.from(alwaysShowPersonalities).some(n => p.includes(n))) return true;
-                    // Apply the original interest-based filter for everything else
-                    return Array.from(allowedNames).some(name => p.includes(name));
-                });
-            }
-        }
-    }
-
-    let ageLevels = processedLevels;
     if (profile?.preferred_map === 'jee') {
-        ageLevels = levels.filter(l => l.theme === 'JEE').sort((a, b) => (a.day_number || 0) - (b.day_number || 0)).map(l => {
-            const localScore = levelScores[l.id];
-            if (localScore !== undefined && localScore > 0) return { ...l, status: 'completed', stars: Math.max(l.stars || 0, localScore) };
-            return l;
-        });
+        ageLevels = processedLevels.filter(l => l.theme === 'JEE').sort((a, b) => (a.day_number || 0) - (b.day_number || 0));
     } else if (profile?.preferred_map === 'neet') {
-        ageLevels = levels.filter(l => l.theme === 'NEET').sort((a, b) => (a.day_number || 0) - (b.day_number || 0)).map(l => {
-            const localScore = levelScores[l.id];
-            if (localScore !== undefined && localScore > 0) return { ...l, status: 'completed', stars: Math.max(l.stars || 0, localScore) };
-            return l;
-        });
+        ageLevels = processedLevels.filter(l => l.theme === 'NEET').sort((a, b) => (a.day_number || 0) - (b.day_number || 0));
+    } else {
+        // Standard Map Flow
+        // 1. Filter by age
+        let ageFiltered = processedLevels.filter(l => Number(l.age) === Number(activeAge));
+        
+        // Fallback: If no levels for their exact age, fallback to age 18, or just all non-JEE/NEET levels
+        if (ageFiltered.length === 0) {
+            ageFiltered = processedLevels.filter(l => Number(l.age) === 18);
+        }
+        if (ageFiltered.length === 0) {
+            ageFiltered = processedLevels.filter(l => l.theme !== 'JEE' && l.theme !== 'NEET');
+        }
+
+        // 2. Apply Interest Filtering
+        const alwaysShowPersonalities = new Set([
+            'Billie Eilish', 'Justin Bieber', 'MrBeast', 'Ritesh Agarwal', 'Muhammad Ali',
+            'Dhruv Rathee', 'Falguni Nayar', 'Nikola Tesla',
+            'Zendaya', 'Neeraj Chopra', 'Prajakta Koli', 'Selena Gomez', 'Shah Rukh Khan'
+        ]);
+
+        let interestFiltered = ageFiltered;
+        if (profile?.psychologicalProfile) {
+            const { interest_goal = '', interest_domain = '' } = profile.psychologicalProfile as any;
+            let allowedNames = new Set<string>();
+            let bypassFilter = false;
+
+            const goals = interest_goal.split(',').map((s: string) => s.trim());
+            const domains = interest_domain.split(',').map((s: string) => s.trim());
+            const interests = [...goals, ...domains];
+
+            if (interests.some((i: string) => i.includes('Success') || i.includes('Leadership'))) bypassFilter = true;
+
+            if (!bypassFilter && interests.length > 0) {
+                if (interests.some((i: string) => i.includes('Money') || i.includes('Business'))) {
+                    ['Bill Gates', 'Ratan Tata', 'Indra Nooyi', 'Walt Disney'].forEach(n => allowedNames.add(n));
+                }
+                if (interests.some((i: string) => i.includes('Tech'))) {
+                    ['Bill Gates', 'Steve Jobs', 'Sundar Pichai'].forEach(n => allowedNames.add(n));
+                }
+                if (interests.some((i: string) => i.includes('Creativity') || i.includes('Love'))) {
+                    ['Taylor Swift', 'Shah Rukh Khan', 'Frida Kahlo', 'A.R. Rahman', 'Steven Spielberg', 'J.K. Rowling', 'Mary Shelley'].forEach(n => allowedNames.add(n));
+                }
+                if (interests.some((i: string) => i.includes('Discipline'))) {
+                    ['Sachin Tendulkar', 'Virat Kohli', 'Kobe Bryant', 'P.V. Sindhu', 'Arnold'].forEach(n => allowedNames.add(n));
+                }
+
+                if (allowedNames.size > 0) {
+                    const tempFiltered = ageFiltered.filter(l => {
+                        const p = l.personality || '';
+                        if (Array.from(alwaysShowPersonalities).some(n => p.includes(n))) return true;
+                        return Array.from(allowedNames).some(name => p.includes(name));
+                    });
+                    
+                    // SAFETY NET: If interest filter wiped out ALL nodes, ignore the filter
+                    if (tempFiltered.length > 0) {
+                        interestFiltered = tempFiltered;
+                    }
+                }
+            }
+        }
+        
+        ageLevels = interestFiltered;
     }
     
     const unlockedDays = getUnlockedDayCount(profile?.access_type, profile?.access_start_date);
