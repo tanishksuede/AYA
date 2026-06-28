@@ -413,8 +413,9 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
                             if (level.day_number !== undefined) {
                                 isUnlocked = level.day_number <= unlockedDays;
                             }
-                            const isCompleted = level.status === 'completed';
+                            const isCompleted = level.status === 'completed' || (levelScores[level.id] !== undefined && levelScores[level.id] > 0);
                             const isCurrent = isUnlocked && !isCompleted;
+                            const earnedStars = levelScores[level.id] || level.stars || 0;
 
                             return (
                                 <div
@@ -538,7 +539,7 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
                                         {isCompleted && (
                                             <div className="absolute -top-4 md:-top-6 flex gap-1 justify-center w-full">
                                                 {[1, 2, 3].map(s => {
-                                                    const isEarned = s <= (level.stars || 1);
+                                                    const isEarned = s <= (earnedStars || 1);
                                                     return (
                                                         <Star 
                                                             key={s} 
