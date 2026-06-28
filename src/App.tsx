@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AppLayout } from './layouts/AppLayout';
-import { HomePage } from './pages/Home';
+
 import { GameRoot } from './pages/GameRoot';
 import { bgmManager } from './utils/bgmManager';
 import { MapRouteHandler, IntroRouteHandler, PlayRouteHandler, ReportRouteHandler, DnaRouteHandler, SelectionRouteHandler, MoodRouteHandler, DailyRevealRouteHandler, LevelUpRouteHandler } from './pages/GameRouteHandlers';
