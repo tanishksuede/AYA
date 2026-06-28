@@ -536,10 +536,10 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
                                             </div>
                                         </div>
 
-                                        {isCompleted && (
+                                        {true && (
                                             <div className="absolute -top-4 md:-top-6 flex gap-1 justify-center w-full">
                                                 {[1, 2, 3].map(s => {
-                                                    const isEarned = s <= (earnedStars || 1);
+                                                    const isEarned = s <= (earnedStars || 0);
                                                     return (
                                                         <Star 
                                                             key={s} 

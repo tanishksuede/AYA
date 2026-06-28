@@ -34,7 +34,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<AppLayout />}>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<Navigate to="/game" replace />} />
           <Route path="/game" element={<GameRoot />}>
             <Route index element={<MapRouteHandler />} />
             <Route path="welcome" element={<OnboardingWizard />} />
