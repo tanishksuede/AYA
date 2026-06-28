@@ -183,34 +183,6 @@ export function GameRoot() {
                     });
                 }
 
-                // 1b. Grab from game_sessions
-                try {
-                    const { data: sessionData, error: gsErr } = await supabase
-                        .from('game_sessions')
-                        .select('*')
-                        .eq('user_id', user.id);
-
-                    if (!gsErr && sessionData) {
-                        sessionData.forEach((gs: any) => {
-                            if (gs.level_id) {
-                                const stars = gs.stars || (gs.match_score >= 80 ? 3 : gs.match_score >= 50 ? 2 : 1);
-                                restoredScores[gs.level_id] = Math.max(restoredScores[gs.level_id] || 0, stars);
-                            }
-                        });
-                    }
-                } catch (e) {
-                    console.warn('[Session] game_sessions fetch threw:', e);
-                }
-
-                // Also merge any level_scores saved directly on the users table
-                if (user.level_scores) {
-                    const dbScores = typeof user.level_scores === 'string'
-                        ? (() => { try { return JSON.parse(user.level_scores); } catch { return {}; } })()
-                        : user.level_scores;
-                    // DB scores override session-derived scores
-                    Object.assign(restoredScores, dbScores);
-                }
-
                 console.log('[Session] Final restored scores:', JSON.stringify(restoredScores));
 
                 // ── STEP 2: Set profile (this triggers syncLevels internally but we'll override after) ──
