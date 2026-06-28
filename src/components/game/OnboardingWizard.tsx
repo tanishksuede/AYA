@@ -223,6 +223,22 @@ export function OnboardingWizard() {
             // Persist session to localStorage + sessionStorage
             saveSession({ id: userId, mobile: userData.mobile, name: userData.name, age: userData.age });
 
+            // Extract level_scores from userData if they exist
+            const dbScores: Record<string, number> = {};
+            if (userData.level_scores) {
+                const parsed = typeof userData.level_scores === 'string' 
+                    ? (() => { try { return JSON.parse(userData.level_scores); } catch { return {}; } })()
+                    : userData.level_scores;
+                Object.entries(parsed).forEach(([id, stars]) => {
+                    dbScores[id] = Math.max(dbScores[id] || 0, Number(stars) || 0);
+                });
+            }
+
+            // Merge into store BEFORE setting profile so it's ready when Map loads
+            useUserStore.setState((state) => ({
+                levelScores: { ...state.levelScores, ...dbScores }
+            }));
+
             // Generate a fresh profile or load existing
             setProfile({
                 id: userId, 
