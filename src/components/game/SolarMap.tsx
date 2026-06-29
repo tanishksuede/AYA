@@ -13,9 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { ThemeSwitcherModal } from './ThemeSwitcherModal';
 import { supabase } from '../../utils/supabase';
 
-// Global cache to keep frames in memory across component mounts
-type FrameType = HTMLImageElement | ImageBitmap;
-let globalSolarFramesCache: FrameType[] | null = null;
+// Using HTML5 Video scrubbing for map background
 
 interface SolarMapProps {
     onPlayLevel: (level: any) => void;
@@ -109,24 +107,7 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
 
     const NODE_OFFSETS = isMobile ? MOBILE_NODE_OFFSETS : DESKTOP_NODE_OFFSETS;
 
-    // Build frame sequence from EXACTLY what exists on disk:
-    // ezgif-frame-001.jpg to ezgif-frame-240.jpg  (240 files)
-    // ezfif-frame-242 (1).jpg                      (1 file)
-    // ezfif-frame-242 (241).jpg to (479).jpg       (239 files)
-    // TOTAL: 480 files
-    const getFrameSequence = () => {
-        const seq: string[] = [];
-        for (let i = 1; i <= 240; i++) {
-            seq.push(`/assets/map_frames_solar/ezgif-frame-${String(i).padStart(3, '0')}.jpg`);
-        }
-        seq.push(`/assets/map_frames_solar/ezfif-frame-242%20(1).jpg`);
-        for (let i = 241; i <= 479; i++) {
-            seq.push(`/assets/map_frames_solar/ezfif-frame-242%20(${i}).jpg`);
-        }
-        return seq;
-    };
-    const FRAME_URLS = getFrameSequence();
-    const totalFrames = FRAME_URLS.length; // 480
+    const totalFrames = 480; // Virtual frames for scroll math
 
     const getPosition = (index: number) => {
         const y = index * NODE_SPACING + (isMobile ? 120 : 150);
@@ -140,7 +121,7 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
 
     // Scroll refs and values
     const containerRef = useRef<HTMLDivElement>(null);
-    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const backgroundVideoRef = useRef<HTMLVideoElement>(null);
     const [windowHeight, setWindowHeight] = useState(typeof window !== 'undefined' ? window.innerHeight : 800);
     
     // Scroll container height = lastNodePosition + viewport height
@@ -149,7 +130,6 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
 
     const [canvasReady, setCanvasReady] = useState(false);
     const [framesLoaded, setFramesLoaded] = useState(0);
-    const idleFramesRef = useRef<FrameType[]>([]);
     const currentFrameIdx = useRef<number>(0);
 
     // Intro Video & Disclaimer State
@@ -179,136 +159,11 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
     const scrollableDistance = Math.max(0, totalHeight - windowHeight);
     const hudY = useTransform(smoothProgress, [0, 1], [0, -scrollableDistance]);
 
-    // Idle Animation Frame Logic
+    // Video scrubbing initialization (no frames to load anymore)
     useEffect(() => {
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-
-        let isUnmounted = false;
-        
-        // Low-end device check
-        const isLowEnd = (navigator.hardwareConcurrency || 4) < 4;
-
-        const drawFrame = (img: ImageBitmap | HTMLImageElement) => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
-            const x = (canvas.width / 2) - (img.width / 2) * scale;
-            const y = (canvas.height / 2) - (img.height / 2) * scale;
-            ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
-        };
-
-        if (isLowEnd) {
-            // Static fallback
-            const img = new Image();
-            img.src = '/assets/map_frames_solar/ezgif-frame-001.jpg';
-            img.onload = () => {
-                if (isUnmounted) return;
-                drawFrame(img);
-                setCanvasReady(true);
-            };
-            return () => { isUnmounted = true; };
-        }
-
-        const isInitialLoad = performance.now() < 10000;
-
-        const loadFrame = (url: string): Promise<HTMLImageElement> => {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
-                img.crossOrigin = 'anonymous';
-                img.onload = () => resolve(img);
-                img.onerror = reject;
-                img.src = url;
-            });
-        };
-
-        const loadFrames = async () => {
-            // Check cache
-            if (globalSolarFramesCache) {
-                idleFramesRef.current = globalSolarFramesCache;
-                setCanvasReady(true);
-                setFramesLoaded(totalFrames);
-                drawFrame(globalSolarFramesCache[currentFrameIdx.current]);
-                return;
-            }
-
-            // If it's initial load, we still load them but we won't show the loading UI
-            if (isInitialLoad) {
-                setCanvasReady(true);
-            }
-
-            const batchSize = 50;
-            const loadedBitmaps: FrameType[] = new Array(totalFrames);
-            
-            // First load frame 1 immediately and draw it to prevent blank screen
-            const firstImg = new Image();
-            firstImg.src = '/assets/map_frames_solar/ezgif-frame-001.jpg';
-            await new Promise((resolve) => {
-                firstImg.onload = () => {
-                    if (!isUnmounted) drawFrame(firstImg);
-                    resolve(true);
-                }
-            });
-
-            // Load ALL frames in one unified loop — no split needed
-            for (let i = 0; i < totalFrames; i += batchSize) {
-                if (isUnmounted) return;
-                const batchPromises = [];
-                for (let j = i; j < i + batchSize && j < totalFrames; j++) {
-                    const src = FRAME_URLS[j];
-                    batchPromises.push(
-                        loadFrame(src)
-                            .then(img => {
-                                loadedBitmaps[j] = img;
-                                if (!isUnmounted) {
-                                    setFramesLoaded(prev => prev + 1);
-                                }
-                            })
-                            .catch(e => console.warn(`[Solar] Failed frame ${j}: ${src}`, e))
-                    );
-                }
-                await Promise.all(batchPromises);
-            }
-
-            if (isUnmounted) return;
-            
-            // Fill any missing frames with previous available frame to prevent crash
-            for (let i = 0; i < totalFrames; i++) {
-                if (!loadedBitmaps[i]) {
-                    loadedBitmaps[i] = loadedBitmaps[i-1] || loadedBitmaps.find(b => b)!;
-                }
-            }
-
-            globalSolarFramesCache = loadedBitmaps;
-            idleFramesRef.current = loadedBitmaps;
-            if (!isInitialLoad) {
-                setCanvasReady(true);
-            }
-            
-            console.log('[Solar] Total frames loaded:', idleFramesRef.current.length);
-            drawFrame(idleFramesRef.current[currentFrameIdx.current]);
-        };
-
-        loadFrames();
-
-        const handleResize = () => {
-            if (idleFramesRef.current.length > 0) {
-               drawFrame(idleFramesRef.current[currentFrameIdx.current]);
-            } else if (isLowEnd) {
-                const img = new Image();
-                img.src = '/assets/map_frames_solar/ezgif-frame-001.jpg';
-                img.onload = () => drawFrame(img);
-            }
-        };
-
-        window.addEventListener('resize', handleResize);
-        return () => {
-            isUnmounted = true;
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
+        // We consider it "ready" once the video data loads, but to not break the intro we simulate framesLoaded
+        setFramesLoaded(totalFrames);
+    }, [totalFrames]);
 
     // Effect to handle total readiness (Video + Images)
     useEffect(() => {
@@ -345,9 +200,6 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
 
     // Custom Scroll Parallax Effect (Native Wheel/Touch with Lerp)
     useEffect(() => {
-        if (!canvasReady || idleFramesRef.current.length === 0) return;
-
-        const totalFrames = idleFramesRef.current.length;
         const container = containerRef.current;
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -392,7 +244,12 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
                 const frameIndex = Math.round(currentFrameRef.current);
                 currentFrameIdx.current = frameIndex;
                 
-                drawFrame(frameIndex);
+                // Scrub video based on progress
+                const progress = currentFrameRef.current / Math.max(1, totalFrames - 1);
+                if (backgroundVideoRef.current && backgroundVideoRef.current.duration) {
+                    // Update video time for smooth scrubbing
+                    backgroundVideoRef.current.currentTime = progress * backgroundVideoRef.current.duration;
+                }
                 
                 // Audio glide
                 const delta = Math.abs(currentFrameRef.current - prevFrame);
@@ -407,7 +264,6 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
                 }
                 
                 // Sync HUD nodes using continuous values for extreme smoothness
-                const progress = currentFrameRef.current / Math.max(1, totalFrames - 1);
                 if (Math.abs(progress - lastProgress) > 0.0001) {
                     scrollYProgress.set(progress);
                     lastProgress = progress;
@@ -452,45 +308,32 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
         };
 
         // Attach to BOTH window and container to ensure it always fires
+                    targetProgressRef.current = Math.max(0, Math.min(1, targetProgressRef.current + touchDelta));
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        };
+
         window.addEventListener('wheel', handleWheel, { passive: false });
         window.addEventListener('touchstart', handleTouchStart, { passive: true });
         window.addEventListener('touchmove', handleTouchMove, { passive: true });
         
         container?.addEventListener('wheel', handleWheel, { passive: false });
-        container?.addEventListener('touchstart', handleTouchStart, { passive: true });
         container?.addEventListener('touchmove', handleTouchMove, { passive: true });
-
-        canvas?.addEventListener('touchstart', handleTouchStart, { passive: true });
-        canvas?.addEventListener('touchmove', handleTouchMove, { passive: true });
 
         return () => {
             cancelAnimationFrame(animationFrameId);
-            canvas.style.willChange = 'auto';
-
             window.removeEventListener('wheel', handleWheel);
             window.removeEventListener('touchstart', handleTouchStart);
             window.removeEventListener('touchmove', handleTouchMove);
-            
             container?.removeEventListener('wheel', handleWheel);
-            container?.removeEventListener('touchstart', handleTouchStart);
             container?.removeEventListener('touchmove', handleTouchMove);
-            
-            canvas?.removeEventListener('touchstart', handleTouchStart);
-            canvas?.removeEventListener('touchmove', handleTouchMove);
         };
     }, [canvasReady, scrollYProgress]);
 
     useEffect(() => {
         audioSynth.playStartup();
-        const scrollToTop = () => {
-            if (containerRef.current) {
-                containerRef.current.scrollTop = 0;
-                containerRef.current.dispatchEvent(new Event('scroll'));
-            }
-        };
-        requestAnimationFrame(scrollToTop);
-        const timer = setTimeout(scrollToTop, 150);
-        return () => clearTimeout(timer);
     }, [ageLevels.length]);
 
     return (
@@ -570,34 +413,6 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
                 </button>
             </div>
 
-            {/* Modals */}
-            <ThemeSwitcherModal isOpen={showThemeSwitcher} onClose={() => setShowThemeSwitcher(false)} />
-            {showJournal && <LessonJournal onClose={() => setShowJournal(false)} />}
-            {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
-            {showChallengeModal && (
-                <DailyChallengeModal 
-                    isOpen={showChallengeModal} 
-                    onClose={() => setShowChallengeModal(false)}
-                    onStartChallenge={() => { setShowChallengeModal(false); navigate('/game/mood'); }}
-                />
-            )}
-            {/* Modals moved to routes */}
-
-            {/* Loading Bar Overlay */}
-            {(!canvasReady && framesLoaded < totalFrames && (navigator.hardwareConcurrency || 4) >= 4) && (
-                <div className="absolute inset-0 z-[150] flex flex-col items-center justify-center bg-slate-950/80 backdrop-blur-sm pointer-events-none transition-opacity duration-1000">
-                    <div className="w-64 h-2 bg-slate-900 rounded-full overflow-hidden border border-[#FFB347]/30 shadow-[0_0_15px_rgba(255,179,71,0.2)]">
-                        <div 
-                            className="h-full bg-gradient-to-r from-[#FFB347] to-[#ff7b00] transition-all duration-300"
-                            style={{ width: `${(framesLoaded / totalFrames) * 100}%` }}
-                        />
-                    </div>
-                    <p className="mt-4 text-xs font-black uppercase tracking-widest text-[#FFB347] animate-pulse">
-                        Warping Space... {Math.round((framesLoaded / totalFrames) * 100)}%
-                    </p>
-                </div>
-            )}
-
             {/* Cinematic Intro & Disclaimer Portal */}
             {!isReady && createPortal(
                 <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#0a0510]">
@@ -633,33 +448,27 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
                         onEnded={() => setIsVideoFinished(true)}
                         className={`w-full h-full object-cover md:object-contain relative z-10 transition-opacity duration-500 ease-in-out ${isVideoPlaying && !isFadingOut ? 'opacity-100' : 'opacity-0'}`}
                     />
-                    
-                    {/* Progress Bar inside Intro for Solar Map specifically */}
-                    {isVideoFinished && !canvasReady && (
-                        <div className="absolute bottom-10 flex flex-col items-center text-[#FFB347] font-mono tracking-widest font-bold z-10">
-                            <div className="text-sm mb-2 animate-pulse uppercase">Solar Map Loading...</div>
-                            <div className="w-48 h-1 bg-slate-900 rounded-full overflow-hidden shadow-[0_0_15px_rgba(255,179,71,0.3)] border border-[#FFB347]/20">
-                                <div
-                                    className="h-full bg-gradient-to-r from-[#FFB347] to-[#ff7b00] transition-all duration-300"
-                                    style={{ width: `${(framesLoaded / totalFrames) * 100}%` }}
-                                />
-                            </div>
-                        </div>
-                    )}
                 </div>,
                 document.body
             )}
 
             {/* Scrollable Map */}
-            <div ref={containerRef} className="fixed inset-0 w-[100vw] h-[100vh] overflow-hidden touch-none">
-                <div style={{ height: totalHeight, width: '100%' }} />
-
-                {/* LAYER 1: STATIC CANVAS */}
-                <canvas 
-                    ref={canvasRef} 
-                    className="fixed inset-0 w-full h-full object-cover pointer-events-none"
-                    style={{ zIndex: 0 }}
+            <div ref={containerRef} className="relative h-[100dvh] w-full bg-[#0a0510] text-white overflow-hidden touch-none selection:bg-[#FFB347] selection:text-[#4a2e00] font-sans">
+            
+            {/* LAYER 1: Full HD Background Video Scrubbing */}
+            <div className="fixed inset-0 z-0 pointer-events-none bg-black">
+                <video
+                    ref={backgroundVideoRef}
+                    src="/assets/map_frames_dark.mp4"
+                    preload="auto"
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover"
+                    onLoadedData={() => {
+                        setCanvasReady(true);
+                    }}
                 />
+            </div>
                 <div className="fixed inset-0 bg-gradient-to-t from-[#0a0510]/80 via-transparent to-slate-900/50 mix-blend-overlay pointer-events-none z-10" />
 
                 {/* LAYER 2: NODES */}
