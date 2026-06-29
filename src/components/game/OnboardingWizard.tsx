@@ -158,7 +158,7 @@ export function OnboardingWizard() {
         
         checkGoogleAuth();
         
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
             if (session && session.user && !googleAuthId) {
                 setIsLoading(true);
                 checkGoogleAuth();
@@ -250,14 +250,7 @@ export function OnboardingWizard() {
             current_streak: userData.current_streak || 0,
             longest_streak: userData.longest_streak || 0,
             last_active_date: userData.last_active_date || new Date().toISOString().split('T')[0],
-            daily_challenge_completed: userData.daily_challenge_completed || false,
-            psychologicalProfile: {
-                dominantArchetype: existingProfile?.future_archetype || 'Explorer',
-                coreMotivations: [],
-                learningStyle: 'Visual',
-                decisionMaking: 'Analytical',
-                growthAreas: []
-            }
+            daily_challenge_completed: userData.daily_challenge_completed || false
         });
     };
 
