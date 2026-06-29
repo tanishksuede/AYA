@@ -131,9 +131,13 @@ export function OnboardingWizard() {
         if (isRegisterMode) {
             const tempGoogleId = sessionStorage.getItem('aya_temp_google_id');
             const tempGoogleName = sessionStorage.getItem('aya_temp_google_name');
+            const tempGoogleAge = sessionStorage.getItem('aya_temp_google_age');
+            const tempGoogleMobile = sessionStorage.getItem('aya_temp_google_mobile');
             if (tempGoogleId) {
                 setGoogleAuthId(tempGoogleId);
                 setName(tempGoogleName || "");
+                if (tempGoogleAge) setAge(Number(tempGoogleAge));
+                if (tempGoogleMobile) setMobile(tempGoogleMobile);
             }
             setIsLoading(false);
         }
@@ -186,13 +190,20 @@ export function OnboardingWizard() {
                     }
 
                     if (existingUser) {
-                        // They are already linked! Automatically log them in
-                        await performLogin(existingUser, googleId, true);
+                        // ALWAYS redirect to setup page even if existing, but store details
+                        sessionStorage.setItem('aya_temp_google_id', googleId);
+                        sessionStorage.setItem('aya_temp_google_name', existingUser.name || "");
+                        sessionStorage.setItem('aya_temp_google_age', String(existingUser.age || 20));
+                        sessionStorage.setItem('aya_temp_google_mobile', existingUser.mobile || "");
+                        sessionStorage.setItem('aya_temp_existing_user', 'true');
+                        sessionStorage.setItem('aya_temp_user_data', JSON.stringify(existingUser));
+                        navigate('/game/setup');
                         return;
                     } else {
                         // NEW USER: Redirect to setup page
                         sessionStorage.setItem('aya_temp_google_id', googleId);
                         sessionStorage.setItem('aya_temp_google_name', session.user.user_metadata.full_name || "");
+                        sessionStorage.setItem('aya_temp_existing_user', 'false');
                         navigate('/game/setup');
                         return;
                     }
@@ -321,6 +332,46 @@ export function OnboardingWizard() {
         }, 20000);
 
         try {
+            // Check if they are existing user logging in
+            const isExistingGoogle = sessionStorage.getItem('aya_temp_existing_user') === 'true';
+            if (isExistingGoogle) {
+                const userDataRaw = sessionStorage.getItem('aya_temp_user_data');
+                if (userDataRaw) {
+                    try {
+                        const userData = JSON.parse(userDataRaw);
+                        const cleanMobile = mobile.trim().replace(/\s+/g, '');
+                        // Update details if changed
+                        if (userData.name !== name.trim() || userData.age !== age || userData.mobile !== cleanMobile) {
+                            const { error: updateError } = await supabase
+                                .from('users')
+                                .update({
+                                    name: name.trim(),
+                                    age: age,
+                                    mobile: cleanMobile
+                                })
+                                .eq('id', userData.id);
+                            if (updateError) console.warn("Failed to update user details on login", updateError);
+                            userData.name = name.trim();
+                            userData.age = age;
+                            userData.mobile = cleanMobile;
+                        }
+                        clearTimeout(fallback);
+                        await performLogin(userData, googleAuthId, true);
+                        
+                        // Clean up
+                        sessionStorage.removeItem('aya_temp_google_id');
+                        sessionStorage.removeItem('aya_temp_google_name');
+                        sessionStorage.removeItem('aya_temp_google_age');
+                        sessionStorage.removeItem('aya_temp_google_mobile');
+                        sessionStorage.removeItem('aya_temp_existing_user');
+                        sessionStorage.removeItem('aya_temp_user_data');
+                        return;
+                    } catch (e: any) {
+                        console.error("Failed to process existing Google user", e);
+                    }
+                }
+            }
+
             // Check if user exists by mobile
             const { data: existingUser, error: searchError } = await supabase
                 .from('users')
@@ -550,7 +601,7 @@ export function OnboardingWizard() {
                                         animate={{ opacity: [0, 0.4, 0] }}
                                         transition={{ duration: 2, repeat: Infinity }}
                                     />
-                                    <span className="relative z-10">{isLoading ? 'INITIALIZING...' : (googleAuthId ? 'LINK ACCOUNT' : 'START MY JOURNEY')}</span>
+                                    <span className="relative z-10">{isLoading ? 'INITIALIZING...' : (sessionStorage.getItem('aya_temp_existing_user') === 'true' ? 'CONFIRM & ENTER GAME' : (googleAuthId ? 'LINK ACCOUNT' : 'START MY JOURNEY'))}</span>
                                     {!isLoading && <Check size={28} className="relative z-10 stroke-[4]" />}
                                 </motion.button>
                                 
@@ -561,6 +612,10 @@ export function OnboardingWizard() {
                                         audioSynth.playClick(); 
                                         sessionStorage.removeItem('aya_temp_google_id');
                                         sessionStorage.removeItem('aya_temp_google_name');
+                                        sessionStorage.removeItem('aya_temp_google_age');
+                                        sessionStorage.removeItem('aya_temp_google_mobile');
+                                        sessionStorage.removeItem('aya_temp_existing_user');
+                                        sessionStorage.removeItem('aya_temp_user_data');
                                         navigate('/game/welcome'); 
                                     }}
                                     className="w-full py-4 bg-transparent text-white/70 font-bold text-sm rounded-full transition-all hover:text-white mt-2"
