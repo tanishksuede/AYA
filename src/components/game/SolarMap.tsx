@@ -315,6 +315,7 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
         if (canvasReady && isVideoFinished) {
             setIsReady(true);
             setIntroVideoCompleted(true);
+            audioSynth.playStartup();
         }
     }, [canvasReady, isVideoFinished, setIntroVideoCompleted]);
 
@@ -359,14 +360,21 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
         let ticking = false;
         let animationFrameId: number;
 
+        let lastDrawnIndex = -1;
+
         const drawFrame = (frameIndex: number) => {
+            if (frameIndex === lastDrawnIndex) return;
+            lastDrawnIndex = frameIndex;
+
             const img = idleFramesRef.current[frameIndex];
             if (!img) return;
             const ctx = canvas.getContext('2d');
             if (!ctx) return;
 
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            // Only set width/height if it changed to prevent DOM thrashing
+            if (canvas.width !== window.innerWidth) canvas.width = window.innerWidth;
+            if (canvas.height !== window.innerHeight) canvas.height = window.innerHeight;
+            
             const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
             const x = (canvas.width / 2) - (img.width / 2) * scale;
             const y = (canvas.height / 2) - (img.height / 2) * scale;
@@ -375,15 +383,37 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
 
         const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
+        let lastProgress = -1;
+        let soundTimeout: any;
         const updateFrame = () => {
-            currentFrameRef.current = lerp(currentFrameRef.current, targetFrameRef.current, 0.1);
-            const frameIndex = Math.round(currentFrameRef.current);
-            currentFrameIdx.current = frameIndex;
-            
-            drawFrame(frameIndex);
-            
-            // Sync HUD nodes using continuous values for extreme smoothness
-            scrollYProgress.set(currentFrameRef.current / Math.max(1, totalFrames - 1));
+            if (Math.abs(currentFrameRef.current - targetFrameRef.current) > 0.001) {
+                const prevFrame = currentFrameRef.current;
+                currentFrameRef.current = lerp(currentFrameRef.current, targetFrameRef.current, 0.1);
+                const frameIndex = Math.round(currentFrameRef.current);
+                currentFrameIdx.current = frameIndex;
+                
+                drawFrame(frameIndex);
+                
+                // Audio glide
+                const delta = Math.abs(currentFrameRef.current - prevFrame);
+                if (delta > 0.5) {
+                    audioSynth.startGlide();
+                    audioSynth.updateGlide(delta * 5); // Scale delta to match LevelMap's range
+                    
+                    clearTimeout(soundTimeout);
+                    soundTimeout = setTimeout(() => {
+                        audioSynth.stopGlide();
+                    }, 100);
+                }
+                
+                // Sync HUD nodes using continuous values for extreme smoothness
+                const progress = currentFrameRef.current / Math.max(1, totalFrames - 1);
+                if (Math.abs(progress - lastProgress) > 0.0001) {
+                    scrollYProgress.set(progress);
+                    lastProgress = progress;
+                }
+            }
+
 
             animationFrameId = requestAnimationFrame(updateFrame);
         };
