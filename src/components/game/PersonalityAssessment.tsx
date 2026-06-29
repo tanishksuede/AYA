@@ -297,13 +297,11 @@ export function PersonalityAssessment() {
 
             <div 
                 className={clsx(
-                    "relative z-10 w-full mx-auto flex flex-col h-full md:h-auto md:max-h-[90vh]",
-                    isMobile ? "justify-between" : "justify-center p-4",
+                    "relative z-10 w-full mx-auto flex flex-col h-full md:h-auto md:max-h-[90vh] perspective-1000",
+                    isMobile ? "justify-between" : "justify-center p-4"
                 )}
                 style={{ maxWidth: '600px' }}
             >
-                "perspective-1000"
-            )}>
                 <motion.div 
                     key={`card-${step}`}
                     initial={{ opacity: 0, y: 50, rotateX: 10 }}
