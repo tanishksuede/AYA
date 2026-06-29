@@ -131,28 +131,62 @@ export function OnboardingWizard() {
 
     useEffect(() => {
         const checkGoogleAuth = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session && session.user) {
-                const googleId = session.user.id;
-                
-                // See if they already have an account linked to this google_id
-                const { data: existingUser } = await supabase
-                    .from('users')
-                    .select('*')
-                    .eq('google_id', googleId)
-                    .maybeSingle();
-
-                if (existingUser) {
-                    // They are already linked! Automatically log them in
-                    await performLogin(existingUser, googleId, true);
+            try {
+                // If OAuth returned an error in the hash, catch it!
+                const hash = window.location.hash;
+                if (hash && hash.includes('error=')) {
+                    const params = new URLSearchParams(hash.substring(1));
+                    const errorDesc = params.get('error_description') || 'Authentication failed.';
+                    setError(`Google Auth Error: ${errorDesc.replace(/\+/g, ' ')}`);
+                    window.history.replaceState(null, '', window.location.pathname);
+                    setIsLoading(false);
                     return;
-                } else {
-                    // Pre-fill name and tell them to link
-                    setName(session.user.user_metadata.full_name || "");
-                    setGoogleAuthId(googleId);
-                    // Clear any existing errors
-                    setError("");
                 }
+
+                const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+                
+                if (sessionError) {
+                    setError(`Session Error: ${sessionError.message}`);
+                    setIsLoading(false);
+                    return;
+                }
+
+                if (session && session.user) {
+                    const googleId = session.user.id;
+                    
+                    // See if they already have an account linked to this google_id
+                    const { data: existingUser, error: dbError } = await supabase
+                        .from('users')
+                        .select('*')
+                        .eq('google_id', googleId)
+                        .maybeSingle();
+
+                    if (dbError) {
+                        console.error("DB Error checking Google ID:", dbError);
+                        if (dbError.code === '42703' || dbError.message?.includes('google_id')) {
+                            setError("CRITICAL ERROR: 'google_id' column missing! Run in Supabase SQL: ALTER TABLE users ADD COLUMN google_id TEXT UNIQUE;");
+                        } else {
+                            setError(`Database error: ${dbError.message}`);
+                        }
+                        setIsLoading(false);
+                        return;
+                    }
+
+                    if (existingUser) {
+                        // They are already linked! Automatically log them in
+                        await performLogin(existingUser, googleId, true);
+                        return;
+                    } else {
+                        // Pre-fill name and tell them to link
+                        setName(session.user.user_metadata.full_name || "");
+                        setGoogleAuthId(googleId);
+                        // Clear any existing errors
+                        setError("");
+                    }
+                }
+            } catch (err: any) {
+                console.error("Fatal Google Auth Error:", err);
+                setError(`Unexpected Error: ${err.message || 'Check console'}`);
             }
             setIsLoading(false);
         };
