@@ -87,7 +87,7 @@ const AgeDial = ({ value, onChange }: { value: number; onChange: (val: number) =
                     }}
                     style={{ x }}
                     onDragEnd={handleDragEnd}
-                    className="absolute top-0 left-1/2 flex items-end h-full cursor-grab active:cursor-grabbing"
+                    className="absolute top-0 left-1/2 -ml-[20px] flex items-end h-full cursor-grab active:cursor-grabbing"
                 >
                     {ticks.map((tick) => (
                         <div 
