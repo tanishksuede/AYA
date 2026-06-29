@@ -455,7 +455,7 @@ export function OnboardingWizard() {
     ), []);
 
     return (
-        <div className="relative min-h-[100dvh] w-full bg-[#0a0a0f] flex flex-col justify-center px-4 md:px-8 py-12 overflow-hidden selection:bg-[#00f1fe] selection:text-black">
+        <div className="relative min-h-[100dvh] w-full bg-[#0a0a0f] flex flex-col justify-center px-4 md:px-8 py-12 overflow-y-auto overflow-x-hidden selection:bg-[#00f1fe] selection:text-black">
             
             {/* Background Grid Pattern */}
             <div className="absolute inset-0 z-0 opacity-20 pointer-events-none" style={{
