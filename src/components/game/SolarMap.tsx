@@ -11,6 +11,7 @@ import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { DailyChallengeModal } from './DailyChallengeModal';
 import { useNavigate } from 'react-router-dom';
 import { ThemeSwitcherModal } from './ThemeSwitcherModal';
+import { supabase } from '../../utils/supabase';
 
 // Global cache to keep frames in memory across component mounts
 type FrameType = HTMLImageElement | ImageBitmap;
@@ -837,7 +838,8 @@ function SettingsModal({ onClose }: { onClose: () => void }) {
                     </button>
 
                     <button
-                        onClick={() => {
+                        onClick={async () => {
+                            await supabase.auth.signOut();
                             localStorage.clear();
                             window.location.reload();
                         }}

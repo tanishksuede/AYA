@@ -5,6 +5,7 @@ import { audioSynth } from '../utils/audioSynth';
 import { bgmManager } from '../utils/bgmManager';
 import { Volume2, VolumeX } from 'lucide-react';
 import clsx from 'clsx';
+import { supabase } from '../utils/supabase';
 
 export function SettingsPage() {
     const navigate = useNavigate();
@@ -122,8 +123,9 @@ export function SettingsPage() {
                     </button>
 
                     <button
-                        onClick={() => {
+                        onClick={async () => {
                             audioSynth.playClick();
+                            await supabase.auth.signOut();
                             localStorage.clear();
                             window.location.reload();
                         }}
