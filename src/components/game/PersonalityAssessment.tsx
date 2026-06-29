@@ -295,9 +295,13 @@ export function PersonalityAssessment() {
                 )}
             </div>
 
-            <div className={clsx(
-                "relative z-10 w-full max-w-lg md:max-w-2xl flex flex-col h-full md:h-auto md:max-h-[90vh]",
-                isMobile ? "justify-between" : "justify-center p-4",
+            <div 
+                className={clsx(
+                    "relative z-10 w-full mx-auto flex flex-col h-full md:h-auto md:max-h-[90vh]",
+                    isMobile ? "justify-between" : "justify-center p-4",
+                )}
+                style={{ maxWidth: '600px' }}
+            >
                 "perspective-1000"
             )}>
                 <motion.div 
