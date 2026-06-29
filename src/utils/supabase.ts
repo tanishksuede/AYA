@@ -21,7 +21,7 @@ try {
       auth: {
         persistSession: false,
         autoRefreshToken: false,
-        detectSessionInUrl: false,
+        detectSessionInUrl: true,
       },
       global: {
         headers: {

@@ -190,14 +190,8 @@ export function OnboardingWizard() {
                     }
 
                     if (existingUser) {
-                        // ALWAYS redirect to setup page even if existing, but store details
-                        sessionStorage.setItem('aya_temp_google_id', googleId);
-                        sessionStorage.setItem('aya_temp_google_name', existingUser.name || "");
-                        sessionStorage.setItem('aya_temp_google_age', String(existingUser.age || 20));
-                        sessionStorage.setItem('aya_temp_google_mobile', existingUser.mobile || "");
-                        sessionStorage.setItem('aya_temp_existing_user', 'true');
-                        sessionStorage.setItem('aya_temp_user_data', JSON.stringify(existingUser));
-                        navigate('/game/setup');
+                        // EXISTING USER: Directly log them in!
+                        await performLogin(existingUser, googleId, true);
                         return;
                     } else {
                         // NEW USER: Redirect to setup page
