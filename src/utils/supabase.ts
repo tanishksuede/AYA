@@ -19,8 +19,8 @@ try {
     supabaseAnonKey || 'dummy-key',
     {
       auth: {
-        persistSession: false,
-        autoRefreshToken: false,
+        persistSession: true,
+        autoRefreshToken: true,
         detectSessionInUrl: true,
       },
       global: {
