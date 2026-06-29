@@ -841,7 +841,8 @@ function SettingsModal({ onClose }: { onClose: () => void }) {
                         onClick={async () => {
                             await supabase.auth.signOut();
                             localStorage.clear();
-                            window.location.reload();
+                            sessionStorage.clear();
+                            window.location.href = '/';
                         }}
                         className="w-full bg-slate-800 hover:bg-orange-900/50 text-orange-400 hover:text-orange-200 border border-slate-700 hover:border-orange-800 font-bold py-3 rounded-xl shadow-lg transform active:scale-95 transition-all uppercase tracking-wider text-xs"
                     >
