@@ -351,11 +351,11 @@ export function GameRoot() {
         )
     }
 
-    if (!profile && location.pathname !== '/game/welcome') {
+    if (!profile && location.pathname !== '/game/welcome' && location.pathname !== '/game/setup') {
         return <Navigate to="/game/welcome" replace />;
     }
 
-    if (profile && profile.assessmentCompleted && location.pathname === '/game/welcome') {
+    if (profile && profile.assessmentCompleted && (location.pathname === '/game/welcome' || location.pathname === '/game/setup')) {
         return <Navigate to="/game" replace />;
     }
 

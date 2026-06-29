@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { useUserStore } from '../../store/userStore';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { audioSynth } from '../../utils/audioSynth';
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { saveSession } from '../../utils/session';
@@ -109,6 +110,10 @@ const AgeDial = ({ value, onChange }: { value: number; onChange: (val: number) =
 
 export function OnboardingWizard() {
     const setProfile = useUserStore((state) => state.setProfile);
+    const navigate = useNavigate();
+    const location = useLocation();
+    
+    const isRegisterMode = location.pathname === '/game/setup';
 
     const [name, setName] = useState("");
     const [age, setAge] = useState<number>(20);
@@ -119,17 +124,25 @@ export function OnboardingWizard() {
     // Google Auth State
     const [googleAuthId, setGoogleAuthId] = useState<string | null>(null);
 
-    const [loginMode, setLoginMode] = useState<'selection' | 'mobile'>('selection');
-
-    useEffect(() => {
-        if (googleAuthId) {
-            setLoginMode('mobile');
-        }
-    }, [googleAuthId]);
-
     const isSubmitting = useRef(false);
 
+    // Sync googleAuthId and name on register mode mount
     useEffect(() => {
+        if (isRegisterMode) {
+            const tempGoogleId = sessionStorage.getItem('aya_temp_google_id');
+            const tempGoogleName = sessionStorage.getItem('aya_temp_google_name');
+            if (tempGoogleId) {
+                setGoogleAuthId(tempGoogleId);
+                setName(tempGoogleName || "");
+            }
+            setIsLoading(false);
+        }
+    }, [isRegisterMode]);
+
+    // Handle Google OAuth check ONLY in welcome/login mode
+    useEffect(() => {
+        if (isRegisterMode) return;
+
         const checkGoogleAuth = async () => {
             try {
                 // If OAuth returned an error in the hash, catch it!
@@ -177,11 +190,11 @@ export function OnboardingWizard() {
                         await performLogin(existingUser, googleId, true);
                         return;
                     } else {
-                        // Pre-fill name and tell them to link
-                        setName(session.user.user_metadata.full_name || "");
-                        setGoogleAuthId(googleId);
-                        // Clear any existing errors
-                        setError("");
+                        // NEW USER: Redirect to setup page
+                        sessionStorage.setItem('aya_temp_google_id', googleId);
+                        sessionStorage.setItem('aya_temp_google_name', session.user.user_metadata.full_name || "");
+                        navigate('/game/setup');
+                        return;
                     }
                 }
             } catch (err: any) {
@@ -194,14 +207,14 @@ export function OnboardingWizard() {
         checkGoogleAuth();
         
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
-            if (session && session.user && !googleAuthId) {
+            if (session && session.user) {
                 setIsLoading(true);
                 checkGoogleAuth();
             }
         });
         
         return () => subscription.unsubscribe();
-    }, [googleAuthId]);
+    }, [isRegisterMode]);
 
     const performLogin = async (userData: any, gId: string | null, isExisting: boolean) => {
         let userId = userData.id;
@@ -418,10 +431,10 @@ export function OnboardingWizard() {
                     transition={{ duration: 0.8, ease: "easeOut" }}
                 >
                     <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#0f0f18] text-white drop-shadow-[0_0_20px_rgba(0,241,254,0.4)] text-center mb-10 leading-tight">
-                        {loginMode === 'selection' ? "Welcome to AYA" : (googleAuthId ? "Link Your Account" : "Let's get to \n know you!")}
+                        {isRegisterMode ? (googleAuthId ? "Link Your Account" : "Let's get to \n know you!") : "Welcome to AYA"}
                     </h2>
                     
-                    {loginMode === 'selection' && (
+                    {!isRegisterMode && (
                         <div className="flex flex-col gap-6 mt-10">
                             <motion.button
                                 initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
@@ -449,7 +462,7 @@ export function OnboardingWizard() {
 
                                     <motion.button
                                         initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-                                        onClick={() => { audioSynth.playClick(); setLoginMode('mobile'); }}
+                                        onClick={() => { audioSynth.playClick(); navigate('/game/setup'); }}
                                         className="w-full py-5 bg-transparent border-2 border-[#2b2b38] text-white font-bold text-lg rounded-full hover:bg-white/10 transition-all shadow-lg"
                                     >
                                         USE MOBILE NUMBER
@@ -459,7 +472,7 @@ export function OnboardingWizard() {
                         </div>
                     )}
 
-                    {loginMode === 'mobile' && (
+                    {isRegisterMode && (
                         <>
                             {googleAuthId && (
                                 <motion.div 
@@ -541,16 +554,19 @@ export function OnboardingWizard() {
                                     {!isLoading && <Check size={28} className="relative z-10 stroke-[4]" />}
                                 </motion.button>
                                 
-                                {!googleAuthId && (
-                                    <motion.button
-                                        initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9 }}
-                                        disabled={isLoading}
-                                        onClick={() => { audioSynth.playClick(); setLoginMode('selection'); }}
-                                        className="w-full py-4 bg-transparent text-white/70 font-bold text-sm rounded-full transition-all hover:text-white mt-2"
-                                    >
-                                        BACK
-                                    </motion.button>
-                                )}
+                                <motion.button
+                                    initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9 }}
+                                    disabled={isLoading}
+                                    onClick={() => { 
+                                        audioSynth.playClick(); 
+                                        sessionStorage.removeItem('aya_temp_google_id');
+                                        sessionStorage.removeItem('aya_temp_google_name');
+                                        navigate('/game/welcome'); 
+                                    }}
+                                    className="w-full py-4 bg-transparent text-white/70 font-bold text-sm rounded-full transition-all hover:text-white mt-2"
+                                >
+                                    BACK
+                                </motion.button>
                             </div>
                         </>
                     )}
