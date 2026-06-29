@@ -370,12 +370,18 @@ export function OnboardingWizard() {
     const handleGoogleSignIn = async () => {
         audioSynth.playClick();
         setIsLoading(true);
-        await supabase.auth.signInWithOAuth({
+        const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
                 redirectTo: window.location.origin + '/game/welcome'
             }
         });
+
+        if (error) {
+            console.error("OAuth Init Error:", error);
+            setError(`Failed to launch Google Sign-In: ${error.message}. Ensure Google Auth is enabled in your Supabase Dashboard.`);
+            setIsLoading(false);
+        }
     };
 
     // Derived style classes
