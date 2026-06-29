@@ -43,7 +43,7 @@ export function HomePage() {
     return (
         <>
             <div className="h-[100dvh] w-full p-6 flex flex-col items-center justify-center pt-12 pb-24">
-                <div className="w-full max-w-sm space-y-4">
+                <div className="w-full max-w-[400px] space-y-4">
                     <FeatureCard
                         title="Start The Game"
                         subtitle="Interactive Story Mode"

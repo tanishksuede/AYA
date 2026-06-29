@@ -371,7 +371,7 @@ export function OnboardingWizard() {
             {/* Cinematic Background */}
             {cinematicBackground}
 
-            <div className="relative z-10 max-w-md mx-auto w-full">
+            <div className="relative z-10 max-w-[448px] mx-auto w-full">
                 <motion.div 
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
