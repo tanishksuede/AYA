@@ -150,7 +150,8 @@ export function OnboardingWizard() {
                     // Pre-fill name and tell them to link
                     setName(session.user.user_metadata.full_name || "");
                     setGoogleAuthId(googleId);
-                    setError("Google Account Connected! Enter your mobile number below to link your existing progress, or enter a new one to start fresh.");
+                    // Clear any existing errors
+                    setError("");
                 }
             }
             setIsLoading(false);
@@ -377,7 +378,7 @@ export function OnboardingWizard() {
                     transition={{ duration: 0.8, ease: "easeOut" }}
                 >
                     <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#0f0f18] text-white drop-shadow-[0_0_20px_rgba(0,241,254,0.4)] text-center mb-10 leading-tight">
-                        {loginMode === 'selection' ? "Welcome to AYA" : "Let's get to \n know you!"}
+                        {loginMode === 'selection' ? "Welcome to AYA" : (googleAuthId ? "Link Your Account" : "Let's get to \n know you!")}
                     </h2>
                     
                     {loginMode === 'selection' && (
@@ -420,6 +421,17 @@ export function OnboardingWizard() {
 
                     {loginMode === 'mobile' && (
                         <>
+                            {googleAuthId && (
+                                <motion.div 
+                                    initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                                    className="mb-8 p-6 bg-emerald-900/40 text-emerald-100 rounded-3xl border border-emerald-500/50 backdrop-blur-md text-center shadow-xl relative overflow-hidden"
+                                >
+                                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent pointer-events-none" />
+                                    <h3 className="font-black text-xl text-emerald-400 mb-2">Google Authenticated!</h3>
+                                    <p className="text-sm font-medium">To restore your previous progress, enter your existing mobile number below. Otherwise, enter a new number to start a fresh journey.</p>
+                                </motion.div>
+                            )}
+
                             <div className="space-y-6">
                                 <motion.div 
                                     initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
