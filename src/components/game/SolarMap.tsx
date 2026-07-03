@@ -1,19 +1,18 @@
 import { useUserStore } from '../../store/userStore';
-import { Lock, Star, Settings, BookOpen, Volume2, VolumeX } from 'lucide-react';
+import { Lock, Star, Settings, BookOpen } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { DISCLAIMER_TEXT } from './AntiGravityCanvas';
-import { LessonJournal } from './LessonJournal';
 import clsx from 'clsx';
 import { AudioController } from '../shared/AudioController';
 import { audioSynth } from '../../utils/audioSynth';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { DailyChallengeModal } from './DailyChallengeModal';
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ThemeSwitcherModal } from './ThemeSwitcherModal';
-import { supabase } from '../../utils/supabase';
 
-// Using HTML5 Video scrubbing for map background
+
+// Using Canvas with preloaded JPEG sequence (optimized to 60 frames)
+const FRAME_CACHE: HTMLImageElement[] = [];
+let framesLoadedCount = 0;
 
 interface SolarMapProps {
     onPlayLevel: (level: any) => void;
@@ -82,11 +81,7 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
         checkStreak(); // evaluate streaks on mount
     }, [checkStreak]);
 
-    // Modals
-    const [showSettings, setShowSettings] = useState(false);
-    const [showJournal, setShowJournal] = useState(false);
-    const [showChallengeModal, setShowChallengeModal] = useState(false);
-    const [showThemeSwitcher, setShowThemeSwitcher] = useState(false);
+
 
     // Mobile Detection
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -107,7 +102,7 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
 
     const NODE_OFFSETS = isMobile ? MOBILE_NODE_OFFSETS : DESKTOP_NODE_OFFSETS;
 
-    const totalFrames = 480; // Virtual frames for scroll math
+
 
     const getPosition = (index: number) => {
         const y = index * NODE_SPACING + (isMobile ? 120 : 150);
@@ -121,16 +116,14 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
 
     // Scroll refs and values
     const containerRef = useRef<HTMLDivElement>(null);
-    const backgroundVideoRef = useRef<HTMLVideoElement>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
     const [windowHeight, setWindowHeight] = useState(typeof window !== 'undefined' ? window.innerHeight : 800);
     
     // Scroll container height = lastNodePosition + viewport height
     const lastNodePosition = ageLevels.length > 0 ? getPosition(ageLevels.length - 1).y : 0;
     const totalHeight = lastNodePosition + windowHeight;
 
-    const [canvasReady, setCanvasReady] = useState(false);
-    const [framesLoaded, setFramesLoaded] = useState(0);
-    const currentFrameIdx = useRef<number>(0);
+    const [canvasReady, setCanvasReady] = useState(framesLoadedCount === 60);
 
     // Intro Video & Disclaimer State
     const [isReady, setIsReady] = useState(false);
@@ -147,7 +140,7 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const scrollYProgress = useMotionValue(0);
+    const { scrollYProgress } = useScroll({ container: containerRef });
 
     const smoothProgress = useSpring(scrollYProgress, {
         stiffness: 400,
@@ -159,13 +152,31 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
     const scrollableDistance = Math.max(0, totalHeight - windowHeight);
     const hudY = useTransform(smoothProgress, [0, 1], [0, -scrollableDistance]);
 
-    // Video scrubbing initialization (no frames to load anymore)
+    // Preload 60 JPEG frames
     useEffect(() => {
-        // We consider it "ready" once the video data loads, but to not break the intro we simulate framesLoaded
-        setFramesLoaded(totalFrames);
-    }, [totalFrames]);
+        if (FRAME_CACHE.length === 60) {
+            setCanvasReady(true);
+            return;
+        }
 
-    // Effect to handle total readiness (Video + Images)
+        let loaded = 0;
+        for (let i = 0; i < 60; i++) {
+            const frameIndex = 1 + (i * 4); // 001, 005, 009...
+            const src = `/assets/map_frames_dark/ezgif-frame-${String(frameIndex).padStart(3, '0')}.jpg`;
+            const img = new Image();
+            img.src = src;
+            img.onload = () => {
+                loaded++;
+                if (loaded === 60) {
+                    framesLoadedCount = 60;
+                    setCanvasReady(true);
+                }
+            };
+            FRAME_CACHE.push(img);
+        }
+    }, []);
+
+    // Effect to handle total readiness
     useEffect(() => {
         if (canvasReady && isVideoFinished) {
             setIsReady(true);
@@ -198,137 +209,72 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
         }
     };
 
-    // Custom Scroll Parallax Effect (Native Wheel/Touch with Lerp)
+    // Canvas Drawing rAF Loop
     useEffect(() => {
-        const container = containerRef.current;
+        if (!canvasReady) return;
+        
         const canvas = canvasRef.current;
         if (!canvas) return;
+        const ctx = canvas.getContext('2d', { alpha: false });
+        if (!ctx) return;
 
-        canvas.style.willChange = 'transform';
-
-        const targetFrameRef = { current: currentFrameIdx.current || 0 };
-        const currentFrameRef = { current: currentFrameIdx.current || 0 };
-        let touchStartY = 0;
-        let ticking = false;
         let animationFrameId: number;
-
-        let lastDrawnIndex = -1;
-
-        const drawFrame = (frameIndex: number) => {
-            if (frameIndex === lastDrawnIndex) return;
-            lastDrawnIndex = frameIndex;
-
-            const img = idleFramesRef.current[frameIndex];
-            if (!img) return;
-            const ctx = canvas.getContext('2d');
-            if (!ctx) return;
-
-            // Only set width/height if it changed to prevent DOM thrashing
-            if (canvas.width !== window.innerWidth) canvas.width = window.innerWidth;
-            if (canvas.height !== window.innerHeight) canvas.height = window.innerHeight;
-            
-            const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
-            const x = (canvas.width / 2) - (img.width / 2) * scale;
-            const y = (canvas.height / 2) - (img.height / 2) * scale;
-            ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
-        };
-
-        const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-
         let lastProgress = -1;
+        let lastWidth = -1;
+        let lastHeight = -1;
         let soundTimeout: any;
-        const updateFrame = () => {
-            if (Math.abs(currentFrameRef.current - targetFrameRef.current) > 0.001) {
-                const prevFrame = currentFrameRef.current;
-                currentFrameRef.current = lerp(currentFrameRef.current, targetFrameRef.current, 0.1);
-                const frameIndex = Math.round(currentFrameRef.current);
-                currentFrameIdx.current = frameIndex;
-                
-                // Scrub video based on progress
-                const progress = currentFrameRef.current / Math.max(1, totalFrames - 1);
-                if (backgroundVideoRef.current && backgroundVideoRef.current.duration) {
-                    // Update video time for smooth scrubbing
-                    backgroundVideoRef.current.currentTime = progress * backgroundVideoRef.current.duration;
-                }
-                
+
+        const tick = () => {
+            if (document.hidden) {
+                animationFrameId = requestAnimationFrame(tick);
+                return;
+            }
+
+            const current = scrollYProgress.get();
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            
+            if (current !== lastProgress || w !== lastWidth || h !== lastHeight) {
                 // Audio glide
-                const delta = Math.abs(currentFrameRef.current - prevFrame);
-                if (delta > 0.5) {
-                    audioSynth.startGlide();
-                    audioSynth.updateGlide(delta * 5); // Scale delta to match LevelMap's range
-                    
-                    clearTimeout(soundTimeout);
-                    soundTimeout = setTimeout(() => {
-                        audioSynth.stopGlide();
-                    }, 100);
+                if (lastProgress !== -1) {
+                    const delta = Math.abs((current - lastProgress) * 480);
+                    if (delta > 0.5) {
+                        audioSynth.startGlide();
+                        audioSynth.updateGlide(delta * 5);
+                        clearTimeout(soundTimeout);
+                        soundTimeout = setTimeout(() => {
+                            audioSynth.stopGlide();
+                        }, 100);
+                    }
                 }
                 
-                // Sync HUD nodes using continuous values for extreme smoothness
-                if (Math.abs(progress - lastProgress) > 0.0001) {
-                    scrollYProgress.set(progress);
-                    lastProgress = progress;
+                const index = Math.min(59, Math.max(0, Math.floor(current * 59)));
+                const img = FRAME_CACHE[index];
+                
+                if (img) {
+                    if (canvas.width !== w) canvas.width = w;
+                    if (canvas.height !== h) canvas.height = h;
+                    
+                    const scale = Math.max(w / img.width, h / img.height);
+                    const x = (w / 2) - (img.width / 2) * scale;
+                    const y = (h / 2) - (img.height / 2) * scale;
+                    
+                    ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+                    
+                    lastProgress = current;
+                    lastWidth = w;
+                    lastHeight = h;
                 }
             }
-
-
-            animationFrameId = requestAnimationFrame(updateFrame);
+            
+            animationFrameId = requestAnimationFrame(tick);
         };
 
-        // Start infinite animation loop
-        animationFrameId = requestAnimationFrame(updateFrame);
-
-        const handleWheel = (e: WheelEvent) => {
-            e.preventDefault();
-            if (!ticking) {
-                requestAnimationFrame(() => {
-                    const delta = e.deltaY * 0.3; // Desktop sensitivity 0.3
-                    targetFrameRef.current = Math.max(0, Math.min(totalFrames - 1, targetFrameRef.current + delta));
-                    ticking = false;
-                });
-                ticking = true;
-            }
-        };
-
-        const handleTouchStart = (e: TouchEvent) => {
-            touchStartY = e.touches[0].clientY;
-        };
-
-        const handleTouchMove = (e: TouchEvent) => {
-            if (!ticking) {
-                requestAnimationFrame(() => {
-                    const touchDelta = touchStartY - e.touches[0].clientY;
-                    touchStartY = e.touches[0].clientY;
-                    
-                    const delta = touchDelta * 1.5; // Increased touch sensitivity for mobile
-                    targetFrameRef.current = Math.max(0, Math.min(totalFrames - 1, targetFrameRef.current + delta));
-                    ticking = false;
-                });
-                ticking = true;
-            }
-        };
-
-        // Attach to BOTH window and container to ensure it always fires
-                    targetProgressRef.current = Math.max(0, Math.min(1, targetProgressRef.current + touchDelta));
-                    ticking = false;
-                });
-                ticking = true;
-            }
-        };
-
-        window.addEventListener('wheel', handleWheel, { passive: false });
-        window.addEventListener('touchstart', handleTouchStart, { passive: true });
-        window.addEventListener('touchmove', handleTouchMove, { passive: true });
-        
-        container?.addEventListener('wheel', handleWheel, { passive: false });
-        container?.addEventListener('touchmove', handleTouchMove, { passive: true });
+        animationFrameId = requestAnimationFrame(tick);
 
         return () => {
             cancelAnimationFrame(animationFrameId);
-            window.removeEventListener('wheel', handleWheel);
-            window.removeEventListener('touchstart', handleTouchStart);
-            window.removeEventListener('touchmove', handleTouchMove);
-            container?.removeEventListener('wheel', handleWheel);
-            container?.removeEventListener('touchmove', handleTouchMove);
+            clearTimeout(soundTimeout);
         };
     }, [canvasReady, scrollYProgress]);
 
@@ -347,7 +293,7 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
                         <div className="absolute -inset-1 bg-orange-500/20 blur-md rounded-full animate-pulse pointer-events-none" style={{ animationDuration: '4s' }} />
                     )}
                     <button
-                        onClick={() => { audioSynth.playClick(); setShowChallengeModal(true); }}
+                        onClick={() => { audioSynth.playClick(); }}
                         disabled={profile?.daily_challenge_completed}
                         className={clsx(
                             "pointer-events-auto relative w-full py-2.5 px-4 rounded-full flex flex-row items-center justify-center gap-3 transition-all duration-500",
@@ -372,14 +318,14 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
             {/* Settings & Theme Buttons */}
             <div className="absolute top-20 left-4 md:top-24 md:left-6 z-[100] flex flex-col gap-2">
                 <button
-                    onClick={() => { audioSynth.playClick(); setShowSettings(true); }}
+                    onClick={() => { audioSynth.playClick(); }}
                     className="w-8 h-8 md:w-10 md:h-10 bg-white/5 hover:bg-white/10 active:bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-[#FFB347] transition-all border border-[#FFB347]/30 shadow-[0_0_10px_rgba(255,179,71,0.2)] hover:rotate-12 active:scale-90"
                     aria-label="Settings"
                 >
                     <Settings size={18} className="md:w-5 md:h-5" />
                 </button>
                 <button
-                    onClick={() => { audioSynth.playClick(); setShowThemeSwitcher(true); }}
+                    onClick={() => { audioSynth.playClick(); }}
                     className="w-8 h-8 md:w-10 md:h-10 bg-[#FFB347]/10 hover:bg-[#FFB347]/20 border border-[#FFB347]/50 backdrop-blur-md rounded-full flex items-center justify-center text-[#FFB347] transition-all shadow-[0_0_15px_rgba(255,179,71,0.3)] hover:-rotate-12 active:scale-90"
                     aria-label="Theme Switcher"
                 >
@@ -390,7 +336,7 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
             {/* Journal Toggle & DNA Profile */}
             <div className="absolute top-20 right-4 md:top-24 md:right-6 z-[100] flex flex-col gap-2 items-end map-right-buttons">
                 <button
-                    onClick={() => { audioSynth.playClick(); setShowJournal(true); }}
+                    onClick={() => { audioSynth.playClick(); }}
                     className="group flex items-center gap-1.5 md:gap-3 pr-3 md:pr-6 pl-1.5 py-1 md:py-2 rounded-full shadow-2xl transition-all border-2 bg-slate-900 border-[#FFB347]/50 hover:border-[#FFB347] hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(255,179,71,0.2)]"
                 >
                     <div className="text-[#0a0510] p-1 md:p-2 rounded-full shadow-md group-hover:rotate-12 transition-transform bg-gradient-to-br from-[#FFB347] to-[#ff6b35]">
@@ -453,22 +399,22 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
             )}
 
             {/* Scrollable Map */}
-            <div ref={containerRef} className="relative h-[100dvh] w-full bg-[#0a0510] text-white overflow-hidden touch-none selection:bg-[#FFB347] selection:text-[#4a2e00] font-sans">
+            <div 
+                ref={containerRef} 
+                className="relative h-[100dvh] w-full bg-[#0a0510] text-white overflow-y-auto overflow-x-hidden selection:bg-[#FFB347] selection:text-[#4a2e00] font-sans"
+                style={{ WebkitOverflowScrolling: 'touch', scrollBehavior: 'auto' }}
+            >
+                {/* Dummy div to enforce native scroll height */}
+                <div style={{ height: totalHeight, width: '100%' }} />
             
-            {/* LAYER 1: Full HD Background Video Scrubbing */}
-            <div className="fixed inset-0 z-0 pointer-events-none bg-black">
-                <video
-                    ref={backgroundVideoRef}
-                    src="/assets/map_frames_dark.mp4"
-                    preload="auto"
-                    muted
-                    playsInline
-                    className="w-full h-full object-cover"
-                    onLoadedData={() => {
-                        setCanvasReady(true);
-                    }}
-                />
-            </div>
+                {/* LAYER 1: Canvas Background */}
+                <div className="fixed inset-0 z-0 pointer-events-none bg-black">
+                    <canvas
+                        ref={canvasRef}
+                        className="w-full h-full object-cover"
+                    />
+                </div>
+                
                 <div className="fixed inset-0 bg-gradient-to-t from-[#0a0510]/80 via-transparent to-slate-900/50 mix-blend-overlay pointer-events-none z-10" />
 
                 {/* LAYER 2: NODES */}
@@ -585,114 +531,3 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
     );
 }
 
-function SettingsModal({ onClose }: { onClose: () => void }) {
-    const [newAge, setNewAge] = useState(18);
-    const profile = useUserStore((state) => state.profile);
-    const setProfile = useUserStore((state) => state.setProfile);
-    const resetProgress = useUserStore((state) => state.resetProgress);
-
-    const musicVolume = useUserStore((state) => state.musicVolume);
-    const sfxVolume = useUserStore((state) => state.sfxVolume);
-    const isMusicMuted = useUserStore((state) => state.isMusicMuted);
-    const isSfxMuted = useUserStore((state) => state.isSfxMuted);
-    const setMusicVolume = useUserStore((state) => state.setMusicVolume);
-    const setSfxVolume = useUserStore((state) => state.setSfxVolume);
-    const toggleMusicMute = useUserStore((state) => state.toggleMusicMute);
-    const toggleSfxMute = useUserStore((state) => state.toggleSfxMute);
-
-    useEffect(() => {
-        if (profile?.age) setNewAge(profile.age);
-    }, [profile]);
-
-    const handleAgeSave = () => {
-        if (profile) {
-            setProfile({ ...profile, age: newAge });
-            onClose();
-        }
-    };
-
-    return (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-fade-in">
-            <div className="bg-[#0a0510] border border-[#FFB347]/30 p-6 rounded-3xl max-w-sm w-full shadow-[0_0_50px_rgba(255,179,71,0.15)] relative">
-                <h2 className="text-xl font-bold text-white mb-4 text-center tracking-wide" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Settings</h2>
-                <div className="space-y-6">
-                    <div className="space-y-4 bg-white/5 p-4 rounded-2xl border border-white/10">
-                        <div>
-                            <div className="flex justify-between items-center mb-2">
-                                <span className="text-xs font-bold text-[#FFB347]/70 uppercase tracking-widest">Music</span>
-                                <button
-                                    onClick={toggleMusicMute}
-                                    className={clsx("p-1.5 rounded-lg transition-colors", isMusicMuted ? "text-red-400 bg-red-400/10" : "text-[#FFB347] bg-[#FFB347]/10")}
-                                >
-                                    {isMusicMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
-                                </button>
-                            </div>
-                            <input
-                                type="range"
-                                min="0" max="1" step="0.1"
-                                value={musicVolume}
-                                onChange={(e) => setMusicVolume(parseFloat(e.target.value))}
-                                className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#FFB347]"
-                            />
-                        </div>
-                        <div>
-                            <div className="flex justify-between items-center mb-2">
-                                <span className="text-xs font-bold text-[#FFB347]/70 uppercase tracking-widest">Sound FX</span>
-                                <button
-                                    onClick={toggleSfxMute}
-                                    className={clsx("p-1.5 rounded-lg transition-colors", isSfxMuted ? "text-red-400 bg-red-400/10" : "text-[#FFB347] bg-[#FFB347]/10")}
-                                >
-                                    {isSfxMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
-                                </button>
-                            </div>
-                            <input
-                                type="range"
-                                min="0" max="1" step="0.1"
-                                value={sfxVolume}
-                                onChange={(e) => setSfxVolume(parseFloat(e.target.value))}
-                                className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#FFB347]"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
-                        <label className="block text-xs font-bold text-[#FFB347]/70 uppercase tracking-widest mb-2">Current Age</label>
-                        <input
-                            type="number"
-                            value={newAge}
-                            onChange={(e) => setNewAge(parseInt(e.target.value))}
-                            className="w-full bg-[#05020a] text-white rounded-xl px-4 py-3 border border-[#FFB347]/20 font-mono focus:border-[#FFB347] outline-none transition-colors"
-                        />
-                    </div>
-                    
-                    <button onClick={handleAgeSave} className="w-full bg-gradient-to-r from-[#FFB347] to-[#ff7b00] text-[#1a0f00] font-black py-3.5 rounded-xl shadow-[0_0_20px_rgba(255,179,71,0.3)] hover:shadow-[0_0_30px_rgba(255,179,71,0.5)] transform active:scale-95 transition-all tracking-wider text-sm uppercase">
-                        UPDATE TIMELINE
-                    </button>
-
-                    <button
-                        onClick={() => resetProgress()}
-                        className="w-full bg-[#1a0a05] hover:bg-red-950/40 text-red-400/80 hover:text-red-400 border border-red-900/50 hover:border-red-500/50 font-bold py-3.5 rounded-xl transform active:scale-95 transition-all uppercase tracking-widest text-xs"
-                    >
-                        Reset Progress
-                    </button>
-
-                    <button
-                        onClick={async () => {
-                            await supabase.auth.signOut();
-                            localStorage.clear();
-                            sessionStorage.clear();
-                            window.location.href = '/';
-                        }}
-                        className="w-full bg-slate-800 hover:bg-orange-900/50 text-orange-400 hover:text-orange-200 border border-slate-700 hover:border-orange-800 font-bold py-3 rounded-xl shadow-lg transform active:scale-95 transition-all uppercase tracking-wider text-xs"
-                    >
-                        Sign Out
-                    </button>
-
-                    <button onClick={onClose} className="w-full text-slate-500 text-xs font-bold tracking-widest py-2 hover:text-white transition-colors uppercase">
-                        Close
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
-}
