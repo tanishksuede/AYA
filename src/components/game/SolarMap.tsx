@@ -30,17 +30,15 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
     const [isAdmin, setIsAdmin] = useState(false);
     useEffect(() => {
         const checkAdmin = async () => {
+            const email = localStorage.getItem('aya_google_email');
+            if (!email) return;
+            // Founder always gets access (no DB needed)
+            if (email === 'anitadhakad333@gmail.com') { setIsAdmin(true); return; }
+            // Other admins: check database
             try {
-                const email = localStorage.getItem('aya_google_email');
-                if (!email) return;
-                // Check against admin_users table in Supabase
                 const { data } = await supabase.from('admin_users').select('email').eq('email', email).maybeSingle();
                 if (data) setIsAdmin(true);
-            } catch {
-                // Fallback: hardcoded check
-                const email = localStorage.getItem('aya_google_email');
-                if (email === 'anitadhakad333@gmail.com') setIsAdmin(true);
-            }
+            } catch {}
         };
         checkAdmin();
     }, []);

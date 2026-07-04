@@ -16,12 +16,14 @@ export function AdminPanelPage() {
             const email = localStorage.getItem('aya_google_email');
             if (!email) { setIsAdmin(false); return; }
             setCurrentEmail(email);
+            // Founder always gets access
+            if (email === 'anitadhakad333@gmail.com') { setIsAdmin(true); return; }
+            // Other admins: check database
             try {
                 const { data } = await supabase.from('admin_users').select('email').eq('email', email).maybeSingle();
                 setIsAdmin(!!data);
             } catch {
-                // Fallback hardcoded check
-                setIsAdmin(email === 'anitadhakad333@gmail.com');
+                setIsAdmin(false);
             }
         };
         checkAdmin();
