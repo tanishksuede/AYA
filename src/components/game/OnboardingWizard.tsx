@@ -404,6 +404,14 @@ export function OnboardingWizard() {
             if (searchError) throw searchError;
 
             if (existingUser) {
+                if (googleAuthId && existingUser.google_id && existingUser.google_id !== googleAuthId) {
+                    clearTimeout(fallback);
+                    setIsLoading(false);
+                    isSubmitting.current = false;
+                    setError("This phone number is already linked to a different Google account. Please log in with that account or use a different phone number.");
+                    return;
+                }
+
                 clearTimeout(fallback);
                 await performLogin(existingUser, googleAuthId, true);
             } else {
