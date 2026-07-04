@@ -1,6 +1,6 @@
 import { useUserStore } from '../../store/userStore';
 import { X, BookOpen, Clock, User, Quote } from 'lucide-react';
-import { audioSynth } from '../../utils/audioSynth';
+import { audioManager as audioSynth } from "../../utils/audioManager";
 
 interface LessonJournalProps {
     onClose: () => void;

@@ -70,9 +70,21 @@ CREATE TABLE IF NOT EXISTS public.push_subscriptions (
 );
 
 -- 6. Disable Row Level Security (RLS) for now to allow your front-end to read/write without complex auth policies.
--- (If you want RLS later, you can enable it and add policies)
-ALTER TABLE public.users DISABLE ROW LEVEL SECURITY;
-ALTER TABLE public.personality_profiles DISABLE ROW LEVEL SECURITY;
-ALTER TABLE public.quiz_responses DISABLE ROW LEVEL SECURITY;
-ALTER TABLE public.game_sessions DISABLE ROW LEVEL SECURITY;
-ALTER TABLE public.push_subscriptions DISABLE ROW LEVEL SECURITY;
+-- 6. Enable Row Level Security (RLS) and define access policies.
+ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.personality_profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.quiz_responses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.game_sessions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.push_subscriptions ENABLE ROW LEVEL SECURITY;
+
+-- Allow users to read and update their own profile
+CREATE POLICY "Users can view own data" ON public.users FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "Users can update own data" ON public.users FOR UPDATE USING (auth.uid() = id);
+-- For onboarding, allow insert if the user is authenticated and the ID matches
+CREATE POLICY "Users can insert own data" ON public.users FOR INSERT WITH CHECK (auth.uid() = id);
+
+-- Similar policies for other tables
+CREATE POLICY "Users can access own personality" ON public.personality_profiles FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Users can access own quiz responses" ON public.quiz_responses FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Users can access own game sessions" ON public.game_sessions FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Users can access own push subscriptions" ON public.push_subscriptions FOR ALL USING (auth.uid() = user_id);

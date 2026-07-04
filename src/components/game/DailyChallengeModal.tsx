@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HeartCrack, Zap, ShieldAlert, Coins, Target, Moon } from 'lucide-react';
-import { audioSynth } from '../../utils/audioSynth';
+import { audioManager as audioSynth } from "../../utils/audioManager";
 
 export type MoodArchetype = 'Heartbreak' | 'Motivation' | 'Confidence' | 'Money' | 'Purpose' | 'Loneliness';
 

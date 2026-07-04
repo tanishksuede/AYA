@@ -1,7 +1,7 @@
 import { Bell, X, Sparkles } from 'lucide-react';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { audioSynth } from '../../utils/audioSynth';
+import { audioManager as audioSynth } from "../../utils/audioManager";
 
 interface NotificationPromptProps {
     isOpen: boolean;

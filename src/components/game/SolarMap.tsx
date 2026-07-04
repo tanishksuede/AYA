@@ -6,7 +6,7 @@ import { createPortal } from 'react-dom';
 import { DISCLAIMER_TEXT } from './AntiGravityCanvas';
 import clsx from 'clsx';
 import { AudioController } from '../shared/AudioController';
-import { audioSynth } from '../../utils/audioSynth';
+import { audioManager as audioSynth } from "../../utils/audioManager";
 import { motion, useScroll } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 

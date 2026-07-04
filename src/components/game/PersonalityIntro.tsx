@@ -1,6 +1,6 @@
 import type { Level } from '../../types/gameTypes';
 import { Play, Trophy, Sparkles, Star } from 'lucide-react';
-import { audioSynth } from '../../utils/audioSynth';
+import { audioManager as audioSynth } from "../../utils/audioManager";
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { useUserStore } from '../../store/userStore';

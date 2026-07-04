@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Check } from 'lucide-react';
 import { useUserStore, type MapTheme } from '../../store/userStore';
 import { supabase } from '../../utils/supabase';
-import { audioSynth } from '../../utils/audioSynth';
+import { audioManager as audioSynth } from "../../utils/audioManager";
 
 interface ThemeSwitcherModalProps {
   isOpen: boolean;

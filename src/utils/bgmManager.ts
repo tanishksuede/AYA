@@ -79,6 +79,7 @@ class BGMManager {
       try {
           const url = BGM_TRACKS[trackName] || `/music/bgm-${trackName}.mp3`
           const response = await fetch(url)
+          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
           const arrayBuffer = await response.arrayBuffer()
           buffer = await ctx.decodeAudioData(arrayBuffer)
           this.buffers.set(trackName, buffer)

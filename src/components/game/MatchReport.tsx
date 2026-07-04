@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import clsx from 'clsx';
-import { audioSynth } from '../../utils/audioSynth';
+import { audioManager as audioSynth } from "../../utils/audioManager";
 import { Sparkles, Star, Zap, Heart, Flame, Brain, Shield, Grid3x3, RefreshCw, Copy, Check } from 'lucide-react';
 import type { PersonalityTraits, PsychologicalProfile } from '../../types/gameTypes';
 import { IDOL_MINDSETS, IDOL_PROFILES } from '../../data/idolMindsets';

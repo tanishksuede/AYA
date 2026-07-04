@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useUserStore } from '../../store/userStore';
-import { audioSynth } from '../../utils/audioSynth';
+import { audioManager as audioSynth } from "../../utils/audioManager";
 import { bgmManager } from '../../utils/bgmManager';
 
 export function AudioController({ isMapActive = true }: { isMapActive?: boolean }) {
