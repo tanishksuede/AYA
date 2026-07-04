@@ -185,6 +185,18 @@ export function GameRoot() {
 
                 console.log('[Session] Final restored scores:', JSON.stringify(restoredScores));
 
+                // ── STEP 1.5: Check if user is an admin ──
+                let isAdmin = false;
+                try {
+                    const { data: { session: authSession } } = await supabase.auth.getSession();
+                    if (authSession?.user?.email) {
+                        const { data: adminData } = await supabase.from('admin_users').select('email').eq('email', authSession.user.email).maybeSingle();
+                        if (adminData) isAdmin = true;
+                    }
+                } catch (err) {
+                    console.error('Failed to check admin status:', err);
+                }
+
                 // ── STEP 2: Set profile (this triggers syncLevels internally but we'll override after) ──
                 store.setProfile({
                     id: user.id,
@@ -233,7 +245,8 @@ export function GameRoot() {
                         interest_goal: profileData.interest_goal,
                         interest_struggle: profileData.interest_struggle,
                         interest_domain: profileData.interest_domain,
-                    } : {})
+                    } : {}),
+                    isAdmin
                 } as any);
 
                 if (quizCompleted && profileData) {

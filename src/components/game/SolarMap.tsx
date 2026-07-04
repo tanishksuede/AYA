@@ -321,6 +321,15 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
                 >
                     <span className="text-sm">☀️</span>
                 </button>
+                {profile?.isAdmin && (
+                    <button
+                        onClick={() => { audioSynth.playClick(); navigate('/game/admin'); }}
+                        className="mt-2 w-8 h-8 md:w-10 md:h-10 bg-fuchsia-900/40 hover:bg-fuchsia-800/60 border border-fuchsia-500/50 backdrop-blur-md rounded-full flex items-center justify-center text-fuchsia-300 transition-all shadow-[0_0_15px_rgba(217,70,239,0.3)] hover:scale-110 active:scale-95"
+                        title="Admin Panel"
+                    >
+                        <span className="text-sm font-black">👑</span>
+                    </button>
+                )}
             </div>
 
             {/* Journal Toggle & DNA Profile */}

@@ -165,3 +165,5 @@ export function LevelUpRouteHandler() {
         </div>
     );
 }
+
+export { AdminPanelPage as AdminRouteHandler } from './AdminPanelPage';

@@ -5,7 +5,7 @@ import { AppLayout } from './layouts/AppLayout';
 import { HomePage } from './pages/Home';
 import { GameRoot } from './pages/GameRoot';
 import { bgmManager } from './utils/bgmManager';
-import { MapRouteHandler, IntroRouteHandler, PlayRouteHandler, ReportRouteHandler, DnaRouteHandler, SelectionRouteHandler, MoodRouteHandler, DailyRevealRouteHandler, LevelUpRouteHandler } from './pages/GameRouteHandlers';
+import { MapRouteHandler, IntroRouteHandler, PlayRouteHandler, ReportRouteHandler, DnaRouteHandler, SelectionRouteHandler, MoodRouteHandler, DailyRevealRouteHandler, LevelUpRouteHandler, AdminRouteHandler } from './pages/GameRouteHandlers';
 import { OnboardingWizard } from './components/game/OnboardingWizard';
 import { CinematicOnboarding } from './components/game/CinematicOnboarding';
 import { PersonalityAssessment } from './components/game/PersonalityAssessment';
@@ -54,6 +54,7 @@ function App() {
             <Route path="settings" element={<SettingsPage />} />
             <Route path="journal" element={<JournalPage />} />
             <Route path="theme" element={<ThemeSwitcherPage />} />
+            <Route path="admin" element={<AdminRouteHandler />} />
             <Route path="*" element={<Navigate to="/game" replace />} />
           </Route>
           <Route path="*" element={<Navigate to="/" />} />

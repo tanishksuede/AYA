@@ -254,11 +254,9 @@ export const useUserStore = create<UserState>()(
             setPendingStreakData: (data) => set({ pendingStreakData: data }),
 
             setProfile: (profile) => {
-                set({
-                    profile,
-                    completedOnboarding: true
-                });
-                // NOTE: syncLevels() is NOT called here anymore.
+                console.log('[Store] Setting profile:', profile);
+                set({ profile: { ...get().profile, ...profile } as UserProfile, completedOnboarding: true });
+                // If it's a completely new profile and we have an ID, do a backend sync
                 // The caller (e.g. restoreSession in GameRoot) must call it explicitly
                 // so scores can be applied AFTER levels are loaded.
             },
