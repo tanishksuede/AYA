@@ -17,12 +17,12 @@ CREATE POLICY "Users can manage their own push subscriptions" ON public.push_sub
 
 -- Create updated_at trigger
 CREATE OR REPLACE FUNCTION update_push_subscriptions_updated_at()
-RETURNS TRIGGER AS \$\$
+RETURNS TRIGGER AS $$
 BEGIN
     NEW.updated_at = timezone('utc'::text, now());
     RETURN NEW;
 END;
-\$\$ language 'plpgsql';
+$$ language 'plpgsql';
 
 DROP TRIGGER IF EXISTS update_push_subscriptions_updated_at ON public.push_subscriptions;
 CREATE TRIGGER update_push_subscriptions_updated_at
