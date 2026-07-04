@@ -136,10 +136,17 @@ export function AdminPanelPage() {
                 throw new Error(errData.error || `HTTP ${res.status}`);
             }
 
-            setNotifStatus('success');
-            setNotifMessage('Notification broadcasted successfully!');
-            setTitle('');
-            setBody('');
+            const data = await res.json();
+            
+            if (data.failed > 0) {
+                setNotifStatus('error');
+                setNotifMessage(`Sent to ${data.sent}, but failed for ${data.failed} users. Check Supabase Edge Function logs.`);
+            } else {
+                setNotifStatus('success');
+                setNotifMessage(`Notification broadcasted successfully to ${data.sent} users!`);
+                setTitle('');
+                setBody('');
+            }
         } catch (err: any) {
             console.error('Broadcast error:', err);
             setNotifStatus('error');

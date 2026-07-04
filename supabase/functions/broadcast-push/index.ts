@@ -80,6 +80,7 @@ Deno.serve(async (req) => {
         await webpush.sendNotification(subRecord.subscription, payload);
         successCount++;
       } catch (err) {
+        console.error('Push failed for a subscription:', err);
         failCount++;
         // If web-push returns 410 or 404, it means the subscription is no longer valid.
         // We could delete it from the database here to keep it clean.
