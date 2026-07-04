@@ -287,7 +287,7 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
             <AudioController isMapActive={isMapActive} />
 
             {/* Daily Challenge Button */}
-            <div className="absolute top-[70px] left-0 w-full flex justify-center z-[100] pointer-events-none px-2">
+            <div className="absolute top-[130px] md:top-[80px] left-0 w-full flex justify-center z-[100] pointer-events-none px-2">
                 <div className="relative group w-full max-w-[250px]">
                     {!profile?.daily_challenge_completed && (
                         <div className="absolute -inset-1 bg-orange-500/20 blur-md rounded-full animate-pulse pointer-events-none" style={{ animationDuration: '4s' }} />

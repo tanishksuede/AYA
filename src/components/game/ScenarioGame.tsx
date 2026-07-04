@@ -877,13 +877,13 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                             boxShadow: `0 20px 60px rgba(0,0,0,0.6), 0 0 30px ${currentTheme.badgeColor}22`,
                             backdropFilter: 'blur(12px)',
                             WebkitBackdropFilter: 'blur(12px)',
-                            maxHeight: '80vh',
-                            width: '90%',
+                            maxHeight: window.innerWidth < 768 ? '85vh' : '80vh',
+                            width: window.innerWidth < 768 ? '95%' : '90%',
                             maxWidth: '680px',
                             margin: '0 auto',
                         } : {
-                            maxHeight: '80vh',
-                            width: '90%',
+                            maxHeight: window.innerWidth < 768 ? '85vh' : '80vh',
+                            width: window.innerWidth < 768 ? '95%' : '90%',
                             maxWidth: '680px',
                             margin: '0 auto',
                         }}
@@ -1009,8 +1009,8 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                                                 : "border-white/10 rounded-2xl"
                                         )}
                                         style={{
-                                            minHeight: window.innerWidth < 768 ? '48px' : '56px',
-                                            padding: window.innerWidth < 768 ? '10px 14px' : '14px 16px',
+                                            minHeight: '60px',
+                                            padding: window.innerWidth < 768 ? '12px 16px' : '16px 20px',
                                             whiteSpace: 'normal',
                                             wordBreak: 'break-word',
                                             ...(isCandyMode ? {} : { borderColor: currentTheme.choiceBorder }),
