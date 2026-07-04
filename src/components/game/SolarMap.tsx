@@ -6,7 +6,7 @@ import { DISCLAIMER_TEXT } from './AntiGravityCanvas';
 import clsx from 'clsx';
 import { AudioController } from '../shared/AudioController';
 import { audioSynth } from '../../utils/audioSynth';
-import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
+import { motion, useScroll } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -141,16 +141,6 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
     }, []);
 
     const { scrollYProgress } = useScroll({ container: containerRef });
-
-    const smoothProgress = useSpring(scrollYProgress, {
-        stiffness: 400,
-        damping: 40,
-        mass: 0.5,
-        restDelta: 0.001
-    });
-
-    const scrollableDistance = Math.max(0, totalHeight - windowHeight);
-    const hudY = useTransform(smoothProgress, [0, 1], [0, -scrollableDistance]);
 
     // Preload 60 JPEG frames
     useEffect(() => {
@@ -404,9 +394,6 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
                 className="relative h-[100dvh] w-full bg-[#0a0510] text-white overflow-y-auto overflow-x-hidden selection:bg-[#FFB347] selection:text-[#4a2e00] font-sans"
                 style={{ WebkitOverflowScrolling: 'touch', scrollBehavior: 'auto' }}
             >
-                {/* Dummy div to enforce native scroll height */}
-                <div style={{ height: totalHeight, width: '100%' }} />
-            
                 {/* LAYER 1: Canvas Background */}
                 <div className="fixed inset-0 z-0 pointer-events-none bg-black">
                     <canvas
@@ -418,9 +405,9 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
                 <div className="fixed inset-0 bg-gradient-to-t from-[#0a0510]/80 via-transparent to-slate-900/50 mix-blend-overlay pointer-events-none z-10" />
 
                 {/* LAYER 2: NODES */}
-                <motion.div
-                    className="fixed top-0 left-0 w-full layer-mid pb-32 pointer-events-none z-20"
-                    style={{ height: totalHeight, y: hudY, opacity: canvasReady ? 1 : 0 }}
+                <div
+                    className="absolute top-0 left-0 w-full layer-mid pb-32 pointer-events-none z-20"
+                    style={{ height: totalHeight, opacity: canvasReady ? 1 : 0 }}
                 >
                     <div className="relative w-full max-w-md mx-auto mt-24 md:mt-32 pointer-events-none h-full">
                         {/* Nodes */}
@@ -525,7 +512,7 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
                             );
                         })}
                     </div>
-                </motion.div>
+                </div>
             </div>
         </div >
     );
