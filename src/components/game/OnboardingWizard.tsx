@@ -284,6 +284,18 @@ export function OnboardingWizard() {
             });
         }
 
+        // Check if user is an admin
+        let isAdmin = false;
+        try {
+            const { data: { session: authSession } } = await supabase.auth.getSession();
+            if (authSession?.user?.email) {
+                const { data: adminData } = await supabase.from('admin_users').select('email').eq('email', authSession.user.email).maybeSingle();
+                if (adminData) isAdmin = true;
+            }
+        } catch (err) {
+            console.error('Failed to check admin status during login:', err);
+        }
+
         // Merge into store BEFORE setting profile so it's ready when Map loads
         useUserStore.setState((state) => ({
             levelScores: { ...state.levelScores, ...dbScores }
@@ -316,7 +328,8 @@ export function OnboardingWizard() {
             current_streak: userData.current_streak || 0,
             longest_streak: userData.longest_streak || 0,
             last_active_date: userData.last_active_date || new Date().toISOString().split('T')[0],
-            daily_challenge_completed: userData.daily_challenge_completed || false
+            daily_challenge_completed: userData.daily_challenge_completed || false,
+            isAdmin
         });
     };
 
