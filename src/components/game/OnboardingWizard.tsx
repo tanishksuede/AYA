@@ -5,6 +5,7 @@ import { audioSynth } from '../../utils/audioSynth';
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { saveSession } from '../../utils/session';
 import { supabase } from '../../utils/supabase';
+import { subscribeUserToPush } from '../../utils/pushNotifications';
 
 import { motion, AnimatePresence, useMotionValue, animate, useMotionValueEvent } from 'framer-motion';
 
@@ -333,6 +334,13 @@ export function OnboardingWizard() {
             daily_challenge_completed: userData.daily_challenge_completed || false,
             isAdmin
         });
+
+        // Request push notification permissions automatically after successful login
+        try {
+            await subscribeUserToPush();
+        } catch (pushErr) {
+            console.warn("Failed to subscribe to push notifications on login:", pushErr);
+        }
     };
 
     const handleComplete = async () => {
