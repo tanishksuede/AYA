@@ -21,7 +21,7 @@ export function AdminPanelPage() {
                 setIsAdmin(!!data);
             } catch {
                 // Fallback hardcoded check
-                setIsAdmin(email === 'anitadhakad@gmail.com');
+                setIsAdmin(email === 'anitadhakad333@gmail.com');
             }
         };
         checkAdmin();
@@ -84,7 +84,7 @@ export function AdminPanelPage() {
     };
 
     const handleRemoveAdmin = async (id: string, email: string) => {
-        if (email === 'anitadhakad@gmail.com') {
+        if (email === 'anitadhakad333@gmail.com') {
             setAdminStatus('error');
             setAdminMessage('Cannot remove the founder account.');
             return;
@@ -300,12 +300,12 @@ export function AdminPanelPage() {
                                         </div>
                                         <span className="text-sm text-white">
                                             {admin.email}
-                                            {admin.email === 'anitadhakad@gmail.com' && (
+                                            {admin.email === 'anitadhakad333@gmail.com' && (
                                                 <span className="ml-2 text-xs text-fuchsia-400 font-bold">FOUNDER</span>
                                             )}
                                         </span>
                                     </div>
-                                    {admin.email !== 'anitadhakad@gmail.com' && (
+                                    {admin.email !== 'anitadhakad333@gmail.com' && (
                                         <button
                                             onClick={() => handleRemoveAdmin(admin.id, admin.email)}
                                             className="text-red-400 hover:text-red-300 hover:bg-red-900/30 p-2 rounded-lg transition-all"

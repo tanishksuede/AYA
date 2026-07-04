@@ -189,7 +189,7 @@ export function GameRoot() {
                 let isAdmin = false;
                 try {
                     const { data: { session: authSession } } = await supabase.auth.getSession();
-                    if (authSession?.user?.email === 'anitadhakad@gmail.com') {
+                    if (authSession?.user?.email === 'anitadhakad333@gmail.com') {
                         isAdmin = true;
                     }
                 } catch (err) {

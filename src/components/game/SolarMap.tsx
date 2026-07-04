@@ -39,7 +39,7 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
             } catch {
                 // Fallback: hardcoded check
                 const email = localStorage.getItem('aya_google_email');
-                if (email === 'anitadhakad@gmail.com') setIsAdmin(true);
+                if (email === 'anitadhakad333@gmail.com') setIsAdmin(true);
             }
         };
         checkAdmin();
