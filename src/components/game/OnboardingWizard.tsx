@@ -288,9 +288,8 @@ export function OnboardingWizard() {
         let isAdmin = false;
         try {
             const { data: { session: authSession } } = await supabase.auth.getSession();
-            if (authSession?.user?.email) {
-                const { data: adminData } = await supabase.from('admin_users').select('email').eq('email', authSession.user.email).maybeSingle();
-                if (adminData) isAdmin = true;
+            if (authSession?.user?.email === 'anitadhakad@gmail.com') {
+                isAdmin = true;
             }
         } catch (err) {
             console.error('Failed to check admin status during login:', err);
