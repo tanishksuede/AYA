@@ -6,21 +6,14 @@ import { ErrorBoundary } from './components/ErrorBoundary.tsx';
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    // UNREGISTER all service workers to prevent aggressive PWA caching during active development
-    navigator.serviceWorker.getRegistrations().then((registrations) => {
-      for (let registration of registrations) {
-        registration.unregister().then(boolean => {
-            if(boolean) {
-                console.log('[SW] Unregistered successfully.');
-                // Force reload once to fetch new non-cached assets
-                if (!sessionStorage.getItem('sw_reloaded')) {
-                    sessionStorage.setItem('sw_reloaded', 'true');
-                    window.location.reload();
-                }
-            }
-        });
+    navigator.serviceWorker.register('/sw.js').then(
+      (registration) => {
+        console.log('[SW] Service Worker registered with scope:', registration.scope);
+      },
+      (error) => {
+        console.error('[SW] Service Worker registration failed:', error);
       }
-    });
+    );
   });
 }
 
