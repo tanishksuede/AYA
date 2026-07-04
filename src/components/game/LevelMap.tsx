@@ -24,6 +24,25 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
     const levels = useUserStore((state) => state.levels);
     const levelScores = useUserStore((state) => state.levelScores);
     const profile = useUserStore((state) => state.profile);
+
+    // Admin check — read persisted Google email from localStorage
+    const [isAdmin, setIsAdmin] = useState(false);
+    useEffect(() => {
+        const checkAdmin = async () => {
+            const email = localStorage.getItem('aya_google_email');
+            if (!email) return;
+            // Founder always gets access (no DB needed)
+            if (email === 'anitadhakad333@gmail.com') { setIsAdmin(true); return; }
+            // Other admins: check database
+            try {
+                // Must import supabase at the top if it wasn't already
+                const { supabase } = await import('../../utils/supabase');
+                const { data } = await supabase.from('admin_users').select('email').eq('email', email).maybeSingle();
+                if (data) setIsAdmin(true);
+            } catch {}
+        };
+        checkAdmin();
+    }, []);
     const activeAge = profile?.age || 18;
     
     let ageLevels: any[] = [];
@@ -289,6 +308,15 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
                 >
                     {isCandyMode ? <Sun size={18} className="md:w-5 md:h-5 text-amber-300 animate-pulse" /> : <Moon size={18} className="md:w-5 md:h-5 text-indigo-300 animate-breath" />}
                 </button>
+                {isAdmin && (
+                    <button
+                        onClick={() => { audioSynth.playClick(); navigate('/game/admin'); }}
+                        className="mt-2 w-8 h-8 md:w-10 md:h-10 bg-fuchsia-900/40 hover:bg-fuchsia-800/60 border border-fuchsia-500/50 backdrop-blur-md rounded-full flex items-center justify-center text-fuchsia-300 transition-all shadow-[0_0_15px_rgba(217,70,239,0.3)] hover:scale-110 active:scale-95"
+                        title="Admin Panel"
+                    >
+                        <span className="text-sm font-black">👑</span>
+                    </button>
+                )}
             </div>
 
             {/* Top Right Controls */}
