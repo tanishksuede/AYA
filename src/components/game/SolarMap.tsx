@@ -1,6 +1,7 @@
 import { useUserStore } from '../../store/userStore';
 import { Lock, Star, Settings, BookOpen } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
+import { supabase } from '../../utils/supabase';
 import { createPortal } from 'react-dom';
 import { DISCLAIMER_TEXT } from './AntiGravityCanvas';
 import clsx from 'clsx';
@@ -24,6 +25,16 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
     const navigate = useNavigate();
     const levels = useUserStore((state) => state.levels);
     const profile = useUserStore((state) => state.profile);
+
+    // Admin check — bypass Zustand, read Supabase session directly
+    const [isAdmin, setIsAdmin] = useState(false);
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }: any) => {
+            if (session?.user?.email === 'anitadhakad@gmail.com') {
+                setIsAdmin(true);
+            }
+        }).catch(() => {});
+    }, []);
     const activeAge = profile?.age || 18;
     let processedLevels = levels.filter(l => l.age === activeAge);
 
@@ -321,7 +332,7 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
                 >
                     <span className="text-sm">☀️</span>
                 </button>
-                {profile?.isAdmin && (
+                {isAdmin && (
                     <button
                         onClick={() => { audioSynth.playClick(); navigate('/game/admin'); }}
                         className="mt-2 w-8 h-8 md:w-10 md:h-10 bg-fuchsia-900/40 hover:bg-fuchsia-800/60 border border-fuchsia-500/50 backdrop-blur-md rounded-full flex items-center justify-center text-fuchsia-300 transition-all shadow-[0_0_15px_rgba(217,70,239,0.3)] hover:scale-110 active:scale-95"
