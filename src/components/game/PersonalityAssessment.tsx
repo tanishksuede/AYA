@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useUserStore } from '../../store/userStore';
-import { audioSynth } from '../../utils/audioSynth';
+import { audioManager as audioSynth } from "../../utils/audioManager";
 import { Flame, Briefcase, Eye, Shield, Award, Zap, Check } from 'lucide-react';
 import { supabase } from '../../utils/supabase';
 import { markQuizDone } from '../../utils/session';

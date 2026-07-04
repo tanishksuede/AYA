@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { ThemeSwitcherModal } from '../components/game/ThemeSwitcherModal';
-import { audioSynth } from '../utils/audioSynth';
+import { audioManager as audioSynth } from "../utils/audioManager";
 
 export function ThemeSwitcherPage() {
     const navigate = useNavigate();

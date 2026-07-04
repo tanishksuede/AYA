@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 
 import clsx from 'clsx';
 import { AudioController } from '../shared/AudioController';
-import { audioSynth } from '../../utils/audioSynth';
+import { audioManager as audioSynth } from "../../utils/audioManager";
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 import { AntiGravityCanvas } from './AntiGravityCanvas';
 import { useNavigate } from 'react-router-dom';

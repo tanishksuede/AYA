@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { LessonJournal } from '../components/game/LessonJournal';
-import { audioSynth } from '../utils/audioSynth';
+import { audioManager as audioSynth } from "../utils/audioManager";
 
 export function JournalPage() {
     const navigate = useNavigate();

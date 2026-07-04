@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Level } from '../../types/gameTypes';
-import { audioSynth } from '../../utils/audioSynth';
+import { audioManager as audioSynth } from "../../utils/audioManager";
 import { useUserStore } from '../../store/userStore';
 
 interface DailyChallengeRevealProps {

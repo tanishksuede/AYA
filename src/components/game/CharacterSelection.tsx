@@ -4,7 +4,7 @@ import type { Variants } from 'framer-motion';
 import { ChevronLeft, Star, ChevronRight, Lock } from 'lucide-react';
 import type { Level } from '../../types/gameTypes';
 import { useUserStore } from '../../store/userStore';
-import { audioSynth } from '../../utils/audioSynth';
+import { audioManager as audioSynth } from "../../utils/audioManager";
 import clsx from 'clsx';
 
 interface CharacterSelectionProps {

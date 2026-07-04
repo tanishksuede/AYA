@@ -77,12 +77,9 @@ interface UserState {
 
     resetProgress: () => void;
 }
-const syncStoreToBackend = async (profile: any) => {
+const syncStoreToBackend = async (profile: any, currentLevelScores: Record<string, number>) => {
     if (!profile || !profile.id || profile.id.startsWith('offline-')) return;
     try {
-        // Read levelScores from store state (not on profile object)
-        const currentLevelScores = useUserStore.getState().levelScores || {};
-
         const { error: userError } = await supabase.from('users').update({
             total_xp: profile.total_xp,
             level: profile.level,
@@ -165,8 +162,8 @@ export const useUserStore = create<UserState>()(
                         }
                     };
                 });
-                const { profile } = get();
-                if (profile) syncStoreToBackend(profile);
+                const { profile, levelScores } = get();
+                if (profile) syncStoreToBackend(profile, levelScores);
             },
 
             updateXpLocally: (amount) => {
@@ -182,8 +179,8 @@ export const useUserStore = create<UserState>()(
                         }
                     };
                 });
-                const { profile } = get();
-                if (profile) syncStoreToBackend(profile);
+                const { profile, levelScores } = get();
+                if (profile) syncStoreToBackend(profile, levelScores);
             },
 
             // ── Theme (2-way: city_dark | light) ─────────────────────────────
@@ -373,8 +370,8 @@ export const useUserStore = create<UserState>()(
                         }
                     };
                 });
-                const { profile } = get();
-                if (profile) syncStoreToBackend(profile);
+                const { profile, levelScores } = get();
+                if (profile) syncStoreToBackend(profile, levelScores);
             },
 
             completeDailyChallenge: () => {
@@ -424,8 +421,8 @@ export const useUserStore = create<UserState>()(
                         }
                     };
                 });
-                const { profile } = get();
-                if (profile) syncStoreToBackend(profile);
+                const { profile, levelScores } = get();
+                if (profile) syncStoreToBackend(profile, levelScores);
                 return result;
             },
 
@@ -450,8 +447,8 @@ export const useUserStore = create<UserState>()(
                         }
                     };
                 });
-                const { profile } = get();
-                if (profile) syncStoreToBackend(profile);
+                const { profile, levelScores } = get();
+                if (profile) syncStoreToBackend(profile, levelScores);
             },
 
             completeAssessment: (initialTraits, profileData) => {
@@ -466,8 +463,8 @@ export const useUserStore = create<UserState>()(
                         }
                     };
                 });
-                const { profile } = get();
-                if (profile) syncStoreToBackend(profile);
+                const { profile, levelScores } = get();
+                if (profile) syncStoreToBackend(profile, levelScores);
             },
 
             // The original `unlockedLevels` state and its usage in `unlockLevel` were removed
@@ -485,8 +482,8 @@ export const useUserStore = create<UserState>()(
                     levelScores: { ...state.levelScores, [levelId]: Math.max(state.levelScores[levelId] || 0, stars) },
                     levels: state.levels.map(l => String(l.id) === String(levelId) ? { ...l, status: 'completed', stars: Math.max(l.stars || 0, stars) } : l)
                 }));
-                const { profile } = get();
-                if (profile) syncStoreToBackend(profile);
+                const { profile, levelScores } = get();
+                if (profile) syncStoreToBackend(profile, levelScores);
             },
 
             resetProgress: () => set({

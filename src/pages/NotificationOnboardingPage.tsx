@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Bell } from 'lucide-react';
 import { subscribeUserToPush } from '../utils/pushNotifications';
-import { audioSynth } from '../utils/audioSynth';
+import { audioManager as audioSynth } from "../utils/audioManager";
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUserStore } from '../../store/userStore';
-import { audioSynth } from '../../utils/audioSynth';
+import { audioManager as audioSynth } from "../../utils/audioManager";
 import { supabase } from '../../utils/supabase';
 import { Brain, Gamepad2, Dna, ChevronRight, Check } from 'lucide-react';
 import { NotificationPrompt } from '../ui/NotificationPrompt';

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { audioSynth } from '../../utils/audioSynth';
+import { audioManager as audioSynth } from "../../utils/audioManager";
 import { Flame, Sparkles } from 'lucide-react';
 
 interface StreakCelebrationProps {
