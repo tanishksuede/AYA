@@ -12,7 +12,6 @@ import { bgmManager } from '../../utils/bgmManager';
 import { MapAmbience } from './MapAmbience';
 import { VibeSpinnerButton } from '../MoodWheel/VibeSpinnerButton';
 import { getUnlockedDayCount } from '../../utils/storyUnlock';
-import { PushPromptModal } from './PushPromptModal';
 
 interface LevelMapProps {
     onPlayLevel: (level: any) => void;
@@ -264,7 +263,6 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
     return (
         <div className="fixed inset-0 w-full h-[100dvh] bg-slate-900 overflow-hidden">
             <AudioController />
-            <PushPromptModal />
             {/* --- FIXED UI LAYER (Stays on Top) --- */}
 
             {/* Vibe Spinner Button (Top Center below Navbar) */}

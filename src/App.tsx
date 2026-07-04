@@ -12,6 +12,7 @@ import { PersonalityAssessment } from './components/game/PersonalityAssessment';
 import { SettingsPage } from './pages/SettingsPage';
 import { JournalPage } from './pages/JournalPage';
 import { ThemeSwitcherPage } from './pages/ThemeSwitcherPage';
+import { NotificationOnboardingPage } from './pages/NotificationOnboardingPage';
 
 function App() {
   useEffect(() => {
@@ -40,6 +41,7 @@ function App() {
             <Route index element={<MapRouteHandler />} />
             <Route path="welcome" element={<OnboardingWizard />} />
             <Route path="setup" element={<OnboardingWizard />} />
+            <Route path="notifications" element={<NotificationOnboardingPage />} />
             <Route path="onboarding/:step" element={<CinematicOnboarding />} />
             <Route path="onboarding" element={<Navigate to="/game/onboarding/1" replace />} />
             <Route path="assessment/:step" element={<PersonalityAssessment />} />

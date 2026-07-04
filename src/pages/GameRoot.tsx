@@ -368,6 +368,9 @@ export function GameRoot() {
     }
 
     if (profile && profile.assessmentCompleted && (location.pathname === '/game/welcome' || location.pathname === '/game/setup')) {
+        if ('Notification' in window && Notification.permission === 'default' && localStorage.getItem('aya_push_prompted') !== 'true') {
+            return <Navigate to="/game/notifications" replace />;
+        }
         return <Navigate to="/game" replace />;
     }
 
@@ -377,6 +380,11 @@ export function GameRoot() {
 
     if (profile && !profile.assessmentCompleted && onboardingComplete && !location.pathname.startsWith('/game/assessment')) {
         return <Navigate to="/game/assessment/1" replace />;
+    }
+    if (profile && profile.assessmentCompleted && location.pathname === '/game') {
+        if ('Notification' in window && Notification.permission === 'default' && localStorage.getItem('aya_push_prompted') !== 'true') {
+            return <Navigate to="/game/notifications" replace />;
+        }
     }
 
     return (
