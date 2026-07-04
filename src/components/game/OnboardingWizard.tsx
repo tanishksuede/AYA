@@ -6,7 +6,7 @@ import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { saveSession } from '../../utils/session';
 import { supabase } from '../../utils/supabase';
 
-import { motion, AnimatePresence, useMotionValue, animate } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, animate, useMotionValueEvent } from 'framer-motion';
 
 // Horizontal Drag Strip for Age
 const AgeDial = ({ value, onChange }: { value: number; onChange: (val: number) => void }) => {
@@ -16,12 +16,25 @@ const AgeDial = ({ value, onChange }: { value: number; onChange: (val: number) =
     
     const dragRef = useRef<HTMLDivElement>(null);
     const x = useMotionValue(0);
+    const [displayValue, setDisplayValue] = useState(value);
 
     // Sync external value to visual position when not dragging
     useEffect(() => {
+        setDisplayValue(value);
         const targetX = -(value - MIN) * TICK_WIDTH;
         animate(x, targetX, { type: "spring", stiffness: 300, damping: 30 });
     }, [value, x]);
+
+    useMotionValueEvent(x, "change", (latestX) => {
+        let targetIndex = Math.round(-latestX / TICK_WIDTH);
+        targetIndex = Math.max(0, Math.min(MAX - MIN, targetIndex));
+        const newValue = MIN + targetIndex;
+        if (newValue !== displayValue) {
+            setDisplayValue(newValue);
+            // Optionally play a subtle tick sound here
+            audioSynth.playClick();
+        }
+    });
 
     const handleDragEnd = () => {
         const currentX = x.get();
@@ -55,12 +68,12 @@ const AgeDial = ({ value, onChange }: { value: number; onChange: (val: number) =
                 
                 <div className="flex flex-col items-center relative">
                     <motion.div 
-                        key={value}
+                        key={displayValue}
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#00f1fe] to-[#99f7ff] tracking-tight drop-shadow-[0_0_15px_rgba(0,241,254,0.6)]"
                     >
-                        {value}
+                        {displayValue}
                     </motion.div>
                     <span className="text-xs uppercase tracking-[0.3em] text-[#00f1fe] absolute -bottom-4 font-bold opacity-80">Years</span>
                 </div>
@@ -95,8 +108,8 @@ const AgeDial = ({ value, onChange }: { value: number; onChange: (val: number) =
                             style={{ width: TICK_WIDTH }} 
                             className="flex flex-col items-center justify-end h-full pb-4 shrink-0"
                         >
-                            <div className={`w-1 rounded-t-full transition-all duration-300 ${tick === value ? 'h-8 bg-[#00f1fe] shadow-[0_0_10px_#00f1fe]' : (tick % 5 === 0 ? 'h-6 bg-[#acaab5]' : 'h-4 bg-[#2b2b38]')}`} />
-                            <span className={`text-[10px] mt-2 font-bold transition-colors ${tick === value ? 'text-[#00f1fe]' : 'text-[#76747f]'}`}>
+                            <div className={`w-1 rounded-t-full transition-all duration-300 ${tick === displayValue ? 'h-8 bg-[#00f1fe] shadow-[0_0_10px_#00f1fe]' : (tick % 5 === 0 ? 'h-6 bg-[#acaab5]' : 'h-4 bg-[#2b2b38]')}`} />
+                            <span className={`text-[10px] mt-2 font-bold transition-colors ${tick === displayValue ? 'text-[#00f1fe]' : 'text-[#76747f]'}`}>
                                 {tick % 5 === 0 ? tick : ''}
                             </span>
                         </div>
