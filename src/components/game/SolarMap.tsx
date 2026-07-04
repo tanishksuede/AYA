@@ -26,14 +26,23 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
     const levels = useUserStore((state) => state.levels);
     const profile = useUserStore((state) => state.profile);
 
-    // Admin check — bypass Zustand, read Supabase session directly
+    // Admin check — read persisted Google email from localStorage
     const [isAdmin, setIsAdmin] = useState(false);
     useEffect(() => {
-        supabase.auth.getSession().then(({ data: { session } }: any) => {
-            if (session?.user?.email === 'anitadhakad@gmail.com') {
-                setIsAdmin(true);
+        const checkAdmin = async () => {
+            try {
+                const email = localStorage.getItem('aya_google_email');
+                if (!email) return;
+                // Check against admin_users table in Supabase
+                const { data } = await supabase.from('admin_users').select('email').eq('email', email).maybeSingle();
+                if (data) setIsAdmin(true);
+            } catch {
+                // Fallback: hardcoded check
+                const email = localStorage.getItem('aya_google_email');
+                if (email === 'anitadhakad@gmail.com') setIsAdmin(true);
             }
-        }).catch(() => {});
+        };
+        checkAdmin();
     }, []);
     const activeAge = profile?.age || 18;
     let processedLevels = levels.filter(l => l.age === activeAge);

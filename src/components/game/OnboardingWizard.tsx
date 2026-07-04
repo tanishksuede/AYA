@@ -183,7 +183,10 @@ export function OnboardingWizard() {
 
                 if (session && session.user) {
                     const googleId = session.user.id;
-                    
+                    // Persist Google email for admin check (Supabase auth session is transient)
+                    if (session.user.email) {
+                        try { localStorage.setItem('aya_google_email', session.user.email); } catch {}
+                    }
                     // See if they already have an account linked to this google_id
                     const { data: existingUser, error: dbError } = await supabase
                         .from('users')
