@@ -172,7 +172,7 @@ export function AdminPanelPage() {
     }
 
     return (
-        <div className="min-h-screen bg-[#0a0510] text-white p-6 md:p-12 relative overflow-hidden">
+        <div className="min-h-screen bg-[#0a0510] text-white p-6 md:p-12 relative overflow-y-auto overflow-x-hidden">
             <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-purple-900/20 to-transparent pointer-events-none" />
             <div className="absolute -top-32 -right-32 w-96 h-96 bg-fuchsia-600/10 rounded-full blur-3xl pointer-events-none" />
             
