@@ -62,10 +62,11 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
 
     // Typewriter State (Stateless Slice Logic)
     const [displayedText, setDisplayedText] = useState("");
-    const [isTyping, setIsTyping] = useState(false);
-
-    // Scoring State
+    const [isTyping, setIsTyping] = useState(true);
     const [score, setScore] = useState(0);
+
+    const isNarrationMuted = useUserStore(state => state.isNarrationMuted);
+    const toggleNarrationMute = useUserStore(state => state.toggleNarrationMute);
     // Ref tracks session choices — avoids React stale closure when reading at COMPLETE time
     const sessionChoicesRef = useRef<SessionChoiceData[]>([]);
     const hasInsertedSession = useRef(false);
@@ -308,7 +309,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
 
         typingSpeedRef.current = 20;
 
-        if (frame.audio && !feedbackChoice && isNarrationEnabled && audioRef.current) {
+        if (frame.audio && !feedbackChoice && !isNarrationMuted && audioRef.current) {
             audioRef.current.currentTime = 0;
             
             // Calculate dynamic typing speed based on audio duration
@@ -361,7 +362,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                 audioRef.current.currentTime = 0;
             }
         };
-    }, [activeText, isBgLoaded, frame.audio, feedbackChoice, isNarrationEnabled]);
+    }, [activeText, isBgLoaded, frame.audio, feedbackChoice, isNarrationMuted]);
 
     const handleTextClick = () => {
         if (isTyping) {
@@ -885,19 +886,19 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                 {/* Voice Narration toggle */}
                 <button
                     onClick={() => {
-                        const next = !isNarrationEnabled;
-                        setIsNarrationEnabled(next);
-                        if (!next && audioRef.current) {
+                        toggleNarrationMute();
+                        // If we are currently not muted, muting it should pause the audio
+                        if (!isNarrationMuted && audioRef.current) {
                             audioRef.current.pause();
-                        } else if (next && audioRef.current && frame.audio) {
+                        } else if (isNarrationMuted && audioRef.current && frame.audio) {
                             audioRef.current.play().catch(console.warn);
                         }
                     }}
-                    className={`cinematic-toggle flex items-center justify-center w-10 h-10 rounded-full border border-white/15 hover:bg-white/10 transition-colors shadow-lg ${!isNarrationEnabled ? 'bg-red-500/10 text-red-400' : 'text-[#00f1fe] bg-[#00f1fe]/10'}`}
+                    className={`cinematic-toggle flex items-center justify-center w-10 h-10 rounded-full border border-white/15 hover:bg-white/10 transition-colors shadow-lg ${isNarrationMuted ? 'bg-red-500/10 text-red-400' : 'text-[#00f1fe] bg-[#00f1fe]/10'}`}
                     style={{ borderColor: `${currentTheme.badgeColor}80` }}
                     title="Voice Narration"
                 >
-                    {isNarrationEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
+                    {!isNarrationMuted ? <Volume2 size={18} /> : <VolumeX size={18} />}
                 </button>
             </div>
 

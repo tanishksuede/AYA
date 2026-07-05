@@ -47,11 +47,13 @@ interface UserState {
     sfxVolume: number;   // 0 to 1
     isMusicMuted: boolean;
     isSfxMuted: boolean;
+    isNarrationMuted: boolean;
 
     setMusicVolume: (vol: number) => void;
     setSfxVolume: (vol: number) => void;
     toggleMusicMute: () => void;
     toggleSfxMute: () => void;
+    toggleNarrationMute: () => void;
 
     // Lesson Journal State
     collectedLessons: Lesson[];
@@ -218,15 +220,17 @@ export const useUserStore = create<UserState>()(
             }),
 
             // Audio Defaults
-            musicVolume: 0.15,
-            sfxVolume: 0.8,
+            musicVolume: 0.5,
+            sfxVolume: 0.5,
             isMusicMuted: false,
             isSfxMuted: false,
+            isNarrationMuted: false,
 
             setMusicVolume: (vol) => set({ musicVolume: vol }),
             setSfxVolume: (vol) => set({ sfxVolume: vol }),
             toggleMusicMute: () => set((state) => ({ isMusicMuted: !state.isMusicMuted })),
             toggleSfxMute: () => set((state) => ({ isSfxMuted: !state.isSfxMuted })),
+            toggleNarrationMute: () => set((state) => ({ isNarrationMuted: !state.isNarrationMuted })),
 
             collectedLessons: [],
             collectLesson: (lesson) => set((state) => {

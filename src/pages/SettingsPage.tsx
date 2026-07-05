@@ -19,10 +19,12 @@ export function SettingsPage() {
     const sfxVolume = useUserStore((state) => state.sfxVolume);
     const isMusicMuted = useUserStore((state) => state.isMusicMuted);
     const isSfxMuted = useUserStore((state) => state.isSfxMuted);
+    const isNarrationMuted = useUserStore((state) => state.isNarrationMuted);
     const setMusicVolume = useUserStore((state) => state.setMusicVolume);
     const setSfxVolume = useUserStore((state) => state.setSfxVolume);
     const toggleMusicMute = useUserStore((state) => state.toggleMusicMute);
     const toggleSfxMute = useUserStore((state) => state.toggleSfxMute);
+    const toggleNarrationMute = useUserStore((state) => state.toggleNarrationMute);
 
     useEffect(() => {
         if (profile?.age) {
@@ -95,6 +97,17 @@ export function SettingsPage() {
                                 onChange={(e) => setSfxVolume(parseFloat(e.target.value))}
                                 className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
                             />
+                        </div>
+                        <div className="pt-2 border-t border-slate-700">
+                            <div className="flex justify-between items-center">
+                                <span className="text-xs font-bold text-slate-400 uppercase">Voice Narration</span>
+                                <button
+                                    onClick={() => { audioSynth.playClick(); toggleNarrationMute(); }}
+                                    className={clsx("p-1 px-3 text-xs font-bold rounded transition-colors uppercase tracking-widest", isNarrationMuted ? "text-red-400 bg-red-900/30" : "text-[#00f1fe] bg-[#00f1fe]/20")}
+                                >
+                                    {isNarrationMuted ? 'Muted' : 'Enabled'}
+                                </button>
+                            </div>
                         </div>
                     </div>
 
