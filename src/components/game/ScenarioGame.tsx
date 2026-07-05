@@ -355,6 +355,11 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
         return () => {
             clearTimeout(startDelay);
             if (timer) clearTimeout(timer);
+            // Ensure audio stops completely when frame/effect unmounts
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.currentTime = 0;
+            }
         };
     }, [activeText, isBgLoaded, frame.audio, feedbackChoice, isNarrationEnabled]);
 
