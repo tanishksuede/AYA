@@ -178,11 +178,23 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                     throw new Error("Supabase fetch failed or returned null");
                 }
                 
+                // Merge local audio fields into Supabase frames (Supabase may not have audio yet)
+                const localData = STORY_DATABASE[targetId];
+                const mergedFrames = data.frames.map((frame: any) => {
+                    if (localData) {
+                        const localFrame = localData.frames.find((lf: any) => lf.id === frame.id);
+                        if (localFrame?.audio && !frame.audio) {
+                            return { ...frame, audio: localFrame.audio };
+                        }
+                    }
+                    return frame;
+                });
+                
                 setScenario({
                     id: data.id,
                     title: data.title,
                     source: data.source,
-                    frames: data.frames
+                    frames: mergedFrames
                 });
                 setIsLoadingScenario(false);
             } catch (err) {
