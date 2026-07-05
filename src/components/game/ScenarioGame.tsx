@@ -139,7 +139,6 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
         }
     }, []);
 
-    const [typingSpeed, setTypingSpeed] = useState(20);
     const [isNarrationEnabled, setIsNarrationEnabled] = useState(true);
 
     // Handle tab visibility (Pause game timer and BGM)
@@ -305,17 +304,12 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                     const durationMs = audioRef.current.duration * 1000;
                     // Leave a small buffer at the end so text finishes slightly before audio ends
                     dynamicSpeed = Math.max(20, (durationMs - 500) / activeText.length);
-                    setTypingSpeed(dynamicSpeed);
                 }
             };
 
             audioRef.current.play().catch(e => {
                 console.warn('Audio play failed (autoplay blocked). Please interact with document:', e);
-                // If autoplay fails, fallback to default speed
-                setTypingSpeed(20);
             });
-        } else {
-            setTypingSpeed(20); // default fast speed when muted or no audio
         }
 
         setDisplayedText("");
