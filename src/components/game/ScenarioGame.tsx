@@ -6,7 +6,7 @@ import type { EmotionTheme } from '../../utils/storyEmotion';
 import { bgmManager } from '../../utils/bgmManager';
 import type { Level, Lesson } from '../../types/gameTypes';
 import clsx from 'clsx';
-import { ChevronRight, Star, AlertCircle, CheckCircle, Palette, Loader2 } from 'lucide-react';
+import { ChevronRight, Star, AlertCircle, CheckCircle, Palette, Loader2, Volume2, VolumeX } from 'lucide-react';
 import { supabase } from '../../utils/supabase';
 import { STORY_DATABASE } from '../../data/scenarios';
 import { IDOL_PROFILES } from '../../data/idolMindsets';
@@ -137,6 +137,11 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
         if (localStorage.getItem('aya_typewriter_sound') === 'false') {
             setTypeSoundEnabled(false);
         }
+    const [typingSpeed, setTypingSpeed] = useState(20);
+    const [isNarrationEnabled, setIsNarrationEnabled] = useState(true);
+
+    useEffect(() => {
+        // Fetch audio preference from localStorage (optional) or just default to true
     }, []);
 
     // Handle tab visibility (Pause game timer and BGM)
@@ -291,9 +296,28 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
         // Do not start typing until the background image finishes loading
         if (!isBgLoaded) return;
 
-        if (frame.audio && !feedbackChoice) {
+        let dynamicSpeed = 20;
+
+        if (frame.audio && !feedbackChoice && isNarrationEnabled) {
             audioRef.current = new Audio(frame.audio);
-            audioRef.current.play().catch(e => console.warn('Audio play failed:', e));
+            
+            // Calculate dynamic typing speed based on audio duration
+            audioRef.current.onloadedmetadata = () => {
+                if (audioRef.current && activeText.length > 0) {
+                    const durationMs = audioRef.current.duration * 1000;
+                    // Leave a small buffer at the end so text finishes slightly before audio ends
+                    dynamicSpeed = Math.max(20, (durationMs - 500) / activeText.length);
+                    setTypingSpeed(dynamicSpeed);
+                }
+            };
+
+            audioRef.current.play().catch(e => {
+                console.warn('Audio play failed (autoplay blocked). Please interact with document:', e);
+                // If autoplay fails, fallback to default speed
+                setTypingSpeed(20);
+            });
+        } else {
+            setTypingSpeed(20); // default fast speed when muted or no audio
         }
 
         setDisplayedText("");
@@ -304,27 +328,29 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
 
         // Small delay
         const startDelay = setTimeout(() => {
-            timer = setInterval(() => {
+            // We use a recursive timeout instead of setInterval so dynamicSpeed can update if metadata loads late
+            const typeNextCharacter = () => {
                 i++;
                 if (i <= activeText.length) {
                     setDisplayedText(activeText.slice(0, i));
+                    timer = setTimeout(typeNextCharacter, dynamicSpeed);
                 } else {
                     setIsTyping(false);
                     setFrameStartTime(Date.now()); // Restart timer once question is readable
-                    clearInterval(timer);
                 }
-            }, 20); // Slightly faster typing
+            };
+            timer = setTimeout(typeNextCharacter, dynamicSpeed);
         }, 100);
 
         return () => {
             clearTimeout(startDelay);
-            if (timer) clearInterval(timer);
+            if (timer) clearTimeout(timer);
             if (audioRef.current) {
                 audioRef.current.pause();
                 audioRef.current = null;
             }
         };
-    }, [activeText, isBgLoaded, frame.audio, feedbackChoice]);
+    }, [activeText, isBgLoaded, frame.audio, feedbackChoice, isNarrationEnabled]);
 
     const handleTextClick = () => {
         if (isTyping) {
@@ -821,6 +847,23 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                     title="Typewriter Sound"
                 >
                     {typeSoundEnabled ? '⌨️' : '🔕'}
+                </button>
+
+                {/* Voice Narration toggle */}
+                <button
+                    onClick={() => {
+                        const next = !isNarrationEnabled;
+                        setIsNarrationEnabled(next);
+                        // If turning off narration, stop current audio
+                        if (!next && audioRef.current) {
+                            audioRef.current.pause();
+                        }
+                    }}
+                    className={`cinematic-toggle flex items-center justify-center w-10 h-10 rounded-full border border-white/15 hover:bg-white/10 transition-colors shadow-lg ${!isNarrationEnabled ? 'bg-red-500/10 text-red-400' : 'text-[#00f1fe] bg-[#00f1fe]/10'}`}
+                    style={{ borderColor: `${currentTheme.badgeColor}80` }}
+                    title="Voice Narration"
+                >
+                    {isNarrationEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
                 </button>
             </div>
 
