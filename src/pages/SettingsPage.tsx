@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../store/userStore';
 import { audioManager as audioSynth } from "../utils/audioManager";
 import { bgmManager } from '../utils/bgmManager';
-import { Volume2, VolumeX } from 'lucide-react';
+import { Volume2, VolumeX, Bell } from 'lucide-react';
 import clsx from 'clsx';
 import { supabase } from '../utils/supabase';
+import { sendTestNotification, subscribeUserToPush } from '../utils/pushNotifications';
 
 export function SettingsPage() {
     const navigate = useNavigate();
@@ -106,6 +107,24 @@ export function SettingsPage() {
                                     className={clsx("p-1 px-3 text-xs font-bold rounded transition-colors uppercase tracking-widest", isNarrationMuted ? "text-red-400 bg-red-900/30" : "text-[#00f1fe] bg-[#00f1fe]/20")}
                                 >
                                     {isNarrationMuted ? 'Muted' : 'Enabled'}
+                                </button>
+                            </div>
+                        </div>
+                        <div className="pt-2 border-t border-slate-700">
+                            <div className="flex justify-between items-center">
+                                <span className="text-xs font-bold text-slate-400 uppercase">Test Notifications</span>
+                                <button
+                                    onClick={async () => {
+                                        audioSynth.playClick();
+                                        await subscribeUserToPush();
+                                        const sent = await sendTestNotification();
+                                        if (!sent) {
+                                            alert("Could not send notification. Please ensure notifications are allowed in your browser settings!");
+                                        }
+                                    }}
+                                    className="p-1 px-3 text-xs font-bold rounded transition-colors uppercase tracking-widest bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 flex items-center gap-1"
+                                >
+                                    <Bell size={12} /> Test Push
                                 </button>
                             </div>
                         </div>

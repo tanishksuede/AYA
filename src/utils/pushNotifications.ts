@@ -131,10 +131,41 @@ export async function subscribeUserToPush(): Promise<PushSubscription | null> {
     }
 
     console.log('[Push] Step 5 ✓ — subscription saved for user:', user.id);
+
+    // ── 8. Fire immediate welcome/test notification ───────────────────────
+    try {
+      await sendTestNotification();
+    } catch (e) {
+      console.warn('[Push] Immediate welcome notification could not be shown:', e);
+    }
+
     return subscription;
 
   } catch (err) {
     console.error('[Push] subscribeUserToPush() failed:', err);
     return null;
+  }
+}
+
+/**
+ * Trigger an instant test notification on the user's device.
+ */
+export async function sendTestNotification(): Promise<boolean> {
+  try {
+    if (!('serviceWorker' in navigator)) return false;
+    const registration = await navigator.serviceWorker.ready;
+    if (Notification.permission === 'granted') {
+      await registration.showNotification('🌟 AYA Notifications Active!', {
+        body: 'Welcome! You will receive daily mindset reminders and streak alerts.',
+        icon: '/icons/icon-192x192.png',
+        badge: '/icons/icon-192x192.png',
+        tag: 'aya-test-notification'
+      } as NotificationOptions);
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.error('[Push] Failed to show test notification:', err);
+    return false;
   }
 }
