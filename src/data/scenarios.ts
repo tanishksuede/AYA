@@ -4081,6 +4081,7 @@ export const STORY_DATABASE: Record<string, any> = {
             {
                 id: 'intro',
                 bg: '/assets/bg_neeraj_track.jpg',
+                audio: '/assets/voice_neeraj_intro.mp3',
                 text: "2016. Poland/India.\nYou are 19. You just threw the Javelin 86.48m—a World Junior Record. You are the first Indian athlete to ever hold a world record. You are a national hero.\nBut there is a catch. The Olympic qualification deadline passed just a few days ago. Even though you are literally one of the best in the world, you cannot go to the Rio Olympics.\nThe \"system\" tells you to stay in India, do the celebrity award shows, and wait for the next four years. Your body is tired, and the hype is distracting.\nWhat do you do?",
                 choices: [
                     {

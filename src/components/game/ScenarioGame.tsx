@@ -250,6 +250,8 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
         }
     }, [frame?.bg, level?.background]);
 
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+
     // Emotion detection + ambient music when frame changes
     useEffect(() => {
         const textToAnalyse = frame.emotion
@@ -289,6 +291,11 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
         // Do not start typing until the background image finishes loading
         if (!isBgLoaded) return;
 
+        if (frame.audio && !feedbackChoice) {
+            audioRef.current = new Audio(frame.audio);
+            audioRef.current.play().catch(e => console.warn('Audio play failed:', e));
+        }
+
         setDisplayedText("");
         setIsTyping(true);
 
@@ -312,8 +319,12 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
         return () => {
             clearTimeout(startDelay);
             if (timer) clearInterval(timer);
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current = null;
+            }
         };
-    }, [activeText, isBgLoaded]);
+    }, [activeText, isBgLoaded, frame.audio, feedbackChoice]);
 
     const handleTextClick = () => {
         if (isTyping) {
