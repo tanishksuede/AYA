@@ -137,12 +137,10 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
         if (localStorage.getItem('aya_typewriter_sound') === 'false') {
             setTypeSoundEnabled(false);
         }
+    }, []);
+
     const [typingSpeed, setTypingSpeed] = useState(20);
     const [isNarrationEnabled, setIsNarrationEnabled] = useState(true);
-
-    useEffect(() => {
-        // Fetch audio preference from localStorage (optional) or just default to true
-    }, []);
 
     // Handle tab visibility (Pause game timer and BGM)
     useEffect(() => {
