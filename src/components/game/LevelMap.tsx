@@ -1,6 +1,6 @@
 import { useUserStore } from '../../store/userStore';
 import { Lock, Star, Settings, BookOpen, Volume2, VolumeX, Sun, Moon } from 'lucide-react';
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
 import clsx from 'clsx';
 import { AudioController } from '../shared/AudioController';
