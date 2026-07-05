@@ -1,4 +1,4 @@
-const CACHE_NAME = 'aya-cache-v1';
+const CACHE_NAME = 'aya-cache-v2';
 
 const urlsToCache = [
   '/',
@@ -17,18 +17,23 @@ self.addEventListener('install', event => {
   );
 });
 
-// Don't cache API calls — only static assets
+// Don't cache API calls or Supabase — only static assets
 self.addEventListener('fetch', (event) => {
-  // Skip Supabase API calls — always fetch fresh
-  if (event.request.url.includes('supabase.co')) {
-    return
+  const url = event.request.url;
+  // Skip API calls — always fetch fresh
+  if (url.includes('/api/') || url.includes('supabase.co')) {
+    return;
+  }
+  // Only cache GET requests for static assets
+  if (event.request.method !== 'GET') {
+    return;
   }
   // Cache everything else
   event.respondWith(
     caches.match(event.request).then(response => {
       return response || fetch(event.request)
     })
-  )
+  );
 });
 
 // Push Notification Support

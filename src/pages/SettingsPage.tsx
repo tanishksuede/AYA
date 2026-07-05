@@ -112,21 +112,41 @@ export function SettingsPage() {
                         </div>
                         <div className="pt-2 border-t border-slate-700">
                             <div className="flex justify-between items-center">
-                                <span className="text-xs font-bold text-slate-400 uppercase">Test Notifications</span>
+                                <span className="text-xs font-bold text-slate-400 uppercase">Push Notifications</span>
                                 <button
+                                    id="test-push-btn"
                                     onClick={async () => {
                                         audioSynth.playClick();
-                                        await subscribeUserToPush();
-                                        const sent = await sendTestNotification();
-                                        if (!sent) {
-                                            alert("Could not send notification. Please ensure notifications are allowed in your browser settings!");
+                                        const btn = document.getElementById('test-push-btn');
+                                        const statusEl = document.getElementById('push-status');
+                                        if (btn) btn.textContent = '⏳ Registering...';
+                                        
+                                        const sub = await subscribeUserToPush();
+                                        
+                                        if (sub) {
+                                            if (btn) btn.textContent = '✅ Registered!';
+                                            if (statusEl) {
+                                                statusEl.textContent = '✅ Device registered & notification sent!';
+                                                statusEl.className = 'text-xs text-emerald-400 mt-2 font-bold';
+                                            }
+                                        } else {
+                                            if (btn) btn.textContent = '❌ Failed';
+                                            if (statusEl) {
+                                                statusEl.textContent = '❌ Registration failed. Check browser permissions.';
+                                                statusEl.className = 'text-xs text-red-400 mt-2 font-bold';
+                                            }
                                         }
+                                        
+                                        setTimeout(() => {
+                                            if (btn) btn.textContent = '🔔 Test Push';
+                                        }, 3000);
                                     }}
                                     className="p-1 px-3 text-xs font-bold rounded transition-colors uppercase tracking-widest bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 flex items-center gap-1"
                                 >
                                     <Bell size={12} /> Test Push
                                 </button>
                             </div>
+                            <p id="push-status" className="text-xs text-slate-500 mt-2">Tap "Test Push" to register this device for broadcasts.</p>
                         </div>
                     </div>
 
