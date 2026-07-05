@@ -78,16 +78,30 @@ export const playClick = (): void => {
   try {
     const context = getCtx();
     if (context.state !== 'running' || !sfxGain) return;
+    const now = context.currentTime;
+    
+    // Digital Glass Click: Noise pulse + high sine
     const osc = context.createOscillator();
     const gain = context.createGain();
-    osc.connect(gain);
-    gain.connect(sfxGain);
-    osc.frequency.value = 880;
+    const filter = context.createBiquadFilter();
+    
     osc.type = 'sine';
-    gain.gain.setValueAtTime(0.2, context.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.06);
-    osc.start(context.currentTime);
-    osc.stop(context.currentTime + 0.06);
+    osc.frequency.setValueAtTime(1600, now);
+    osc.frequency.exponentialRampToValueAtTime(1200, now + 0.05);
+    
+    filter.type = 'highpass';
+    filter.frequency.setValueAtTime(1000, now);
+    
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.2, now + 0.005);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+    
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(sfxGain);
+    
+    osc.start(now);
+    osc.stop(now + 0.1);
   } catch (e) {
     // fail silently
   }
