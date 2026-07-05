@@ -129,11 +129,15 @@ export async function subscribeUserToPush(): Promise<PushSubscription | null> {
       .maybeSingle();
 
     if (!existing) {
+      // To bypass potential Foreign Key violations (if targetUserId is a local offline UUID),
+      // we insert user_id as null, but save the targetUserId inside the JSON payload.
+      const payloadToSave = { ...subJson, aya_user_id: targetUserId };
+
       const { error: dbError } = await supabase
         .from('push_subscriptions')
         .insert({
-          user_id: targetUserId,
-          subscription: subJson
+          user_id: null,
+          subscription: payloadToSave
         });
 
       if (dbError) {
