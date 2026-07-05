@@ -113,19 +113,9 @@ export function AdminPanelPage() {
 
         setNotifStatus('sending');
         try {
-            // Use direct fetch since supabase.functions.invoke needs an active auth session
-            const { data: { session } } = await supabase.auth.getSession();
-            
-            // Get the Supabase URL from the client
-            const supabaseUrl = (import.meta as any).env?.VITE_SUPABASE_URL?.replace(/['"]/g, '').trim() || '';
-            const supabaseKey = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY?.replace(/['"]/g, '').trim() || '';
-            
-            const fnUrl = `https://${supabaseUrl.replace('https://', '').replace('http://', '')}/functions/v1/broadcast-push`;
-            
-            const res = await fetch(fnUrl, {
+            const res = await fetch('/api/send-notifications', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${session?.access_token || supabaseKey}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ title, body, url: '/game' }),
@@ -138,12 +128,15 @@ export function AdminPanelPage() {
 
             const data = await res.json();
             
-            if (data.failed > 0) {
+            if (data.sent === 0 && data.message) {
                 setNotifStatus('error');
-                setNotifMessage(`Sent to ${data.sent}, but failed for ${data.failed} users. Check Supabase Edge Function logs.`);
+                setNotifMessage(data.message);
+            } else if (data.failed > 0) {
+                setNotifStatus('error');
+                setNotifMessage(`Sent to ${data.sent} device(s), but failed for ${data.failed} device(s).`);
             } else {
                 setNotifStatus('success');
-                setNotifMessage(`Notification broadcasted successfully to ${data.sent} users!`);
+                setNotifMessage(`Notification broadcasted successfully to ${data.sent} device(s)!`);
                 setTitle('');
                 setBody('');
             }
