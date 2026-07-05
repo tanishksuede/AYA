@@ -363,6 +363,11 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
             setDisplayedText(activeText);
             setIsTyping(false);
             setFrameStartTime(Date.now()); // Question is readable, start timer now
+            // Stop narration when user skips text
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.currentTime = 0;
+            }
         }
     };
 
@@ -413,6 +418,11 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
 
     const handleChoiceClick = async (choice: Choice) => {
         audioSynth.playClick();
+        // Stop any playing narration immediately
+        if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
+        }
         // DEBUG: Fires immediately on EVERY choice tap — confirms new code is running
         console.log('[AYA DEBUG] handleChoiceClick fired! choice.text =', choice.text, '| choice.next =', choice.next);
 
@@ -737,6 +747,11 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
 
     const handleFeedbackContinue = () => {
         if (feedbackChoice) {
+            // Stop narration before moving to next frame
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.currentTime = 0;
+            }
             setCurrentFrameId(feedbackChoice.next);
             setFeedbackChoice(null);
         }
