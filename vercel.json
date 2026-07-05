@@ -28,7 +28,7 @@
   ],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/((?!api/|manifest\\.json|sw\\.js|icons/).*)", "destination": "/" }
+    { "source": "/((?!api/|assets/|manifest\\.json|sw\\.js|icons/).*)", "destination": "/" }
   ],
   "crons": [{
     "path": "/api/send-notifications",
