@@ -368,11 +368,6 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
             setDisplayedText(activeText);
             setIsTyping(false);
             setFrameStartTime(Date.now()); // Question is readable, start timer now
-            // Stop narration when user skips text
-            if (audioRef.current) {
-                audioRef.current.pause();
-                audioRef.current.currentTime = 0;
-            }
         }
     };
 
