@@ -253,6 +253,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
     }, [frame?.bg, level?.background]);
 
     const audioRef = useRef<HTMLAudioElement | null>(null);
+    const typingSpeedRef = useRef<number>(20);
 
     // Emotion detection + ambient music when frame changes
     useEffect(() => {
@@ -293,19 +294,24 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
         // Do not start typing until the background image finishes loading
         if (!isBgLoaded) return;
 
-        let dynamicSpeed = 20;
+        typingSpeedRef.current = 20;
 
-        if (frame.audio && !feedbackChoice && isNarrationEnabled) {
-            audioRef.current = new Audio(frame.audio);
+        if (frame.audio && !feedbackChoice && isNarrationEnabled && audioRef.current) {
+            audioRef.current.currentTime = 0;
             
             // Calculate dynamic typing speed based on audio duration
-            audioRef.current.onloadedmetadata = () => {
+            const updateSpeed = () => {
                 if (audioRef.current && activeText.length > 0) {
                     const durationMs = audioRef.current.duration * 1000;
-                    // Leave a small buffer at the end so text finishes slightly before audio ends
-                    dynamicSpeed = Math.max(20, (durationMs - 500) / activeText.length);
+                    typingSpeedRef.current = Math.max(20, (durationMs - 500) / activeText.length);
                 }
             };
+
+            if (audioRef.current.readyState >= 1) {
+                updateSpeed();
+            } else {
+                audioRef.current.onloadedmetadata = updateSpeed;
+            }
 
             audioRef.current.play().catch(e => {
                 console.warn('Audio play failed (autoplay blocked). Please interact with document:', e);
@@ -325,22 +331,18 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                 i++;
                 if (i <= activeText.length) {
                     setDisplayedText(activeText.slice(0, i));
-                    timer = setTimeout(typeNextCharacter, dynamicSpeed);
+                    timer = setTimeout(typeNextCharacter, typingSpeedRef.current);
                 } else {
                     setIsTyping(false);
                     setFrameStartTime(Date.now()); // Restart timer once question is readable
                 }
             };
-            timer = setTimeout(typeNextCharacter, dynamicSpeed);
+            timer = setTimeout(typeNextCharacter, typingSpeedRef.current);
         }, 100);
 
         return () => {
             clearTimeout(startDelay);
             if (timer) clearTimeout(timer);
-            if (audioRef.current) {
-                audioRef.current.pause();
-                audioRef.current = null;
-            }
         };
     }, [activeText, isBgLoaded, frame.audio, feedbackChoice, isNarrationEnabled]);
 
@@ -753,6 +755,13 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                 backgroundColor: isCandyMode ? '#0f172a' : '#000',
             }}
         >
+            {/* HTML5 Audio Element for Voice Narration */}
+            <audio 
+                ref={audioRef} 
+                src={frame?.audio && !feedbackChoice ? frame.audio : undefined} 
+                preload="auto"
+                className="hidden" 
+            />
             {/* Background Layer */}
             <div className="absolute inset-0 z-0 overflow-hidden">
                 <img
@@ -846,9 +855,10 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                     onClick={() => {
                         const next = !isNarrationEnabled;
                         setIsNarrationEnabled(next);
-                        // If turning off narration, stop current audio
                         if (!next && audioRef.current) {
                             audioRef.current.pause();
+                        } else if (next && audioRef.current && frame.audio) {
+                            audioRef.current.play().catch(console.warn);
                         }
                     }}
                     className={`cinematic-toggle flex items-center justify-center w-10 h-10 rounded-full border border-white/15 hover:bg-white/10 transition-colors shadow-lg ${!isNarrationEnabled ? 'bg-red-500/10 text-red-400' : 'text-[#00f1fe] bg-[#00f1fe]/10'}`}
