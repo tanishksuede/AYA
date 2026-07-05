@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { useUserStore } from '../store/userStore';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -105,26 +106,44 @@ export async function subscribeUserToPush(): Promise<PushSubscription | null> {
 
     // ── 7. Persist to Supabase ─────────────────────────────────────────────
     console.log('[Push] Step 5 — saving subscription to Supabase…');
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      console.warn('[Push] Step 5 — no authenticated Supabase user. Subscription not persisted.');
-      return subscription;
+    let targetUserId: string | null = useUserStore.getState().profile?.id || localStorage.getItem('aya_user_id') || null;
+    
+    // Fallback to supabase auth user if present
+    if (!targetUserId) {
+      try {
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (authUser) targetUserId = authUser.id;
+      } catch (e) {
+        console.warn('[Push] Auth check failed:', e);
+      }
     }
 
-    // upsert so repeat calls don't fail on unique constraint
-    const { error: dbError } = await supabase
+    const subJson = subscription.toJSON();
+    const endpoint = subJson.endpoint;
+
+    // Check if subscription with this endpoint already exists
+    const { data: existing } = await supabase
       .from('push_subscriptions')
-      .upsert(
-        { user_id: user.id, subscription: subscription.toJSON() },
-        { onConflict: 'user_id' }
-      );
+      .select('id')
+      .eq('subscription->>endpoint', endpoint)
+      .maybeSingle();
 
-    if (dbError) {
-      console.error('[Push] Step 5 ✗ — Supabase upsert error:', dbError);
-      throw dbError;
+    if (!existing) {
+      const { error: dbError } = await supabase
+        .from('push_subscriptions')
+        .insert({
+          user_id: targetUserId,
+          subscription: subJson
+        });
+
+      if (dbError) {
+        console.error('[Push] Step 5 ✗ — Supabase insert error:', dbError);
+      } else {
+        console.log('[Push] Step 5 ✓ — subscription saved for user:', targetUserId);
+      }
+    } else {
+      console.log('[Push] Step 5 ✓ — subscription already registered in Supabase database');
     }
-
-    console.log('[Push] Step 5 ✓ — subscription saved for user:', user.id);
 
     // ── 8. Fire immediate welcome/test notification ───────────────────────
     try {
