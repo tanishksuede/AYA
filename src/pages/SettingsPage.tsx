@@ -6,7 +6,7 @@ import { bgmManager } from '../utils/bgmManager';
 import { Volume2, VolumeX, Bell } from 'lucide-react';
 import clsx from 'clsx';
 import { supabase } from '../utils/supabase';
-import { sendTestNotification, subscribeUserToPush } from '../utils/pushNotifications';
+import { subscribeUserToPush } from '../utils/pushNotifications';
 
 export function SettingsPage() {
     const navigate = useNavigate();

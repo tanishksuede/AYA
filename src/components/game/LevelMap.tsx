@@ -1,6 +1,6 @@
 import { useUserStore } from '../../store/userStore';
 import { Lock, Star, Settings, BookOpen, Volume2, VolumeX, Sun, Moon } from 'lucide-react';
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 
 import clsx from 'clsx';
 import { AudioController } from '../shared/AudioController';
@@ -12,6 +12,35 @@ import { bgmManager } from '../../utils/bgmManager';
 import { MapAmbience } from './MapAmbience';
 import { VibeSpinnerButton } from '../MoodWheel/VibeSpinnerButton';
 import { getUnlockedDayCount } from '../../utils/storyUnlock';
+import { IDOL_PROFILES } from '../../data/idolMindsets';
+import type { PersonalityTraits } from '../../types/gameTypes';
+
+/**
+ * Compute an estimated match range for an unplayed story.
+ * Returns e.g. { low: 72, high: 87 } or null if traits are unavailable.
+ */
+function getEstimatedMatchRange(
+  userTraits: PersonalityTraits | undefined,
+  personalityName: string | undefined
+): { low: number; high: number } | null {
+  if (!userTraits || !personalityName) return null;
+  const idol = IDOL_PROFILES[personalityName] || IDOL_PROFILES['Default'];
+  if (!idol) return null;
+
+  // Map user traits to the idol-profile key naming
+  const totalDiff =
+    Math.abs((userTraits.risk ?? 50) - idol.risk) +
+    Math.abs((userTraits.creativity ?? 50) - idol.creativity) +
+    Math.abs((userTraits.vision ?? 50) - (idol.analytical ?? 50)) +
+    Math.abs((userTraits.empathy ?? 50) - (idol.social ?? 50)) +
+    Math.abs((userTraits.leadership ?? 50) - (idol.ambitious ?? 50));
+
+  const rawMatch = Math.max(0, Math.round(100 - totalDiff / 5));
+  // Create a fuzzy range (±7) so it feels estimated, not definitive
+  const low = Math.max(0, rawMatch - 7);
+  const high = Math.min(100, rawMatch + 8);
+  return { low, high };
+}
 
 interface LevelMapProps {
     onPlayLevel: (level: any) => void;
@@ -445,6 +474,13 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
                             const isCurrent = isUnlocked && !isCompleted;
                             const earnedStars = levelScores[level.id] || level.stars || 0;
 
+                            // Match range for unplayed; exact match for completed
+                            const matchRange = !isCompleted ? getEstimatedMatchRange(profile?.traits, level.personality) : null;
+                            // For completed stories the exact match lives in collectedLessons; fall back to computed
+                            const exactMatch = isCompleted && profile?.traits && level.personality
+                                ? (() => { const r = getEstimatedMatchRange(profile.traits, level.personality); return r ? Math.round((r.low + r.high) / 2) : null; })()
+                                : null;
+
                             return (
                                 <div
                                     key={level.id}
@@ -497,12 +533,34 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
                                             <img 
                                                 src={level.portrait ? `/portraits/${level.portrait}` : (level.avatarUrl || '/assets/avatar_business.png')} 
                                                 alt={level.archetype} 
-                                                className="w-full h-full object-cover node-content" 
+                                                className={clsx(
+                                                    "w-full h-full object-cover node-content transition-all duration-500",
+                                                    !isCompleted && isUnlocked && "blur-[3px] scale-105"
+                                                )}
                                                 onError={(e) => { e.currentTarget.src = '/assets/avatar_business.png'; }}
                                             />
+                                            {/* Locked overlay */}
                                             {!isUnlocked && (
-                                                <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-200/50 backdrop-blur-[1px]">
+                                                <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-200/50 backdrop-blur-[2px]">
                                                     <Lock size={20} className="text-slate-500 drop-shadow-md opacity-80 md:w-6 md:h-6" />
+                                                </div>
+                                            )}
+                                            {/* Unplayed blur overlay with match range */}
+                                            {!isCompleted && isUnlocked && (
+                                                <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/20 backdrop-blur-[1px]">
+                                                    {matchRange && (
+                                                        <span className="text-[9px] md:text-xs font-black text-white bg-black/50 px-2 py-0.5 rounded-full border border-white/20 backdrop-blur-sm shadow-lg">
+                                                            {matchRange.low}–{matchRange.high}%
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            )}
+                                            {/* Completed exact match badge */}
+                                            {isCompleted && exactMatch !== null && (
+                                                <div className="absolute bottom-0 right-0 z-20">
+                                                    <span className="text-[8px] md:text-[10px] font-black text-white bg-emerald-600/90 px-1.5 py-0.5 rounded-tl-lg rounded-br-lg shadow-md">
+                                                        {exactMatch}%
+                                                    </span>
                                                 </div>
                                             )}
                                             <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/40 to-transparent pointer-events-none rounded-t-full" />
