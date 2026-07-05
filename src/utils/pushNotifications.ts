@@ -104,8 +104,8 @@ export async function subscribeUserToPush(): Promise<PushSubscription | null> {
     }
     console.log('[Push] Step 4 ✓ — subscribed. Endpoint prefix:', subscription.endpoint.slice(0, 50) + '…');
 
-    // ── 7. Persist to Supabase ─────────────────────────────────────────────
-    console.log('[Push] Step 5 — saving subscription to Supabase…');
+    // ── 7. Persist via server-side API (uses service role key) ─────────────
+    console.log('[Push] Step 5 — saving subscription via /api/push-subscribe…');
     let targetUserId: string | null = useUserStore.getState().profile?.id || localStorage.getItem('aya_user_id') || null;
     
     // Fallback to supabase auth user if present
@@ -119,34 +119,23 @@ export async function subscribeUserToPush(): Promise<PushSubscription | null> {
     }
 
     const subJson = subscription.toJSON();
-    const endpoint = subJson.endpoint;
 
-    // Check if subscription with this endpoint already exists
-    const { data: existing } = await supabase
-      .from('push_subscriptions')
-      .select('id')
-      .eq('subscription->>endpoint', endpoint)
-      .maybeSingle();
+    try {
+      const apiRes = await fetch('/api/push-subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subscription: subJson, userId: targetUserId })
+      });
 
-    if (!existing) {
-      // To bypass potential Foreign Key violations (if targetUserId is a local offline UUID),
-      // we insert user_id as null, but save the targetUserId inside the JSON payload.
-      const payloadToSave = { ...subJson, aya_user_id: targetUserId };
+      const apiData = await apiRes.json();
 
-      const { error: dbError } = await supabase
-        .from('push_subscriptions')
-        .insert({
-          user_id: null,
-          subscription: payloadToSave
-        });
-
-      if (dbError) {
-        console.error('[Push] Step 5 ✗ — Supabase insert error:', dbError);
+      if (!apiRes.ok || !apiData.success) {
+        console.error('[Push] Step 5 ✗ — Server save failed:', apiData);
       } else {
-        console.log('[Push] Step 5 ✓ — subscription saved for user:', targetUserId);
+        console.log('[Push] Step 5 ✓ — subscription saved via API:', apiData.id || apiData.message);
       }
-    } else {
-      console.log('[Push] Step 5 ✓ — subscription already registered in Supabase database');
+    } catch (apiErr) {
+      console.error('[Push] Step 5 ✗ — Network error saving subscription:', apiErr);
     }
 
     // ── 8. Fire immediate welcome/test notification ───────────────────────

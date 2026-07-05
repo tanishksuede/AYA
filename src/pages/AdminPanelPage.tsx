@@ -103,6 +103,22 @@ export function AdminPanelPage() {
         }
     };
 
+    // Diagnostic state
+    const [subCount, setSubCount] = useState<number | null>(null);
+    const [subCheckLoading, setSubCheckLoading] = useState(false);
+
+    const handleCheckSubs = async () => {
+        setSubCheckLoading(true);
+        try {
+            const res = await fetch('/api/push-subscribe');
+            const data = await res.json();
+            setSubCount(data.count ?? 0);
+        } catch (err: any) {
+            setSubCount(-1); // error indicator
+        }
+        setSubCheckLoading(false);
+    };
+
     const handleBroadcast = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!title.trim() || !body.trim()) {
@@ -130,7 +146,7 @@ export function AdminPanelPage() {
             
             if (data.sent === 0 && data.message) {
                 setNotifStatus('error');
-                setNotifMessage(data.message);
+                setNotifMessage(data.message + ' — Users must click "Test Push" in Settings first to register their device.');
             } else if (data.failed > 0) {
                 setNotifStatus('error');
                 setNotifMessage(`Sent to ${data.sent} device(s), but failed for ${data.failed} device(s).`);
@@ -234,6 +250,29 @@ export function AdminPanelPage() {
                             </motion.div>
                         )}
                     </AnimatePresence>
+
+                    {/* Diagnostic: Check registered devices */}
+                    <div className="mb-6 p-4 bg-slate-800/50 border border-slate-700 rounded-xl">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Registered Devices</p>
+                                <p className="text-lg font-black text-white">
+                                    {subCount === null ? '—' : subCount === -1 ? 'Error' : subCount}
+                                </p>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={handleCheckSubs}
+                                disabled={subCheckLoading}
+                                className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold text-xs rounded-lg transition-all disabled:opacity-50 uppercase tracking-wider"
+                            >
+                                {subCheckLoading ? 'Checking...' : 'Check DB'}
+                            </button>
+                        </div>
+                        {subCount === 0 && (
+                            <p className="text-xs text-amber-400 mt-2">⚠️ No devices registered yet. Users must click "Test Push" in Settings to register.</p>
+                        )}
+                    </div>
 
                     <button 
                         type="submit"
