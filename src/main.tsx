@@ -9,6 +9,8 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').then(
       (registration) => {
         console.log('[SW] Service Worker registered with scope:', registration.scope);
+        // Force checking for updates from Vercel immediately
+        registration.update().catch(() => {});
       },
       (error) => {
         console.error('[SW] Service Worker registration failed:', error);
