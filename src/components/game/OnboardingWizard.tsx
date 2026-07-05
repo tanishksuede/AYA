@@ -522,7 +522,7 @@ export function OnboardingWizard() {
                             <div className="space-y-4">
                                 <motion.div 
                                     initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                                    className="bg-[#191923]/60 backdrop-blur-xl p-4 rounded-3xl border border-[#2b2b38] shadow-2xl relative"
+                                    className="glass-panel p-6 rounded-3xl relative"
                                 >
                                     <label className="block text-xs font-bold text-[#f2effb] mb-2 uppercase tracking-wider">Identity</label>
                                     <input
@@ -537,14 +537,14 @@ export function OnboardingWizard() {
 
                                 <motion.div 
                                     initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-                                    className="bg-[#191923]/60 backdrop-blur-xl p-4 rounded-3xl border border-[#2b2b38] shadow-2xl relative flex flex-col items-center"
+                                    className="glass-panel p-6 rounded-3xl relative flex flex-col items-center"
                                 >
                                     <AgeSelector value={age} onChange={setAge} />
                                 </motion.div>
 
                                 <motion.div 
                                     initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
-                                    className="bg-[#191923]/60 backdrop-blur-xl p-4 rounded-3xl border border-[#2b2b38] shadow-2xl relative"
+                                    className="glass-panel p-6 rounded-3xl relative"
                                 >
                                     <label className="block text-xs font-bold text-[#f2effb] mb-2 uppercase tracking-wider">Access Code (Mobile)</label>
                                     <input

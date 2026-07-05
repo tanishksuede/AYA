@@ -197,7 +197,7 @@ export function AdminPanelPage() {
                 <p className="text-slate-400 mb-8">Logged in as <span className="text-purple-300">{currentEmail}</span></p>
 
                 {/* ── SECTION 1: Broadcast Notifications ── */}
-                <form onSubmit={handleBroadcast} className="bg-[#1a1125]/80 backdrop-blur-xl border border-purple-500/20 rounded-3xl p-6 md:p-8 shadow-2xl mb-8">
+                <form onSubmit={handleBroadcast} className="glass-panel rounded-3xl p-6 md:p-8 mb-8">
                     <h2 className="text-xl font-bold text-purple-200 mb-6 flex items-center gap-2">
                         <Send size={20} /> Broadcast Notification
                     </h2>
@@ -253,7 +253,7 @@ export function AdminPanelPage() {
                 </form>
 
                 {/* ── SECTION 2: Manage Admins ── */}
-                <div className="bg-[#1a1125]/80 backdrop-blur-xl border border-purple-500/20 rounded-3xl p-6 md:p-8 shadow-2xl">
+                <div className="glass-panel rounded-3xl p-6 md:p-8">
                     <h2 className="text-xl font-bold text-purple-200 mb-6 flex items-center gap-2">
                         <Shield size={20} /> Manage Admins
                     </h2>
