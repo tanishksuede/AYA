@@ -48,14 +48,8 @@ export async function subscribeUserToPush(): Promise<PushSubscription | null> {
     }
 
     // ── 2. Validate VAPID key ──────────────────────────────────────────────
-    const VAPID_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY as string | undefined;
-    if (!VAPID_KEY) {
-      console.error(
-        '[Push] FAIL — VITE_VAPID_PUBLIC_KEY is not set.\n' +
-        'Add it to your .env file (local) and Vercel environment variables (prod).'
-      );
-      return null;
-    }
+    const DEFAULT_VAPID_KEY = 'BKuBEyjIX-OtnnyJ7cyBMLwAycYv6POyGVFIxPnlzbReZLxv3S-QP9wcJ-YIE38w_al1tqIDwSf41MUG8JgipZE';
+    const VAPID_KEY = (import.meta.env.VITE_VAPID_PUBLIC_KEY as string | undefined) || DEFAULT_VAPID_KEY;
     console.log('[Push] VAPID key length:', VAPID_KEY.length, '(expected 87 for unpadded base64url)');
 
     // ── 3. Wait for the controlling service worker ─────────────────────────
@@ -93,7 +87,7 @@ export async function subscribeUserToPush(): Promise<PushSubscription | null> {
       // to match exactly what the user requested.
       subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(import.meta.env.VITE_VAPID_PUBLIC_KEY),
+        applicationServerKey: urlBase64ToUint8Array(VAPID_KEY),
       });
     } catch (subErr: any) {
       console.error(
@@ -152,20 +146,48 @@ export async function subscribeUserToPush(): Promise<PushSubscription | null> {
  */
 export async function sendTestNotification(): Promise<boolean> {
   try {
-    if (!('serviceWorker' in navigator)) return false;
-    const registration = await navigator.serviceWorker.ready;
-    if (Notification.permission === 'granted') {
-      await registration.showNotification('🌟 AYA Notifications Active!', {
-        body: 'Welcome! You will receive daily mindset reminders and streak alerts.',
-        icon: '/icons/icon-192x192.png',
-        badge: '/icons/icon-192x192.png',
-        tag: 'aya-test-notification'
-      } as NotificationOptions);
-      return true;
+    if (!('Notification' in window)) {
+      alert("Notifications are not supported by this browser.");
+      return false;
     }
-    return false;
-  } catch (err) {
+
+    let permission = Notification.permission;
+    if (permission === 'default') {
+      permission = await Notification.requestPermission();
+    }
+
+    if (permission !== 'granted') {
+      alert("Notification permission is not granted. Please allow notifications in your browser settings!");
+      return false;
+    }
+
+    // Attempt 1: Service Worker Notification
+    if ('serviceWorker' in navigator) {
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        if (registration && registration.showNotification) {
+          await registration.showNotification('🌟 AYA Notifications Active!', {
+            body: 'Welcome! You will receive daily mindset reminders and streak alerts.',
+            icon: '/icons/icon-192x192.png',
+            badge: '/icons/icon-192x192.png',
+            tag: 'aya-test-notification'
+          } as NotificationOptions);
+          return true;
+        }
+      } catch (swErr) {
+        console.warn('[Push] ServiceWorker showNotification failed, falling back to window Notification:', swErr);
+      }
+    }
+
+    // Attempt 2: Direct Window Notification fallback
+    new Notification('🌟 AYA Notifications Active!', {
+      body: 'Welcome! You will receive daily mindset reminders and streak alerts.',
+      icon: '/icons/icon-192x192.png'
+    });
+    return true;
+  } catch (err: any) {
     console.error('[Push] Failed to show test notification:', err);
+    alert('Could not show notification: ' + (err?.message || err));
     return false;
   }
 }
