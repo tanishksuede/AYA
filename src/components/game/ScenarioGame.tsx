@@ -140,7 +140,6 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
         }
     }, []);
 
-    const [isNarrationEnabled, setIsNarrationEnabled] = useState(true);
 
     // Handle tab visibility (Pause game timer and BGM)
     useEffect(() => {
