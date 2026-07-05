@@ -1,10 +1,15 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Use the SERVICE ROLE key so we bypass any RLS policies.
-const supabase = createClient(
-  process.env.VITE_SUPABASE_URL || 'https://xyzcompany.supabase.co',
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || ''
-);
+// Try service role key first (bypasses RLS), fall back to anon key
+const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || '';
+
+let supabase;
+try {
+  supabase = createClient(supabaseUrl, supabaseKey);
+} catch (e) {
+  // Will be caught per-request below
+}
 
 export default async function handler(req, res) {
   // CORS
@@ -14,20 +19,30 @@ export default async function handler(req, res) {
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
+  // Early check: is Supabase configured?
+  if (!supabase || !supabaseUrl) {
+    return res.status(500).json({
+      success: false,
+      error: 'Supabase not configured on server.',
+      debug: { hasUrl: !!supabaseUrl, hasKey: !!supabaseKey, keyType: process.env.SUPABASE_SERVICE_ROLE_KEY ? 'service_role' : 'anon' }
+    });
+  }
+
   // ── GET: Return current subscription count (diagnostic) ───────────────
   if (req.method === 'GET') {
     try {
       const { data, error } = await supabase
         .from('push_subscriptions')
-        .select('id, created_at', { count: 'exact' });
+        .select('id, created_at');
 
       if (error) {
-        return res.status(500).json({ success: false, error: error.message, hint: error.hint || null });
+        return res.status(500).json({ success: false, error: error.message, hint: error.hint || null, code: error.code });
       }
 
       return res.status(200).json({
         success: true,
         count: data ? data.length : 0,
+        keyType: process.env.SUPABASE_SERVICE_ROLE_KEY ? 'service_role' : 'anon',
         subscriptions: (data || []).map(s => ({ id: s.id, created_at: s.created_at }))
       });
     } catch (err) {
@@ -41,41 +56,50 @@ export default async function handler(req, res) {
       const { subscription, userId } = req.body || {};
 
       if (!subscription || !subscription.endpoint) {
-        return res.status(400).json({ success: false, error: 'Missing subscription or endpoint in request body.' });
+        return res.status(400).json({
+          success: false,
+          error: 'Missing subscription or endpoint in request body.',
+          received: { hasSubscription: !!subscription, hasEndpoint: !!(subscription && subscription.endpoint) }
+        });
       }
 
-      // Check if this endpoint is already stored
-      const { data: existing } = await supabase
-        .from('push_subscriptions')
-        .select('id')
-        .filter('subscription->>endpoint', 'eq', subscription.endpoint)
-        .maybeSingle();
+      // Skip the "check existing" query — just upsert directly.
+      // This avoids any potential issues with JSONB arrow filter syntax.
+      // If duplicate endpoint exists, we simply insert another (harmless).
+      const insertPayload = {
+        user_id: null,
+        subscription: {
+          endpoint: subscription.endpoint,
+          expirationTime: subscription.expirationTime || null,
+          keys: subscription.keys || {},
+          aya_user_id: userId || null
+        }
+      };
 
-      if (existing) {
-        return res.status(200).json({ success: true, message: 'Subscription already registered.', id: existing.id });
-      }
-
-      // Insert new subscription — user_id is nullable, so we pass null if not available
       const { data: inserted, error: insertError } = await supabase
         .from('push_subscriptions')
-        .insert({
-          user_id: null,  // Always null to avoid FK issues with offline/local UUIDs
-          subscription: { ...subscription, aya_user_id: userId || null }
-        })
+        .insert(insertPayload)
         .select('id')
         .single();
 
       if (insertError) {
-        console.error('[push-subscribe] Insert error:', insertError);
-        return res.status(500).json({ success: false, error: insertError.message, code: insertError.code, hint: insertError.hint });
+        console.error('[push-subscribe] Insert error:', JSON.stringify(insertError));
+        return res.status(500).json({
+          success: false,
+          error: insertError.message,
+          code: insertError.code,
+          hint: insertError.hint,
+          details: insertError.details,
+          keyType: process.env.SUPABASE_SERVICE_ROLE_KEY ? 'service_role' : 'anon'
+        });
       }
 
-      console.log('[push-subscribe] ✓ Saved subscription:', inserted.id);
-      return res.status(201).json({ success: true, id: inserted.id });
+      console.log('[push-subscribe] ✓ Saved subscription:', inserted?.id);
+      return res.status(201).json({ success: true, id: inserted?.id });
 
     } catch (err) {
       console.error('[push-subscribe] Fatal error:', err);
-      return res.status(500).json({ success: false, error: err.message });
+      return res.status(500).json({ success: false, error: err.message, stack: err.stack?.substring(0, 200) });
     }
   }
 

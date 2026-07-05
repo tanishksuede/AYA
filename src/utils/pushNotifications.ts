@@ -121,13 +121,18 @@ export async function subscribeUserToPush(): Promise<PushSubscription | null> {
     const subJson = subscription.toJSON();
 
     try {
+      console.log('[Push] Step 5 — POSTing to /api/push-subscribe with endpoint:', subJson.endpoint?.substring(0, 50));
       const apiRes = await fetch('/api/push-subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ subscription: subJson, userId: targetUserId })
       });
 
-      const apiData = await apiRes.json();
+      const apiText = await apiRes.text();
+      console.log('[Push] Step 5 — API response status:', apiRes.status, 'body:', apiText);
+
+      let apiData: any;
+      try { apiData = JSON.parse(apiText); } catch { apiData = { raw: apiText }; }
 
       if (!apiRes.ok || !apiData.success) {
         console.error('[Push] Step 5 ✗ — Server save failed:', apiData);
