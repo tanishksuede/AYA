@@ -63,24 +63,41 @@ export default async function handler(req, res) {
         });
       }
 
-      // Skip the "check existing" query — just upsert directly.
-      // This avoids any potential issues with JSONB arrow filter syntax.
-      // If duplicate endpoint exists, we simply insert another (harmless).
-      const insertPayload = {
-        user_id: null,
-        subscription: {
-          endpoint: subscription.endpoint,
-          expirationTime: subscription.expirationTime || null,
-          keys: subscription.keys || {},
-          aya_user_id: userId || null
-        }
+      const subObject = {
+        endpoint: subscription.endpoint,
+        expirationTime: subscription.expirationTime || null,
+        keys: subscription.keys || {},
+        aya_user_id: userId || null
       };
 
-      const { data: inserted, error: insertError } = await supabase
+      const isValidUuid = userId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
+
+      // Attempt 1: Insert with user_id if valid UUID, or user_id: null
+      let payload1 = isValidUuid ? { user_id: userId, subscription: subObject } : { user_id: null, subscription: subObject };
+      
+      let { data: inserted, error: insertError } = await supabase
         .from('push_subscriptions')
-        .insert(insertPayload)
+        .insert(payload1)
         .select('id')
         .single();
+
+      // Attempt 2: If FK error (23503) or NOT NULL error (23502), try without user_id key
+      if (insertError && (insertError.code === '23503' || insertError.code === '23502')) {
+        console.warn('[push-subscribe] Attempt 1 failed with constraint code', insertError.code, 'Retrying without user_id...');
+        const payload2 = { subscription: subObject };
+        const res2 = await supabase
+          .from('push_subscriptions')
+          .insert(payload2)
+          .select('id')
+          .single();
+        
+        if (!res2.error) {
+          inserted = res2.data;
+          insertError = null;
+        } else {
+          insertError = res2.error;
+        }
+      }
 
       if (insertError) {
         console.error('[push-subscribe] Insert error:', JSON.stringify(insertError));

@@ -208,3 +208,18 @@ export async function sendTestNotification(): Promise<boolean> {
     return false;
   }
 }
+
+/**
+ * Silently subscribe and register push notifications if permission is already granted.
+ */
+export async function autoSubscribeIfGranted(): Promise<void> {
+  if (typeof window === 'undefined' || !('Notification' in window)) return;
+  if (Notification.permission === 'granted') {
+    console.log('[Push] Permission already granted — auto-registering device...');
+    try {
+      await subscribeUserToPush();
+    } catch (e) {
+      console.warn('[Push] Auto-subscription silent error:', e);
+    }
+  }
+}

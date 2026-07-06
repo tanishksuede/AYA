@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { ErrorBoundary } from './components/ErrorBoundary.tsx';
+import { autoSubscribeIfGranted } from './utils/pushNotifications.ts';
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -11,6 +12,8 @@ if ('serviceWorker' in navigator) {
         console.log('[SW] Service Worker registered with scope:', registration.scope);
         // Force checking for updates from Vercel immediately
         registration.update().catch(() => {});
+        // Auto-subscribe if notification permission was previously granted
+        autoSubscribeIfGranted();
       },
       (error) => {
         console.error('[SW] Service Worker registration failed:', error);

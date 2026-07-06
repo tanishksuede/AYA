@@ -84,11 +84,11 @@ export default async function handler(req, res) {
     // 1. Fetch all push subscriptions
     const { data: subscriptions, error } = await supabase
       .from('push_subscriptions')
-      .select('*, users:user_id(*)');
+      .select('id, subscription, user_id');
 
     if (error) {
       console.error('Supabase fetch error:', error);
-      throw error;
+      return res.status(500).json({ success: false, error: error.message, code: error.code, hint: error.hint });
     }
 
     if (!subscriptions || subscriptions.length === 0) {
