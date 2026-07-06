@@ -485,14 +485,47 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                 scenarioAccumulator.ambitious += c.trait_impacts.ambitious;
             });
 
-            // Calculate Combined Traits
+            // --- NEW PHASE 2 MATH LOGIC ---
             const safeClamp = (val: number) => Math.max(0, Math.min(100, Math.round(val)));
+            
+            // 1. Establish Current Scores & Fallbacks
+            const oScores = userProfile?.onboarding_scores || quizTraits;
+            const gScores = userProfile?.gameplay_scores || quizTraits;
+            const sCount = userProfile?.story_count || 0;
+
+            // 2. Latest Story Score (normalized around 50 + accumulation)
+            const latestScore = {
+                risk: safeClamp(50 + scenarioAccumulator.risk),
+                creativity: safeClamp(50 + scenarioAccumulator.creativity),
+                vision: safeClamp(50 + scenarioAccumulator.analytical), // analytical = vision
+                empathy: safeClamp(50 + scenarioAccumulator.social),    // social = empathy
+                leadership: safeClamp(50 + scenarioAccumulator.ambitious) // ambitious = leadership
+            };
+
+            // 3. Gameplay EMA (Learning Rate = 0.3)
+            const learningRate = 0.3;
+            const newGameplayScores = {
+                risk: (latestScore.risk * learningRate) + (gScores.risk * (1 - learningRate)),
+                creativity: (latestScore.creativity * learningRate) + (gScores.creativity * (1 - learningRate)),
+                vision: (latestScore.vision * learningRate) + (gScores.vision * (1 - learningRate)),
+                empathy: (latestScore.empathy * learningRate) + (gScores.empathy * (1 - learningRate)),
+                leadership: (latestScore.leadership * learningRate) + (gScores.leadership * (1 - learningRate)),
+            };
+
+            // 4. Decay with Floor (Decay Factor = 0.85, Floor = 0.20)
+            const decayFactor = 0.85;
+            // The story_count hasn't been incremented yet for this session, so this represents the state AFTER this session.
+            const newStoryCount = sCount + 1;
+            const currentSurveyWeight = Math.max(0.20, Math.pow(decayFactor, newStoryCount));
+            const gameplayWeight = 1 - currentSurveyWeight;
+
+            // 5. Synthesis
             const recalibratedTraits = {
-                risk: safeClamp((quizTraits.risk * 0.4) + ((50 + scenarioAccumulator.risk) * 0.6)),
-                creativity: safeClamp((quizTraits.creativity * 0.4) + ((50 + scenarioAccumulator.creativity) * 0.6)),
-                vision: safeClamp((quizTraits.vision * 0.4) + ((50 + scenarioAccumulator.analytical) * 0.6)), // analytical = vision
-                empathy: safeClamp((quizTraits.empathy * 0.4) + ((50 + scenarioAccumulator.social) * 0.6)), // social = empathy
-                leadership: safeClamp((quizTraits.leadership * 0.4) + ((50 + scenarioAccumulator.ambitious) * 0.6)) // ambitious = leadership
+                risk: safeClamp((oScores.risk * currentSurveyWeight) + (newGameplayScores.risk * gameplayWeight)),
+                creativity: safeClamp((oScores.creativity * currentSurveyWeight) + (newGameplayScores.creativity * gameplayWeight)),
+                vision: safeClamp((oScores.vision * currentSurveyWeight) + (newGameplayScores.vision * gameplayWeight)),
+                empathy: safeClamp((oScores.empathy * currentSurveyWeight) + (newGameplayScores.empathy * gameplayWeight)),
+                leadership: safeClamp((oScores.leadership * currentSurveyWeight) + (newGameplayScores.leadership * gameplayWeight))
             };
 
             // Calculate Match Result against IDOL_PROFILES
@@ -571,7 +604,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
             );
             const futureMatchResult = matchFutureArchetype(futureLT);
 
-            // Patch local Zustand profile with future self data
+            // Patch local Zustand profile with future self data and new psychometric scores
             const setProfile = useUserStore.getState().setProfile;
             const latestProfile = useUserStore.getState().profile;
             if (latestProfile) {
@@ -580,6 +613,16 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                     futureArchetype: futureMatchResult.archetype.name,
                     futureArchetypeScore: futureMatchResult.score,
                     lifeTraits: futureLT,
+                    gameplay_scores: newGameplayScores,
+                    story_count: newStoryCount,
+                    traits: {
+                        ...latestProfile.traits,
+                        risk: recalibratedTraits.risk,
+                        creativity: recalibratedTraits.creativity,
+                        vision: recalibratedTraits.vision,
+                        empathy: recalibratedTraits.empathy,
+                        leadership: recalibratedTraits.leadership
+                    }
                 });
             }
 
@@ -599,6 +642,8 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                         total_xp: newTotalXp,
                         level: newLevelInfo.level,
                         stories_completed: currentStories + 1,
+                        story_count: newStoryCount,
+                        gameplay_scores: newGameplayScores,
                         level_scores: updatedLevelScores,   // Save stars directly here as primary backup
                     }).eq('id', userProfile.id);
                     if (usersErr) {

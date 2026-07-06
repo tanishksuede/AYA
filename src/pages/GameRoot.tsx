@@ -213,6 +213,9 @@ export function GameRoot() {
                     access_start_date: user.access_start_date,
                     preferred_map: user.preferred_map,
                     assessmentCompleted: quizCompleted,
+                    onboarding_scores: user.onboarding_scores || undefined,
+                    gameplay_scores: user.gameplay_scores || undefined,
+                    story_count: user.story_count || 0,
                     traits: {
                         risk: profileData?.trait_risk_taker || 50,
                         creativity: profileData?.trait_creative || 50,

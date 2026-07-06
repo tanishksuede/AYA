@@ -2,6 +2,14 @@ import type { LifeTraits } from '../utils/futureSelfMatch';
 export type { LifeTraits };
 
 // New Personality System Types
+export interface PsychometricScores {
+    risk: number;
+    creativity: number;
+    vision: number;
+    empathy: number;
+    leadership: number;
+}
+
 export interface PersonalityTraits {
     discipline: number; // 0-100
     resilience: number; // Grit
@@ -52,7 +60,9 @@ export interface UserProfile {
     preferred_map?: string;
 
     // Personality System
-    traits: PersonalityTraits;
+    traits: PersonalityTraits; // Deprecated, kept for backward compatibility
+    onboarding_scores?: PsychometricScores;
+    gameplay_scores?: PsychometricScores;
     psychologicalProfile?: PsychologicalProfile; // New deep profile
     assessmentCompleted: boolean;
 
@@ -60,6 +70,7 @@ export interface UserProfile {
     total_xp?: number;
     level?: number;
     stories_completed?: number;
+    story_count?: number; // New dynamic system tracker
 
     // Future Self Match
     futureArchetype?: string;

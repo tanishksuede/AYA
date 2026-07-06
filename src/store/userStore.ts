@@ -91,11 +91,14 @@ const syncStoreToBackend = async (profile: any, currentLevelScores: Record<strin
             last_active_date: profile.last_active_date,
             daily_challenge_completed: profile.daily_challenge_completed,
             level_scores: currentLevelScores,
+            onboarding_scores: profile.onboarding_scores,
+            gameplay_scores: profile.gameplay_scores,
+            story_count: profile.story_count,
         }).eq('id', profile.id);
 
         if (userError) {
             console.error('[Store] Supabase users update error:', userError);
-            // Fallback: Try updating without level_scores in case the column hasn't been created yet
+            // Fallback: Try updating without level_scores and new columns in case they haven't been created yet
             const { error: fallbackError } = await supabase.from('users').update({
                 total_xp: profile.total_xp,
                 level: profile.level,
@@ -108,7 +111,7 @@ const syncStoreToBackend = async (profile: any, currentLevelScores: Record<strin
             if (fallbackError) {
                  console.error('[Store] Fallback users update also failed:', fallbackError);
             } else {
-                 console.log('[Store] ✓ Successfully saved profile to backend (fallback, without level_scores)');
+                 console.log('[Store] ✓ Successfully saved profile to backend (fallback, without new columns)');
             }
         } else {
             console.log('[Store] ✓ Successfully saved profile to backend');
@@ -461,7 +464,21 @@ export const useUserStore = create<UserState>()(
                     return {
                         profile: {
                             ...state.profile,
-                            traits: initialTraits,
+                            traits: initialTraits, // Keep for backward compatibility
+                            onboarding_scores: {
+                                risk: initialTraits.risk,
+                                creativity: initialTraits.creativity,
+                                vision: initialTraits.vision,
+                                empathy: initialTraits.empathy,
+                                leadership: initialTraits.leadership
+                            },
+                            gameplay_scores: {
+                                risk: initialTraits.risk,
+                                creativity: initialTraits.creativity,
+                                vision: initialTraits.vision,
+                                empathy: initialTraits.empathy,
+                                leadership: initialTraits.leadership
+                            },
                             psychologicalProfile: profileData,
                             assessmentCompleted: true
                         }
