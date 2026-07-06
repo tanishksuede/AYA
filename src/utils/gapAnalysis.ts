@@ -1,4 +1,4 @@
-import { PsychometricScores } from '../types/gameTypes';
+import type { PsychometricScores } from '../types/gameTypes';
 
 export interface GapAnalysisResult {
     maxDissonanceTrait: keyof PsychometricScores | null;
