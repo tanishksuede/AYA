@@ -329,8 +329,8 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
                     {/* Header: Match Percentage */}
                     <div className="mb-6 sm:mb-8 relative group w-full flex flex-col items-center mt-2 sm:mt-4">
                         <div className={clsx(
-                            "absolute inset-x-0 top-1/2 h-4 rounded-full blur-md opacity-50",
-                            isCandyMode ? "bg-white/20" : "bg-[#4DD9FF]/30"
+                            "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] sm:w-full max-w-lg h-16 sm:h-24 rounded-[100%] blur-2xl opacity-40 sm:opacity-50 pointer-events-none",
+                            isCandyMode ? "bg-pink-500/30" : "bg-[#4DD9FF]/20"
                         )}></div>
                         <h1 className={clsx(
                             "relative text-4xl sm:text-5xl md:text-7xl tracking-wider mb-3 sm:mb-4 animate-pulse-slow",
