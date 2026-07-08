@@ -323,7 +323,7 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
             <SugarVortexBackground isCandyMode={isCandyMode} />
 
             {/* SCROLL CONTENT */}
-            <div className="relative z-10 flex-1 overflow-y-auto overflow-x-hidden pb-36 pt-safe-top">
+            <div className="relative z-10 flex-1 overflow-y-auto overflow-x-hidden pb-36 pt-16 md:pt-24">
                 <div className="w-full max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 flex flex-col items-center">
 
                     {/* Header: Match Percentage */}
@@ -333,7 +333,7 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
                             isCandyMode ? "bg-pink-500/30" : "bg-[#4DD9FF]/20"
                         )}></div>
                         <h1 className={clsx(
-                            "relative text-4xl sm:text-5xl md:text-7xl tracking-wider mb-3 sm:mb-4 animate-pulse-slow",
+                            "relative text-4xl md:text-6xl tracking-wider mb-3 sm:mb-4 animate-pulse-slow",
                             isCandyMode
                                 ? "font-yummy text-white drop-shadow-[0_5px_0_#C2185B] stroke-text-white"
                                 : "font-black text-[#E8E0FF] drop-shadow-[0_0_15px_#4DD9FF] uppercase"
