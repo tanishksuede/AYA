@@ -41,7 +41,7 @@ const SugarVortexBackground = ({ isCandyMode }: { isCandyMode: boolean }) => (
 );
 
 const FrostedGrapePanel = ({ title, children, className, isCandyMode }: { title: string, children: React.ReactNode, className?: string, isCandyMode: boolean }) => (
-    <div className={clsx("relative w-full rounded-3xl overflow-hidden", className)}>
+    <div className={clsx("relative w-full rounded-3xl", className)}>
         {/* Glass Layer */}
         <div className={clsx(
             "absolute inset-0 backdrop-blur-xl rounded-3xl",
@@ -52,7 +52,7 @@ const FrostedGrapePanel = ({ title, children, className, isCandyMode }: { title:
 
         {/* Inner Glow */}
         <div className={clsx(
-            "absolute inset-0 pointer-events-none",
+            "absolute inset-0 pointer-events-none rounded-3xl",
             isCandyMode
                 ? "bg-gradient-to-b from-purple-500/10 to-transparent"
                 : "bg-gradient-to-b from-[#4DD9FF]/5 to-transparent"
