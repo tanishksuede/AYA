@@ -685,7 +685,7 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
                         onClose(); 
                     }}
                     className={clsx(
-                        "group relative w-full max-w-md h-16 sm:h-20 rounded-full transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:pointer-events-none",
+                        "group relative w-full max-w-sm h-14 sm:h-16 rounded-full transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:pointer-events-none",
                         isCandyMode ? "shadow-[0_10px_30px_rgba(0,230,118,0.4)]" : "shadow-[0_0_30px_rgba(77,217,255,0.4)]"
                     )}
                 >
@@ -702,10 +702,10 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
                     )}></div>
 
                     <span className={clsx(
-                        "relative z-10 flex items-center justify-center h-full gap-2 sm:gap-3 text-xl sm:text-2xl md:text-3xl text-white drop-shadow-md tracking-wider sm:tracking-widest px-4",
+                        "relative z-10 flex items-center justify-center h-full gap-2 sm:gap-3 text-lg sm:text-xl text-white drop-shadow-md tracking-wider px-4",
                         isCandyMode ? "font-yummy stroke-text-green" : "font-black"
                     )}>
-                        ACCEPT YOUR PATH <RefreshCw size={20} className={clsx("stroke-[3] shrink-0 sm:w-6 sm:h-6", !isCandyMode && "animate-spin-slow")} />
+                        ACCEPT YOUR PATH <RefreshCw size={18} className={clsx("stroke-[3] shrink-0 sm:w-5 sm:h-5", !isCandyMode && "animate-spin-slow")} />
                     </span>
                 </button>
             </div>
