@@ -319,21 +319,21 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
     }, []);
 
     return (
-        <div className="w-full h-[100dvh] flex flex-col font-sans overflow-hidden bg-black select-none relative pb-safe">
+        <div className="w-full h-[100dvh] flex flex-col font-sans overflow-hidden bg-black select-none relative">
             <SugarVortexBackground isCandyMode={isCandyMode} />
 
             {/* SCROLL CONTENT */}
-            <div className="relative z-10 flex-1 overflow-y-auto overflow-x-hidden pb-32 pt-safe-top">
-                <div className="w-full max-w-7xl mx-auto px-4 py-6 flex flex-col items-center">
+            <div className="relative z-10 flex-1 overflow-y-auto overflow-x-hidden pb-36 pt-safe-top">
+                <div className="w-full max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 flex flex-col items-center">
 
                     {/* Header: Match Percentage */}
-                    <div className="mb-8 relative group w-full flex flex-col items-center mt-4">
+                    <div className="mb-6 sm:mb-8 relative group w-full flex flex-col items-center mt-2 sm:mt-4">
                         <div className={clsx(
                             "absolute inset-x-0 top-1/2 h-4 rounded-full blur-md opacity-50",
                             isCandyMode ? "bg-white/20" : "bg-[#4DD9FF]/30"
                         )}></div>
                         <h1 className={clsx(
-                            "relative text-5xl md:text-7xl tracking-wider mb-4 animate-pulse-slow",
+                            "relative text-4xl sm:text-5xl md:text-7xl tracking-wider mb-3 sm:mb-4 animate-pulse-slow",
                             isCandyMode
                                 ? "font-yummy text-white drop-shadow-[0_5px_0_#C2185B] stroke-text-white"
                                 : "font-black text-[#E8E0FF] drop-shadow-[0_0_15px_#4DD9FF] uppercase"
@@ -427,22 +427,22 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
                         <div className="col-span-1 md:col-span-6 flex flex-col items-center">
 
                             {/* Avatar Ring */}
-                            <div className="relative w-72 h-72 md:w-96 md:h-96 mb-8 group cursor-pointer mt-4">
+                            <div className="relative w-52 h-52 sm:w-72 sm:h-72 md:w-96 md:h-96 mb-6 sm:mb-8 group cursor-pointer mt-2 sm:mt-4">
                                 {/* Rotating Stars Ring */}
                                 <div className={clsx(
-                                    "absolute inset-[-25px] border-2 rounded-full animate-spin-ultra-slow",
+                                    "absolute inset-[-15px] sm:inset-[-25px] border-2 rounded-full animate-spin-ultra-slow",
                                     isCandyMode ? "border-dashed border-white/40" : "border-solid border-[#4DD9FF]/20 shadow-[0_0_20px_rgba(77,217,255,0.1)_inset]"
                                 )}></div>
-                                <div className={clsx("absolute top-0 left-1/2 -translate-x-1/2 -translate-y-6 animate-bounce", isCandyMode ? "text-yellow-300" : "text-amber-400")}>
-                                    <Star size={32} fill="currentColor" />
+                                <div className={clsx("absolute top-0 left-1/2 -translate-x-1/2 -translate-y-4 sm:-translate-y-6 animate-bounce", isCandyMode ? "text-yellow-300" : "text-amber-400")}>
+                                    <Star size={24} fill="currentColor" className="sm:w-8 sm:h-8" />
                                 </div>
-                                <div className={clsx("absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-6 animate-bounce delay-75", isCandyMode ? "text-pink-300" : "text-[#4DD9FF]")}>
-                                    <Star size={28} fill="currentColor" />
+                                <div className={clsx("absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-4 sm:translate-y-6 animate-bounce delay-75", isCandyMode ? "text-pink-300" : "text-[#4DD9FF]")}>
+                                    <Star size={22} fill="currentColor" className="sm:w-7 sm:h-7" />
                                 </div>
 
                                 {/* Main Image */}
                                 <div className={clsx(
-                                    "w-full h-full rounded-full border-[10px] overflow-hidden relative transform group-hover:scale-105 transition-transform duration-500 z-10",
+                                    "w-full h-full rounded-full border-[6px] sm:border-[10px] overflow-hidden relative transform group-hover:scale-105 transition-transform duration-500 z-10",
                                     isCandyMode
                                         ? "border-white bg-gradient-to-b from-purple-500 to-indigo-600 shadow-[0_0_80px_rgba(236,72,153,0.8)]"
                                         : "border-[#0a0f28] bg-slate-900 shadow-[0_0_50px_rgba(77,217,255,0.4)] ring-2 ring-[#4DD9FF]/30"
@@ -463,7 +463,7 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
 
                             {/* Name Title */}
                             <h2 className={clsx(
-                                "text-5xl md:text-7xl text-center mb-10 tracking-wide",
+                                "text-3xl sm:text-5xl md:text-7xl text-center mb-6 sm:mb-10 tracking-wide break-words max-w-full px-2",
                                 isCandyMode
                                     ? "font-yummy text-white drop-shadow-[0_6px_0_#4A148C] stroke-text-white"
                                     : "font-black text-[#E8E0FF] drop-shadow-[0_0_20px_rgba(232,224,255,0.6)] uppercase"
@@ -472,20 +472,24 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
                             </h2>
 
                             {/* Mobile Views for columns (collapsed) */}
-                            <div className="md:hidden w-full flex flex-col gap-6 mb-8">
+                            <div className="md:hidden w-full flex flex-col gap-4 sm:gap-6 mb-6 sm:mb-8">
                                 <FrostedGrapePanel title="Strengths" isCandyMode={isCandyMode}>
-                                    {displayStrengths.slice(0, 3).map((str, i) => <BoosterIcon key={i} type={'striped'} label={str} isCandyMode={isCandyMode} />)}
+                                    <div className="flex flex-col gap-2">
+                                        {displayStrengths.slice(0, 3).map((str, i) => <BoosterIcon key={i} type={'striped'} label={str} isCandyMode={isCandyMode} />)}
+                                    </div>
                                 </FrostedGrapePanel>
                                 <FrostedGrapePanel title="Blind Spots" isCandyMode={isCandyMode}>
-                                    {displayBlindSpots.slice(0, 3).map((str, i) => <BlockerIcon key={i} label={str} isCandyMode={isCandyMode} />)}
+                                    <div className="flex flex-col gap-2">
+                                        {displayBlindSpots.slice(0, 3).map((str, i) => <BlockerIcon key={i} label={str} isCandyMode={isCandyMode} />)}
+                                    </div>
                                 </FrostedGrapePanel>
                             </div>
 
                             {/* PERSONALITY DNA SECTION */}
                             {personalityDNA && (
-                                <div className="w-full max-w-2xl mb-8">
+                                <div className="w-full max-w-2xl mb-6 sm:mb-8">
                                     <div className={clsx(
-                                        "relative rounded-3xl overflow-hidden shadow-2xl p-6 flex flex-col items-center",
+                                        "relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl p-4 sm:p-6 flex flex-col items-center",
                                         isCandyMode
                                             ? "bg-purple-900/60 border-2 border-purple-400/30"
                                             : "bg-slate-900/60 border border-[#4DD9FF]/20"
@@ -504,11 +508,11 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
                                             
                                             <p className="text-slate-300 text-sm mb-6">You are a unique mix of:</p>
 
-                                            <div className="flex items-center justify-center gap-4 md:gap-8 mb-6 w-full">
+                                            <div className="flex items-center justify-center gap-3 sm:gap-4 md:gap-8 mb-4 sm:mb-6 w-full">
                                                 {/* Idol 1 */}
-                                                <div className="flex flex-col items-center">
+                                                <div className="flex flex-col items-center shrink-0">
                                                     <div className={clsx(
-                                                        "w-20 h-20 md:w-24 md:h-24 rounded-full border-4 overflow-hidden mb-3",
+                                                        "w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full border-3 sm:border-4 overflow-hidden mb-2 sm:mb-3",
                                                         isCandyMode ? "border-pink-500/50" : "border-slate-700"
                                                     )}>
                                                         <img 
@@ -522,16 +526,16 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
 
                                                 {/* Glowing Plus */}
                                                 <div className={clsx(
-                                                    "text-3xl font-black mb-3 drop-shadow-lg",
+                                                    "text-2xl sm:text-3xl font-black mb-2 sm:mb-3 drop-shadow-lg shrink-0",
                                                     isCandyMode ? "text-yellow-300 shadow-yellow-300/50" : "text-amber-400 shadow-amber-400/50"
                                                 )}>
                                                     +
                                                 </div>
 
                                                 {/* Idol 2 */}
-                                                <div className="flex flex-col items-center">
+                                                <div className="flex flex-col items-center shrink-0">
                                                     <div className={clsx(
-                                                        "w-20 h-20 md:w-24 md:h-24 rounded-full border-4 overflow-hidden mb-3",
+                                                        "w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full border-3 sm:border-4 overflow-hidden mb-2 sm:mb-3",
                                                         isCandyMode ? "border-purple-500/50" : "border-slate-700"
                                                     )}>
                                                         <img 
@@ -546,7 +550,7 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
 
                                             {/* Traits Description */}
                                             <p className={clsx(
-                                                "text-center text-lg md:text-xl italic font-serif mb-6 max-w-lg leading-relaxed",
+                                                "text-center text-base sm:text-lg md:text-xl italic font-serif mb-4 sm:mb-6 max-w-lg leading-relaxed px-2",
                                                 isCandyMode ? "text-yellow-100 font-yummy" : "text-amber-100/90"
                                             )}>
                                                 "You have {personalityDNA.idol1.desc} <br className="hidden md:block"/> and {personalityDNA.idol2.desc}"
@@ -556,14 +560,14 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
                                             <button 
                                                 onClick={handleShareDNA}
                                                 className={clsx(
-                                                    "flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all hover:scale-105 active:scale-95 text-sm uppercase tracking-wider",
+                                                    "flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full font-bold transition-all hover:scale-105 active:scale-95 text-xs sm:text-sm uppercase tracking-wider",
                                                     isCandyMode
                                                         ? "bg-gradient-to-r from-pink-600 to-purple-600 text-white shadow-[0_0_15px_rgba(236,72,153,0.4)]"
                                                         : "bg-slate-800 border border-[#4DD9FF]/30 text-[#4DD9FF] hover:bg-slate-700/80 shadow-[0_0_10px_rgba(77,217,255,0.15)]"
                                                 )}
                                             >
-                                                {copiedDNA ? <Check size={18} /> : <Copy size={18} />}
-                                                {copiedDNA ? "COPIED TO CLIPBOARD!" : "SHARE YOUR DNA"}
+                                                {copiedDNA ? <Check size={16} /> : <Copy size={16} />}
+                                                {copiedDNA ? "COPIED!" : "SHARE YOUR DNA"}
                                             </button>
                                         </div>
                                     </div>
@@ -571,34 +575,34 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
                             )}
 
                             {/* Honey Mission Box / Cyber Directive */}
-                            <div className="relative w-full max-w-2xl transition-all duration-300 hover:shadow-[0_0_20px_rgba(251,191,36,0.3)] rounded-2xl">
+                            <div className="relative w-full max-w-2xl transition-all duration-300 hover:shadow-[0_0_20px_rgba(251,191,36,0.3)] rounded-2xl overflow-hidden">
                                 <div className={clsx(
-                                    "absolute -inset-2 rounded-2xl blur opacity-50",
+                                    "absolute -inset-1 sm:-inset-2 rounded-2xl blur opacity-50",
                                     isCandyMode ? "bg-gradient-to-r from-yellow-400 to-orange-500" : "bg-gradient-to-r from-amber-500 to-yellow-600"
                                 )}></div>
                                 <div className={clsx(
-                                    "relative rounded-xl border-[4px] p-1 transition-colors duration-300",
+                                    "relative rounded-xl border-[3px] sm:border-[4px] p-1 transition-colors duration-300",
                                     isCandyMode
                                         ? "bg-gradient-to-b from-yellow-300 to-orange-400 border-white/60 hover:border-white"
                                         : "bg-[#0a0f28] border-amber-500/50 hover:border-amber-400/80"
                                 )}>
                                     <div className={clsx(
-                                        "rounded-lg p-6 flex items-center gap-6",
+                                        "rounded-lg p-4 sm:p-6 flex items-center gap-4 sm:gap-6",
                                         isCandyMode ? "bg-orange-500/20" : "bg-amber-900/30"
                                     )}>
-                                        <div className="relative shrink-0">
-                                            <Star size={64} className={clsx(
-                                                "drop-shadow-xl animate-spin-slow",
+                                        <div className="relative shrink-0 hidden sm:block">
+                                            <Star size={48} className={clsx(
+                                                "drop-shadow-xl animate-spin-slow sm:w-16 sm:h-16",
                                                 isCandyMode ? "text-yellow-100 fill-yellow-300" : "text-amber-200 fill-amber-500"
                                             )} />
                                         </div>
-                                        <div className="flex-1">
+                                        <div className="flex-1 min-w-0">
                                             <div className={clsx(
-                                                "text-2xl leading-none mb-2 tracking-widest uppercase",
-                                                isCandyMode ? "font-yummy text-orange-900" : "font-black text-amber-500 drop-shadow-md text-xl"
+                                                "text-lg sm:text-2xl leading-none mb-2 tracking-widest uppercase",
+                                                isCandyMode ? "font-yummy text-orange-900" : "font-black text-amber-500 drop-shadow-md sm:text-xl"
                                             )}>CURRENT DIRECTIVE</div>
                                             <div className={clsx(
-                                                "font-black text-xl leading-tight drop-shadow-md",
+                                                "font-black text-base sm:text-xl leading-tight drop-shadow-md",
                                                 isCandyMode ? "text-white" : "text-amber-50"
                                             )}>
                                                 Embrace your unique strengths and carve your legacy.
@@ -607,11 +611,11 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
                                             {/* Real Life Challenge Based on User Struggle */}
                                             <div className="mt-4 pt-4 border-t border-amber-500/30">
                                                 <div className={clsx(
-                                                    "text-sm leading-none mb-2 tracking-widest uppercase",
+                                                    "text-xs sm:text-sm leading-none mb-2 tracking-widest uppercase",
                                                     isCandyMode ? "font-yummy text-orange-900" : "font-black text-amber-500/80 drop-shadow-md"
                                                 )}>REAL LIFE CHALLENGE</div>
                                                 <div className={clsx(
-                                                    "font-bold text-lg leading-tight drop-shadow-md",
+                                                    "font-bold text-sm sm:text-lg leading-tight drop-shadow-md",
                                                     isCandyMode ? "text-white" : "text-amber-100"
                                                 )}>
                                                     {realLifeChallenge}
@@ -670,7 +674,7 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
             </div>
 
             {/* FOOTER CTA */}
-            <div className="fixed bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/95 via-black/80 to-transparent z-50 flex justify-center">
+            <div className="fixed bottom-0 left-0 w-full p-4 sm:p-6 bg-gradient-to-t from-black/95 via-black/80 to-transparent z-50 flex justify-center pb-safe">
                 <button
                     disabled={copiedDNA} // repurposing as a generic lock, actually let's just use a local inline check or the existing state
                     onClick={(e) => {
@@ -681,7 +685,7 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
                         onClose(); 
                     }}
                     className={clsx(
-                        "group relative w-full max-w-md h-20 rounded-full transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:pointer-events-none",
+                        "group relative w-full max-w-md h-16 sm:h-20 rounded-full transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:pointer-events-none",
                         isCandyMode ? "shadow-[0_10px_30px_rgba(0,230,118,0.4)]" : "shadow-[0_0_30px_rgba(77,217,255,0.4)]"
                     )}
                 >
@@ -698,10 +702,10 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
                     )}></div>
 
                     <span className={clsx(
-                        "relative z-10 flex items-center justify-center h-full gap-3 text-3xl text-white drop-shadow-md tracking-widest",
+                        "relative z-10 flex items-center justify-center h-full gap-2 sm:gap-3 text-xl sm:text-2xl md:text-3xl text-white drop-shadow-md tracking-wider sm:tracking-widest px-4",
                         isCandyMode ? "font-yummy stroke-text-green" : "font-black"
                     )}>
-                        ACCEPT YOUR PATH <RefreshCw size={24} className={clsx("stroke-[3]", !isCandyMode && "animate-spin-slow")} />
+                        ACCEPT YOUR PATH <RefreshCw size={20} className={clsx("stroke-[3] shrink-0 sm:w-6 sm:h-6", !isCandyMode && "animate-spin-slow")} />
                     </span>
                 </button>
             </div>
