@@ -125,28 +125,28 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
                  ))}
               </div>
 
-              <div className="space-y-6 sm:space-y-10 [transform-style:preserve-3d]">
+              <div className="space-y-6 sm:space-y-8 [transform-style:preserve-3d]">
                  <motion.p 
                    initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-                   className="text-lg sm:text-3xl font-light text-white/80"
+                   className="text-base sm:text-xl font-light text-white/80"
                  >
                     "At 20, <span className="font-bold text-[#99f7ff] drop-shadow-[0_0_15px_rgba(153,247,255,0.8)]">Kobe Bryant</span> was already training at 4AM."
                  </motion.p>
                  <motion.p 
                    initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
-                   className="text-base sm:text-2xl font-light text-white/80"
+                   className="text-sm sm:text-lg font-light text-white/80"
                  >
                     "At 19, <span className="font-bold text-[#d575ff] drop-shadow-[0_0_15px_rgba(213,117,255,0.8)]">Shah Rukh Khan</span> was performing in Delhi theatres."
                  </motion.p>
                  <motion.h1 
                    initial={{ opacity: 0, scale: 0.9, z: 150 }} animate={{ opacity: 1, scale: 1, z: 0 }} transition={{ delay: 1.2, duration: 1 }}
-                   className="text-2xl sm:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#ffd700] via-white to-[#ffaa00] drop-shadow-[0_0_30px_rgba(255,215,0,0.5)] mt-8 mb-4"
+                   className="text-2xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#ffd700] via-white to-[#ffaa00] drop-shadow-[0_0_30px_rgba(255,215,0,0.5)] mt-6 mb-3"
                  >
                     What were YOU meant to become?
                  </motion.h1>
                  <motion.p 
                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.8 }}
-                   className="text-[#acaab5] text-sm sm:text-xl font-['Manrope',sans-serif] uppercase tracking-widest mt-4"
+                   className="text-[#acaab5] text-sm sm:text-base font-['Manrope',sans-serif] uppercase tracking-widest mt-3"
                  >
                     Find out by stepping into their shoes.
                  </motion.p>
@@ -154,15 +154,15 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
                  <motion.button
                    initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 2.2 }}
                    onClick={nextSlide}
-                   className="mt-10 px-10 py-5 bg-transparent border-2 border-[#00f1fe] text-[#99f7ff] rounded-full text-xl font-black uppercase tracking-wider relative overflow-hidden group transition-all"
+                   className="mt-8 px-8 py-4 bg-transparent border-2 border-[#00f1fe] text-[#99f7ff] rounded-full text-lg font-black uppercase tracking-wider relative overflow-hidden group transition-all"
                  >
                    <motion.div 
                        className="absolute inset-0 bg-[#00f1fe] opacity-20"
                        animate={{ opacity: [0.1, 0.4, 0.1] }}
                        transition={{ duration: 2, repeat: Infinity }}
                    />
-                   <span className="relative z-10 flex items-center gap-3 drop-shadow-[0_0_10px_rgba(0,241,254,0.8)] text-lg sm:text-xl">
-                       LET'S FIND OUT <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8" />
+                   <span className="relative z-10 flex items-center justify-center gap-2 drop-shadow-[0_0_10px_rgba(0,241,254,0.8)]">
+                       LET'S FIND OUT <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
                     </span>
                  </motion.button>
               </div>
@@ -218,10 +218,10 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
               transition={{ duration: 0.6 }}
               className="w-full max-w-[680px] mx-auto px-4 md:px-0 text-center"
             >
-              <h2 className="text-3xl sm:text-6xl font-black mb-6 drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]">Which exam are you preparing for?</h2>
-              <p className="text-lg sm:text-2xl text-[#acaab5] mb-8 sm:mb-16 font-['Manrope']">We'll suggest the perfect story for you today</p>
+              <h2 className="text-2xl sm:text-4xl font-black mb-4 drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]">Which exam are you preparing for?</h2>
+              <p className="text-base sm:text-lg text-[#acaab5] mb-8 font-['Manrope']">We'll suggest the perfect story for you today</p>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 [transform-style:preserve-3d]">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 [transform-style:preserve-3d]">
                  {EXAMS.map((exam, idx) => (
                     <motion.button
                       key={exam.id}
@@ -232,30 +232,30 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
                         audioSynth.playClick();
                         setSelectedExam(exam);
                       }}
-                      className={`relative p-10 rounded-3xl backdrop-blur-2xl border-2 transition-all flex flex-col items-center gap-6 shadow-[0_20px_40px_rgba(0,0,0,0.5)] ${
+                      className={`relative p-6 rounded-3xl backdrop-blur-2xl border-2 transition-all flex flex-col items-center gap-4 shadow-[0_20px_40px_rgba(0,0,0,0.5)] ${
                           selectedExam?.id === exam.id 
                           ? 'bg-[#d575ff]/20 border-[#fe00fe] shadow-[0_0_50px_rgba(254,0,254,0.6)] scale-105 z-50' 
                           : 'bg-[#191923]/80 border-[#2b2b38]'
                       }`}
                     >
-                       <span className={`text-4xl sm:text-6xl ${selectedExam?.id === exam.id ? 'drop-shadow-[0_0_20px_rgba(254,0,254,0.8)]' : ''}`}>{exam.icon}</span>
-                       <span className={`text-xl sm:text-2xl font-bold ${selectedExam?.id === exam.id ? 'text-white' : 'text-[#acaab5]'}`}>{exam.label}</span>
+                       <span className={`text-3xl sm:text-4xl ${selectedExam?.id === exam.id ? 'drop-shadow-[0_0_20px_rgba(254,0,254,0.8)]' : ''}`}>{exam.icon}</span>
+                       <span className={`text-lg sm:text-xl font-bold ${selectedExam?.id === exam.id ? 'text-white' : 'text-[#acaab5]'}`}>{exam.label}</span>
                        {selectedExam?.id === exam.id && (
-                           <div className="absolute top-6 right-6 text-[#fe00fe] drop-shadow-[0_0_10px_#fe00fe]"><Check size={32} strokeWidth={4} /></div>
+                           <div className="absolute top-4 right-4 text-[#fe00fe] drop-shadow-[0_0_10px_#fe00fe]"><Check size={24} strokeWidth={4} /></div>
                        )}
                     </motion.button>
                  ))}
               </div>
 
-              <div className="flex flex-col items-center mt-20 space-y-6">
+              <div className="flex flex-col items-center mt-10 space-y-4">
                  <button 
                    disabled={!selectedExam || isSaving}
                    onClick={handleFinish} 
-                   className="px-12 py-5 sm:px-16 sm:py-6 bg-gradient-to-r from-[#9800d0] to-[#b90afc] text-white rounded-full text-xl sm:text-2xl font-black uppercase tracking-wider hover:brightness-125 transition-all shadow-[0_0_50px_rgba(185,10,252,0.8)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3"
+                   className="px-8 py-4 sm:px-12 sm:py-4 bg-gradient-to-r from-[#9800d0] to-[#b90afc] text-white rounded-full text-lg sm:text-xl font-black uppercase tracking-wider hover:brightness-125 transition-all shadow-[0_0_50px_rgba(185,10,252,0.8)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                  >
                     {isSaving ? "SAVING..." : "THIS IS ME →"}
                  </button>
-                 <p className="text-lg text-[#76747f]">You can change this anytime</p>
+                 <p className="text-base text-[#76747f]">You can change this anytime</p>
               </div>
             </motion.div>
           )}
@@ -277,14 +277,14 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
                    transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
                  />
                  
-                 <div className="flex justify-center flex-wrap gap-x-4 mb-10 drop-shadow-[0_0_30px_rgba(255,255,255,0.4)] relative z-10">
+                 <div className="flex justify-center flex-wrap gap-x-4 mb-8 drop-shadow-[0_0_30px_rgba(255,255,255,0.4)] relative z-10">
                     {welcomeWords.map((word, i) => (
                         <motion.h1
                           key={i}
                           initial={{ opacity: 0, y: 50, filter: 'blur(10px)' }}
                           animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                           transition={{ delay: 0.5 + (i * 0.2), duration: 0.8 }}
-                          className="text-3xl sm:text-7xl md:text-9xl font-black"
+                          className="text-3xl sm:text-5xl md:text-6xl font-black"
                         >
                             {word}
                         </motion.h1>
@@ -293,13 +293,13 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
                  
                  <motion.div 
                    initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 2 }}
-                   className="space-y-6 mb-24 relative z-10 flex flex-col items-center"
+                   className="space-y-4 mb-16 relative z-10 flex flex-col items-center"
                  >
-                    <p className="text-lg sm:text-4xl text-[#99f7ff] font-light">Welcome, <span className="font-bold text-white drop-shadow-[0_0_15px_#ffffff]">{profile?.name || 'Traveler'}</span></p>
+                    <p className="text-base sm:text-2xl text-[#99f7ff] font-light">Welcome, <span className="font-bold text-white drop-shadow-[0_0_15px_#ffffff]">{profile?.name || 'Traveler'}</span></p>
                     {selectedExam && (
-                      <div className="flex items-center gap-3 sm:gap-4 bg-[#1f1f2a]/80 backdrop-blur-xl px-6 py-3 sm:px-8 sm:py-4 rounded-full border border-[#2b2b38] shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
-                          <span className="text-2xl sm:text-3xl drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">{selectedExam.icon}</span>
-                          <p className="text-base sm:text-2xl text-[#acaab5] font-['Manrope']">Today's focus: <span className="text-[#d575ff] font-bold drop-shadow-[0_0_10px_rgba(213,117,255,0.8)]">{selectedExam.label}</span></p>
+                      <div className="flex items-center gap-3 sm:gap-4 bg-[#1f1f2a]/80 backdrop-blur-xl px-5 py-2 sm:px-6 sm:py-3 rounded-full border border-[#2b2b38] shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+                          <span className="text-xl sm:text-2xl drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">{selectedExam.icon}</span>
+                          <p className="text-sm sm:text-lg text-[#acaab5] font-['Manrope']">Today's focus: <span className="text-[#d575ff] font-bold drop-shadow-[0_0_10px_rgba(213,117,255,0.8)]">{selectedExam.label}</span></p>
                       </div>
                     )}
                  </motion.div>
@@ -307,7 +307,7 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
                  <motion.button
                    initial={{ opacity: 0, scale: 0.5, y: 50 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: 3, type: "spring", damping: 10 }}
                    onClick={handleFinish}
-                   className="px-8 py-4 sm:px-20 sm:py-8 bg-[#00f1fe] text-[#004145] rounded-full text-base sm:text-3xl font-black uppercase tracking-wider hover:bg-[#99f7ff] hover:scale-110 transition-all shadow-[0_0_60px_rgba(0,241,254,0.8)] relative z-10 flex flex-col items-center mx-auto"
+                   className="px-6 py-3 sm:px-12 sm:py-4 bg-[#00f1fe] text-[#004145] rounded-full text-base sm:text-xl font-black uppercase tracking-wider hover:bg-[#99f7ff] hover:scale-110 transition-all shadow-[0_0_60px_rgba(0,241,254,0.8)] relative z-10 flex flex-col items-center mx-auto"
                  >
                    ENTER THE MAP ⚡
                  </motion.button>
