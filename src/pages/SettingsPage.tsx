@@ -63,7 +63,8 @@ export function SettingsPage() {
 
     return (
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-slate-950 p-4 animate-fade-in">
-            <div className="bg-slate-900 border border-slate-700 p-6 rounded-2xl max-w-sm w-full shadow-2xl relative">
+            <div className="bg-slate-900 border border-slate-700 p-6 rounded-2xl max-w-sm w-full shadow-2xl relative max-h-[90vh] overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                <style>{`::-webkit-scrollbar { display: none; }`}</style>
                 <h2 className="text-xl font-bold text-white mb-4 text-center">Settings</h2>
                 <div className="space-y-6">
                     <div className="space-y-4 bg-slate-800/50 p-3 rounded-xl border border-slate-700">
