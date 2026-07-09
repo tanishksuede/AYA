@@ -4,8 +4,6 @@ import { useUserStore } from '../../store/userStore';
 import { audioManager as audioSynth } from "../../utils/audioManager";
 import { supabase } from '../../utils/supabase';
 import { Brain, Gamepad2, Dna, ChevronRight, Check } from 'lucide-react';
-import { NotificationPrompt } from '../ui/NotificationPrompt';
-import { subscribeUserToPush } from '../../utils/pushNotifications';
 import { safeStorage } from '../../utils/storage';
 import { bgmManager } from '../../utils/bgmManager';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -25,10 +23,9 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
   const slide = parseInt(stepParam || '1') || 1;
   const [selectedExam, setSelectedExam] = useState<typeof EXAMS[0] | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
 
   const completeFlow = () => {
-      localStorage.setItem('onboarding_done', 'true');
+      safeStorage.set('onboarding_done', 'true');
       if (onComplete) onComplete();
       else navigate('/game/assessment/1');
   };
@@ -73,20 +70,6 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
       nextSlide();
     }
   };
-
-  const onAcceptNotifications = async () => {
-    await subscribeUserToPush();
-    safeStorage.set('notificationPromptShown', 'true');
-    setShowNotificationPrompt(false);
-    completeFlow();
-  };
-
-  const onDeclineNotifications = () => {
-    safeStorage.set('notificationPromptShown', 'true');
-    setShowNotificationPrompt(false);
-    completeFlow();
-  };
-
 
   const welcomeWords = "Your journey begins now.".split(" ");
 

@@ -5,7 +5,6 @@ import { audioManager as audioSynth } from "../../utils/audioManager";
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { saveSession } from '../../utils/session';
 import { supabase } from '../../utils/supabase';
-import { subscribeUserToPush } from '../../utils/pushNotifications';
 
 import { motion, AnimatePresence } from 'framer-motion';
 

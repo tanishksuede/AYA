@@ -3,10 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../store/userStore';
 import { audioManager as audioSynth } from "../utils/audioManager";
 import { bgmManager } from '../utils/bgmManager';
-import { Volume2, VolumeX, Bell } from 'lucide-react';
+import { Volume2, VolumeX } from 'lucide-react';
 import clsx from 'clsx';
 import { supabase } from '../utils/supabase';
-import { subscribeUserToPush } from '../utils/pushNotifications';
 
 export function SettingsPage() {
     const navigate = useNavigate();
