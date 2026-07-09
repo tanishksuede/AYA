@@ -10,21 +10,20 @@ import { safeStorage } from '../../utils/storage';
 import { bgmManager } from '../../utils/bgmManager';
 import { useNavigate, useParams } from 'react-router-dom';
 
-const STRUGGLES = [
-  { id: 'heartbreak', label: 'Heartbreak & Relationships', icon: '💔' },
-  { id: 'motivation', label: 'Motivation & Drive', icon: '⚡' },
-  { id: 'confidence', label: 'Confidence & Fear', icon: '😰' },
-  { id: 'money', label: 'Money & Ambition', icon: '💰' },
-  { id: 'purpose', label: 'Finding My Purpose', icon: '🎯' },
-  { id: 'loneliness', label: 'Loneliness & Connection', icon: '🌙' },
+const EXAMS = [
+  { id: 'neet', label: 'NEET', icon: '🩺' },
+  { id: 'jee', label: 'JEE', icon: '⚙️' },
+  { id: 'upsc', label: 'UPSC', icon: '⚖️' },
+  { id: 'others', label: 'Others', icon: '🌟' },
 ];
 
 export function CinematicOnboarding({ onComplete }: { onComplete?: () => void }) {
   const profile = useUserStore((state) => state.profile);
+  const setProfile = useUserStore((state) => state.setProfile);
   const navigate = useNavigate();
   const { step: stepParam } = useParams<{ step: string }>();
   const slide = parseInt(stepParam || '1') || 1;
-  const [selectedStruggle, setSelectedStruggle] = useState<typeof STRUGGLES[0] | null>(null);
+  const [selectedExam, setSelectedExam] = useState<typeof EXAMS[0] | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
 
@@ -49,18 +48,22 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
   };
 
   const handleFinish = async () => {
-    if (slide === 3 && selectedStruggle && profile?.id) {
+    if (slide === 3 && selectedExam && profile?.id) {
       setIsSaving(true);
+      const newPreferredMap = selectedExam.id === 'others' ? 'standard' : selectedExam.id;
       try {
         await supabase
           .from('users')
           .update({ 
-            daily_struggle: selectedStruggle.label, 
+            daily_struggle: selectedExam.label, // Keeping this for backward compatibility in case it's used elsewhere
+            preferred_map: newPreferredMap,
             last_struggle_update: new Date().toISOString() 
           })
           .eq('mobile', profile.mobile);
+          
+        setProfile({ ...profile, preferred_map: newPreferredMap });
       } catch (e) {
-        console.error('Failed to save struggle', e);
+        console.error('Failed to save exam preference', e);
       }
       setIsSaving(false);
       nextSlide();
@@ -228,7 +231,7 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
             </motion.div>
           )}
 
-          {/* SLIDE 3: Daily Struggle */}
+          {/* SLIDE 3: Daily Struggle / Exam Selection */}
           {slide === 3 && (
             <motion.div
               key="slide3"
@@ -236,29 +239,29 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
               transition={{ duration: 0.6 }}
               className="w-full max-w-[680px] mx-auto px-4 md:px-0 text-center"
             >
-              <h2 className="text-3xl sm:text-6xl font-black mb-6 drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]">What's on your mind lately?</h2>
+              <h2 className="text-3xl sm:text-6xl font-black mb-6 drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]">Which exam are you preparing for?</h2>
               <p className="text-lg sm:text-2xl text-[#acaab5] mb-8 sm:mb-16 font-['Manrope']">We'll suggest the perfect story for you today</p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 [transform-style:preserve-3d]">
-                 {STRUGGLES.map((strug, idx) => (
+                 {EXAMS.map((exam, idx) => (
                     <motion.button
-                      key={strug.id}
+                      key={exam.id}
                       initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }}
                       whileHover={{ scale: 1.05, y: -8, z: 100, rotateX: -5, rotateY: 5 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => {
                         audioSynth.playClick();
-                        setSelectedStruggle(strug);
+                        setSelectedExam(exam);
                       }}
                       className={`relative p-10 rounded-3xl backdrop-blur-2xl border-2 transition-all flex flex-col items-center gap-6 shadow-[0_20px_40px_rgba(0,0,0,0.5)] ${
-                          selectedStruggle?.id === strug.id 
+                          selectedExam?.id === exam.id 
                           ? 'bg-[#d575ff]/20 border-[#fe00fe] shadow-[0_0_50px_rgba(254,0,254,0.6)] scale-105 z-50' 
                           : 'bg-[#191923]/80 border-[#2b2b38]'
                       }`}
                     >
-                       <span className={`text-4xl sm:text-6xl ${selectedStruggle?.id === strug.id ? 'drop-shadow-[0_0_20px_rgba(254,0,254,0.8)]' : ''}`}>{strug.icon}</span>
-                       <span className={`text-xl sm:text-2xl font-bold ${selectedStruggle?.id === strug.id ? 'text-white' : 'text-[#acaab5]'}`}>{strug.label}</span>
-                       {selectedStruggle?.id === strug.id && (
+                       <span className={`text-4xl sm:text-6xl ${selectedExam?.id === exam.id ? 'drop-shadow-[0_0_20px_rgba(254,0,254,0.8)]' : ''}`}>{exam.icon}</span>
+                       <span className={`text-xl sm:text-2xl font-bold ${selectedExam?.id === exam.id ? 'text-white' : 'text-[#acaab5]'}`}>{exam.label}</span>
+                       {selectedExam?.id === exam.id && (
                            <div className="absolute top-6 right-6 text-[#fe00fe] drop-shadow-[0_0_10px_#fe00fe]"><Check size={32} strokeWidth={4} /></div>
                        )}
                     </motion.button>
@@ -267,7 +270,7 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
 
               <div className="flex flex-col items-center mt-20 space-y-6">
                  <button 
-                   disabled={!selectedStruggle || isSaving}
+                   disabled={!selectedExam || isSaving}
                    onClick={handleFinish} 
                    className="px-12 py-5 sm:px-16 sm:py-6 bg-gradient-to-r from-[#9800d0] to-[#b90afc] text-white rounded-full text-xl sm:text-2xl font-black uppercase tracking-wider hover:brightness-125 transition-all shadow-[0_0_50px_rgba(185,10,252,0.8)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3"
                  >

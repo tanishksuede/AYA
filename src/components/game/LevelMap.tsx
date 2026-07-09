@@ -60,6 +60,8 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
         ageLevels = processedLevels.filter(l => l.theme === 'JEE').sort((a, b) => (a.day_number || 0) - (b.day_number || 0));
     } else if (profile?.preferred_map === 'neet') {
         ageLevels = processedLevels.filter(l => l.theme === 'NEET').sort((a, b) => (a.day_number || 0) - (b.day_number || 0));
+    } else if (profile?.preferred_map === 'upsc') {
+        ageLevels = processedLevels.filter(l => l.theme === 'UPSC').sort((a, b) => (a.day_number || 0) - (b.day_number || 0));
     } else {
         // Standard Map Flow
         // 1. Filter by age
