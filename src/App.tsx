@@ -13,6 +13,11 @@ import { SettingsPage } from './pages/SettingsPage';
 import { JournalPage } from './pages/JournalPage';
 import { ThemeSwitcherPage } from './pages/ThemeSwitcherPage';
 import { NotificationOnboardingPage } from './pages/NotificationOnboardingPage';
+import ReactGA from 'react-ga4';
+import { AnalyticsTracker } from './components/AnalyticsTracker';
+
+// Initialize Google Analytics 4
+ReactGA.initialize('G-30ZXCBJXSQ');
 
 function App() {
   useEffect(() => {
@@ -34,6 +39,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <AnalyticsTracker />
       <Routes>
         <Route element={<AppLayout />}>
           <Route path="/" element={<HomePage />} />
