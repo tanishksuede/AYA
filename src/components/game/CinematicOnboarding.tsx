@@ -196,10 +196,10 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
               key="slide2"
               initial={{ opacity: 0, x: 100 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -100 }}
               transition={{ duration: 0.6 }}
-              className="w-full max-w-[680px] mx-auto px-4 md:px-0"
+              className="w-full max-w-[600px] mx-auto px-6 md:px-0"
             >
-              <h2 className="text-3xl sm:text-7xl font-black text-center mb-10 sm:mb-20 text-white drop-shadow-[0_0_25px_rgba(255,255,255,0.4)]">How AYA Works</h2>
-              <div className="space-y-8 [transform-style:preserve-3d]">
+              <h2 className="text-3xl sm:text-5xl font-black text-center mb-8 sm:mb-12 text-white drop-shadow-[0_0_25px_rgba(255,255,255,0.4)]">How AYA Works</h2>
+              <div className="space-y-4 sm:space-y-5 [transform-style:preserve-3d]">
                  {[
                    { icon: Brain, title: "Answer 9 quick questions", desc: "We build your psychological personality profile.", color: '#99f7ff', rawColor: '0, 241, 254' },
                    { icon: Gamepad2, title: "Step into a legend's shoes", desc: "Make their real decisions in interactive scenarios.", color: '#d575ff', rawColor: '213, 117, 255' },
@@ -210,22 +210,22 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
                       initial={{ opacity: 0, y: 100, rotateX: 45, z: -500 }}
                       animate={{ opacity: 1, y: 0, rotateX: 0, z: 0 }}
                       transition={{ delay: 0.3 * idx, type: "spring", damping: 15 }}
-                      className="flex items-center gap-8 bg-[#1f1f2a]/80 backdrop-blur-2xl p-10 rounded-3xl shadow-[0_30px_60px_rgba(0,0,0,0.6)] relative overflow-hidden group"
+                      className="flex items-center gap-4 sm:gap-6 bg-[#1f1f2a]/80 backdrop-blur-2xl p-5 sm:p-6 rounded-2xl sm:rounded-3xl shadow-[0_20px_40px_rgba(0,0,0,0.4)] relative overflow-hidden group"
                     >
                       <div className={`absolute top-0 left-0 w-2 h-full`} style={{ backgroundColor: step.color, boxShadow: `0 0 20px ${step.color}` }} />
-                      <div className="w-24 h-24 rounded-2xl flex items-center justify-center border transition-all shadow-lg" style={{ backgroundColor: `rgba(${step.rawColor}, 0.1)`, borderColor: `rgba(${step.rawColor}, 0.3)`, boxShadow: `0 0 20px rgba(${step.rawColor}, 0.4)` }}>
-                         <step.icon className="w-12 h-12" style={{ color: step.color, filter: `drop-shadow(0 0 10px ${step.color})` }} />
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-xl sm:rounded-2xl flex items-center justify-center border transition-all shadow-md" style={{ backgroundColor: `rgba(${step.rawColor}, 0.1)`, borderColor: `rgba(${step.rawColor}, 0.3)`, boxShadow: `0 0 15px rgba(${step.rawColor}, 0.2)` }}>
+                         <step.icon className="w-7 h-7 sm:w-8 sm:h-8" style={{ color: step.color, filter: `drop-shadow(0 0 8px ${step.color})` }} />
                       </div>
                       <div>
-                        <h3 className="text-2xl sm:text-4xl font-bold text-white mb-2">{step.title}</h3>
-                        <p className="text-lg sm:text-xl text-[#acaab5] font-['Manrope']">{step.desc}</p>
+                        <h3 className="text-lg sm:text-2xl font-bold text-white mb-1">{step.title}</h3>
+                        <p className="text-sm sm:text-base text-[#acaab5] font-['Manrope']">{step.desc}</p>
                       </div>
                     </motion.div>
                  ))}
               </div>
-              <div className="flex justify-center mt-20">
-                 <button onClick={nextSlide} className="px-10 py-5 sm:px-14 sm:py-6 bg-[#00f1fe] text-[#004145] rounded-full text-xl sm:text-2xl font-black uppercase tracking-wider hover:bg-[#99f7ff] transition-all shadow-[0_0_40px_rgba(0,241,254,0.6)] hover:shadow-[0_0_60px_rgba(0,241,254,0.8)] flex items-center gap-3">
-                    SOUNDS GOOD <ChevronRight size={28} />
+              <div className="flex justify-center mt-10 sm:mt-12">
+                 <button onClick={nextSlide} className="px-8 py-4 sm:px-12 sm:py-5 bg-[#00f1fe] text-[#004145] rounded-full text-lg sm:text-xl font-black uppercase tracking-wider hover:bg-[#99f7ff] transition-all shadow-[0_0_30px_rgba(0,241,254,0.5)] hover:shadow-[0_0_50px_rgba(0,241,254,0.8)] flex items-center gap-2">
+                    SOUNDS GOOD <ChevronRight size={24} />
                  </button>
               </div>
             </motion.div>
