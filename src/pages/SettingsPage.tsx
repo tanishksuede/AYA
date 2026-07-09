@@ -115,65 +115,6 @@ export function SettingsPage() {
                                 </button>
                             </div>
                         </div>
-                        <div className="pt-2 border-t border-slate-700">
-                            <div className="flex justify-between items-center">
-                                <span className="text-xs font-bold text-slate-400 uppercase">Push Notifications</span>
-                                <button
-                                    id="test-push-btn"
-                                    onClick={async () => {
-                                        audioSynth.playClick();
-                                        const statusEl = document.getElementById('push-status');
-                                        if (statusEl) {
-                                            statusEl.textContent = '⏳ Registering device...';
-                                            statusEl.className = 'text-xs text-blue-400 mt-2 font-bold break-all';
-                                        }
-                                        
-                                        try {
-                                            const sub = await subscribeUserToPush();
-                                            
-                                            if (!sub) {
-                                                if (statusEl) {
-                                                    statusEl.textContent = '❌ Browser subscription failed. Check notification permissions.';
-                                                    statusEl.className = 'text-xs text-red-400 mt-2 font-bold';
-                                                }
-                                                return;
-                                            }
-                                            
-                                            // Verify by checking the DB count
-                                            if (statusEl) statusEl.textContent = '✅ Browser OK. Verifying DB save...';
-                                            
-                                            try {
-                                                const checkRes = await fetch('/api/push-subscribe');
-                                                const checkData = await checkRes.json();
-                                                if (statusEl) {
-                                                    if (checkData.count > 0) {
-                                                        statusEl.textContent = `✅ Success! ${checkData.count} device(s) registered. Key: ${checkData.keyType || '?'}`;
-                                                        statusEl.className = 'text-xs text-emerald-400 mt-2 font-bold';
-                                                    } else {
-                                                        statusEl.textContent = `⚠️ Browser subscribed but DB shows 0. API response: ${JSON.stringify(checkData)}`;
-                                                        statusEl.className = 'text-xs text-amber-400 mt-2 font-bold break-all';
-                                                    }
-                                                }
-                                            } catch (verifyErr: any) {
-                                                if (statusEl) {
-                                                    statusEl.textContent = `⚠️ Subscribed but verification failed: ${verifyErr.message}`;
-                                                    statusEl.className = 'text-xs text-amber-400 mt-2 font-bold break-all';
-                                                }
-                                            }
-                                        } catch (err: any) {
-                                            if (statusEl) {
-                                                statusEl.textContent = `❌ Error: ${err.message}`;
-                                                statusEl.className = 'text-xs text-red-400 mt-2 font-bold break-all';
-                                            }
-                                        }
-                                    }}
-                                    className="p-1 px-3 text-xs font-bold rounded transition-colors uppercase tracking-widest bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 flex items-center gap-1"
-                                >
-                                    <Bell size={12} /> Test Push
-                                </button>
-                            </div>
-                            <p id="push-status" className="text-xs text-slate-500 mt-2">Tap "Test Push" to register this device for broadcasts.</p>
-                        </div>
                     </div>
 
                     <hr className="border-slate-700" />
