@@ -279,13 +279,6 @@ export function OnboardingWizard() {
             daily_challenge_completed: userData.daily_challenge_completed || false,
             isAdmin
         });
-
-        // Request push notification permissions automatically after successful login
-        try {
-            await subscribeUserToPush();
-        } catch (pushErr) {
-            console.warn("Failed to subscribe to push notifications on login:", pushErr);
-        }
     };
 
     const handleComplete = async () => {

@@ -68,11 +68,7 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
       setIsSaving(false);
       nextSlide();
     } else if (slide === 4) {
-      if ((profile?.stories_completed || 0) > 0) {
-        setShowNotificationPrompt(true);
-      } else {
-        completeFlow();
-      }
+      completeFlow();
     } else {
       nextSlide();
     }
@@ -339,14 +335,6 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
 
 
       </div>
-
-
-
-      <NotificationPrompt 
-        isOpen={showNotificationPrompt}
-        onAccept={onAcceptNotifications}
-        onDecline={onDeclineNotifications}
-      />
     </div>
   );
 }
