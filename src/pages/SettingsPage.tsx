@@ -11,6 +11,7 @@ import { subscribeUserToPush } from '../utils/pushNotifications';
 export function SettingsPage() {
     const navigate = useNavigate();
     const [newAge, setNewAge] = useState(18);
+    const [newPreferredMap, setNewPreferredMap] = useState('standard');
 
     const profile = useUserStore((state) => state.profile);
     const setProfile = useUserStore((state) => state.setProfile);
@@ -28,8 +29,9 @@ export function SettingsPage() {
     const toggleNarrationMute = useUserStore((state) => state.toggleNarrationMute);
 
     useEffect(() => {
-        if (profile?.age) {
-            setNewAge(profile.age);
+        if (profile) {
+            if (profile.age) setNewAge(profile.age);
+            if (profile.preferred_map) setNewPreferredMap(profile.preferred_map);
         }
     }, [profile]);
 
@@ -43,14 +45,17 @@ export function SettingsPage() {
         audioSynth.setSfxVolume(isSfxMuted ? 0 : sfxVolume);
     }, [sfxVolume, isSfxMuted]);
 
-    const handleAgeSave = async () => {
+    const handleSave = async () => {
         if (profile) {
-            setProfile({ ...profile, age: newAge });
+            setProfile({ ...profile, age: newAge, preferred_map: newPreferredMap });
             try {
                 const { supabase } = await import('../utils/supabase');
-                await supabase.from('users').update({ age: newAge }).eq('id', profile.id);
+                await supabase.from('users').update({ 
+                    age: newAge,
+                    preferred_map: newPreferredMap
+                }).eq('id', profile.id);
             } catch (err) {
-                console.error("Failed to update age in Supabase", err);
+                console.error("Failed to update profile in Supabase", err);
             }
             useUserStore.getState().syncLevels();
             navigate('/game');
@@ -182,7 +187,20 @@ export function SettingsPage() {
                             className="w-full bg-slate-800 text-white rounded-lg px-4 py-3 border border-slate-700 font-mono"
                         />
                     </div>
-                    <button onClick={() => { audioSynth.playClick(); handleAgeSave(); }} className="w-full bg-pink-600 hover:bg-pink-500 text-white font-bold py-3 rounded-xl shadow-lg transform active:scale-95 transition-all">
+                    <div>
+                        <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Preferred Exam Focus</label>
+                        <select
+                            value={newPreferredMap}
+                            onChange={(e) => setNewPreferredMap(e.target.value)}
+                            className="w-full bg-slate-800 text-white rounded-lg px-4 py-3 border border-slate-700 focus:outline-none focus:border-[#00f1fe]"
+                        >
+                            <option value="standard">None (Standard)</option>
+                            <option value="neet">NEET</option>
+                            <option value="jee">JEE</option>
+                            <option value="upsc">UPSC</option>
+                        </select>
+                    </div>
+                    <button onClick={() => { audioSynth.playClick(); handleSave(); }} className="w-full bg-pink-600 hover:bg-pink-500 text-white font-bold py-3 rounded-xl shadow-lg transform active:scale-95 transition-all mt-4">
                         UPDATE TIMELINE
                     </button>
 

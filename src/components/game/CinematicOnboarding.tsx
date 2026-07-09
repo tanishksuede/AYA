@@ -317,10 +317,10 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
                    className="space-y-6 mb-24 relative z-10 flex flex-col items-center"
                  >
                     <p className="text-lg sm:text-4xl text-[#99f7ff] font-light">Welcome, <span className="font-bold text-white drop-shadow-[0_0_15px_#ffffff]">{profile?.name || 'Traveler'}</span></p>
-                    {selectedStruggle && (
+                    {selectedExam && (
                       <div className="flex items-center gap-3 sm:gap-4 bg-[#1f1f2a]/80 backdrop-blur-xl px-6 py-3 sm:px-8 sm:py-4 rounded-full border border-[#2b2b38] shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
-                          <span className="text-2xl sm:text-3xl drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">{selectedStruggle.icon}</span>
-                          <p className="text-base sm:text-2xl text-[#acaab5] font-['Manrope']">Today's focus: <span className="text-[#d575ff] font-bold drop-shadow-[0_0_10px_rgba(213,117,255,0.8)]">{selectedStruggle.label}</span></p>
+                          <span className="text-2xl sm:text-3xl drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">{selectedExam.icon}</span>
+                          <p className="text-base sm:text-2xl text-[#acaab5] font-['Manrope']">Today's focus: <span className="text-[#d575ff] font-bold drop-shadow-[0_0_10px_rgba(213,117,255,0.8)]">{selectedExam.label}</span></p>
                       </div>
                     )}
                  </motion.div>
