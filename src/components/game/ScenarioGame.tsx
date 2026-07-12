@@ -184,9 +184,14 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                 const mergedFrames = data.frames.map((frame: any) => {
                     if (localData) {
                         const localFrame = localData.frames.find((lf: any) => lf.id === frame.id);
+                        const updatedFrame = { ...frame };
                         if (localFrame?.audio && !frame.audio) {
-                            return { ...frame, audio: localFrame.audio };
+                            updatedFrame.audio = localFrame.audio;
                         }
+                        if (localFrame?.audio_hi && !frame.audio_hi) {
+                            updatedFrame.audio_hi = localFrame.audio_hi;
+                        }
+                        return updatedFrame;
                     }
                     return frame;
                 });
@@ -251,6 +256,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
     // but the simplest correct approach: compute a stable activeText from frame.text and let the
     // lesson card render lessonBody directly (not via displayedText).
     const activeText = feedbackChoice ? feedbackChoice.feedback : frame.text;
+    const activeAudio = (appLanguage === 'hi' && frame?.audio_hi) ? frame.audio_hi : frame?.audio;
 
     // Reset bg loaded state when background changes
     useEffect(() => {
@@ -309,7 +315,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
 
         typingSpeedRef.current = 20;
 
-        if (frame.audio && !feedbackChoice && !isNarrationMuted && audioRef.current) {
+        if (activeAudio && !feedbackChoice && !isNarrationMuted && audioRef.current) {
             audioRef.current.currentTime = 0;
             
             // Calculate dynamic typing speed based on audio duration
@@ -839,7 +845,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
             {/* HTML5 Audio Element for Voice Narration */}
             <audio 
                 ref={audioRef} 
-                src={frame?.audio && !feedbackChoice ? frame.audio : undefined} 
+                src={activeAudio && !feedbackChoice ? activeAudio : undefined} 
                 preload="auto"
                 className="hidden" 
             />
@@ -938,7 +944,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                         // If we are currently not muted, muting it should pause the audio
                         if (!isNarrationMuted && audioRef.current) {
                             audioRef.current.pause();
-                        } else if (isNarrationMuted && audioRef.current && frame.audio) {
+                        } else if (isNarrationMuted && audioRef.current && activeAudio) {
                             audioRef.current.play().catch(console.warn);
                         }
                     }}
