@@ -1062,7 +1062,9 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                                     {lessonKeyword}
                                 </h2>
                                 {/* Lesson body text */}
-                                <p className={clsx(
+                                <p 
+                                    key={lessonBody}
+                                    className={clsx(
                                     "leading-relaxed text-center",
                                     isCandyTheme
                                         ? "text-lg font-serif italic text-pink-900"
@@ -1127,7 +1129,9 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                                     At YOUR age ({useUserStore.getState().profile?.age || 18}), {level.personality} was {level.age_mirror_text}.
                                 </p>
                             )}
-                            <p className={clsx(
+                            <p 
+                                key={activeText}
+                                className={clsx(
                                 "leading-relaxed",
                                 appLanguage === 'hi' && isTyping ? "animate-fade-in" : "",
                                 isCandyTheme
