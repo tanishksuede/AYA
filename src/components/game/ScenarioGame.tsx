@@ -1129,7 +1129,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                                     : "text-[17px] md:text-2xl font-comic text-white drop-shadow-md"
                             )}
                             >
-                                {displayedText}
+                                {appLanguage === 'hi' ? activeText : displayedText}
                                 {isTyping && <span className={clsx("inline-block w-2 h-6 ml-1 animate-cursor-blink align-middle", isCandyTheme ? "bg-pink-500" : "bg-yellow-400")} />}
                             </p>
                         </div>
