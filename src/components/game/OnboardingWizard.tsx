@@ -76,6 +76,7 @@ export function OnboardingWizard() {
     const [name, setName] = useState("");
     const [age, setAge] = useState<number>(20);
     const [mobile, setMobile] = useState("");
+    const [prefLang, setPrefLang] = useState<'en' | 'hi'>('en');
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
     
@@ -281,11 +282,12 @@ export function OnboardingWizard() {
     };
 
     const handleComplete = async () => {
-        if (!mobile.trim() || age < 13) return;
-        if (isSubmitting.current) return; // hard block double-tap
-        isSubmitting.current = true;
-
         audioSynth.playClick();
+        if (!mobile.trim() || age < 13) return;
+        if (isSubmitting.current) return;
+        isSubmitting.current = true;
+        
+        useUserStore.getState().setAppLanguage(prefLang);
         setIsLoading(true);
         setError("");
 
@@ -532,6 +534,27 @@ export function OnboardingWizard() {
                                     className="glass-panel p-6 rounded-3xl relative flex flex-col items-center"
                                 >
                                     <AgeSelector value={age} onChange={setAge} />
+                                </motion.div>
+
+                                <motion.div 
+                                    initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+                                    className="glass-panel p-6 rounded-3xl relative flex flex-col items-center"
+                                >
+                                    <label className="block text-xs font-bold text-[#f2effb] mb-4 uppercase tracking-wider">Preferred Language</label>
+                                    <div className="flex gap-4 w-full">
+                                        <button 
+                                            onClick={() => { audioSynth.playClick(); setPrefLang('en'); }}
+                                            className={`flex-1 py-3 rounded-2xl font-bold transition-all border-2 ${prefLang === 'en' ? 'bg-[#00f1fe] text-[#004145] border-[#00f1fe] shadow-[0_0_15px_rgba(0,241,254,0.4)]' : 'bg-black/40 text-[#acaab5] border-[#2b2b38] hover:border-[#00f1fe]/50 hover:text-white'}`}
+                                        >
+                                            English
+                                        </button>
+                                        <button 
+                                            onClick={() => { audioSynth.playClick(); setPrefLang('hi'); }}
+                                            className={`flex-1 py-3 rounded-2xl font-bold transition-all border-2 ${prefLang === 'hi' ? 'bg-[#00f1fe] text-[#004145] border-[#00f1fe] shadow-[0_0_15px_rgba(0,241,254,0.4)]' : 'bg-black/40 text-[#acaab5] border-[#2b2b38] hover:border-[#00f1fe]/50 hover:text-white'}`}
+                                        >
+                                            हिंदी (Hindi)
+                                        </button>
+                                    </div>
                                 </motion.div>
 
                                 <motion.div 
