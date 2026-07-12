@@ -15,6 +15,7 @@ import { ThemeSwitcherPage } from './pages/ThemeSwitcherPage';
 import { NotificationOnboardingPage } from './pages/NotificationOnboardingPage';
 import ReactGA from 'react-ga4';
 import { AnalyticsTracker } from './components/AnalyticsTracker';
+import { GoogleTranslateSync } from './components/GoogleTranslateSync';
 
 // Initialize Google Analytics 4
 ReactGA.initialize('G-30ZXCBJXSQ');
@@ -39,6 +40,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <GoogleTranslateSync />
       <AnalyticsTracker />
       <Routes>
         <Route element={<AppLayout />}>

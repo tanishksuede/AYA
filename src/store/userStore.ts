@@ -59,6 +59,10 @@ interface UserState {
     collectedLessons: Lesson[];
     collectLesson: (lesson: Lesson) => void;
 
+    // Language State
+    appLanguage: 'en' | 'hi';
+    setAppLanguage: (lang: 'en' | 'hi') => void;
+
     // Cinematic Intro State
     isIntroVideoCompleted: boolean;
     setIntroVideoCompleted: (val: boolean) => void;
@@ -241,6 +245,9 @@ export const useUserStore = create<UserState>()(
                 if (state.collectedLessons.some(l => l.id === lesson.id)) return state;
                 return { collectedLessons: [...state.collectedLessons, lesson] };
             }),
+
+            appLanguage: 'en',
+            setAppLanguage: (lang) => set({ appLanguage: lang }),
 
             isIntroVideoCompleted: false,
             setIntroVideoCompleted: (val) => set({ isIntroVideoCompleted: val }),
@@ -528,7 +535,8 @@ export const useUserStore = create<UserState>()(
                 sfxVolume: state.sfxVolume,
                 isMusicMuted: state.isMusicMuted,
                 isSfxMuted: state.isSfxMuted,
-                collectedLessons: state.collectedLessons
+                collectedLessons: state.collectedLessons,
+                appLanguage: state.appLanguage
             }),
             onRehydrateStorage: () => {
                 console.log('[Store] Hydration starting...');

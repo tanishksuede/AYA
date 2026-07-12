@@ -67,6 +67,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
 
     const isNarrationMuted = useUserStore(state => state.isNarrationMuted);
     const toggleNarrationMute = useUserStore(state => state.toggleNarrationMute);
+    const appLanguage = useUserStore(state => state.appLanguage);
     // Ref tracks session choices — avoids React stale closure when reading at COMPLETE time
     const sessionChoicesRef = useRef<SessionChoiceData[]>([]);
     const hasInsertedSession = useRef(false);
@@ -333,6 +334,14 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
         setDisplayedText("");
         setIsTyping(true);
 
+        // If translating to Hindi, bypass typewriter to prevent Google Translate DOM node crashes
+        if (appLanguage === 'hi') {
+            setDisplayedText(activeText);
+            setIsTyping(false);
+            setFrameStartTime(Date.now());
+            return;
+        }
+
         let i = 0;
         let timer: ReturnType<typeof setInterval>;
 
@@ -361,7 +370,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                 audioRef.current.currentTime = 0;
             }
         };
-    }, [activeText, isBgLoaded, frame.audio, feedbackChoice, isNarrationMuted]);
+    }, [activeText, isBgLoaded, frame.audio, feedbackChoice, isNarrationMuted, appLanguage]);
 
     const handleTextClick = () => {
         if (isTyping) {

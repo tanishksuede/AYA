@@ -27,6 +27,9 @@ export function SettingsPage() {
     const toggleSfxMute = useUserStore((state) => state.toggleSfxMute);
     const toggleNarrationMute = useUserStore((state) => state.toggleNarrationMute);
 
+    const appLanguage = useUserStore((state) => state.appLanguage);
+    const setAppLanguage = useUserStore((state) => state.setAppLanguage);
+
     useEffect(() => {
         if (profile) {
             if (profile.age) setNewAge(profile.age);
@@ -112,6 +115,26 @@ export function SettingsPage() {
                                     className={clsx("p-1 px-3 text-xs font-bold rounded transition-colors uppercase tracking-widest", isNarrationMuted ? "text-red-400 bg-red-900/30" : "text-[#00f1fe] bg-[#00f1fe]/20")}
                                 >
                                     {isNarrationMuted ? 'Muted' : 'Enabled'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-slate-800/50 p-3 rounded-xl border border-slate-700">
+                        <div className="flex justify-between items-center">
+                            <span className="text-xs font-bold text-slate-400 uppercase">Language</span>
+                            <div className="flex bg-slate-900 rounded-lg overflow-hidden border border-slate-700">
+                                <button
+                                    onClick={() => { audioSynth.playClick(); setAppLanguage('en'); }}
+                                    className={clsx("px-3 py-1 text-xs font-bold uppercase transition-colors", appLanguage === 'en' ? "bg-blue-600 text-white" : "text-slate-400 hover:text-white")}
+                                >
+                                    English
+                                </button>
+                                <button
+                                    onClick={() => { audioSynth.playClick(); setAppLanguage('hi'); }}
+                                    className={clsx("px-3 py-1 text-xs font-bold uppercase transition-colors", appLanguage === 'hi' ? "bg-orange-600 text-white" : "text-slate-400 hover:text-white")}
+                                >
+                                    हिंदी
                                 </button>
                             </div>
                         </div>
