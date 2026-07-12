@@ -6,34 +6,22 @@ export function GoogleTranslateSync() {
 
     useEffect(() => {
         const syncLanguage = () => {
-            const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement | null;
-            if (selectElement) {
-                // If it's already set correctly, do nothing
-                if (selectElement.value === appLanguage) return;
+            const currentCookie = document.cookie.match(/googtrans=\/en\/([a-z]{2})/);
+            const currentTranslatedLang = currentCookie ? currentCookie[1] : 'en';
+
+            if (currentTranslatedLang !== appLanguage) {
+                // Set the Google Translate cookie
+                document.cookie = `googtrans=/en/${appLanguage}; path=/`;
+                document.cookie = `googtrans=/en/${appLanguage}; path=/; domain=${window.location.hostname}`;
                 
-                selectElement.value = appLanguage;
-                selectElement.dispatchEvent(new Event('change'));
+                // Force a reload to apply the translation natively
+                window.location.reload();
             }
         };
 
-        // Try syncing immediately
         syncLanguage();
 
-        // Also set up an interval to catch when Google Translate finally loads
-        // The script loads asynchronously, so the DOM element might not exist yet
-        const intervalId = setInterval(() => {
-            const selectElement = document.querySelector('.goog-te-combo');
-            if (selectElement) {
-                syncLanguage();
-                // We keep running the interval just in case the user changes it later,
-                // but actually we only need to sync when appLanguage changes.
-                // However, Google Translate might reset it if we don't watch it.
-                // Let's clear interval once we successfully find the element.
-                clearInterval(intervalId);
-            }
-        }, 500);
-
-        return () => clearInterval(intervalId);
+        // No need for interval anymore since we handle it on mount and reload
     }, [appLanguage]);
 
     return null; // This is a logic-only component
