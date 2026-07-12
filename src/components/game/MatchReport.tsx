@@ -338,7 +338,7 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
                                 ? "font-yummy text-white drop-shadow-[0_5px_0_#C2185B] stroke-text-white"
                                 : "font-black text-[#E8E0FF] drop-shadow-[0_0_15px_#4DD9FF] uppercase"
                         )}>
-                            {animatedPercent}% MATCH
+                            <span className="notranslate">{animatedPercent}</span>% MATCH
                         </h1>
 
                         {/* Restored Match Bar Animation */}

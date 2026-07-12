@@ -334,12 +334,27 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
         setDisplayedText("");
         setIsTyping(true);
 
-        // If translating to Hindi, bypass typewriter to prevent Google Translate DOM node crashes
+        // If translating to Hindi, bypass React-state typewriter to prevent Google Translate DOM node crashes.
+        // Instead, we render the full text instantly for Translate to hook, but keep isTyping true to delay choices,
+        // and rely on a CSS fade-in animation applied below.
         if (appLanguage === 'hi') {
             setDisplayedText(activeText);
-            setIsTyping(false);
-            setFrameStartTime(Date.now());
-            return;
+            setIsTyping(true);
+            
+            // Wait for roughly the duration of the audio or a default reading speed
+            let duration = 2000;
+            if (audioRef.current && audioRef.current.readyState >= 1) {
+                duration = audioRef.current.duration * 1000;
+            } else {
+                duration = activeText.length * 20;
+            }
+
+            const hindiTimer = setTimeout(() => {
+                setIsTyping(false);
+                setFrameStartTime(Date.now());
+            }, duration);
+
+            return () => clearTimeout(hindiTimer);
         }
 
         let i = 0;
@@ -1114,10 +1129,13 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                             )}
                             <p className={clsx(
                                 "leading-relaxed",
+                                appLanguage === 'hi' && isTyping ? "animate-fade-in" : "",
                                 isCandyTheme
                                     ? "text-[17px] md:text-2xl font-bold font-comic text-pink-900 drop-shadow-none"
                                     : "text-[17px] md:text-2xl font-comic text-white drop-shadow-md"
-                            )}>
+                            )}
+                            style={appLanguage === 'hi' && isTyping ? { animationDuration: '2s' } : {}}
+                            >
                                 {displayedText}
                                 {isTyping && <span className={clsx("inline-block w-2 h-6 ml-1 animate-cursor-blink align-middle", isCandyTheme ? "bg-pink-500" : "bg-yellow-400")} />}
                             </p>
