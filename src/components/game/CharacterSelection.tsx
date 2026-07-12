@@ -44,17 +44,17 @@ export function CharacterSelection({ age, options, onSelect, onBack }: Character
         <div className={clsx(
             "fixed inset-0 z-50 flex flex-col items-center justify-center transition-all duration-700",
             isCandyMode 
-                ? "bg-slate-50/95 backdrop-blur-3xl" 
-                : "bg-slate-950/95 backdrop-blur-3xl"
+                ? "bg-slate-50/95 sm:backdrop-blur-3xl" 
+                : "bg-slate-950/95 sm:backdrop-blur-3xl"
         )}>
             {/* Background elements */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className={clsx(
-                    "absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[120px] opacity-20 animate-pulse-slow",
+                    "absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full sm:blur-[120px] blur-[60px] opacity-20 animate-pulse-slow",
                     isCandyMode ? "bg-pink-400" : "bg-cyan-600"
                 )} />
                 <div className={clsx(
-                    "absolute bottom-[20%] right-[10%] w-[400px] h-[400px] rounded-full blur-[100px] opacity-20 animate-pulse-slow rotate-180",
+                    "absolute bottom-[20%] right-[10%] w-[400px] h-[400px] rounded-full sm:blur-[100px] blur-[50px] opacity-20 animate-pulse-slow rotate-180",
                     isCandyMode ? "bg-amber-400" : "bg-indigo-600"
                 )} />
             </div>

@@ -48,13 +48,13 @@ export function DailyChallengeModal({ isOpen, onClose, onStartChallenge }: Daily
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/90 backdrop-blur-2xl px-4 py-8"
+                className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/90 sm:backdrop-blur-2xl px-4 py-8"
                 onClick={onClose}
             >
                 {/* Cinematic Background Glows & Particles */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/30 rounded-full blur-[120px]" />
-                    <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-rose-500/30 rounded-full blur-[120px]" />
+                    <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/30 rounded-full sm:blur-[120px] blur-[60px]" />
+                    <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-rose-500/30 rounded-full sm:blur-[120px] blur-[60px]" />
                     {Array.from({ length: 30 }).map((_, i) => (
                         <div
                             key={i}
@@ -105,7 +105,7 @@ export function DailyChallengeModal({ isOpen, onClose, onStartChallenge }: Daily
                                     className={`relative flex flex-col items-center justify-center p-6 rounded-2xl transition-all duration-500 group overflow-hidden
                                         ${isSelected 
                                             ? `bg-slate-800/90 border-2 border-white ring-4 ring-white/20 shadow-[0_0_50px_rgba(255,255,255,0.4)] -translate-y-4 scale-105 z-10` 
-                                            : `bg-slate-800/40 backdrop-blur-md border border-slate-700/50 hover:bg-slate-800/90 hover:-translate-y-3 hover:scale-105 hover:rotate-1 hover:shadow-2xl hover:border-white/30 hover:z-10`
+                                            : `bg-slate-800/40 sm:backdrop-blur-md border border-slate-700/50 hover:bg-slate-800/90 hover:-translate-y-3 hover:scale-105 hover:rotate-1 hover:shadow-2xl hover:border-white/30 hover:z-10`
                                         }
                                     `}
                                     style={{ transformStyle: 'preserve-3d', perspective: '1000px', minHeight: '180px' }}

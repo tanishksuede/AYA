@@ -96,7 +96,7 @@ export const InstagramCard = forwardRef<HTMLDivElement, InstagramCardProps>(
                     <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIi8+PC9zdmc+')" }}></div>
 
                     {/* Dramatic Core Glow behind Identity */}
-                    <div className="absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-[#00f2ff]/20 via-[#bc13fe]/10 to-transparent rounded-full blur-[140px] mix-blend-screen"></div>
+                    <div className="absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-[#00f2ff]/20 via-[#bc13fe]/10 to-transparent rounded-full sm:blur-[140px] blur-[60px] mix-blend-screen"></div>
 
                     {/* Sparkle Details generated via strict positioning */}
                     <div className="absolute top-[18%] left-[24%] w-1.5 h-1.5 bg-white drop-shadow-[0_0_8px_white] rotate-45"></div>
@@ -183,7 +183,7 @@ export const InstagramCard = forwardRef<HTMLDivElement, InstagramCardProps>(
                 {/* --- BOTTOM SECTION: Stats HUD --- */}
                 <div className="relative z-10 w-full px-16 pb-8">
                     {/* HUD Module Container */}
-                    <div className="w-full bg-[rgba(20,20,30,0.6)] backdrop-blur-md rounded-lg border border-white/10 p-8 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+                    <div className="w-full bg-[rgba(20,20,30,0.6)] sm:backdrop-blur-md rounded-lg border border-white/10 p-8 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
                         
                         {/* Title Bar */}
                         <div className="flex justify-between items-center mb-6 pb-4 border-b border-white/10">

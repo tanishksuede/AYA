@@ -114,7 +114,7 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
                  {[1,2,3].map((_, i) => (
                      <motion.div
                        key={`sil-${i}`}
-                       className="absolute w-48 h-64 bg-black rounded-[40px] opacity-40 blur-[20px] mix-blend-overlay border border-[#00f1fe]"
+                       className="absolute w-48 h-64 bg-black rounded-[40px] opacity-40 sm:blur-[20px] sm:mix-blend-overlay border border-[#00f1fe]"
                        animate={{ 
                            rotateZ: [0, 360], 
                            x: [Math.sin(i)*100, Math.cos(i)*100, Math.sin(i)*100],
@@ -189,7 +189,7 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
                       initial={{ opacity: 0, y: 100, rotateX: 45, z: -500 }}
                       animate={{ opacity: 1, y: 0, rotateX: 0, z: 0 }}
                       transition={{ delay: 0.3 * idx, type: "spring", damping: 15 }}
-                      className="flex items-center gap-4 sm:gap-6 bg-[#1f1f2a]/80 backdrop-blur-2xl p-5 sm:p-6 rounded-2xl sm:rounded-3xl shadow-[0_20px_40px_rgba(0,0,0,0.4)] relative overflow-hidden group"
+                      className="flex items-center gap-4 sm:gap-6 bg-[#1f1f2a]/80 sm:backdrop-blur-2xl p-5 sm:p-6 rounded-2xl sm:rounded-3xl shadow-[0_20px_40px_rgba(0,0,0,0.4)] relative overflow-hidden group"
                     >
                       <div className={`absolute top-0 left-0 w-2 h-full`} style={{ backgroundColor: step.color, boxShadow: `0 0 20px ${step.color}` }} />
                       <div className="w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-xl sm:rounded-2xl flex items-center justify-center border transition-all shadow-md" style={{ backgroundColor: `rgba(${step.rawColor}, 0.1)`, borderColor: `rgba(${step.rawColor}, 0.3)`, boxShadow: `0 0 15px rgba(${step.rawColor}, 0.2)` }}>
@@ -232,7 +232,7 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
                         audioSynth.playClick();
                         setSelectedExam(exam);
                       }}
-                      className={`relative p-6 rounded-3xl backdrop-blur-2xl border-2 transition-all flex flex-col items-center gap-4 shadow-[0_20px_40px_rgba(0,0,0,0.5)] ${
+                      className={`relative p-6 rounded-3xl sm:backdrop-blur-2xl border-2 transition-all flex flex-col items-center gap-4 shadow-[0_20px_40px_rgba(0,0,0,0.5)] ${
                           selectedExam?.id === exam.id 
                           ? 'bg-[#d575ff]/20 border-[#fe00fe] shadow-[0_0_50px_rgba(254,0,254,0.6)] scale-105 z-50' 
                           : 'bg-[#191923]/80 border-[#2b2b38]'
@@ -271,7 +271,7 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
               <div className="relative">
                  {/* Rotating Aurora Core */}
                  <motion.div 
-                   className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-[100px] MixBlendMode-screen pointer-events-none"
+                   className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full sm:blur-[100px] blur-[40px] mix-blend-screen pointer-events-none"
                    style={{ background: 'conic-gradient(from 0deg, rgba(0,241,254,0.3), rgba(213,117,255,0.3), rgba(0,241,254,0.3))' }}
                    animate={{ rotate: 360, scale: [1, 1.2, 1] }}
                    transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
@@ -297,7 +297,7 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
                  >
                     <p className="text-base sm:text-2xl text-[#99f7ff] font-light">Welcome, <span className="font-bold text-white drop-shadow-[0_0_15px_#ffffff]">{profile?.name || 'Traveler'}</span></p>
                     {selectedExam && (
-                      <div className="flex items-center gap-3 sm:gap-4 bg-[#1f1f2a]/80 backdrop-blur-xl px-5 py-2 sm:px-6 sm:py-3 rounded-full border border-[#2b2b38] shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+                      <div className="flex items-center gap-3 sm:gap-4 bg-[#1f1f2a]/80 sm:backdrop-blur-xl px-5 py-2 sm:px-6 sm:py-3 rounded-full border border-[#2b2b38] shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
                           <span className="text-xl sm:text-2xl drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">{selectedExam.icon}</span>
                           <p className="text-sm sm:text-lg text-[#acaab5] font-['Manrope']">Today's focus: <span className="text-[#d575ff] font-bold drop-shadow-[0_0_10px_rgba(213,117,255,0.8)]">{selectedExam.label}</span></p>
                       </div>

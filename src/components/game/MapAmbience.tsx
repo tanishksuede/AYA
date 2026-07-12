@@ -90,7 +90,7 @@ const NeonRainLayer = ({ isActive = true }: { isActive?: boolean }) => {
                 
                 ctx.strokeStyle = grad;
                 ctx.lineWidth = drop.width;
-                ctx.shadowBlur = 8;
+                ctx.shadowBlur = 0;
                 ctx.shadowColor = `rgba(${drop.baseColorStr}, ${drop.opacity})`;
                 ctx.moveTo(drop.x, drop.y - drop.length);
                 ctx.lineTo(drop.x, drop.y);
@@ -255,7 +255,7 @@ const ShootingStarsLayer = ({ isActive = true }: { isActive?: boolean }) => {
                 ctx.beginPath();
                 ctx.arc(star.x, star.y, 6, 0, Math.PI * 2);
                 ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
-                ctx.shadowBlur = star.isMega ? 30 : 15;
+                ctx.shadowBlur = 0;
                 ctx.shadowColor = `rgba(${star.baseColor}, ${star.opacity})`;
                 ctx.fill();
 
@@ -430,7 +430,7 @@ const ConstellationLayer = ({ scrollY, isActive = true }: { scrollY: any, isActi
                     if (ya < -50 || ya > canvas.height + 50 || yb < -50 || yb > canvas.height + 50) return;
 
                     ctx.beginPath();
-                    ctx.shadowBlur = 4;
+                    ctx.shadowBlur = 0;
                     ctx.shadowColor = `rgba(0, 242, 255, 0.5)`;
                     ctx.moveTo(sa.x, ya);
                     ctx.lineTo(sb.x, yb);
@@ -456,7 +456,7 @@ const ConstellationLayer = ({ scrollY, isActive = true }: { scrollY: any, isActi
 
                 if (sy > -50 && sy < canvas.height + 50) {
                     ctx.beginPath();
-                    ctx.shadowBlur = star.isAnchor ? 24 : star.radius * 16;
+                    ctx.shadowBlur = 0;
                     ctx.shadowColor = `rgba(${star.color}, ${star.opacity})`;
                     ctx.fillStyle = `rgba(${star.color}, ${star.opacity})`;
                     ctx.arc(star.x, sy, star.radius, 0, Math.PI * 2);
