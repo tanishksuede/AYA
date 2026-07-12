@@ -75,55 +75,7 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
             ageFiltered = processedLevels.filter(l => l.theme !== 'JEE' && l.theme !== 'NEET');
         }
 
-        // 2. Apply Interest Filtering
-        const alwaysShowPersonalities = new Set([
-            'Billie Eilish', 'Justin Bieber', 'MrBeast', 'Ritesh Agarwal', 'Muhammad Ali',
-            'Dhruv Rathee', 'Falguni Nayar', 'Nikola Tesla',
-            'Zendaya', 'Neeraj Chopra', 'Prajakta Koli', 'Selena Gomez', 'Shah Rukh Khan'
-        ]);
-
-        let interestFiltered = ageFiltered;
-        if (profile?.psychologicalProfile) {
-            const { interest_goal = '', interest_domain = '' } = profile.psychologicalProfile as any;
-            let allowedNames = new Set<string>();
-            let bypassFilter = false;
-
-            const goals = interest_goal.split(',').map((s: string) => s.trim());
-            const domains = interest_domain.split(',').map((s: string) => s.trim());
-            const interests = [...goals, ...domains];
-
-            if (interests.some((i: string) => i.includes('Success') || i.includes('Leadership'))) bypassFilter = true;
-
-            if (!bypassFilter && interests.length > 0) {
-                if (interests.some((i: string) => i.includes('Money') || i.includes('Business'))) {
-                    ['Bill Gates', 'Ratan Tata', 'Indra Nooyi', 'Walt Disney'].forEach(n => allowedNames.add(n));
-                }
-                if (interests.some((i: string) => i.includes('Tech'))) {
-                    ['Bill Gates', 'Steve Jobs', 'Sundar Pichai'].forEach(n => allowedNames.add(n));
-                }
-                if (interests.some((i: string) => i.includes('Creativity') || i.includes('Love'))) {
-                    ['Taylor Swift', 'Shah Rukh Khan', 'Frida Kahlo', 'A.R. Rahman', 'Steven Spielberg', 'J.K. Rowling', 'Mary Shelley'].forEach(n => allowedNames.add(n));
-                }
-                if (interests.some((i: string) => i.includes('Discipline'))) {
-                    ['Sachin Tendulkar', 'Virat Kohli', 'Kobe Bryant', 'P.V. Sindhu', 'Arnold'].forEach(n => allowedNames.add(n));
-                }
-
-                if (allowedNames.size > 0) {
-                    const tempFiltered = ageFiltered.filter(l => {
-                        const p = l.personality || '';
-                        if (Array.from(alwaysShowPersonalities).some(n => p.includes(n))) return true;
-                        return Array.from(allowedNames).some(name => p.includes(name));
-                    });
-                    
-                    // SAFETY NET: If interest filter wiped out ALL nodes, ignore the filter
-                    if (tempFiltered.length > 0) {
-                        interestFiltered = tempFiltered;
-                    }
-                }
-            }
-        }
-        
-        ageLevels = interestFiltered;
+        ageLevels = ageFiltered;
     }
     
     const unlockedDays = getUnlockedDayCount(profile?.access_type, profile?.access_start_date);
