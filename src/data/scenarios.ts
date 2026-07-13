@@ -2214,7 +2214,7 @@ export const STORY_DATABASE: Record<string, any> = {
             {
                 id: 'intro',
                 bg: '/assets/bg_sindhu.jpg',
-                audio_hi: '/assets/voice_sindhu_intro_hi.mp3',
+                audio_hi: '/assets/voice_sindhu_intro_hi_v2.mp3',
                 text: "It is 2012. You are 17. You are facing Li Xuerui, the reigning Olympic gold medalist. She is older, stronger, and seemingly invincible. Your body is exhausted from the tournament. The pressure is immense.",
                 choices: [
                     {
