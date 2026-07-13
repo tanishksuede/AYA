@@ -185,10 +185,10 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                     if (localData) {
                         const localFrame = localData.frames.find((lf: any) => lf.id === frame.id);
                         const updatedFrame = { ...frame };
-                        if (localFrame?.audio && !frame.audio) {
+                        if (localFrame?.audio) {
                             updatedFrame.audio = localFrame.audio;
                         }
-                        if (localFrame?.audio_hi && !frame.audio_hi) {
+                        if (localFrame?.audio_hi) {
                             updatedFrame.audio_hi = localFrame.audio_hi;
                         }
                         return updatedFrame;
