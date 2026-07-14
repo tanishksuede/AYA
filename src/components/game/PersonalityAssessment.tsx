@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useUserStore } from '../../store/userStore';
 import { audioManager as audioSynth } from "../../utils/audioManager";
-import { Flame, Briefcase, Eye, Shield, Award, Zap, Check } from 'lucide-react';
+import { Flame, Briefcase, Eye, Shield, Award, Zap, Check, ChevronLeft } from 'lucide-react';
 import { supabase } from '../../utils/supabase';
 import { markQuizDone } from '../../utils/session';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -147,6 +147,12 @@ export function PersonalityAssessment() {
     });
 
     const [profileBuilder, setProfileBuilder] = useState<Partial<PsychologicalProfile>>({});
+    
+    const [history, setHistory] = useState<{
+        traits: PersonalityTraits, 
+        profileBuilder: Partial<PsychologicalProfile>, 
+        answers: string[]
+    }[]>([]);
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -183,6 +189,8 @@ export function PersonalityAssessment() {
         if (isSaving) return;
         if (selectedOptions.length === 0) return;
         audioSynth.playClick();
+        
+        setHistory([...history, { traits, profileBuilder, answers }]);
 
         const currentQ = QUESTIONS[step] as any;
         const newTraits = { ...traits };
@@ -269,6 +277,18 @@ export function PersonalityAssessment() {
         }
     };
 
+    const handleBack = () => {
+        if (step > 0 && history.length > 0) {
+            audioSynth.playClick();
+            const prevState = history[history.length - 1];
+            setTraits(prevState.traits);
+            setProfileBuilder(prevState.profileBuilder);
+            setAnswers(prevState.answers);
+            setHistory(history.slice(0, -1));
+            navigate('/game/assessment/' + (step));
+        }
+    };
+
     const currentQ: any = QUESTIONS[step];
     const Icon = currentQ ? currentQ.icon : Flame;
 
@@ -316,12 +336,26 @@ export function PersonalityAssessment() {
                     <div className="p-6 md:p-10 pb-0 text-center flex flex-col items-center shrink-0">
                         {/* Progress Header */}
                         <div className="w-full flex items-center justify-between mb-6 md:mb-8">
-                            <span className={clsx(
-                                "font-bold uppercase tracking-widest text-xs px-3 py-1 rounded-full backdrop-blur-md transition-colors duration-500 border shadow-lg",
-                                isViolet ? "text-[#e9d5ff] border-[#a855f7] bg-[#581c87]/50 shadow-[0_0_15px_rgba(168,85,247,0.5)]" : "text-[#99f7ff] border-[#00f1fe]/50 bg-[#004145]/50 shadow-[0_0_10px_rgba(0,241,254,0.3)]"
-                            )}>
-                                {step + 1} / {QUESTIONS.length}
-                            </span>
+                            <div className="flex items-center gap-2 shrink-0">
+                                {step > 0 && (
+                                    <button 
+                                        onClick={handleBack}
+                                        className={clsx(
+                                            "flex items-center justify-center w-8 h-8 rounded-full transition-colors border backdrop-blur-md shadow-lg",
+                                            isViolet ? "text-[#e9d5ff] border-[#a855f7] bg-[#581c87]/50 hover:bg-[#a855f7]/30 shadow-[0_0_15px_rgba(168,85,247,0.5)]" : "text-[#99f7ff] border-[#00f1fe]/50 bg-[#004145]/50 hover:bg-[#00f1fe]/30 shadow-[0_0_10px_rgba(0,241,254,0.3)]"
+                                        )}
+                                        aria-label="Go Back"
+                                    >
+                                        <ChevronLeft size={16} strokeWidth={3} />
+                                    </button>
+                                )}
+                                <span className={clsx(
+                                    "font-bold uppercase tracking-widest text-xs px-3 py-1 rounded-full backdrop-blur-md transition-colors duration-500 border shadow-lg shrink-0",
+                                    isViolet ? "text-[#e9d5ff] border-[#a855f7] bg-[#581c87]/50 shadow-[0_0_15px_rgba(168,85,247,0.5)]" : "text-[#99f7ff] border-[#00f1fe]/50 bg-[#004145]/50 shadow-[0_0_10px_rgba(0,241,254,0.3)]"
+                                )}>
+                                    {step + 1} / {QUESTIONS.length}
+                                </span>
+                            </div>
                             <div className="flex-1 ml-4 h-3 rounded-full overflow-hidden border bg-[#191923] border-white/10 relative">
                                 <motion.div
                                     className={clsx(
