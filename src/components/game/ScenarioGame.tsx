@@ -786,21 +786,23 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
 
         // Check if there is feedback to show
         if (choice.feedback) {
+            const addedScore = choice.score || 0;
             // Updated to handle negative scores (simple addition works since choice.score can be -10)
-            setScore(prev => prev + choice.score);
-            updateXpLocally(choice.score); // Sync with global header in real-time
+            setScore(prev => prev + addedScore);
+            updateXpLocally(addedScore); // Sync with global header in real-time
             setFeedbackChoice(choice);
 
             // Trigger Floating Text
-            if (choice.score > 0) {
-                triggerFloatText(`+${choice.score} XP`, 'positive');
-            } else if (choice.score < 0) {
-                triggerFloatText(`${choice.score} XP`, 'negative');
+            if (addedScore > 0) {
+                triggerFloatText(`+${addedScore} XP`, 'positive');
+            } else if (addedScore < 0) {
+                triggerFloatText(`${addedScore} XP`, 'negative');
             }
         } else {
+            const addedScore = choice.score || 0;
             // No feedback (e.g. navigation only), just go
-            setScore(prev => prev + choice.score);
-            updateXpLocally(choice.score); // Sync with global header in real-time
+            setScore(prev => prev + addedScore);
+            updateXpLocally(addedScore); // Sync with global header in real-time
             setCurrentFrameId(choice.next);
         }
     };
@@ -858,17 +860,20 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                     onLoad={() => setIsBgLoaded(true)}
                     onError={() => setIsBgLoaded(true)}
                     className={clsx(
-                        "w-full h-full transition-opacity duration-1000",
+                        "w-full h-full",
+                        level.scenarioId === 'lvl_age_18_virat' ? "transition-opacity duration-200" : "transition-opacity duration-1000",
                         !isBgLoaded ? "opacity-0" : "opacity-100",
                         // Allow frames to specify object-contain to prevent avatar cropping, fallback to object-cover
-                        frame.bgSize || "object-cover",
+                        level.scenarioId === 'lvl_age_18_virat' ? "object-contain" : (frame.bgSize || "object-cover"),
                         // Dynamic Object Position (defaults to center if not specified to prevent cropping subjects)
                         frame.bgPosition || "object-center",
                         isLearningScreen
                             ? "scale-110 blur-sm opacity-40 grayscale"
-                            : isCandyTheme
-                                ? "animate-ken-burns saturate-125" // Brighter, saturated
-                                : "animate-ken-burns opacity-80"
+                            : level.scenarioId === 'lvl_age_18_virat'
+                                ? "opacity-100" // No Ken Burns for this visual story so it stays fully visible
+                                : isCandyTheme
+                                    ? "animate-ken-burns saturate-125" // Brighter, saturated
+                                    : "animate-ken-burns opacity-80"
                     )}
                 />
                 <div className={clsx(
@@ -1006,6 +1011,33 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
 
                 {/* --- BOTTOM ALIGNED CONTENT --- */}
                 <div className="w-full flex flex-col mt-auto items-center min-h-0 relative z-20">
+                    {!activeText.trim() && !isLearningScreen ? (
+                        <div className="w-full flex justify-between px-2 pb-6 max-w-4xl mx-auto z-50 relative pointer-events-auto items-end">
+                            {displayedChoices.find(c => c.text.toLowerCase().includes('back')) ? (
+                                <button
+                                    onClick={() => handleChoiceClick(displayedChoices.find(c => c.text.toLowerCase().includes('back')) as Choice)}
+                                    className="px-6 py-3 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white font-bold uppercase tracking-widest hover:bg-white/20 transition-all flex items-center gap-2 shadow-lg"
+                                >
+                                    <ChevronRight className="rotate-180 w-5 h-5" /> Back
+                                </button>
+                            ) : <div />}
+                            
+                            {displayedChoices.find(c => c.text.toLowerCase().includes('next')) ? (
+                                <button
+                                    onClick={() => handleChoiceClick(displayedChoices.find(c => c.text.toLowerCase().includes('next')) as Choice)}
+                                    className="px-8 py-3 rounded-full font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 shadow-xl hover:scale-105 active:scale-95"
+                                    style={!isCandyMode ? {
+                                        backgroundColor: currentTheme.badgeColor,
+                                        color: '#fff',
+                                        boxShadow: `0 8px 16px rgba(0,0,0,0.4), ${currentTheme.badgeGlow}`,
+                                        border: `1px solid ${currentTheme.cardBorder}`,
+                                    } : { backgroundColor: '#f59e0b', color: '#fff' }}
+                                >
+                                    Next <ChevronRight className="w-5 h-5" />
+                                </button>
+                            ) : <div />}
+                        </div>
+                    ) : (
                     {/* Dialogue Box */}
                     <div
                         className={clsx(
@@ -1213,6 +1245,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                         )}
                         </div>
                     </div>
+                    )}
                 </div>
             </div>
 
