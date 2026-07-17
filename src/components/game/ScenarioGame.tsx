@@ -961,9 +961,9 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                 </button>
             </div>
 
-            {/* Top Bar (Stats) - shifted down to avoid overlapping with PwaHeader */}
+            {/* Top Bar (Stats) */}
             <div className={clsx(
-                "absolute top-[60px] left-0 w-full pt-8 px-6 pb-6 z-20 flex justify-between items-center text-white/80 transition-opacity duration-500",
+                "absolute top-0 left-0 w-full pt-8 px-6 pb-6 z-20 flex justify-between items-center text-white/80 transition-opacity duration-500",
                 isBgLoaded ? "opacity-100" : "opacity-0 pointer-events-none"
             )}>
                 <button
@@ -1003,7 +1003,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
 
             {/* Main Content Area */}
             <div className={clsx(
-                "relative z-10 w-full h-[100dvh] flex flex-col pt-[120px] pb-6 items-center max-w-3xl px-6 transition-opacity duration-700",
+                "relative z-10 w-full h-[100dvh] flex flex-col pt-[80px] pb-6 items-center max-w-3xl px-6 transition-opacity duration-700",
                 isBgLoaded ? "opacity-100 delay-300" : "opacity-0 pointer-events-none"
             )}>
 
