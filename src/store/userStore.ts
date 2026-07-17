@@ -316,27 +316,54 @@ export const useUserStore = create<UserState>()(
                     placeholder: row.placeholder
                 }));
 
+                // Get local levels to merge
+                let localLevels: Level[] = [];
+                try {
+                    const { generateLevels } = await import('../utils/levelGenerator');
+                    const profileAge = get().profile?.age || 18;
+                    localLevels = generateLevels(profileAge);
+                } catch (e) {
+                    console.error('[Store] Failed to generate local levels during sync:', e);
+                }
+
                 set((state) => {
-                    // Re-read levelScores from current state (avoids stale closure from async gap)
                     const currentScores = state.levelScores;
-                    const mergedLevels = latestMasterLevels.map(latestLevel => {
-                        const cachedLevel = (state.levels || []).find(l => String(l.id) === String(latestLevel.id));
-                        const score = currentScores[latestLevel.id];
+                    
+                    // Create a map of database levels by ID
+                    const dbLevelsMap = new Map(latestMasterLevels.map(l => [l.id, l]));
+                    
+                    // For all local levels, if they exist in DB, use DB info (overwriting local). 
+                    // Otherwise, keep the local level.
+                    const mergedLevels = localLevels.map(localLevel => {
+                        const dbLevel = dbLevelsMap.get(localLevel.id);
+                        const score = currentScores[localLevel.id];
+                        const activeLevel = dbLevel || localLevel;
                         
-                        let computedStatus = latestLevel.status;
+                        let computedStatus = activeLevel.status;
                         if (score !== undefined && score > 0) {
                             computedStatus = 'completed';
-                        } else if (cachedLevel && cachedLevel.status) {
-                            computedStatus = cachedLevel.status;
                         }
-
+                        
                         return {
-                            ...latestLevel,
+                            ...activeLevel,
                             status: computedStatus,
-                            isLocked: cachedLevel?.isLocked !== undefined ? cachedLevel.isLocked : latestLevel.isLocked,
-                            stars: score !== undefined ? score : (cachedLevel?.stars !== undefined ? cachedLevel.stars : latestLevel.stars)
+                            isLocked: activeLevel.isLocked !== undefined ? activeLevel.isLocked : false,
+                            stars: score !== undefined ? score : (activeLevel.stars || 0)
                         };
                     });
+                    
+                    // Add any database levels that are NOT in local levels (just in case)
+                    const localIds = new Set(localLevels.map(l => l.id));
+                    for (const dbLevel of latestMasterLevels) {
+                        if (!localIds.has(dbLevel.id)) {
+                            const score = currentScores[dbLevel.id];
+                            mergedLevels.push({
+                                ...dbLevel,
+                                status: (score !== undefined && score > 0) ? 'completed' : dbLevel.status,
+                                stars: score !== undefined ? score : (dbLevel.stars || 0)
+                            });
+                        }
+                    }
 
                     return { levels: mergedLevels };
                 });

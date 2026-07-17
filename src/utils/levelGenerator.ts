@@ -139,6 +139,17 @@ export function generateLevels(_age: number): Level[] {
             avatarUrl: '/assets/avatar_virat_kohli.jpg', scenarioId: 'lvl_age_18_kohli',
             idolTraits: { discipline: 95, resilience: 100, risk: 85, leadership: 90, creativity: 75, empathy: 70, vision: 85 }
         },
+        // Age 18: Virat Kohli (Conversational)
+        {
+            id: 'lvl_18_kohli_conv', title: 'Virat Conversational', description: 'Experience Virat\'s journey at 18 through conversational choice slides.',
+            requiredStars: 0, year: 2006, age: 18, theme: 'Sports', archetype: 'The King', personality: 'Virat Kohli',
+            bio: 'A rising cricketing star who loses his father in the middle of a crucial match.',
+            fame: 'One of the greatest batsmen in cricket history.',
+            achievements: ['Most runs in a single IPL season', 'Fastest to 10k ODI runs', 'World Cup Winner'],
+            lesson: 'DUTY to team and self in the face of unimaginable grief.',
+            avatarUrl: '/assets/avatar_virat_kohli.jpg', scenarioId: 'lvl_age_18_virat',
+            idolTraits: { discipline: 95, resilience: 100, risk: 85, leadership: 90, creativity: 75, empathy: 70, vision: 85 }
+        },
         // Age 18: Dr. A.P.J. Abdul Kalam
         {
             id: 'lvl_18_kalam', title: 'The Big Leap', description: 'At 18, Kalam left his humble town for a prestigious college.',
