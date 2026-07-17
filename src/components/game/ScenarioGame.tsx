@@ -1038,7 +1038,6 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                             ) : <div />}
                         </div>
                     ) : (
-                    {/* Dialogue Box */}
                     <div
                         className={clsx(
                             "w-full rounded-2xl cinematic-card flex flex-col overflow-hidden",
