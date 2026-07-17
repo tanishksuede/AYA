@@ -4549,5 +4549,45 @@ export const STORY_DATABASE: Record<string, any> = {
                 ]
             }
         ]
+    },
+
+    // AGE 18: Virat Kohli (Conversational Story)
+    'lvl_age_18_virat': {
+        title: "The Hardest Day",
+        source: "Source: Virat Kohli, Delhi Ranji Trophy, 2006",
+        frames: [
+            { id: 'intro', bg: '/assets/virat_18/1.png', text: " ", choices: [{ text: "Next", next: 'frame_2' }] },
+            { id: 'frame_2', bg: '/assets/virat_18/2.png', text: " ", choices: [{ text: "Back", next: 'intro' }, { text: "Next", next: 'frame_3' }] },
+            { id: 'frame_3', bg: '/assets/virat_18/3.png', text: " ", choices: [{ text: "Back", next: 'frame_2' }, { text: "Next", next: 'frame_4' }] },
+            { id: 'frame_4', bg: '/assets/virat_18/4.png', text: " ", choices: [{ text: "Back", next: 'frame_3' }, { text: "Next", next: 'frame_5' }] },
+            { id: 'frame_5', bg: '/assets/virat_18/5.png', text: " ", choices: [{ text: "Back", next: 'frame_4' }, { text: "Next", next: 'frame_6' }] },
+            { id: 'frame_6', bg: '/assets/virat_18/6.png', text: " ", choices: [{ text: "Back", next: 'frame_5' }, { text: "Next", next: 'frame_7' }] },
+            { 
+                id: 'frame_7', 
+                bg: '/assets/virat_18/7.png', 
+                text: "What would you do?", 
+                choices: [
+                    { text: "Stay. Your family needs you right now.", next: 'frame_8', score: 5, feedbackTitle: "The Safe Choice", feedback: "Family is everything. Many would choose to stay." }, 
+                    { text: "Go. Your father never once asked you to stop.", next: 'frame_8', score: 10, feedbackTitle: "The Driven Choice", feedback: "A difficult, incredible choice. This is what separates the great from the good." }
+                ] 
+            },
+            { id: 'frame_8', bg: '/assets/virat_18/8.png', text: " ", choices: [{ text: "Next", next: 'frame_9' }] },
+            { id: 'frame_9', bg: '/assets/virat_18/9.png', text: " ", choices: [{ text: "Back", next: 'frame_8' }, { text: "Next", next: 'frame_10' }] },
+            { id: 'frame_10', bg: '/assets/virat_18/10.png', text: " ", choices: [{ text: "Back", next: 'frame_9' }, { text: "Next", next: 'frame_11' }] },
+            { id: 'frame_11', bg: '/assets/virat_18/11.png', text: " ", choices: [{ text: "Back", next: 'frame_10' }, { text: "Next", next: 'frame_12' }] },
+            { id: 'frame_12', bg: '/assets/virat_18/12.png', text: " ", choices: [{ text: "Back", next: 'frame_11' }, { text: "Next", next: 'frame_13' }] },
+            { id: 'frame_13', bg: '/assets/virat_18/13.png', text: " ", choices: [{ text: "Back", next: 'frame_12' }, { text: "Next", next: 'frame_14' }] },
+            { id: 'frame_14', bg: '/assets/virat_18/14.png', text: " ", choices: [{ text: "Back", next: 'frame_13' }, { text: "Next", next: 'frame_15' }] },
+            { id: 'frame_15', bg: '/assets/virat_18/15.png', text: " ", choices: [{ text: "Back", next: 'frame_14' }, { text: "Next", next: 'frame_16' }] },
+            { 
+                id: 'frame_16', 
+                bg: '/assets/virat_18/16.png', 
+                text: "What's your choice?", 
+                choices: [
+                    { text: "Step away. Some things are bigger than the moment.", next: 'COMPLETE', score: 5, feedbackTitle: "Grief and Reflection", feedback: "Taking time to grieve is a human and understandable path." }, 
+                    { text: "Show up anyway. Because that's what they'd want.", next: 'COMPLETE', score: 10, feedbackTitle: "Unbreakable Resolve", feedback: "Virat showed up the next day, saved his team, and attended his father's funeral later that evening. A legend was born." }
+                ] 
+            }
+        ]
     }
 };

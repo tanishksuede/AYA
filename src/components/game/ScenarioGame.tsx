@@ -387,7 +387,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
     };
 
     // Semantic Keyword Engine (Match Source 2)
-    const NAVIGATION_CHOICES = ['next chapter', 'finish chapter', 'collect reward', 'complete level'];
+    const NAVIGATION_CHOICES = ['next', 'back', 'next chapter', 'finish chapter', 'collect reward', 'complete level'];
 
     const calculateTraitImpacts = (text: string, baseScore: number) => {
         const impacts = { risk_taker: 0, creative: 0, analytical: 0, social: 0, ambitious: 0 };
