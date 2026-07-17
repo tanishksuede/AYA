@@ -74,6 +74,11 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
         if (ageFiltered.length === 0) {
             ageFiltered = processedLevels.filter(l => l.theme !== 'JEE' && l.theme !== 'NEET');
         }
+        
+        const hasRealStories = ageFiltered.some(l => !l.title.toLowerCase().includes('coming soon'));
+        if (hasRealStories) {
+            ageFiltered = ageFiltered.filter(l => !l.title.toLowerCase().includes('coming soon'));
+        }
 
         ageLevels = ageFiltered;
     }
