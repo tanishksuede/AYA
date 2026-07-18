@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Search } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { getSessionId } from '../utils/session';
@@ -13,8 +13,8 @@ export function SearchBar({ personalities, onMatch }: SearchBarProps) {
   const [inputValue, setInputValue] = useState('');
   const [notedMessage, setNotedMessage] = useState<string | null>(null);
   const [isFocused, setIsFocused] = useState(false);
-  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
-  const messageTimer = useRef<NodeJS.Timeout | null>(null);
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const messageTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const processSearch = async (query: string) => {
     if (!query.trim()) return;

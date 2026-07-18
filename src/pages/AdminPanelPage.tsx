@@ -392,12 +392,12 @@ function SearchAnalyticsView() {
     };
 
     // 1. Top searched terms
-    const topSearches = Object.entries(
+    const topSearches = (Object.entries(
         logs.reduce((acc, log) => {
             acc[log.query] = (acc[log.query] || 0) + 1;
             return acc;
         }, {} as Record<string, number>)
-    ).sort((a, b) => b[1] - a[1]).slice(0, 10);
+    ) as [string, number][]).sort((a, b) => b[1] - a[1]).slice(0, 10);
 
     // 2. Personality vs Situation
     const isPersonality = (log: any) => /[A-Z]/.test(log.query_original);
@@ -405,24 +405,24 @@ function SearchAnalyticsView() {
     const situationCount = logs.length - personalityCount;
 
     // 3. Unmatched volume over time
-    const unmatchedByDate = Object.entries(
+    const unmatchedByDate = (Object.entries(
         logs.filter(l => !l.matched).reduce((acc, log) => {
             const date = new Date(log.created_at).toISOString().split('T')[0];
             acc[date] = (acc[date] || 0) + 1;
             return acc;
         }, {} as Record<string, number>)
-    ).sort((a, b) => a[0].localeCompare(b[0])).slice(-14);
+    ) as [string, number][]).sort((a, b) => a[0].localeCompare(b[0])).slice(-14);
 
     // 4. Raw recent searches
     const recentSearches = logs.slice(0, 50);
 
     // 5. Most requested missing personalities
-    const missingPersonalities = Object.entries(
+    const missingPersonalities = (Object.entries(
         logs.filter(l => !l.matched && isPersonality(l)).reduce((acc, log) => {
             acc[log.query] = (acc[log.query] || 0) + 1;
             return acc;
         }, {} as Record<string, number>)
-    ).sort((a, b) => b[1] - a[1]).slice(0, 10);
+    ) as [string, number][]).sort((a, b) => b[1] - a[1]).slice(0, 10);
 
     return (
         <div className="glass-panel rounded-3xl p-6 md:p-8 mt-8 border border-[#00f2ff]/20 shadow-[0_0_30px_rgba(0,242,255,0.1)] relative overflow-hidden">
@@ -501,7 +501,7 @@ function SearchAnalyticsView() {
                             <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Unmatched Volume (Last 14 days)</h4>
                             <div className="flex items-end gap-1 h-16 w-full opacity-80">
                                 {unmatchedByDate.length === 0 && <span className="text-xs text-slate-600">No unmatched data</span>}
-                                {unmatchedByDate.map(([date, count], i) => {
+                                {unmatchedByDate.map(([, count], i) => {
                                     const max = Math.max(...unmatchedByDate.map(d => d[1]), 1);
                                     const height = Math.max(10, (count / max) * 100);
                                     return (
