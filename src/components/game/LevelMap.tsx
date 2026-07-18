@@ -12,6 +12,7 @@ import { bgmManager } from '../../utils/bgmManager';
 import { MapAmbience } from './MapAmbience';
 import { VibeSpinnerButton } from '../MoodWheel/VibeSpinnerButton';
 import { getUnlockedDayCount } from '../../utils/storyUnlock';
+import { SearchBar } from '../SearchBar';
 
 interface LevelMapProps {
     onPlayLevel: (level: any) => void;
@@ -94,6 +95,32 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
     useEffect(() => {
         checkStreak(); // evaluate streaks on mount
     }, [checkStreak]);
+
+    const personalities = Array.from(new Set(ageLevels.map(l => l.personality || l.archetype).filter(Boolean)));
+    const [highlightedNodeId, setHighlightedNodeId] = useState<string | null>(null);
+
+    const handleMatch = useCallback((name: string) => {
+        const index = ageLevels.findIndex(l => (l.personality || l.archetype) === name);
+        if (index !== -1) {
+            const level = ageLevels[index];
+            setHighlightedNodeId(level.id);
+            
+            // Scroll to node
+            if (containerRef.current) {
+                const pos = getPosition(index);
+                // Center the node on screen roughly
+                containerRef.current.scrollTo({
+                    top: Math.max(0, pos.y - window.innerHeight / 2),
+                    behavior: 'smooth'
+                });
+            }
+
+            // Remove highlight after 3 seconds
+            setTimeout(() => {
+                setHighlightedNodeId(null);
+            }, 3000);
+        }
+    }, [ageLevels]);
 
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const [isBgmEnabled, setIsBgmEnabled] = useState(bgmManager.enabled);
@@ -224,8 +251,10 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
             <AudioController />
             {/* --- FIXED UI LAYER (Stays on Top) --- */}
 
+            <SearchBar personalities={personalities} onMatch={handleMatch} />
+
             {/* Vibe Spinner Button (Top Center below Navbar) */}
-            <div className="absolute top-[70px] left-0 w-full flex justify-center z-[100] pointer-events-none px-2">
+            <div className="absolute top-[140px] left-0 w-full flex justify-center z-[100] pointer-events-none px-2">
                 <div className="pointer-events-auto">
                     <VibeSpinnerButton
                         streak={profile?.current_streak || 0}
@@ -418,7 +447,8 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
                                             "candy-node-container group cursor-pointer hover:scale-110 transition-transform animate-float",
                                             isCurrent && "candy-node-active animate-breath",
                                             !isUnlocked && "candy-node-locked grayscale opacity-80",
-                                            isCompleted && "candy-node-completed"
+                                            isCompleted && "candy-node-completed",
+                                            highlightedNodeId === level.id && "ring-4 ring-[#00f2ff] ring-offset-4 ring-offset-transparent shadow-[0_0_30px_#00f2ff] rounded-full scale-110"
                                         )}
                                         // Touch start for mobile responsiveness
                                         onTouchStart={() => {
