@@ -72,24 +72,24 @@ export function SearchBar({ personalities, onMatch, onClose }: SearchBarProps) {
   }, [inputValue, personalities]); // Run effect when input changes
 
   return (
-    <div className="absolute top-[80px] left-1/2 -translate-x-1/2 w-full max-w-[420px] px-4 z-50 flex flex-col items-center pointer-events-auto">
+    <div className="w-full relative z-50 flex flex-col items-start pointer-events-auto animate-fade-in">
       <div 
         className={clsx(
-          "w-full flex items-center bg-[#0d0d17] border rounded-full px-4 py-3 transition-all duration-300",
+          "w-full flex items-center bg-[#0d0d17] border rounded-full px-3 py-2 transition-all duration-300",
           isFocused 
             ? "border-[#00f2ff]/80 shadow-[0_0_15px_rgba(0,242,255,0.4)] bg-[#0d0d17]/90" 
             : "border-white/20 shadow-lg bg-[#0d0d17]/80 backdrop-blur-md"
         )}
       >
-        <Search size={18} className={isFocused ? "text-[#00f2ff]" : "text-white/50"} />
+        <Search size={16} className={isFocused ? "text-[#00f2ff]" : "text-white/50"} />
         <input
           type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          placeholder="Search a person or situation..."
-          className="bg-transparent border-none outline-none text-white w-full ml-3 placeholder:text-white/30 text-sm font-medium"
+          placeholder="Search..."
+          className="bg-transparent border-none outline-none text-white w-full ml-2 placeholder:text-white/30 text-xs font-medium"
         />
         {onClose && (
           <button 
@@ -97,7 +97,7 @@ export function SearchBar({ personalities, onMatch, onClose }: SearchBarProps) {
             className="text-white/40 hover:text-white ml-2 transition-colors focus:outline-none"
             aria-label="Close search"
           >
-            <X size={18} />
+            <X size={16} />
           </button>
         )}
       </div>
@@ -105,7 +105,7 @@ export function SearchBar({ personalities, onMatch, onClose }: SearchBarProps) {
       {/* Noted Message */}
       <div 
         className={clsx(
-          "mt-3 text-center px-4 py-2 rounded-xl bg-black/60 backdrop-blur-md border border-[#00f2ff]/20 text-[#00f2ff] text-xs font-medium tracking-wide transition-all duration-300",
+          "absolute top-full mt-2 left-0 w-full text-center px-4 py-2 rounded-xl bg-black/60 backdrop-blur-md border border-[#00f2ff]/20 text-[#00f2ff] text-xs font-medium tracking-wide transition-all duration-300",
           notedMessage ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none"
         )}
       >

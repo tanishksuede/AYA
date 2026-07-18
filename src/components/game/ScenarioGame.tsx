@@ -850,6 +850,19 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                 src={activeAudio && !feedbackChoice ? activeAudio : undefined} 
                 preload="auto"
                 className="hidden" 
+                onPlay={(e) => {
+                    e.currentTarget.volume = 1.0;
+                    if (bgmEnabled) bgmManager.setVolume(useUserStore.getState().musicVolume * 0.25);
+                    audioSynth.setSfxVolume(useUserStore.getState().sfxVolume * 0.25);
+                }}
+                onPause={() => {
+                    if (bgmEnabled && !document.hidden) bgmManager.setVolume(useUserStore.getState().musicVolume);
+                    if (!document.hidden) audioSynth.setSfxVolume(useUserStore.getState().sfxVolume);
+                }}
+                onEnded={() => {
+                    if (bgmEnabled && !document.hidden) bgmManager.setVolume(useUserStore.getState().musicVolume);
+                    if (!document.hidden) audioSynth.setSfxVolume(useUserStore.getState().sfxVolume);
+                }}
             />
             {/* Background Layer */}
             <div className="absolute inset-0 z-0 overflow-hidden">

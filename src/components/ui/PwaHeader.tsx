@@ -19,16 +19,18 @@ export const PwaHeader: FC = () => {
                 ? "bg-white/90 border-b-2 border-pink-300 shadow-[0_2px_15px_rgba(244,114,182,0.3)]"
                 : "bg-slate-950/80 border-b border-[#00f2ff]/40 shadow-[0_2px_20px_rgba(0,242,255,0.25)]"
         )}>
-            {/* Logo Section */}
-            <div className="flex items-center">
+            {/* Logo & Search Section */}
+            <div className="flex items-center flex-1 min-w-0">
                 <h1 className={clsx(
-                    "text-xl sm:text-2xl font-black italic tracking-tighter whitespace-nowrap",
+                    "text-lg sm:text-2xl font-black italic tracking-tighter whitespace-nowrap shrink-0",
                     isCandyMode
                         ? "text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-yellow-500 drop-shadow-sm"
                         : "text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-[#99f7ff] drop-shadow-[0_0_8px_rgba(0,242,255,0.8)]"
                 )}>
                     AT YOUR AGE
                 </h1>
+                {/* SearchBar Portal Target */}
+                <div id="header-search-portal" className="ml-3 sm:ml-6 flex-1 max-w-[160px] sm:max-w-[280px]" />
             </div>
 
             {/* Stats Section */}
