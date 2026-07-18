@@ -1,5 +1,5 @@
 import { useUserStore } from '../../store/userStore';
-import { Lock, Star, Settings, BookOpen, Volume2, VolumeX, Sun, Moon } from 'lucide-react';
+import { Lock, Star, Settings, BookOpen, Volume2, VolumeX, Sun, Moon, Search } from 'lucide-react';
 import { useState, useRef, useEffect, useCallback } from 'react';
 
 import clsx from 'clsx';
@@ -98,6 +98,7 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
 
     const personalities = Array.from(new Set(ageLevels.map(l => l.personality || l.archetype).filter(Boolean)));
     const [highlightedNodeId, setHighlightedNodeId] = useState<string | null>(null);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     const handleMatch = useCallback((name: string) => {
         const index = ageLevels.findIndex(l => (l.personality || l.archetype) === name);
@@ -251,22 +252,30 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
             <AudioController />
             {/* --- FIXED UI LAYER (Stays on Top) --- */}
 
-            <SearchBar personalities={personalities} onMatch={handleMatch} />
+            {isSearchOpen && (
+                <SearchBar 
+                    personalities={personalities} 
+                    onMatch={handleMatch} 
+                    onClose={() => setIsSearchOpen(false)}
+                />
+            )}
 
             {/* Vibe Spinner Button (Top Center below Navbar) */}
-            <div className="absolute top-[140px] left-0 w-full flex justify-center z-[100] pointer-events-none px-2">
-                <div className="pointer-events-auto">
-                    <VibeSpinnerButton
-                        streak={profile?.current_streak || 0}
-                        completed={!!profile?.daily_challenge_completed}
-                        userId={profile?.id || ''}
-                        onClick={() => {
-                            audioSynth.playClick();
-                            navigate('/game/mood');
-                        }}
-                    />
+            {!isSearchOpen && (
+                <div className="absolute top-[70px] left-0 w-full flex justify-center z-[100] pointer-events-none px-2">
+                    <div className="pointer-events-auto">
+                        <VibeSpinnerButton
+                            streak={profile?.current_streak || 0}
+                            completed={!!profile?.daily_challenge_completed}
+                            userId={profile?.id || ''}
+                            onClick={() => {
+                                audioSynth.playClick();
+                                navigate('/game/mood');
+                            }}
+                        />
+                    </div>
                 </div>
-            </div>
+            )}
 
 
             {/* Settings & Theme Buttons */}
@@ -310,6 +319,25 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
             {/* Top Right Controls */}
             <div className="absolute top-20 right-4 md:top-24 md:right-6 z-[100] animate-fade-in-delayed flex flex-col gap-2 items-end map-right-buttons">
                 
+                {/* Search Toggle Button */}
+                <button
+                    onClick={() => {
+                        audioSynth.playClick();
+                        setIsSearchOpen(!isSearchOpen);
+                    }}
+                    className={clsx(
+                        "group flex items-center justify-center gap-2 px-3 py-1.5 md:py-2 rounded-full shadow-lg border transition-all pointer-events-auto hover:scale-105 active:scale-95",
+                        isSearchOpen
+                            ? "bg-[#00f2ff]/20 border-[#00f2ff] text-[#00f2ff] shadow-[0_0_15px_rgba(0,242,255,0.4)]"
+                            : (isCandyMode ? "bg-white/90 border-pink-200 text-pink-500" : "bg-slate-900 border-indigo-500/50 text-indigo-400")
+                    )}
+                >
+                    <Search size={16} className="md:w-5 md:h-5" />
+                    <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest">
+                        Search
+                    </span>
+                </button>
+
                 {/* BGM Toggle Button */}
                 <button
                     onClick={() => {

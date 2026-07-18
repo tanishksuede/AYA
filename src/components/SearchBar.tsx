@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { getSessionId } from '../utils/session';
 import clsx from 'clsx';
@@ -7,9 +7,10 @@ import clsx from 'clsx';
 interface SearchBarProps {
   personalities: string[];
   onMatch: (name: string) => void;
+  onClose?: () => void;
 }
 
-export function SearchBar({ personalities, onMatch }: SearchBarProps) {
+export function SearchBar({ personalities, onMatch, onClose }: SearchBarProps) {
   const [inputValue, setInputValue] = useState('');
   const [notedMessage, setNotedMessage] = useState<string | null>(null);
   const [isFocused, setIsFocused] = useState(false);
@@ -90,6 +91,15 @@ export function SearchBar({ personalities, onMatch }: SearchBarProps) {
           placeholder="Search a person or situation..."
           className="bg-transparent border-none outline-none text-white w-full ml-3 placeholder:text-white/30 text-sm font-medium"
         />
+        {onClose && (
+          <button 
+            onClick={onClose}
+            className="text-white/40 hover:text-white ml-2 transition-colors focus:outline-none"
+            aria-label="Close search"
+          >
+            <X size={18} />
+          </button>
+        )}
       </div>
       
       {/* Noted Message */}
