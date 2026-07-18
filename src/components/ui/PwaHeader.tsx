@@ -22,15 +22,16 @@ export const PwaHeader: FC = () => {
             {/* Logo & Search Section */}
             <div className="flex items-center flex-1 min-w-0">
                 <h1 className={clsx(
-                    "text-lg sm:text-2xl font-black italic tracking-tighter whitespace-nowrap shrink-0",
+                    "font-black italic tracking-tighter whitespace-nowrap shrink-0",
                     isCandyMode
                         ? "text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-yellow-500 drop-shadow-sm"
                         : "text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-[#99f7ff] drop-shadow-[0_0_8px_rgba(0,242,255,0.8)]"
                 )}>
-                    AT YOUR AGE
+                    <span className="hidden sm:inline text-2xl">AT YOUR AGE</span>
+                    <span className="sm:hidden text-xl">AYA</span>
                 </h1>
                 {/* SearchBar Portal Target */}
-                <div id="header-search-portal" className="ml-3 sm:ml-6 flex-1 max-w-[160px] sm:max-w-[280px]" />
+                <div id="header-search-portal" className="ml-2 sm:ml-6 flex-1 max-w-[120px] sm:max-w-[280px] min-w-[100px]" />
             </div>
 
             {/* Stats Section */}
