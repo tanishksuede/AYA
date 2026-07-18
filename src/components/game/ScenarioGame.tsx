@@ -876,15 +876,17 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                                     : "animate-ken-burns opacity-80"
                     )}
                 />
-                <div className={clsx(
-                    "absolute inset-0 bg-gradient-to-t",
-                    isCandyTheme
-                        ? "from-pink-500/30 via-purple-500/10 to-transparent mix-blend-overlay" // Candy vibe
-                        : "from-slate-950 via-slate-900/60 to-slate-900/30" // Original Dark vibe
-                )} />
+                {level.scenarioId !== 'lvl_age_18_virat' && (
+                    <div className={clsx(
+                        "absolute inset-0 bg-gradient-to-t",
+                        isCandyTheme
+                            ? "from-pink-500/30 via-purple-500/10 to-transparent mix-blend-overlay" // Candy vibe
+                            : "from-slate-950 via-slate-900/60 to-slate-900/30" // Original Dark vibe
+                    )} />
+                )}
 
                 {/* Emotion vignette overlay */}
-                {!isCandyMode && (
+                {!isCandyMode && level.scenarioId !== 'lvl_age_18_virat' && (
                     <div
                         className="cinematic-vignette absolute inset-0 pointer-events-none"
                         style={{
