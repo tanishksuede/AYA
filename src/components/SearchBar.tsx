@@ -75,10 +75,10 @@ export function SearchBar({ personalities, onMatch, onClose }: SearchBarProps) {
     <div className="w-full relative z-50 flex flex-col items-start pointer-events-auto animate-fade-in">
       <div 
         className={clsx(
-          "w-full flex items-center bg-[#0d0d17] border rounded-full px-3 py-2 transition-all duration-300",
+          "w-full flex items-center px-2 py-1.5 transition-all duration-300 rounded-md border",
           isFocused 
-            ? "border-[#00f2ff]/80 shadow-[0_0_15px_rgba(0,242,255,0.4)] bg-[#0d0d17]/90" 
-            : "border-white/20 shadow-lg bg-[#0d0d17]/80 backdrop-blur-md"
+            ? "bg-black/30 border-[#00f2ff]/30 shadow-inner" 
+            : "bg-transparent border-transparent hover:bg-white/5"
         )}
       >
         <Search size={16} className={isFocused ? "text-[#00f2ff]" : "text-white/50"} />

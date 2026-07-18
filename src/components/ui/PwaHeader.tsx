@@ -31,7 +31,7 @@ export const PwaHeader: FC = () => {
                     <span className="sm:hidden text-xl">AYA</span>
                 </h1>
                 {/* SearchBar Portal Target */}
-                <div id="header-search-portal" className="ml-2 sm:ml-6 flex-1 max-w-[120px] sm:max-w-[280px] min-w-[100px]" />
+                <div id="header-search-portal" className="ml-2 sm:ml-6 flex-1 max-w-[120px] sm:max-w-[220px] min-w-[100px]" />
             </div>
 
             {/* Stats Section */}
