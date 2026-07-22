@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Search, X } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { getSessionId } from '../utils/session';
+import { useUserStore } from '../store/userStore';
 import clsx from 'clsx';
 
 interface SearchBarProps {
@@ -11,6 +12,7 @@ interface SearchBarProps {
 }
 
 export function SearchBar({ personalities, onMatch, onClose }: SearchBarProps) {
+  const isCandyMode = useUserStore((state) => state.isCandyMode);
   const [inputValue, setInputValue] = useState('');
   const [notedMessage, setNotedMessage] = useState<string | null>(null);
   const [isFocused, setIsFocused] = useState(false);
@@ -75,21 +77,33 @@ export function SearchBar({ personalities, onMatch, onClose }: SearchBarProps) {
     <div className="w-full relative z-50 flex flex-col items-start pointer-events-auto animate-fade-in">
       <div 
         className={clsx(
-          "w-full flex items-center px-2 py-1.5 transition-all duration-300 rounded-md border",
+          "w-full flex items-center px-3 py-2 transition-all duration-300 rounded-full border-2",
           isFocused 
-            ? "bg-black/30 border-[#00f2ff]/30 shadow-inner" 
-            : "bg-transparent border-transparent hover:bg-white/5"
+            ? isCandyMode 
+              ? "bg-white/80 border-pink-400 shadow-[0_0_15px_rgba(236,72,153,0.4)]" 
+              : "bg-slate-900/80 border-[#00f2ff] shadow-[0_0_15px_rgba(0,242,255,0.4)]"
+            : isCandyMode
+              ? "bg-white/30 border-transparent hover:bg-white/50 hover:border-pink-300/50"
+              : "bg-transparent border-transparent hover:bg-white/5 hover:border-[#00f2ff]/30"
         )}
       >
-        <Search size={16} className={isFocused ? "text-[#00f2ff]" : "text-white/50"} />
+        <Search size={16} className={clsx(
+          "transition-colors",
+          isFocused 
+            ? isCandyMode ? "text-pink-500" : "text-[#00f2ff]" 
+            : isCandyMode ? "text-slate-600/50" : "text-white/50"
+        )} />
         <input
           type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          placeholder="Search..."
-          className="bg-transparent border-none outline-none text-white w-full ml-2 placeholder:text-white/30 text-xs font-medium"
+          placeholder="Search stories..."
+          className={clsx(
+            "bg-transparent border-none outline-none w-full ml-2 text-sm font-bold tracking-wide transition-colors placeholder:font-medium",
+            isCandyMode ? "text-slate-800 placeholder:text-slate-500/50" : "text-white placeholder:text-white/30"
+          )}
         />
         {onClose && (
           <button 
@@ -105,8 +119,11 @@ export function SearchBar({ personalities, onMatch, onClose }: SearchBarProps) {
       {/* Noted Message */}
       <div 
         className={clsx(
-          "absolute top-full mt-2 left-0 w-full text-center px-4 py-2 rounded-xl bg-black/60 backdrop-blur-md border border-[#00f2ff]/20 text-[#00f2ff] text-xs font-medium tracking-wide transition-all duration-300",
-          notedMessage ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none"
+          "absolute top-full mt-2 left-0 w-full text-center px-4 py-2 rounded-xl backdrop-blur-md border text-xs font-bold tracking-wide transition-all duration-300 shadow-lg",
+          notedMessage ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none",
+          isCandyMode
+            ? "bg-white/80 border-pink-300 text-pink-600 shadow-pink-500/20"
+            : "bg-black/60 border-[#00f2ff]/20 text-[#00f2ff]"
         )}
       >
         {notedMessage}
