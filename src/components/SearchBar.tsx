@@ -39,18 +39,18 @@ export function SearchBar({ personalities, onMatch, onClose }: SearchBarProps) {
       messageTimer.current = setTimeout(() => {
         setNotedMessage(null);
       }, 4000);
+    }
 
-      // Log to Supabase
-      try {
-        await supabase.from('search_logs').insert({
-          query: lowerQuery,
-          query_original: query.trim(),
-          matched: false,
-          session_id: getSessionId()
-        });
-      } catch (err) {
-        console.error('Failed to log search:', err);
-      }
+    // Log to Supabase for ALL searches (matches and non-matches)
+    try {
+      await supabase.from('search_queries').insert({
+        query_text: query.trim(),
+        is_match: !!matchedPersonality,
+        matched_personality: matchedPersonality || null,
+        session_id: getSessionId()
+      });
+    } catch (err) {
+      console.error('Failed to log search:', err);
     }
   };
 
