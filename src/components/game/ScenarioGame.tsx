@@ -943,8 +943,8 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                 </div>
             )}
 
-            {/* Sound Controls — Top Right Corner */}
-            <div className="fixed top-4 right-4 z-50 flex gap-2">
+            {/* Sound Controls — Right Edge below Top Bar */}
+            <div className="fixed top-28 right-4 md:right-6 z-50 flex flex-col gap-2">
                 {/* BGM toggle */}
                 <button
                     onClick={() => {
