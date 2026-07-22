@@ -227,6 +227,22 @@ export function SideMenu({
                         </button>
                     )}
                 </div>
+
+                <div className="flex-grow" />
+
+                {/* Dedicated Close Button */}
+                <button
+                    onClick={toggleMenu}
+                    className={clsx(
+                        "w-full flex items-center justify-center gap-2 p-4 mt-auto mb-8 rounded-2xl font-black uppercase tracking-widest text-sm transition-all shadow-lg active:scale-95",
+                        isCandyMode
+                            ? "bg-pink-500 text-white hover:bg-pink-600 shadow-pink-500/30"
+                            : "bg-gradient-to-r from-red-600 to-rose-700 text-white hover:brightness-110 shadow-red-900/50"
+                    )}
+                >
+                    <X size={20} strokeWidth={3} />
+                    Close Menu
+                </button>
             </div>
         </div>
     );
