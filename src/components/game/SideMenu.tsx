@@ -49,16 +49,40 @@ export function SideMenu({
                 {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
 
+            {/* Backdrop Overlay */}
+            {isOpen && (
+                <div 
+                    className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[105] pointer-events-auto transition-opacity" 
+                    onClick={toggleMenu}
+                />
+            )}
+
             {/* Sliding Panel */}
             <div
                 className={clsx(
-                    "fixed top-0 right-0 h-[100dvh] w-72 sm:w-80 transition-transform duration-300 ease-in-out pointer-events-auto flex flex-col pt-24 px-6 gap-6 shadow-[-10px_0_30px_rgba(0,0,0,0.5)]",
+                    "fixed top-0 right-0 h-[100dvh] w-72 sm:w-80 transition-transform duration-300 ease-in-out pointer-events-auto flex flex-col pt-8 px-6 gap-6 shadow-[-10px_0_30px_rgba(0,0,0,0.5)] z-[110]",
                     isOpen ? "translate-x-0" : "translate-x-full",
                     isCandyMode 
                         ? "bg-white/95 backdrop-blur-xl border-l border-white/40 text-slate-800"
                         : "bg-slate-900/95 backdrop-blur-xl border-l border-[#00f2ff]/20 text-white"
                 )}
             >
+                {/* Header with Close Button */}
+                <div className="flex justify-between items-center mb-2">
+                    <span className={clsx(
+                        "text-lg font-black uppercase tracking-widest",
+                        isCandyMode ? "text-pink-500" : "text-[#00f2ff]"
+                    )}>Menu</span>
+                    <button 
+                        onClick={toggleMenu}
+                        className={clsx(
+                            "p-2 rounded-full transition-all",
+                            isCandyMode ? "hover:bg-pink-100 text-pink-600" : "hover:bg-slate-800 text-slate-300 hover:text-white"
+                        )}
+                    >
+                        <X size={24} />
+                    </button>
+                </div>
                 {/* Vibe Spinner */}
                 <div className="w-full flex justify-center origin-top mt-10">
                     <VibeSpinnerButton
