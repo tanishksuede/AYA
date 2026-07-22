@@ -226,6 +226,12 @@ export function MoodWheel({ userId, onMoodSelected, onClose }: MoodWheelProps) {
     // Increment Supabase spins
     const newUsed = spinsUsed + 1;
     setSpinsUsed(newUsed);
+
+    // Sync to local storage for Bug 4 fallback
+    const today = todayIST();
+    localStorage.setItem('aya_vibe_spins', JSON.stringify({ count: newUsed, date: today }));
+    console.log(`[BUG 4] Spin count updated to ${newUsed}`);
+
     if (userId) {
       supabase.from('users')
         .update({ daily_spins_used: newUsed })

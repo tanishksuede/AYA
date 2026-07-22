@@ -375,29 +375,30 @@ export const useUserStore = create<UserState>()(
                     if (!state.profile) return state;
 
                     const now = new Date();
+                    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+                    
                     let lastActiveStr = state.profile.last_active_date;
                     let current = state.profile.current_streak || 0;
                     let completedToday = state.profile.daily_challenge_completed || false;
                     
                     if (lastActiveStr) {
-                        const lastActive = new Date(lastActiveStr);
-                        lastActive.setHours(0,0,0,0);
-                        
-                        const today = new Date(now);
-                        today.setHours(0,0,0,0);
-                        
-                        const diffTime = Math.abs(today.getTime() - lastActive.getTime());
-                        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-                        if (diffDays === 0) {
+                        if (lastActiveStr === todayStr) {
                             // Same day, no change to streak length, just maintain flags
-                        } else if (diffDays === 1) {
-                            // Active yesterday, reset daily challenge flag
-                            completedToday = false;
-                        } else if (diffDays > 1) {
-                            // Missed a day or more, streak broken!
-                            current = 0;
-                            completedToday = false;
+                        } else {
+                            // Treat both as UTC midnights to accurately calculate day difference regardless of local time
+                            const lastD = new Date(`${lastActiveStr}T00:00:00Z`);
+                            const todayD = new Date(`${todayStr}T00:00:00Z`);
+                            const diffTime = Math.abs(todayD.getTime() - lastD.getTime());
+                            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+                            if (diffDays === 1) {
+                                // Active yesterday, reset daily challenge flag
+                                completedToday = false;
+                            } else if (diffDays > 1) {
+                                // Missed a day or more, streak broken!
+                                current = 0;
+                                completedToday = false;
+                            }
                         }
                     } else {
                         completedToday = false;
@@ -424,7 +425,11 @@ export const useUserStore = create<UserState>()(
                     const currentStreak = state.profile.current_streak || 0;
                     const newStreak = currentStreak + 1;
                     const longestStreak = Math.max(state.profile.longest_streak || 0, newStreak);
-                    const todayStr = new Date().toISOString().split('T')[0];
+                    
+                    const now = new Date();
+                    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+                    
+                    console.log(`[BUG 2] Streak incremented. New streak: ${newStreak}, Date: ${todayStr}`);
 
                     let bonusXp = 0;
                     let milestone = false;

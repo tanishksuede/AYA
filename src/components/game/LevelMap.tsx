@@ -1,5 +1,5 @@
 import { useUserStore } from '../../store/userStore';
-import { Lock, Star, Settings, BookOpen, Volume2, VolumeX, Sun, Moon } from 'lucide-react';
+import { Star, Lock } from 'lucide-react';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -9,9 +9,9 @@ import { audioManager as audioSynth } from "../../utils/audioManager";
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 import { AntiGravityCanvas } from './AntiGravityCanvas';
 import { useNavigate } from 'react-router-dom';
+import { SideMenu } from './SideMenu';
 import { bgmManager } from '../../utils/bgmManager';
 import { MapAmbience } from './MapAmbience';
-import { VibeSpinnerButton } from '../MoodWheel/VibeSpinnerButton';
 import { getUnlockedDayCount } from '../../utils/storyUnlock';
 import { SearchBar } from '../SearchBar';
 
@@ -252,21 +252,18 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
             <AudioController />
             {/* --- FIXED UI LAYER (Stays on Top) --- */}
 
-            {/* Vibe Spinner Button (Top Center below Navbar) */}
-            <div className="absolute top-[70px] left-0 w-full flex justify-center z-[100] pointer-events-none px-2">
-                <div className="pointer-events-auto">
-                    <VibeSpinnerButton
-                        streak={profile?.current_streak || 0}
-                        completed={!!profile?.daily_challenge_completed}
-                        userId={profile?.id || ''}
-                        onClick={() => {
-                            audioSynth.playClick();
-                                navigate('/game/mood');
-                            }}
-                        />
-                    </div>
-                </div>
-            
+            <SideMenu
+                isCandyMode={isCandyMode}
+                isAdmin={isAdmin}
+                isBgmEnabled={isBgmEnabled}
+                profile={profile}
+                audioSynth={audioSynth}
+                bgmManager={bgmManager}
+                navigate={navigate}
+                setIsBgmEnabled={setIsBgmEnabled}
+                onOpenDnaProfile={onOpenDnaProfile}
+            />
+
             {/* Header Search Portal */}
             {document.getElementById('header-search-portal') && createPortal(
                 <SearchBar 
@@ -275,127 +272,6 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
                 />,
                 document.getElementById('header-search-portal')!
             )}
-
-
-            {/* Settings & Theme Buttons */}
-            <div className="absolute top-20 left-4 md:top-24 md:left-6 z-[100] flex flex-col gap-2">
-                <button
-                    onClick={() => {
-                        audioSynth.playClick();
-                        navigate('/game/settings');
-                    }}
-                    className="w-8 h-8 md:w-10 md:h-10 bg-white/10 hover:bg-white/20 active:bg-white/30 sm:backdrop-blur-md rounded-full flex items-center justify-center text-white transition-all border border-white/20 shadow-lg hover:rotate-12 active:scale-90"
-                    aria-label="Settings"
-                >
-                    <Settings size={18} className="md:w-5 md:h-5" />
-                </button>
-                <button
-                    onClick={() => {
-                        audioSynth.playClick();
-                        navigate('/game/theme');
-                    }}
-                    className={clsx(
-                        "w-8 h-8 md:w-10 md:h-10 sm:backdrop-blur-md rounded-full flex items-center justify-center text-white transition-all shadow-lg border hover:-rotate-12 active:scale-90",
-                        isCandyMode
-                            ? "bg-amber-400/20 hover:bg-amber-400/40 border-amber-300/50"
-                            : "bg-indigo-500/20 hover:bg-indigo-500/40 border-indigo-400/50"
-                    )}
-                    aria-label="Toggle Theme"
-                >
-                    {isCandyMode ? <Sun size={18} className="md:w-5 md:h-5 text-amber-300 animate-pulse" /> : <Moon size={18} className="md:w-5 md:h-5 text-indigo-300 animate-breath" />}
-                </button>
-                {isAdmin && (
-                    <button
-                        onClick={() => { audioSynth.playClick(); navigate('/game/admin'); }}
-                        className="mt-2 w-8 h-8 md:w-10 md:h-10 bg-fuchsia-900/40 hover:bg-fuchsia-800/60 border border-fuchsia-500/50 sm:backdrop-blur-md rounded-full flex items-center justify-center text-fuchsia-300 transition-all shadow-[0_0_15px_rgba(217,70,239,0.3)] hover:scale-110 active:scale-95"
-                        title="Admin Panel"
-                    >
-                        <span className="text-sm font-black">👑</span>
-                    </button>
-                )}
-            </div>
-
-            {/* Top Right Controls */}
-            <div className="absolute top-20 right-4 md:top-24 md:right-6 z-[100] animate-fade-in-delayed flex flex-col gap-2 items-end map-right-buttons">
-
-                {/* BGM Toggle Button */}
-                <button
-                    onClick={() => {
-                        audioSynth.playClick();
-                        bgmManager.toggle();
-                        setIsBgmEnabled(bgmManager.enabled);
-                    }}
-                    className={clsx(
-                        "group flex items-center justify-center gap-2 px-3 py-1.5 md:py-2 rounded-full shadow-lg border transition-all pointer-events-auto hover:scale-105 active:scale-95",
-                        isCandyMode
-                            ? "bg-white/90 border-pink-200 text-pink-500"
-                            : "bg-slate-900 border-indigo-500/50 text-indigo-400"
-                    )}
-                >
-                    {isBgmEnabled ? <Volume2 size={16} className="md:w-5 md:h-5" /> : <VolumeX size={16} className="md:w-5 md:h-5 text-slate-500" />}
-                    <span className={clsx(
-                        "text-[10px] md:text-xs font-bold uppercase tracking-widest",
-                        !isBgmEnabled && "text-slate-500"
-                    )}>
-                        BGM
-                    </span>
-                </button>
-                <button
-                    onClick={() => {
-                        audioSynth.playClick();
-                        navigate('/game/journal');
-                    }}
-                    className={clsx(
-                        "group flex items-center gap-1.5 md:gap-3 pr-3 md:pr-6 pl-1.5 py-1 md:py-2 rounded-full shadow-2xl transition-all border-2 animate-float",
-                        isCandyMode
-                            ? "bg-white/90 border-pink-200 hover:border-pink-400 hover:scale-105 active:scale-95 animate-pulse-glow-amber"
-                            : "bg-slate-900 border-amber-600/50 hover:border-amber-400 hover:scale-105 active:scale-95 animate-pulse-glow-amber"
-                    )}
-                >
-                    <div className={clsx(
-                        "text-white p-1 md:p-2 rounded-full shadow-md group-hover:rotate-12 transition-transform",
-                        isCandyMode ? "bg-pink-500" : "bg-gradient-to-br from-amber-400 to-amber-600"
-                    )}>
-                        <BookOpen size={14} className="stroke-[3] md:w-5 md:h-5" />
-                    </div>
-                    <div className="flex flex-col items-start leading-none">
-                        <span className={clsx(
-                            "text-[8px] md:text-[10px] font-bold uppercase tracking-wider hidden xs:block",
-                            isCandyMode ? "text-pink-400" : "text-amber-500/80"
-                        )}>MY WISDOM</span>
-                        <span className={clsx(
-                            "text-xs md:text-sm font-black transition-colors",
-                            isCandyMode ? "text-slate-800 group-hover:text-pink-600" : "text-amber-400 group-hover:text-amber-300"
-                        )}>JOURNAL</span>
-                    </div>
-                </button>
-
-                {/* DNA Profile Button - Isolated to prevent disappearing */}
-                 <button
-                    onClick={() => {
-                        console.log('DNA button clicked');
-                        audioSynth.playClick();
-                        onOpenDnaProfile();
-                    }}
-                    className={clsx(
-                        "group flex items-center gap-1.5 pr-2 md:pr-4 pl-1.5 py-1 md:py-1.5 border hover:scale-105 active:scale-95 transition-all shadow-lg rounded-full pointer-events-auto animate-float-delayed",
-                        isCandyMode
-                            ? "bg-purple-900/40 border-purple-400/50 sm:backdrop-blur-md"
-                            : "bg-[#0d0d16] border-[#00f2ff]/30 sm:backdrop-blur-md animate-pulse-glow-cyan"
-                    )}
-                >
-                    <div className={clsx(
-                        "text-xs font-black rounded-full flex items-center justify-center p-1 drop-shadow-md text-white border border-white/20",
-                        isCandyMode ? "bg-gradient-to-r from-purple-500 to-pink-500" : "bg-gradient-to-r from-[#00f2ff] to-[#d575ff]"
-                    )}>
-                        🧬
-                    </div>
-                    <span className={clsx(
-                        "text-[10px] md:text-xs font-black uppercase tracking-widest leading-none border-l pl-2",
-                        isCandyMode ? "text-pink-100 border-pink-400/50" : "text-[#99f7ff] border-[#00f2ff]/30"
-                    )}>DNA DATA</span>
-                </button>
-            </div>
 
             {/* Modals moved to routes */}
             {/* --- SCROLLABLE MAP CONTENT --- */}

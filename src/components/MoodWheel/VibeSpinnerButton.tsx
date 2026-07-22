@@ -24,7 +24,23 @@ export function VibeSpinnerButton({ onClick, userId }: VibeSpinnerButtonProps) {
 
   // ── Fetch spin data on mount (or when userId changes) ──────────────────────
   useEffect(() => {
-    if (!userId) { setSpinsUsed(0); return; }
+    const today = todayIST();
+    let localSpins = 0;
+
+    // LocalStorage Fallback (Bug 4)
+    try {
+        const localData = JSON.parse(localStorage.getItem('aya_vibe_spins') || '{}');
+        if (localData.date === today) {
+            localSpins = localData.count || 0;
+        } else {
+            localStorage.setItem('aya_vibe_spins', JSON.stringify({ count: 0, date: today }));
+        }
+    } catch(e) {}
+
+    if (!userId) { 
+        setSpinsUsed(localSpins); 
+        return; 
+    }
 
     (async () => {
       try {
@@ -34,9 +50,8 @@ export function VibeSpinnerButton({ onClick, userId }: VibeSpinnerButtonProps) {
           .eq('id', userId)
           .maybeSingle();
 
-        if (!data) { setSpinsUsed(0); return; }
+        if (!data) { setSpinsUsed(localSpins); return; }
 
-        const today = todayIST();
         let used = data.daily_spins_used ?? 0;
 
         // Reset if it's a new day
@@ -48,9 +63,13 @@ export function VibeSpinnerButton({ onClick, userId }: VibeSpinnerButtonProps) {
             .eq('id', userId);
         }
 
-        setSpinsUsed(used);
+        // Sync local with DB just in case DB > local
+        const syncUsed = Math.max(used, localSpins);
+        localStorage.setItem('aya_vibe_spins', JSON.stringify({ count: syncUsed, date: today }));
+
+        setSpinsUsed(syncUsed);
       } catch {
-        setSpinsUsed(0); // fail open
+        setSpinsUsed(localSpins); // fail open to local spins
       }
     })();
   }, [userId]);

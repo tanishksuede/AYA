@@ -62,6 +62,11 @@ class BGMManager {
       return
     }
 
+    if (!this.isEnabled) {
+      this.targetTrack = trackName
+      return
+    }
+
     if (this.targetTrack === trackName) return
     
     this.targetTrack = trackName
@@ -164,6 +169,7 @@ class BGMManager {
       const lastTrack = this.targetTrack || this.currentTrack;
       this.stop(0.8)
       this.targetTrack = lastTrack; // remember it for resuming
+      console.log(`[BUG 1] Audio stopped, toggle state: ${this.isEnabled ? 'on' : 'off'}`);
     } else {
       // Resume whatever should be playing
       if (this.targetTrack) {

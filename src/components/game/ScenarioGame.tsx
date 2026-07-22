@@ -486,55 +486,71 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
             // Use the ref to get the definitive up-to-date list (avoids React stale closure)
             const finalSessionChoices = [...sessionChoicesRef.current, choiceData];
 
+            if (finalSessionChoices.length <= 1) {
+                console.warn(`[BUG 3] Data issue: Personality journey ${level.scenarioId} has only 1 question. Skipping completion screen.`);
+                onBack();
+                return;
+            }
+
             // Fetch Base Profile (Source 1 - 40%)
             const userProfile = useUserStore.getState().profile;
             const quizTraits = userProfile?.traits || { risk: 50, creativity: 50, vision: 50, empathy: 50, leadership: 50 };
             
-            // Aggregate Game Choices (Source 2 & 3)
-            let scenarioAccumulator = { risk: 0, creativity: 0, analytical: 0, social: 0, ambitious: 0 };
-            finalSessionChoices.forEach(c => {
-                scenarioAccumulator.risk += c.trait_impacts.risk_taker;
-                scenarioAccumulator.creativity += c.trait_impacts.creative;
-                scenarioAccumulator.analytical += c.trait_impacts.analytical;
-                scenarioAccumulator.social += c.trait_impacts.social;
-                scenarioAccumulator.ambitious += c.trait_impacts.ambitious;
+            const idolName = level.personality || level.archetype || "Default";
+
+            // --- BUG 5 FIX: Save and load cumulative choice history ---
+            const historyStr = localStorage.getItem('aya_choice_history');
+            let choiceHistory = historyStr ? JSON.parse(historyStr) : [];
+            const newChoicesToSave = finalSessionChoices.map(c => ({
+                personality: idolName,
+                question: c.question,
+                option: c.chosen_option,
+                impacts: c.trait_impacts
+            }));
+            choiceHistory = [...choiceHistory, ...newChoicesToSave];
+            localStorage.setItem('aya_choice_history', JSON.stringify(choiceHistory));
+
+            // Aggregate from FULL history
+            let fullAccumulator = { risk: 0, creativity: 0, analytical: 0, social: 0, ambitious: 0 };
+            choiceHistory.forEach((c: any) => {
+                fullAccumulator.risk += (c.impacts?.risk_taker || 0);
+                fullAccumulator.creativity += (c.impacts?.creative || 0);
+                fullAccumulator.analytical += (c.impacts?.analytical || 0);
+                fullAccumulator.social += (c.impacts?.social || 0);
+                fullAccumulator.ambitious += (c.impacts?.ambitious || 0);
             });
 
+            const totalChoices = choiceHistory.length;
+            // Assume an average scenario has 3 questions. 
+            // So the cumulative "session equivalent" is (total accumulator / total choices) * 3
+            const multiplier = totalChoices > 0 ? 3 / totalChoices : 0;
+            
             // --- NEW PHASE 2 MATH LOGIC ---
             const safeClamp = (val: number) => Math.max(0, Math.min(100, Math.round(val)));
             
             // 1. Establish Current Scores & Fallbacks
             const oScores = userProfile?.onboarding_scores || quizTraits;
-            const gScores = userProfile?.gameplay_scores || quizTraits;
             const sCount = userProfile?.story_count || 0;
 
-            // 2. Latest Story Score (normalized around 50 + accumulation)
+            // 2. Latest Story Score (normalized around 50 + full historical accumulation)
             const latestScore = {
-                risk: safeClamp(50 + scenarioAccumulator.risk),
-                creativity: safeClamp(50 + scenarioAccumulator.creativity),
-                vision: safeClamp(50 + scenarioAccumulator.analytical), // analytical = vision
-                empathy: safeClamp(50 + scenarioAccumulator.social),    // social = empathy
-                leadership: safeClamp(50 + scenarioAccumulator.ambitious) // ambitious = leadership
+                risk: safeClamp(50 + (fullAccumulator.risk * multiplier)),
+                creativity: safeClamp(50 + (fullAccumulator.creativity * multiplier)),
+                vision: safeClamp(50 + (fullAccumulator.analytical * multiplier)), // analytical = vision
+                empathy: safeClamp(50 + (fullAccumulator.social * multiplier)),    // social = empathy
+                leadership: safeClamp(50 + (fullAccumulator.ambitious * multiplier)) // ambitious = leadership
             };
 
-            // 3. Gameplay EMA (Learning Rate = 0.3)
-            const learningRate = 0.3;
-            const newGameplayScores = {
-                risk: (latestScore.risk * learningRate) + (gScores.risk * (1 - learningRate)),
-                creativity: (latestScore.creativity * learningRate) + (gScores.creativity * (1 - learningRate)),
-                vision: (latestScore.vision * learningRate) + (gScores.vision * (1 - learningRate)),
-                empathy: (latestScore.empathy * learningRate) + (gScores.empathy * (1 - learningRate)),
-                leadership: (latestScore.leadership * learningRate) + (gScores.leadership * (1 - learningRate)),
-            };
+            // Use latestScore as the definitive gameplay scores since it already represents the full history
+            const newGameplayScores = { ...latestScore };
 
-            // 4. Decay with Floor (Decay Factor = 0.85, Floor = 0.20)
-            const decayFactor = 0.85;
-            // The story_count hasn't been incremented yet for this session, so this represents the state AFTER this session.
+            // 3. Decay with Floor (Stabilize after 10 questions)
             const newStoryCount = sCount + 1;
-            const currentSurveyWeight = Math.max(0.20, Math.pow(decayFactor, newStoryCount));
+            // Once they reach 10 questions, lock the weight to 20% max (0.20), otherwise decay it
+            const currentSurveyWeight = totalChoices >= 10 ? 0.20 : Math.max(0.20, Math.pow(0.85, newStoryCount));
             const gameplayWeight = 1 - currentSurveyWeight;
 
-            // 5. Synthesis
+            // 4. Synthesis
             const recalibratedTraits = {
                 risk: safeClamp((oScores.risk * currentSurveyWeight) + (newGameplayScores.risk * gameplayWeight)),
                 creativity: safeClamp((oScores.creativity * currentSurveyWeight) + (newGameplayScores.creativity * gameplayWeight)),
@@ -543,8 +559,9 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                 leadership: safeClamp((oScores.leadership * currentSurveyWeight) + (newGameplayScores.leadership * gameplayWeight))
             };
 
+            console.log(`[BUG 5] DNA Recalculated using ${totalChoices} historical choices`);
+
             // Calculate Match Result against IDOL_PROFILES
-            const idolName = level.personality || level.archetype || "Default";
             const idolTraits = IDOL_PROFILES[idolName] || IDOL_PROFILES["Default"];
             
             const totalDiff = 
