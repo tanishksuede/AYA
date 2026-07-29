@@ -140,7 +140,7 @@ export function DailyChallengeReveal({ mood, onComplete, onClose }: DailyChallen
                 {revealPhase === 'revealed' && (
                     <button 
                         onClick={onClose}
-                        className="absolute top-6 right-6 p-2 rounded-full bg-white/10 text-white/50 hover:text-white hover:bg-white/20 transition-colors"
+                        className="absolute top-24 right-6 p-2 rounded-full bg-white/10 text-white/50 hover:text-white hover:bg-white/20 transition-colors z-50"
                     >
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </button>
