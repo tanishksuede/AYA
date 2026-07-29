@@ -323,7 +323,7 @@ export function MoodWheel({ userId, onMoodSelected, onClose }: MoodWheelProps) {
           onClick={() => { playClick(); onClose(); }}
           style={{
             position: 'absolute',
-            top: '16px',
+            top: '84px',
             left: '16px',
             zIndex: 9999,
             background: 'none',
