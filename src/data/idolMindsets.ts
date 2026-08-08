@@ -321,6 +321,33 @@ export const IDOL_MINDSETS: Record<string, IdolMindset> = {
         },
         avatarUrl: '/assets/portrait-bhuvan-bam.png'
     },
+    "Cristiano Ronaldo": {
+        name: "Cristiano Ronaldo",
+        archetypeTitle: "Ultimate Competitor",
+        quote: "Your love makes me strong, your hate makes me unstoppable.",
+        voice: {
+            tone: "Intense, Confident, Demanding",
+            intro: "To be the best, there is no compromise. Every detail, every training session, every single day. Let's start."
+        },
+        missions: {
+            discipline: { title: "Uncompromising Practice", desc: "Arrive 1 hour early and leave 1 hour late for your primary task today.", xp: "+50 Precision" },
+            resilience: { title: "San Siro Response", desc: "Turn public criticism or a setback today into fuel for your next achievement.", xp: "+50 Drive" },
+            risk: { title: "Attack the Defended", desc: "Take on the most difficult problem or opponent in your area today.", xp: "+50 Audacity" },
+            leadership: { title: "Set the Benchmark", desc: "Lead by absolute example, showing everyone what maximum effort looks like.", xp: "+50 Standards" },
+            creativity: { title: "Unstoppable Routine", desc: "Design a new personal routine or technique that makes you faster and more effective.", xp: "+50 Efficiency" },
+            empathy: { title: "Lift the Squad", desc: "Encourage a struggling teammate to raise their game to match the highest standard.", xp: "+50 Synergy" },
+            vision: { title: "Ballon d'Or Scope", desc: "Set a target that others say is completely out of reach, and plan the steps to get there.", xp: "+50 Ambition" }
+        },
+        profile: {
+            motivation: 'Success',
+            risk: 'Bold',
+            emotional: 'Resilient',
+            social: 'Leader',
+            passion: 'Competitive',
+            coreValue: 'Achievement'
+        },
+        avatarUrl: '/assets/portrait-cristiano-ronaldo.png'
+    },
     "Oprah Winfrey": {
         name: "Oprah Winfrey",
         archetypeTitle: "Soul Connector",
@@ -1195,6 +1222,7 @@ export const IDOL_PROFILES: Record<string, Record<string, number>> = {
     "Stephen Hawking": { analytical: 100, ambitious: 80, risk: 70, creativity: 95, social: 40 },
     "Frida Kahlo": { analytical: 40, ambitious: 70, risk: 95, creativity: 100, social: 80 },
     "Kobe Bryant": { analytical: 85, ambitious: 100, risk: 90, creativity: 60, social: 65 },
+    "Cristiano Ronaldo": { analytical: 80, ambitious: 100, risk: 95, creativity: 90, social: 75 },
     "Taylor Swift": { analytical: 75, ambitious: 95, risk: 80, creativity: 100, social: 90 },
     "Mark Zuckerberg": { analytical: 95, ambitious: 90, risk: 85, creativity: 75, social: 60 },
     "Steve Jobs": { analytical: 80, ambitious: 100, risk: 95, creativity: 95, social: 50 },

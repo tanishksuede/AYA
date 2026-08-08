@@ -449,6 +449,16 @@ export function generateLevels(_age: number): Level[] {
             avatarUrl: '/assets/portrait-bhuvan-bam.png', scenarioId: 'lvl_age_22_bhuvan',
             idolTraits: { discipline: 85, resilience: 90, risk: 95, leadership: 85, creativity: 100, empathy: 90, vision: 95 }
         },
+        {
+            id: 'lvl_22_ronaldo', title: 'The Price of Becoming Complete', description: 'At 22, Cristiano Ronaldo faces intense pressure to transform from a flamboyant young winger into a complete, decisive superstar.',
+            requiredStars: 0, year: 2007, age: 22, theme: 'Sports', age_mirror_text: 'celebrating a Premier League title at Manchester United while facing European pressure', archetype: 'The Competitor', personality: 'Cristiano Ronaldo',
+            bio: 'A 22-year-old Portuguese winger who has won his first Premier League title, learning to turn individual flair into clinical output.',
+            fame: 'One of the greatest footballers in history. Global Icon.',
+            achievements: ['5-time Ballon d\'Or winner', '5 Champions League titles', 'All-time leading goalscorer in international football'],
+            lesson: 'THE STANDARD MOVES — success does not remove pressure; it changes who applies it.',
+            avatarUrl: '/assets/portrait-cristiano-ronaldo.png', scenarioId: 'lvl_age_22_ronaldo',
+            idolTraits: { discipline: 100, resilience: 95, risk: 95, leadership: 90, creativity: 95, empathy: 70, vision: 95 }
+        },
         // Age 23: Shah Rukh Khan
         {
             id: 'lvl_23_srk', title: 'Gauri or Career', description: 'At 23, SRK must choose between love and the career opportunity of a lifetime.',

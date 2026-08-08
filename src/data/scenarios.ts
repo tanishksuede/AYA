@@ -5071,5 +5071,107 @@ export const STORY_DATABASE: Record<string, any> = {
                 ]
             }
         ]
+    },
+
+    // AGE 22: Cristiano Ronaldo
+    'lvl_age_22_ronaldo': {
+        title: "The Price of Becoming Complete",
+        source: "Source: Manchester United Season Review, 2007",
+        frames: [
+            {
+                id: 'intro',
+                emotion: 'tension',
+                bg: '/assets/bg-cristiano-ronaldo-manchester-2007.png',
+                portrait: '/assets/portrait-cristiano-ronaldo.png',
+                text: "It is April 2007, and Cristiano Ronaldo is 22, entering the most important stage of his development at Manchester United. The boy who arrived from Sporting CP as an exciting teenager has become a central player in Sir Alex Ferguson's side, but the expectations have changed with him. He has scored twice against Roma in the Champions League quarter-final as United win 7–1, helping them reach the semi-finals, while he is also being recognized as one of the best young players in England. But the next challenge is different: against AC Milan, talent alone will not guarantee that he controls the game. He now has to decide how much of his instinctive, expressive style should remain when every mistake is being judged at the highest level.",
+                choices: [
+                    {
+                        text: "A) Keep playing with the same freedom. The unpredictability is part of what makes you dangerous, and changing too much could remove the qualities that got you here.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Talent Needs Structure",
+                        feedback: "You protect the instinct that makes your game distinctive. The upside is unpredictability; the cost is that opponents and teammates may know less about what they can expect from you."
+                    },
+                    {
+                        text: "B) Simplify your game when necessary. Take fewer risks, stay more involved defensively, and prioritize what the team needs even if fewer moments belong to you.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Talent Needs Structure",
+                        feedback: "You prioritize reliability over expression. You become more useful to the team, but risk suppressing the individual quality that separates you from everyone else."
+                    },
+                    {
+                        text: "C) Become more deliberate about when you take risks. Keep the dribbling and creativity, but start choosing the moments instead of treating every possession as an opportunity to attack.",
+                        next: 'part1_reveal',
+                        score: 15,
+                        feedbackTitle: "Talent Needs Structure",
+                        feedback: "You are willing to change without abandoning yourself. The cost is that deliberate decision-making can feel slower than instinct, especially when confidence is high."
+                    },
+                    {
+                        text: "D) Put the pressure aside completely and focus only on producing the next performance. Let Ferguson decide what needs changing and concentrate on executing it.",
+                        next: 'part1_reveal',
+                        score: 5,
+                        feedbackTitle: "Talent Needs Structure",
+                        feedback: "You trust the structure around you instead of constantly self-correcting. That can accelerate development, but it also means accepting that someone else is defining parts of your evolution."
+                    }
+                ]
+            },
+            {
+                id: 'part1_reveal',
+                emotion: 'tension',
+                bg: '/assets/bg-cristiano-ronaldo-manchester-2007.png',
+                portrait: '/assets/portrait-cristiano-ronaldo.png',
+                text: "What Cristiano actually did:\nRonaldo continued developing rather than abandoning his individual qualities. He remained an attacking threat while becoming increasingly productive and tactically important for United. Against Milan in the semi-final first leg, he scored early, but United lost the second leg 3–0 at San Siro and were eliminated.\n\nLESSON: Talent Needs Structure\nAt the highest level, being capable of something is not the same as knowing when to use it. Ronaldo's evolution was not about removing the flair that made him special; it was about making that flair serve a larger understanding of the game.",
+                choices: [
+                    { text: "Next Part", next: 'part2_setup', score: 0, feedbackTitle: "", feedback: "" }
+                ]
+            },
+            {
+                id: 'part2_setup',
+                emotion: 'tension',
+                bg: '/assets/bg-cristiano-ronaldo-manchester-2007.png',
+                portrait: '/assets/portrait-cristiano-ronaldo.png',
+                text: "By May, the season has become a strange mixture of success and unfinished business. Manchester United have won the Premier League, and Ronaldo has scored the only goal in the Manchester derby that effectively seals the title. He has also won the PFA Players' Player of the Year, PFA Young Player of the Year, PFA Fans' Player of the Year and the Football Writers' Footballer of the Year awards. Yet the FA Cup final against Chelsea is still ahead, and United's Champions League exit has shown that individual brilliance cannot guarantee the biggest prizes. At 22, he is receiving more recognition than ever while also having more expectations placed on him than ever.",
+                choices: [
+                    {
+                        text: "A) Chase the individual numbers even harder. If you are becoming one of the world's best players, the clearest proof is what appears beside your name.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "The Standard Moves",
+                        feedback: "You measure progress through numbers because numbers give you something concrete to control. The danger is optimizing your performance rather than the team's outcome."
+                    },
+                    {
+                        text: "B) Shift your priority toward winning major matches, even if that sometimes means fewer goals, fewer touches, or less personal attention.",
+                        next: 'part2_reveal',
+                        score: 15,
+                        feedbackTitle: "The Standard Moves",
+                        feedback: "You want your ability to translate into winning rather than recognition. The trade-off is accepting that some of your best work may never appear in the statistics."
+                    },
+                    {
+                        text: "C) Treat the rest of the season as part of a longer development plan. Accept that becoming complete may take another year even if people already expect the finished player.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "The Standard Moves",
+                        feedback: "You are willing to disappoint people who expect immediate perfection in exchange for building something sustainable. That requires confidence without certainty."
+                    },
+                    {
+                        text: "D) Use the growing recognition to demand a larger role and greater influence within the team, accepting the possibility that pushing for more responsibility creates friction.",
+                        next: 'part2_reveal',
+                        score: 5,
+                        feedbackTitle: "The Standard Moves",
+                        feedback: "You believe greater responsibility should accompany greater ability. The reward is influence; the risk is discovering that leadership creates expectations that talent alone cannot satisfy."
+                    }
+                ]
+            },
+            {
+                id: 'part2_reveal',
+                emotion: 'tension',
+                bg: '/assets/bg-cristiano-ronaldo-manchester-2007.png',
+                portrait: '/assets/portrait-cristiano-ronaldo.png',
+                text: "What Cristiano actually did:\nRonaldo continued to grow into a more complete and influential player rather than choosing between individual success and team success. United won the Premier League, although Chelsea beat them 1–0 in the FA Cup final. His performances across the season earned him all four major PFA/FWA individual honours.\n\nLESSON: The Standard Moves\nSuccess does not remove pressure; it changes who applies it. Once you prove that you can perform, people stop asking whether you are good enough and start asking whether you can do it every week, in every competition, against every opponent.",
+                choices: [
+                    { text: "Complete Level", next: 'COMPLETE', score: 0, feedbackTitle: "", feedback: "" }
+                ]
+            }
+        ]
     }
 };
