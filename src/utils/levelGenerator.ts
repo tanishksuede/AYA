@@ -8,6 +8,28 @@ export function generateLevels(_age: number): Level[] {
 
     // Master List of ALL Levels
     const levels: Omit<Level, 'status' | 'isLocked' | 'stars'>[] = [
+        // Age 13: Anne Frank (Part 1)
+        {
+            id: 'lvl_13_anne_1', title: 'The Notebook', description: 'At 13, Anne receives a diary for her birthday. What will she use it for?',
+            requiredStars: 0, year: 1942, age: 13, theme: 'History', archetype: 'The Writer', personality: 'Anne Frank', age_mirror_text: 'celebrating your 13th birthday with family and friends',
+            bio: 'A 13-year-old girl in Amsterdam experiencing the ordinary joys of a birthday amidst growing restrictions.',
+            fame: 'One of the most discussed victims of the Holocaust. Author of a famous diary.',
+            achievements: ['Her diary has been translated into over 70 languages', 'A powerful symbol of the Holocaust', 'A lasting voice for humanity'],
+            lesson: 'A private creative space can matter before anyone else sees its value.',
+            avatarUrl: '/assets/portrait-anne-frank.png', scenarioId: 'lvl_age_13_anne_1',
+            idolTraits: { discipline: 80, resilience: 90, risk: 70, leadership: 60, creativity: 100, empathy: 95, vision: 85 }
+        },
+        // Age 13: Anne Frank (Part 2)
+        {
+            id: 'lvl_13_anne_2', title: 'When Ordinary Life Disappears', description: 'Weeks later, Anne\'s family must go into hiding. How will she cope?',
+            requiredStars: 0, year: 1942, age: 13, theme: 'History', archetype: 'The Writer', personality: 'Anne Frank', age_mirror_text: 'packing your belongings to walk to a secret hiding place',
+            bio: 'A 13-year-old girl forced into hiding in the Secret Annex, taking her diary with her.',
+            fame: 'One of the most discussed victims of the Holocaust. Author of a famous diary.',
+            achievements: ['Her diary has been translated into over 70 languages', 'A powerful symbol of the Holocaust', 'A lasting voice for humanity'],
+            lesson: 'Sometimes the most important choice is not about controlling the situation, but deciding how to respond.',
+            avatarUrl: '/assets/portrait-anne-frank.png', scenarioId: 'lvl_age_13_anne_2',
+            idolTraits: { discipline: 80, resilience: 100, risk: 70, leadership: 60, creativity: 100, empathy: 95, vision: 85 }
+        },
         // Age 20: Billie Eilish (Story 2)
         {
             id: 'lvl_20_billie_2', title: 'The Person Who Left You On Seen', description: 'At 20, you must choose between chasing someone who ghosts you, or turning the pain into art.',
@@ -532,6 +554,26 @@ export function generateLevels(_age: number): Level[] {
             lesson: 'CONVICTION HAS A COST — deciding what price you are willing to pay for your principles.',
             avatarUrl: '/assets/portrait-bhagat-singh.png', scenarioId: 'lvl_age_22_bhagat',
             idolTraits: { discipline: 100, resilience: 100, risk: 100, leadership: 95, creativity: 85, empathy: 90, vision: 100 }
+        },
+        {
+            id: 'lvl_22_tanmay_1', title: 'Just 200 People', description: 'At 22, Tanmay Bhat and Gursimran Khamba start the All India Bakchod podcast, aiming for 200 people in a room before knowing how big it would become.',
+            requiredStars: 0, year: 2012, age: 22, theme: 'Arts', age_mirror_text: 'starting a podcast in Mumbai with no guarantee of who will show up', archetype: 'The Creator', personality: 'Tanmay Bhat',
+            bio: 'A 22-year-old comedy writer and performer in Mumbai, experimenting with a new podcast format before knowing if anyone will care.',
+            fame: 'Co-founder of All India Bakchod. Comedian and Digital Creator.',
+            achievements: ['Co-founded AIB', 'Pioneered Indian podcasting & digital sketch comedy', 'Leading YouTube creator and producer'],
+            lesson: 'SMALL BEGINNINGS ARE STILL DECISIONS — you do not always know whether an idea is good before you invest in it.',
+            avatarUrl: '/assets/portrait-tanmay-bhat.png', scenarioId: 'lvl_age_22_tanmay_1',
+            idolTraits: { discipline: 80, resilience: 90, risk: 95, leadership: 85, creativity: 100, empathy: 85, vision: 95 }
+        },
+        {
+            id: 'lvl_22_tanmay_2', title: 'What If We Go Bigger?', description: 'At 22, the small podcast experiment begins exceeding original expectations as audiences grow.',
+            requiredStars: 0, year: 2012, age: 22, theme: 'Arts', age_mirror_text: 'watching an experimental podcast grow into a larger comedy platform in Mumbai', archetype: 'The Creator', personality: 'Tanmay Bhat',
+            bio: 'A 22-year-old comedian in Mumbai whose small project is growing faster than expected.',
+            fame: 'Co-founder of All India Bakchod. Comedian and Digital Creator.',
+            achievements: ['Co-founded AIB', 'Pioneered Indian podcasting & digital sketch comedy', 'Leading YouTube creator and producer'],
+            lesson: 'WHEN REALITY EXCEEDS EXPECTATIONS — you do not need to know that something will become huge before taking it seriously.',
+            avatarUrl: '/assets/portrait-tanmay-bhat.png', scenarioId: 'lvl_age_22_tanmay_2',
+            idolTraits: { discipline: 80, resilience: 90, risk: 95, leadership: 85, creativity: 100, empathy: 85, vision: 95 }
         },
         // Age 23: Shah Rukh Khan
         {
