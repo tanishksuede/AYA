@@ -6860,5 +6860,115 @@ export const STORY_DATABASE: Record<string, any> = {
                 ]
             }
         ]
+    },
+
+    // AGE 15: Ratan Tata (One Continuous Story: The Quiet Voice)
+    'lvl_age_15_ratan_tata': {
+        title: "The Quiet Voice",
+        source: "Source: Historical Context, c. 1953",
+        frames: [
+            // PART 1: THE QUIET STUDENT
+            {
+                id: 'intro',
+                emotion: 'shyness',
+                bg: '/assets/bg_tata_cornell.jpg',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/avatar_ratan_tata.jpg',
+                text: "You are 15. You are sitting in a classroom. You know the answer. You have an idea.\n\nBut speaking in front of everyone feels uncomfortable. Some people seem naturally good at talking. They raise their hands. They speak loudly. They make everyone look at them.\n\nYou are different. You think before you speak. That can be a strength. But sometimes it can also stop you from speaking at all. You have to decide what to do with that.",
+                choices: [
+                    {
+                        text: "STAY QUIET: If you are not comfortable speaking, do not force yourself. Listen carefully. Think. Speak only when you are sure.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Thoughtfulness",
+                        feedback: "You prefer thinking carefully before putting your ideas into the world. Strength: You avoid speaking without understanding. Risk: People may never hear ideas that could have helped."
+                    },
+                    {
+                        text: "FORCE YOURSELF TO SPEAK: Even if you feel nervous, raise your hand. Say what you think. Do not wait until you feel completely comfortable.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Courage",
+                        feedback: "You believe confidence can grow only when you challenge yourself. Strength: You give yourself opportunities to become more comfortable. Risk: Forcing yourself too quickly can make speaking feel even more stressful."
+                    },
+                    {
+                        text: "FIND ANOTHER WAY: If speaking in front of everyone feels difficult, express yourself through writing, small conversations or one-to-one discussions.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Self-Awareness",
+                        feedback: "You understand that being quiet does not mean having nothing to say. Strength: You communicate in ways that feel natural to you. Risk: You may avoid situations where speaking publicly is actually necessary."
+                    }
+                ]
+            },
+            {
+                id: 'part1_reveal',
+                emotion: 'shyness',
+                bg: '/assets/bg_tata_cornell.jpg',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/avatar_ratan_tata.jpg',
+                text: "HISTORICAL REALITY:\nRatan Tata later recalled that he was shy during his school years and had a fear of public speaking. He said that the students who spoke publicly at school were generally those who participated in debates or read at assembly, and he was not among them. He also recalled that he was not particularly involved in extracurricular activities.\n\nThe historical record does NOT establish that he faced these exact three choices. Ratan Tata himself later described being shy and uncomfortable with public speaking during his school years.\n\nLESSON:\nBeing quiet is not the same as being weak. Some people think before they speak. The goal is not to become the loudest person in the room. The goal is to make sure your quietness does not stop your ideas from being heard.",
+                choices: [
+                    {
+                        text: "Continue to Part 2: Say It Anyway",
+                        next: 'part2_intro',
+                        score: 0,
+                        feedbackTitle: "",
+                        feedback: ""
+                    }
+                ]
+            },
+            // PART 2: SAY IT ANYWAY
+            {
+                id: 'part2_intro',
+                emotion: 'self-belief',
+                bg: '/assets/bg_tata_cornell.jpg',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/avatar_ratan_tata.jpg',
+                text: "Part 1 showed that being quiet is not a weakness. Now comes the next step: How do you make sure your quietness does not stop your ideas from being heard?\n\n-------------------------\n\nPART 2: SAY IT ANYWAY\n\nYou are still quiet. That has not suddenly disappeared. But you are beginning to understand something.\n\nYou do not need to change your personality completely. You can be quiet and still have strong opinions. You can listen and still disagree. You can be nervous and still speak.\n\nNow someone asks what you think. You have three choices.",
+                choices: [
+                    {
+                        text: "WAIT UNTIL YOU ARE CERTAIN: Think carefully. Check your idea. Speak only when you feel confident that you are right.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Carefulness",
+                        feedback: "You value accuracy more than speed. Strength: You avoid careless decisions. Risk: Waiting for certainty can mean missing your chance to contribute."
+                    },
+                    {
+                        text: "SPEAK EVEN IF YOU ARE NERVOUS: You do not need to know everything. Share your idea. Let the conversation help you improve it.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Confidence",
+                        feedback: "You believe you can learn even after you speak. Strength: You give your ideas a chance to grow. Risk: You may sometimes speak before you have thought enough."
+                    },
+                    {
+                        text: "LISTEN FIRST, THEN SPEAK: Do not rush. Hear what other people think. Then add your own view.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Balance",
+                        feedback: "You believe good communication requires both listening and speaking. Strength: You learn from others without losing your own voice. Risk: You may spend so long listening that someone else speaks for you."
+                    }
+                ]
+            },
+            {
+                id: 'part2_reveal',
+                emotion: 'self-belief',
+                bg: '/assets/bg_tata_cornell.jpg',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/avatar_ratan_tata.jpg',
+                text: "HISTORICAL REALITY:\nRatan Tata's later life showed that being naturally quiet did not prevent him from taking on major responsibilities. The documented teenage reality is simply that he was shy and had a fear of public speaking. His schooling continued through several institutions, and he eventually went on to study architecture and structural engineering.\n\nThe later career should NOT be used as a clue to the player's choice. The point of this story is the teenage lesson: A quiet personality can coexist with strong thinking and meaningful action.\n\nLESSON:\nYou do not have to become loud to become confident. Confidence can be quiet. Sometimes confidence is simply saying: \"I have thought about this. And I believe it is worth saying.\"",
+                choices: [
+                    {
+                        text: "Complete Level",
+                        next: 'COMPLETE',
+                        score: 0,
+                        feedbackTitle: "",
+                        feedback: ""
+                    }
+                ]
+            }
+        ]
     }
 };
