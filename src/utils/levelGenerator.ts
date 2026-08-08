@@ -54,7 +54,7 @@ export function generateLevels(_age: number): Level[] {
         },
         // Age 15: Bhagat Singh (Part 1)
         {
-            id: 'lvl_15_bhagat_1', title: 'Don\'t Just Be Angry - Part 1', description: 'At 15, Bhagat Singh witnesses political tension in Lahore and learns how to channel anger into constructive learning and action.',
+            id: 'lvl_15_bhagat_1', title: 'Don\'t Just Be Angry', description: 'At 15, Bhagat Singh witnesses political tension in Lahore and learns how to channel anger into constructive learning and action.',
             requiredStars: 0, year: 1922, age: 15, theme: 'History', age_mirror_text: 'feeling angry about unfairness in Lahore and deciding how to respond', archetype: 'The Revolutionary', personality: 'Bhagat Singh',
             bio: 'A 15-year-old in Lahore developing political awareness and intellectual curiosity during a time of national tension.',
             fame: 'Iconic Indian Revolutionary & Intellectual.',
