@@ -96,6 +96,17 @@ export function generateLevels(_age: number): Level[] {
             avatarUrl: '/assets/avatar_virat_kohli.jpg', scenarioId: 'lvl_age_15_virat_kohli',
             idolTraits: { discipline: 95, resilience: 95, risk: 90, leadership: 95, creativity: 80, empathy: 75, vision: 95 }
         },
+        // Age 15: Ratan Tata (One Continuous Story: The Quiet Voice)
+        {
+            id: 'lvl_15_ratan_tata', title: 'The Quiet Voice', description: 'At 15, Ratan Tata experiences shyness and fear of public speaking while attending school in Bombay, discovering how quiet self-expression can build confidence.',
+            requiredStars: 0, year: 1953, age: 15, theme: 'Business', age_mirror_text: 'sitting quietly in a Bombay classroom deciding how to make your voice heard', archetype: 'The Visionary', personality: 'Ratan Tata',
+            bio: 'A 15-year-old student in Bombay learning to trust his quiet voice despite shyness and public speaking anxiety.',
+            fame: 'Industrialist & Former Chairman of Tata Group.',
+            achievements: ['Attended Campion & Cathedral School in Bombay', 'Studied Architecture at Cornell', 'Built one of India\'s most trusted global business conglomerates'],
+            lesson: 'QUIET CONFIDENCE — being quiet is not weakness; confidence does not always sound loud.',
+            avatarUrl: '/assets/avatar_ratan_tata.jpg', scenarioId: 'lvl_age_15_ratan_tata',
+            idolTraits: { discipline: 95, resilience: 95, risk: 85, leadership: 95, creativity: 85, empathy: 95, vision: 100 }
+        },
         // Age 20: Billie Eilish (Story 2)
         {
             id: 'lvl_20_billie_2', title: 'The Person Who Left You On Seen', description: 'At 20, you must choose between chasing someone who ghosts you, or turning the pain into art.',
