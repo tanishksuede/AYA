@@ -1,4 +1,4 @@
-export type StoryEmotion = 'triumph' | 'grief' | 'tension' | 'joy' | 'hope' | 'love' | 'mystery' | 'calm' | 'determination' | 'fear' | 'anger' | 'loneliness' | 'wonder' | 'nostalgia' | 'uncertainty' | 'confidence';
+export type StoryEmotion = 'triumph' | 'grief' | 'tension' | 'joy' | 'hope' | 'love' | 'mystery' | 'calm' | 'determination' | 'fear' | 'anger' | 'loneliness' | 'wonder' | 'nostalgia' | 'uncertainty' | 'confidence' | 'pride' | 'frustration';
 
 export interface EmotionTheme {
   emotion: StoryEmotion;
@@ -11,6 +11,24 @@ export interface EmotionTheme {
 }
 
 export const EMOTION_THEMES: Record<StoryEmotion, EmotionTheme> = {
+  pride: {
+    emotion: 'pride',
+    cardOverlay: 'rgba(180, 100, 0, 0.18)',
+    badgeColor: '#f59e0b',
+    badgeGlow: '0 0 20px #f59e0b88',
+    choiceBorder: 'rgba(245, 158, 11, 0.4)',
+    vignette: 'rgba(120, 70, 0, 0.25)',
+    cardBorder: 'rgba(245, 158, 11, 0.3)',
+  },
+  frustration: {
+    emotion: 'frustration',
+    cardOverlay: 'rgba(127, 29, 29, 0.3)',
+    badgeColor: '#ef4444',
+    badgeGlow: '0 0 20px #ef444488',
+    choiceBorder: 'rgba(239, 68, 68, 0.4)',
+    vignette: 'rgba(69, 10, 10, 0.35)',
+    cardBorder: 'rgba(239, 68, 68, 0.3)',
+  },
   uncertainty: {
     emotion: 'uncertainty',
     cardOverlay: 'rgba(50, 20, 100, 0.2)',
