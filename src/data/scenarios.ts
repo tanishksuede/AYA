@@ -6690,7 +6690,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 text: "HISTORICAL REALITY:\nManikarnika Tambe married Raja Gangadhar Rao of Jhansi in 1842 and became known as Lakshmibai after the marriage. Historical sources describe her childhood as unusually active and independent for a girl of her time, including education and training in riding and martial skills.\n\nThe historical record does NOT establish that she faced these exact three choices. Her life really did involve a major transition from Manu to Lakshmibai.\n\nLESSON:\nGrowing up sometimes means entering a role you did not create yourself. You can accept new responsibility without forgetting who you were before it.",
                 choices: [
                     {
-                        text: "Continue to Part 2: What I Carry With Me",
+                        text: "Continue: What I Carry With Me",
                         next: 'part2_intro',
                         score: 0,
                         feedbackTitle: "",
@@ -6706,7 +6706,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/portrait-rani-lakshmibai.png',
-                text: "The new role is no longer something you are simply entering. It is becoming part of your everyday life.\n\nNow comes the harder question: What parts of yourself will you keep?\n\n-------------------------\n\nPART 2: WHAT I CARRY WITH ME\n\nThe new life is beginning to feel more familiar. You have responsibilities now. People expect things from you.\n\nBut you have also learned something: A new role does not automatically decide what kind of person you become. You still have choices.\n\nYou can be disciplined without becoming silent. You can be responsible without losing your independence. You can learn new things without forgetting the skills that made you confident.\n\nNow you must decide what kind of strength you want to carry forward.",
+                text: "The new role is no longer something you are simply entering. It is becoming part of your everyday life. Now comes the harder question: What parts of yourself will you keep?\n\nThe new life is beginning to feel more familiar. You have responsibilities now. People expect things from you.\n\nBut you have also learned something: A new role does not automatically decide what kind of person you become. You still have choices.\n\nYou can be disciplined without becoming silent. You can be responsible without losing your independence. You can learn new things without forgetting the skills that made you confident.\n\nNow you must decide what kind of strength you want to carry forward.",
                 choices: [
                     {
                         text: "LEARN FIRST: Spend your time understanding the new responsibilities. Listen. Observe. Learn how things work before trying to change anything.",
@@ -6800,7 +6800,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 text: "HISTORICAL REALITY:\nVirat Kohli really was appointed captain of Delhi's Under-15 team during the 2003–04 season. He scored 390 runs at an average of 78, including two centuries. A contemporary report identified him as captain of the Delhi U-15 side.\n\nThe historical record does NOT establish that he faced the exact choices presented here. The documented reality is that at 15, Kohli was already combining strong individual performance with a leadership role for Delhi's junior team.\n\nLESSON:\nBeing good at something can get you noticed. But being trusted with other people is different. A captain is not only responsible for their own performance — they are responsible for what their decisions do to the team.",
                 choices: [
                     {
-                        text: "Continue to Part 2: The Team Needs You",
+                        text: "Continue: The Team Needs You",
                         next: 'part2_intro',
                         score: 0,
                         feedbackTitle: "",
@@ -6816,7 +6816,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/avatar_virat_kohli.jpg',
-                text: "Part 1 made you feel trusted. Now comes the harder part: What if your teammates are not doing what you expect?\n\n-------------------------\n\nPART 2: THE TEAM NEEDS YOU\n\nYou are still the captain. You are watching the match. One of your teammates makes a mistake. Then another.\n\nThe match is becoming harder. You are frustrated. You know you could try to take control yourself. You could also stop and help the other players regain confidence. Or you could be direct and tell them exactly what they need to fix.\n\nAll three could work. All three could also make things worse.",
+                text: "Being captain made you feel trusted. Now comes the harder part: What if your teammates are not doing what you expect?\n\nYou are still the captain. You are watching the match. One of your teammates makes a mistake. Then another.\n\nThe match is becoming harder. You are frustrated. You know you could try to take control yourself. You could also stop and help the other players regain confidence. Or you could be direct and tell them exactly what they need to fix.\n\nAll three could work. All three could also make things worse.",
                 choices: [
                     {
                         text: "TAKE CONTROL YOURSELF: Do more. Score more. Lead from the front. If the team is struggling, try to carry the responsibility yourself.",
@@ -6910,7 +6910,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 text: "HISTORICAL REALITY:\nRatan Tata later recalled that he was shy during his school years and had a fear of public speaking. He said that the students who spoke publicly at school were generally those who participated in debates or read at assembly, and he was not among them. He also recalled that he was not particularly involved in extracurricular activities.\n\nThe historical record does NOT establish that he faced these exact three choices. Ratan Tata himself later described being shy and uncomfortable with public speaking during his school years.\n\nLESSON:\nBeing quiet is not the same as being weak. Some people think before they speak. The goal is not to become the loudest person in the room. The goal is to make sure your quietness does not stop your ideas from being heard.",
                 choices: [
                     {
-                        text: "Continue to Part 2: Say It Anyway",
+                        text: "Continue: Say It Anyway",
                         next: 'part2_intro',
                         score: 0,
                         feedbackTitle: "",
@@ -6926,7 +6926,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/avatar_ratan_tata.jpg',
-                text: "Part 1 showed that being quiet is not a weakness. Now comes the next step: How do you make sure your quietness does not stop your ideas from being heard?\n\n-------------------------\n\nPART 2: SAY IT ANYWAY\n\nYou are still quiet. That has not suddenly disappeared. But you are beginning to understand something.\n\nYou do not need to change your personality completely. You can be quiet and still have strong opinions. You can listen and still disagree. You can be nervous and still speak.\n\nNow someone asks what you think. You have three choices.",
+                text: "You are beginning to see that being quiet is not a weakness. Now comes the next step: How do you make sure your quietness does not stop your ideas from being heard?\n\nYou are still quiet. That has not suddenly disappeared. But you are beginning to understand something.\n\nYou do not need to change your personality completely. You can be quiet and still have strong opinions. You can listen and still disagree. You can be nervous and still speak.\n\nNow someone asks what you think. You have three choices.",
                 choices: [
                     {
                         text: "WAIT UNTIL YOU ARE CERTAIN: Think carefully. Check your idea. Speak only when you feel confident that you are right.",
