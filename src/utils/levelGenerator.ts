@@ -52,6 +52,28 @@ export function generateLevels(_age: number): Level[] {
             avatarUrl: '/assets/portrait-michael-jackson.png', scenarioId: 'lvl_age_15_michael_2',
             idolTraits: { discipline: 95, resilience: 90, risk: 85, leadership: 85, creativity: 100, empathy: 80, vision: 100 }
         },
+        // Age 15: Bhagat Singh (Part 1)
+        {
+            id: 'lvl_15_bhagat_1', title: 'Don\'t Just Be Angry - Part 1', description: 'At 15, Bhagat Singh witnesses political tension in Lahore and learns how to channel anger into constructive learning and action.',
+            requiredStars: 0, year: 1922, age: 15, theme: 'History', age_mirror_text: 'feeling angry about unfairness in Lahore and deciding how to respond', archetype: 'The Revolutionary', personality: 'Bhagat Singh',
+            bio: 'A 15-year-old in Lahore developing political awareness and intellectual curiosity during a time of national tension.',
+            fame: 'Iconic Indian Revolutionary & Intellectual.',
+            achievements: ['Attended National College in Lahore', 'Extensive study of history and political literature', 'Pioneered intellectual approach to social change'],
+            lesson: 'LEARNING BEFORE ACTING — strong feelings are important, but understanding a problem is the first step toward changing it.',
+            avatarUrl: '/assets/portrait-bhagat-singh.png', scenarioId: 'lvl_age_15_bhagat_1',
+            idolTraits: { discipline: 100, resilience: 100, risk: 100, leadership: 95, creativity: 85, empathy: 90, vision: 100 }
+        },
+        // Age 15: Bhagat Singh (Part 2)
+        {
+            id: 'lvl_15_bhagat_2', title: 'What If I\'m Wrong?', description: 'At 15, Bhagat Singh learns intellectual humility and the importance of independent thinking when hearing opposing views.',
+            requiredStars: 0, year: 1922, age: 15, theme: 'History', age_mirror_text: 'comparing different opinions and reading to form independent beliefs', archetype: 'The Revolutionary', personality: 'Bhagat Singh',
+            bio: 'A 15-year-old student exploring history and literature to build a reasoned perspective.',
+            fame: 'Iconic Indian Revolutionary & Intellectual.',
+            achievements: ['Attended National College in Lahore', 'Extensive study of history and political literature', 'Pioneered intellectual approach to social change'],
+            lesson: 'EXPLAINING WHAT YOU BELIEVE AND WHY — real independence means being able to explain why you believe what you believe.',
+            avatarUrl: '/assets/portrait-bhagat-singh.png', scenarioId: 'lvl_age_15_bhagat_2',
+            idolTraits: { discipline: 100, resilience: 100, risk: 100, leadership: 95, creativity: 85, empathy: 90, vision: 100 }
+        },
         // Age 20: Billie Eilish (Story 2)
         {
             id: 'lvl_20_billie_2', title: 'The Person Who Left You On Seen', description: 'At 20, you must choose between chasing someone who ghosts you, or turning the pain into art.',
