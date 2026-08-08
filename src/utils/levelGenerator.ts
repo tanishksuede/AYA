@@ -387,6 +387,28 @@ export function generateLevels(_age: number): Level[] {
             avatarUrl: '/assets/avatar_bill_gates.png', scenarioId: 'lvl_age_20',
             idolTraits: { discipline: 92, resilience: 85, risk: 90, leadership: 95, creativity: 85, empathy: 70, vision: 98 }
         },
+        
+        {
+            id: 'lvl_21_sheeran_1', title: 'The Photo She Might See', description: 'At 21, you must choose how to handle the painful intersection of a recent breakup and sudden public attention.',
+            requiredStars: 0, year: 2012, age: 21, theme: 'Music', archetype: 'The Artist', personality: 'Ed Sheeran',
+            bio: 'A 21-year-old musician dealing with a breakup while his career takes off.',
+            fame: 'Grammy-winning Singer-Songwriter',
+            achievements: ['One of the best-selling music artists of all time'],
+            lesson: 'Sometimes it is learning how to carry personal pain while the rest of your life keeps moving.',
+            avatarUrl: '/assets/portrait-ed-sheeran.png', scenarioId: 'lvl_age_21_sheeran_1',
+            idolTraits: { discipline: 85, resilience: 90, risk: 80, leadership: 70, creativity: 100, empathy: 95, vision: 85 }
+        },
+        {
+            id: 'lvl_21_sheeran_2', title: 'The People That Still Feel Like Home', description: 'At 21, you must decide what success is allowed to cost you in your personal life.',
+            requiredStars: 0, year: 2012, age: 21, theme: 'Music', archetype: 'The Artist', personality: 'Ed Sheeran',
+            bio: 'A 21-year-old musician dealing with a breakup while his career takes off.',
+            fame: 'Grammy-winning Singer-Songwriter',
+            achievements: ['One of the best-selling music artists of all time'],
+            lesson: 'Success changes your schedule before it changes your identity.',
+            avatarUrl: '/assets/portrait-ed-sheeran.png', scenarioId: 'lvl_age_21_sheeran_2',
+            idolTraits: { discipline: 85, resilience: 90, risk: 80, leadership: 70, creativity: 100, empathy: 95, vision: 85 }
+        },
+
         // Age 21: Shah Rukh Khan
         {
             id: 'lvl_21_srk', title: 'The Role That Could Destroy You', description: 'At 21, SRK faces a villain role that could define or end his career.',
