@@ -30,6 +30,28 @@ export function generateLevels(_age: number): Level[] {
             avatarUrl: '/assets/portrait-anne-frank.png', scenarioId: 'lvl_age_13_anne_2',
             idolTraits: { discipline: 80, resilience: 100, risk: 70, leadership: 60, creativity: 100, empathy: 95, vision: 85 }
         },
+        // Age 15: Ratan Tata (One Continuous Story: The Quiet Voice)
+        {
+            id: 'lvl_15_ratan_tata', title: 'The Quiet Voice', description: 'At 15, Ratan Tata experiences shyness and fear of public speaking while attending school in Bombay, discovering how quiet self-expression can build confidence.',
+            requiredStars: 0, year: 1953, age: 15, theme: 'Business', age_mirror_text: 'sitting quietly in a Bombay classroom deciding how to make your voice heard', archetype: 'The Visionary', personality: 'Ratan Tata',
+            bio: 'A 15-year-old student in Bombay learning to trust his quiet voice despite shyness and public speaking anxiety.',
+            fame: 'Industrialist & Former Chairman of Tata Group.',
+            achievements: ['Attended Campion & Cathedral School in Bombay', 'Studied Architecture at Cornell', 'Built one of India\'s most trusted global business conglomerates'],
+            lesson: 'QUIET CONFIDENCE — being quiet is not weakness; confidence does not always sound loud.',
+            avatarUrl: '/assets/avatar_ratan_tata.jpg', scenarioId: 'lvl_age_15_ratan_tata',
+            idolTraits: { discipline: 95, resilience: 95, risk: 85, leadership: 95, creativity: 85, empathy: 95, vision: 100 }
+        },
+        // Age 15: Virat Kohli (One Continuous Story: More Than Your Own Score)
+        {
+            id: 'lvl_15_virat_kohli', title: 'More Than Your Own Score', description: 'At 15, Virat Kohli is appointed captain of Delhi Under-15, learning the balance between individual performance and team leadership.',
+            requiredStars: 0, year: 2003, age: 15, theme: 'Sports', age_mirror_text: 'captaining Delhi U-15 while deciding how to balance scoring runs and leading teammates', archetype: 'The Competitive Prodigy', personality: 'Virat Kohli',
+            bio: 'A 15-year-old batsman appointed captain of the Delhi Under-15 team, learning how to carry team responsibility.',
+            fame: 'Iconic Indian Cricketer & Former National Captain.',
+            achievements: ['Captained Delhi U-15 in 2003–04', 'Scored 390 runs at average 78 in U-15 season', 'Selected for Delhi U-17 team in 2004'],
+            lesson: 'LEADERSHIP IS BIGGER THAN PERSONAL SUCCESS — being the best player and being a good leader are not always the same thing.',
+            avatarUrl: '/assets/avatar_virat_kohli.jpg', scenarioId: 'lvl_age_15_virat_kohli',
+            idolTraits: { discipline: 95, resilience: 95, risk: 90, leadership: 95, creativity: 80, empathy: 75, vision: 95 }
+        },
         // Age 15: Michael Jackson (Part 1)
         {
             id: 'lvl_15_michael_1', title: 'When Your Voice Changes', description: 'At 15, Michael Jackson experiences physical and vocal changes during adolescence while continuing his music career.',
@@ -52,6 +74,17 @@ export function generateLevels(_age: number): Level[] {
             avatarUrl: '/assets/portrait-michael-jackson.png', scenarioId: 'lvl_age_15_michael_2',
             idolTraits: { discipline: 95, resilience: 90, risk: 85, leadership: 85, creativity: 100, empathy: 80, vision: 100 }
         },
+        // Age 15: Rani Lakshmibai (One Continuous Story: The Girl and the Crown)
+        {
+            id: 'lvl_15_rani_lakshmibai', title: 'The Girl and the Crown', description: 'At 15, Manikarnika becomes Lakshmibai, Rani of Jhansi, navigating the identity transition between her past and her new royal responsibilities.',
+            requiredStars: 0, year: 1843, age: 15, theme: 'History', age_mirror_text: 'entering a new life in Jhansi as Lakshmibai while holding on to Manu', archetype: 'The Sovereign', personality: 'Rani Lakshmibai',
+            bio: 'A 15-year-old in Jhansi transitioning from her independent childhood as Manu into her new royal role as Lakshmibai.',
+            fame: 'Rani of Jhansi & Heroine of Indian Resistance.',
+            achievements: ['Married Raja Gangadhar Rao in 1842', 'Retained martial skills and literacy in her court life', 'Pioneered independent female leadership in 19th-century India'],
+            lesson: 'WHAT YOU CARRY FORWARD — growing up does not mean becoming a completely different person; it means taking what is already strong inside you and learning how to use it responsibly.',
+            avatarUrl: '/assets/portrait-rani-lakshmibai.png', scenarioId: 'lvl_age_15_rani_lakshmibai',
+            idolTraits: { discipline: 100, resilience: 100, risk: 95, leadership: 100, creativity: 85, empathy: 90, vision: 100 }
+        },
         // Age 15: Bhagat Singh (Part 1)
         {
             id: 'lvl_15_bhagat_1', title: 'Don\'t Just Be Angry', description: 'At 15, Bhagat Singh witnesses political tension in Lahore and learns how to channel anger into constructive learning and action.',
@@ -73,39 +106,6 @@ export function generateLevels(_age: number): Level[] {
             lesson: 'EXPLAINING WHAT YOU BELIEVE AND WHY — real independence means being able to explain why you believe what you believe.',
             avatarUrl: '/assets/portrait-bhagat-singh.png', scenarioId: 'lvl_age_15_bhagat_2',
             idolTraits: { discipline: 100, resilience: 100, risk: 100, leadership: 95, creativity: 85, empathy: 90, vision: 100 }
-        },
-        // Age 15: Rani Lakshmibai (One Continuous Story: The Girl and the Crown)
-        {
-            id: 'lvl_15_rani_lakshmibai', title: 'The Girl and the Crown', description: 'At 15, Manikarnika becomes Lakshmibai, Rani of Jhansi, navigating the identity transition between her past and her new royal responsibilities.',
-            requiredStars: 0, year: 1843, age: 15, theme: 'History', age_mirror_text: 'entering a new life in Jhansi as Lakshmibai while holding on to Manu', archetype: 'The Sovereign', personality: 'Rani Lakshmibai',
-            bio: 'A 15-year-old in Jhansi transitioning from her independent childhood as Manu into her new royal role as Lakshmibai.',
-            fame: 'Rani of Jhansi & Heroine of Indian Resistance.',
-            achievements: ['Married Raja Gangadhar Rao in 1842', 'Retained martial skills and literacy in her court life', 'Pioneered independent female leadership in 19th-century India'],
-            lesson: 'WHAT YOU CARRY FORWARD — growing up does not mean becoming a completely different person; it means taking what is already strong inside you and learning how to use it responsibly.',
-            avatarUrl: '/assets/portrait-rani-lakshmibai.png', scenarioId: 'lvl_age_15_rani_lakshmibai',
-            idolTraits: { discipline: 100, resilience: 100, risk: 95, leadership: 100, creativity: 85, empathy: 90, vision: 100 }
-        },
-        // Age 15: Virat Kohli (One Continuous Story: More Than Your Own Score)
-        {
-            id: 'lvl_15_virat_kohli', title: 'More Than Your Own Score', description: 'At 15, Virat Kohli is appointed captain of Delhi Under-15, learning the balance between individual performance and team leadership.',
-            requiredStars: 0, year: 2003, age: 15, theme: 'Sports', age_mirror_text: 'captaining Delhi U-15 while deciding how to balance scoring runs and leading teammates', archetype: 'The Competitive Prodigy', personality: 'Virat Kohli',
-            bio: 'A 15-year-old batsman appointed captain of the Delhi Under-15 team, learning how to carry team responsibility.',
-            fame: 'Iconic Indian Cricketer & Former National Captain.',
-            achievements: ['Captained Delhi U-15 in 2003–04', 'Scored 390 runs at average 78 in U-15 season', 'Selected for Delhi U-17 team in 2004'],
-            lesson: 'LEADERSHIP IS BIGGER THAN PERSONAL SUCCESS — being the best player and being a good leader are not always the same thing.',
-            avatarUrl: '/assets/avatar_virat_kohli.jpg', scenarioId: 'lvl_age_15_virat_kohli',
-            idolTraits: { discipline: 95, resilience: 95, risk: 90, leadership: 95, creativity: 80, empathy: 75, vision: 95 }
-        },
-        // Age 15: Ratan Tata (One Continuous Story: The Quiet Voice)
-        {
-            id: 'lvl_15_ratan_tata', title: 'The Quiet Voice', description: 'At 15, Ratan Tata experiences shyness and fear of public speaking while attending school in Bombay, discovering how quiet self-expression can build confidence.',
-            requiredStars: 0, year: 1953, age: 15, theme: 'Business', age_mirror_text: 'sitting quietly in a Bombay classroom deciding how to make your voice heard', archetype: 'The Visionary', personality: 'Ratan Tata',
-            bio: 'A 15-year-old student in Bombay learning to trust his quiet voice despite shyness and public speaking anxiety.',
-            fame: 'Industrialist & Former Chairman of Tata Group.',
-            achievements: ['Attended Campion & Cathedral School in Bombay', 'Studied Architecture at Cornell', 'Built one of India\'s most trusted global business conglomerates'],
-            lesson: 'QUIET CONFIDENCE — being quiet is not weakness; confidence does not always sound loud.',
-            avatarUrl: '/assets/avatar_ratan_tata.jpg', scenarioId: 'lvl_age_15_ratan_tata',
-            idolTraits: { discipline: 95, resilience: 95, risk: 85, leadership: 95, creativity: 85, empathy: 95, vision: 100 }
         },
         // Age 20: Billie Eilish (Story 2)
         {
