@@ -620,6 +620,17 @@ export function generateLevels(_age: number): Level[] {
             avatarUrl: '/assets/portrait-rani-lakshmibai.png', scenarioId: 'lvl_age_22_rani_lakshmibai',
             idolTraits: { discipline: 95, resilience: 100, risk: 90, leadership: 98, creativity: 75, empathy: 85, vision: 90 }
         },
+        // Age 11: Virat Kohli
+        {
+            id: 'lvl_11_virat_kohli', title: 'The Extra Hour', description: 'At 11, young Virat Kohli trains at West Delhi Cricket Academy, facing decisions between raw instinct and disciplined technical correction.',
+            requiredStars: 0, year: 2000, age: 11, theme: 'Sports', age_mirror_text: 'pushing through extra practice rounds at the academy while others pack up', archetype: 'The Competitive Prodigy', personality: 'Virat Kohli',
+            bio: 'An 11-year-old training at the West Delhi Cricket Academy under coach Raj Kumar Sharma, driven by intense competitive desire and relentless practice.',
+            fame: 'Indian cricket icon and one of the greatest batsmen of all time.',
+            achievements: ['U-19 World Cup winning captain (2008)', '2011 ICC World Cup Champion', '2024 T20 World Cup Champion'],
+            lesson: 'PERSISTENCE AND TECHNIQUE — Natural ability shows capability; disciplined practice determines consistency.',
+            avatarUrl: '/assets/avatar_virat_kohli.jpg', scenarioId: 'lvl_age_11_virat_kohli',
+            idolTraits: { discipline: 95, resilience: 95, risk: 85, leadership: 90, creativity: 80, empathy: 75, vision: 90 }
+        },
         {
             id: 'lvl_25', title: 'The Storyteller', description: 'At 25, J.K. Rowling got the idea for Harry Potter on a delayed train.',
             requiredStars: 21, year: 1990, age: 25, theme: 'Writing', archetype: 'The Storyteller', personality: 'J.K. Rowling',

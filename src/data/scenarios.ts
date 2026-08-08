@@ -5717,5 +5717,93 @@ export const STORY_DATABASE: Record<string, any> = {
                 ]
             }
         ]
+    },
+
+    // AGE 11: Virat Kohli
+    'lvl_age_11_virat_kohli': {
+        title: "The Extra Hour",
+        source: "Source: West Delhi Cricket Academy, Paschim Vihar, New Delhi (1999–2000)",
+        frames: [
+            {
+                id: 'intro',
+                emotion: 'determination',
+                bg: '/assets/bg-virat-kohli-paschim-vihar-2000.png',
+                portrait: '/assets/avatar_virat_kohli.jpg',
+                text: "You are 11 years old in New Delhi, training at the West Delhi Cricket Academy in Paschim Vihar under coach Raj Kumar Sharma. You naturally enjoy attacking strokes and trust your instinct, but your coach keeps correcting your technique and shot selection. The stroke you naturally want to play is not always the stroke your coach wants you to play. With another session ahead, you must decide how much you trust instinct and how much you trust technical correction.",
+                choices: [
+                    {
+                        text: "A) Keep playing the shot naturally: Trust your instinct and continue using the stroke that feels strongest to you.",
+                        next: 'part1_reveal',
+                        score: 5,
+                        feedbackTitle: "Instinct",
+                        feedback: "You trust your natural ability and prefer learning through experimentation."
+                    },
+                    {
+                        text: "B) Follow the technical correction completely: Temporarily suppress your preferred stroke and concentrate on rebuilding the movement exactly as your coach teaches it.",
+                        next: 'part1_reveal',
+                        score: 15,
+                        feedbackTitle: "Discipline",
+                        feedback: "You are willing to sacrifice what feels comfortable in order to build stronger fundamentals."
+                    },
+                    {
+                        text: "C) Find a middle ground: Keep your attacking stroke as part of your game, but deliberately practise the corrected movement first and use the attacking shot only when the delivery justifies it.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Adaptability",
+                        feedback: "You preserve your natural strengths while accepting structured correction."
+                    }
+                ]
+            },
+            {
+                id: 'part1_reveal',
+                emotion: 'determination',
+                bg: '/assets/bg-virat-kohli-paschim-vihar-2000.png',
+                portrait: '/assets/avatar_virat_kohli.jpg',
+                text: "What actually happened:\nHistorical accounts describe Raj Kumar Sharma correcting Kohli's shot selection and technique during his academy development. Sharma specifically recalled working on Kohli's tendency to play certain strokes and using repeated throw-down practice to improve his technique. The historical record does NOT establish that Kohli faced these exact three choices on one particular day at age 11. The historically supported pattern is that Kohli's natural ability was being shaped through deliberate technical coaching and repetition.\n\nLESSON: Technique Determines Consistency\nNatural ability can show you what you are capable of. Technique determines how consistently you can use it. At this stage, the important decision was not whether to abandon instinct, but whether instinct could survive disciplined training.",
+                choices: [
+                    { text: "Next Part", next: 'part2_setup', score: 0, feedbackTitle: "", feedback: "" }
+                ]
+            },
+            {
+                id: 'part2_setup',
+                emotion: 'determination',
+                bg: '/assets/bg-virat-kohli-paschim-vihar-2000.png',
+                portrait: '/assets/avatar_virat_kohli.jpg',
+                text: "The practice session is continuing. Other young players have already finished their turns, and you have already been batting for a long time. Your coach tells you that your round is finished, but you still want another round. You are tired, but another round gives you more opportunities to practise. There is no guarantee that extra practice will lead anywhere — there is only today's session. What do you do?",
+                choices: [
+                    {
+                        text: "A) Stop when your coach tells you to: Respect the structure of the session and conserve your energy for the next day.",
+                        next: 'part2_reveal',
+                        score: 5,
+                        feedbackTitle: "Balance",
+                        feedback: "You value consistency and understand that development also requires knowing when to stop."
+                    },
+                    {
+                        text: "B) Ask for one more serious round: Stay at the nets and use the extra time specifically to work on your weaknesses.",
+                        next: 'part2_reveal',
+                        score: 15,
+                        feedbackTitle: "Persistence",
+                        feedback: "You are willing to put in additional effort when you believe the opportunity is worth it."
+                    },
+                    {
+                        text: "C) Stop batting but stay and observe: Watch the other players and learn by studying their technique instead of continuing to bat yourself.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Observation",
+                        feedback: "You look for learning opportunities even when you are not actively performing."
+                    }
+                ]
+            },
+            {
+                id: 'part2_reveal',
+                emotion: 'determination',
+                bg: '/assets/bg-virat-kohli-paschim-vihar-2000.png',
+                portrait: '/assets/avatar_virat_kohli.jpg',
+                text: "What actually happened:\nRaj Kumar Sharma later recalled that Kohli routinely wanted to bat considerably longer than other young players at the academy. According to Sharma's recollection, while other children generally batted for around 15–20 minutes, Kohli could continue for roughly 45 minutes and would ask for another round even after being told his turn was finished. This is NOT presented as a verbatim recreation of one specific day at age 11; the historically supported pattern is that Kohli showed an unusually strong appetite for additional batting practice.\n\nLESSON: Useful Additional Effort\nPersistence is not simply working harder than everyone else; it is recognizing which additional effort is actually useful. At this age, there was no guarantee that more practice would produce greatness. The value of additional practice was that it created more opportunities to turn ability into repeatable skill.",
+                choices: [
+                    { text: "Complete Level", next: 'COMPLETE', score: 0, feedbackTitle: "", feedback: "" }
+                ]
+            }
+        ]
     }
 };
