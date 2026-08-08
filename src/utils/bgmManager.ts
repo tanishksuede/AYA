@@ -80,10 +80,12 @@ class BGMManager {
     let buffer = this.buffers.get(trackName)
     
     if (!buffer) {
-      console.log(`BGM lazy loading: ${trackName}`)
+      console.log(`[BGM Pipeline] Lazy loading fresh track: ${trackName}`)
       try {
-          const rawUrl = BGM_TRACKS[trackName] || `/music/bgm-${trackName}.mp3?v=20260808_sync`
-          const response = await fetch(rawUrl, { cache: 'no-cache' })
+          const baseUrl = BGM_TRACKS[trackName] || `/music/bgm-${trackName}.mp3`
+          const cleanUrl = baseUrl.split('?')[0]
+          const freshUrl = `${cleanUrl}?t=${Date.now()}`
+          const response = await fetch(freshUrl, { cache: 'reload' })
           if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
           const arrayBuffer = await response.arrayBuffer()
           buffer = await ctx.decodeAudioData(arrayBuffer)

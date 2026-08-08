@@ -24,6 +24,17 @@ function App() {
   useEffect(() => {
     bgmManager.loadPreference()
     
+    // Purge any legacy browser/service-worker audio caches on startup
+    if (typeof window !== 'undefined' && 'caches' in window) {
+      caches.keys().then((keys) => {
+        keys.forEach((key) => {
+          if (key.includes('music') || key.includes('audio') || key.includes('workbox')) {
+            caches.delete(key);
+          }
+        });
+      }).catch(() => {});
+    }
+
     // Unlock on user interactions (keeps audio context alive on mobile)
     const unlock = async () => {
       await bgmManager.unlock()
