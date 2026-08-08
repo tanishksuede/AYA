@@ -90,6 +90,7 @@ class BGMManager {
           this.buffers.set(trackName, buffer)
       } catch (e) {
           console.error(`BGM lazy load failed: ${trackName}`, e)
+          this.targetTrack = null
           return
       }
     }
@@ -229,4 +230,17 @@ export const BGM_TRACKS: Record<string, string> = {
   'loneliness':    '/music/bgm-loneliness.mp3',
   'wonder':        '/music/bgm-wonder.mp3',
   'nostalgia':     '/music/bgm-nostalgia.mp3',
+
+  // Custom Emotion BGM Mappings for 15-Year-Old Stories & Specialized Emotions
+  'confusion':     '/music/bgm-mystery.mp3',
+  'courage':       '/music/bgm-determination.mp3',
+  'perfection':    '/music/bgm-tension.mp3',
+  'liberation':    '/music/bgm-hope.mp3',
+  'uncertainty':   '/music/bgm-loneliness.mp3',
+  'confidence':    '/music/bgm-triumph.mp3',
+  'pride':         '/music/bgm-hope.mp3',
+  'frustration':   '/music/bgm-tension.mp3',
+  'shyness':       '/music/bgm-calm.mp3',
+  'self-belief':   '/music/bgm-determination.mp3',
+  'curiosity':     '/music/bgm-wonder.mp3',
 }
