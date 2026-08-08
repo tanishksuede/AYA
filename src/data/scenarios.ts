@@ -5629,5 +5629,93 @@ export const STORY_DATABASE: Record<string, any> = {
                 ]
             }
         ]
+    },
+
+    // AGE 22: Rani Lakshmibai
+    'lvl_age_22_rani_lakshmibai': {
+        title: "The Silent Palace",
+        source: "Source: Jhansi, India, 1851",
+        frames: [
+            {
+                id: 'intro',
+                emotion: 'grief',
+                bg: '/assets/bg-rani-lakshmibai-jhansi-1851.png',
+                portrait: '/assets/portrait-rani-lakshmibai.png',
+                text: "You are 22 years old, the Queen of a prosperous, independent kingdom. For years, your court has lived in a state of quiet anxiety, knowing that the foreign East India Company is swallowing up neighboring states that fail to produce a male heir. A few months ago, the kingdom exhaled in massive celebration when you finally gave birth to a son. The future was secure.\n\nBut today, the palace is entirely silent.\n\nYour four-month-old infant son has just fallen fatally ill and died. Your husband, the Maharaja, is shattered by the loss and has withdrawn into his quarters, inconsolable. You are a young mother who has just suffered the most profound personal loss imaginable — but already, you can feel the political vultures circling your childless throne.",
+                choices: [
+                    {
+                        text: "A) Retreat into mourning, stepping away from all court duties to fully process your devastating personal loss, leaving the state's administration to the ministers.",
+                        next: 'part1_reveal',
+                        score: 5,
+                        feedbackTitle: "Vulnerable",
+                        feedback: "You prioritize human emotional needs and mental health, believing that attempting to function through acute trauma is unsustainable."
+                    },
+                    {
+                        text: "B) Immediately push the court to adopt a new heir from the extended royal family to instantly secure the kingdom's political future before the British can react.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Pragmatic",
+                        feedback: "You are hyper-focused on survival and strategy, able to instantly compartmentalize personal tragedy to solve an immediate, existential threat."
+                    },
+                    {
+                        text: "C) Suppress your own grief to publicly project strength, focusing entirely on holding the court together and supporting your deeply depressed husband.",
+                        next: 'part1_reveal',
+                        score: 15,
+                        feedbackTitle: "Dutiful",
+                        feedback: "You possess immense internal fortitude, willing to delay your own healing to serve as the anchor for the people who depend on you."
+                    }
+                ]
+            },
+            {
+                id: 'part1_reveal',
+                emotion: 'grief',
+                bg: '/assets/bg-rani-lakshmibai-jhansi-1851.png',
+                portrait: '/assets/portrait-rani-lakshmibai.png',
+                text: "What Lakshmibai actually did:\nDespite her overwhelming grief as a young mother, she recognized that Jhansi was in a highly precarious position. With the Maharaja completely broken by the tragedy, she bore her sorrow with immense stoicism. She stepped up to maintain the stability of the court, projecting strength to prevent internal panic and external opportunism — prioritizing her husband's fragile state and the kingdom's immediate stability over her own mourning.\n\nLESSON: The Mask of Strength\nIn positions of immense responsibility, personal grief is often politically weaponized by enemies, forcing leaders to process their pain behind a mask of strength.",
+                choices: [
+                    { text: "Next Part", next: 'part2_setup', score: 0, feedbackTitle: "", feedback: "" }
+                ]
+            },
+            {
+                id: 'part2_setup',
+                emotion: 'tension',
+                bg: '/assets/bg-rani-lakshmibai-jhansi-1851.png',
+                portrait: '/assets/portrait-rani-lakshmibai.png',
+                text: "Months have passed since your infant's death. The grief has permanently broken your husband's health — the Maharaja is becoming increasingly weak and bedridden.\n\nThe political reality is now terrifyingly clear: the British East India Company has recently established a policy allowing them to annex any Indian state that lacks a \"natural\" heir. You are only 22, yet the survival of an entire kingdom is suddenly resting on your young shoulders.\n\nThe court ministers are whispering — some are loyal, but others are quietly calculating whether to side with the British for their own gain. With the King incapacitated, you must decide how to handle the impending crisis of succession before the kingdom is stolen from you.",
+                choices: [
+                    {
+                        text: "A) Secretly open diplomatic channels with the British to negotiate a treaty that protects your royal status and wealth, even if it means conceding some of the kingdom's independence.",
+                        next: 'part2_reveal',
+                        score: 5,
+                        feedbackTitle: "Compromising",
+                        feedback: "You favor negotiation and self-preservation, preferring to lose some power on your own terms rather than risk losing everything in a forced takeover."
+                    },
+                    {
+                        text: "B) Begin quietly consolidating power, building a fiercely loyal faction among the military and court ministers so that you hold absolute control if the King passes.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Authoritative",
+                        feedback: "You believe true security comes from hard power and loyalty, trusting in your ability to command people rather than relying on legal technicalities."
+                    },
+                    {
+                        text: "C) Focus solely on navigating Hindu law and British legal frameworks to find a legitimate relative to adopt, racing against the King's failing health to make it official.",
+                        next: 'part2_reveal',
+                        score: 15,
+                        feedbackTitle: "Strategic",
+                        feedback: "You are highly analytical, recognizing that defeating a larger system requires using its own rules, laws, and procedures against it."
+                    }
+                ]
+            },
+            {
+                id: 'part2_reveal',
+                emotion: 'tension',
+                bg: '/assets/bg-rani-lakshmibai-jhansi-1851.png',
+                portrait: '/assets/portrait-rani-lakshmibai.png',
+                text: "What Lakshmibai actually did:\nHer primary, desperate focus became finding a legitimate relative from the extended royal family to adopt (who would become Anand Rao, later renamed Damodar Rao). She had to ensure this was done exactly according to tradition and legal precedent so the British could not invalidate it. She spent this critical period racing against time to get her dying husband to officially sign the adoption papers in the presence of British officers — attempting to trap the Company within their own legal bureaucracy.\n\nLESSON: Use Their Rules Against Them\nWhen facing an overwhelmingly powerful institution, survival often depends on mastering their legal loopholes rather than relying on immediate confrontation.",
+                choices: [
+                    { text: "Complete Level", next: 'COMPLETE', score: 0, feedbackTitle: "", feedback: "" }
+                ]
+            }
+        ]
     }
 };

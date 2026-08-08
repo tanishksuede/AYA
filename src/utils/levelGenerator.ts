@@ -631,6 +631,17 @@ export function generateLevels(_age: number): Level[] {
             avatarUrl: '/assets/avatar_tesla.jpg', scenarioId: 'lvl_age_19_tesla',
             idolTraits: { discipline: 95, resilience: 85, risk: 90, leadership: 60, creativity: 100, empathy: 60, vision: 100 }
         },
+        // Age 22: Rani Lakshmibai
+        {
+            id: 'lvl_22_rani_lakshmibai', title: 'The Silent Palace', description: 'At 22, the Queen of Jhansi faces the death of her infant son and an empire waiting to take her kingdom.',
+            requiredStars: 0, year: 1851, age: 22, theme: 'Leadership', age_mirror_text: 'bearing an entire kingdom\'s future while processing the most devastating personal loss of your life', archetype: 'The Sovereign', personality: 'Rani Lakshmibai',
+            bio: 'A 22-year-old Queen forced to suppress her grief as a young mother and project absolute strength while a foreign empire watched for any sign of weakness.',
+            fame: 'The Rani of Jhansi. India\'s most celebrated warrior-queen and symbol of resistance against British colonial rule.',
+            achievements: ['Led the defence of Jhansi during the 1857 uprising', 'Died in battle at age 29, still fighting for Jhansi\'s freedom', 'Immortalised in Indian national memory as a symbol of courage and sovereignty'],
+            lesson: 'IN POSITIONS OF IMMENSE RESPONSIBILITY, personal grief is often politically weaponized — forcing leaders to process their pain behind a mask of strength.',
+            avatarUrl: '/assets/portrait-rani-lakshmibai.png', scenarioId: 'lvl_age_22_rani_lakshmibai',
+            idolTraits: { discipline: 95, resilience: 100, risk: 90, leadership: 98, creativity: 75, empathy: 85, vision: 90 }
+        },
         {
             id: 'lvl_25', title: 'The Storyteller', description: 'At 25, J.K. Rowling got the idea for Harry Potter on a delayed train.',
             requiredStars: 21, year: 1990, age: 25, theme: 'Writing', archetype: 'The Storyteller', personality: 'J.K. Rowling',
