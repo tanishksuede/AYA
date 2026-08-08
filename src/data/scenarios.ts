@@ -6176,5 +6176,121 @@ export const STORY_DATABASE: Record<string, any> = {
                 ]
             }
         ]
+    },
+
+    // AGE 21: Tanmay Bhat - Part 1
+    'lvl_age_21_tanmay_1': {
+        title: "Should I Really Do This?",
+        source: "Source: Historical Context, 2008–2009",
+        frames: [
+            {
+                id: 'intro',
+                emotion: 'mystery',
+                bg: '/assets/portrait-tanmay-bhat.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-tanmay-bhat.png',
+                text: "You are 21. Mumbai has a growing stand-up comedy scene. You have started performing at open mics. Sometimes the room laughs. Sometimes the material works. Sometimes it doesn't.\n\nYou are still figuring out what kind of comedian you are. You also have other skills and opportunities—writing, television work, creative work.\n\nBut stand-up is different. When you walk onto a stage, there is nowhere to hide. You have a few minutes. The microphone is in your hand. The audience decides immediately whether what you wrote is funny.\n\nYou have to decide how seriously you are willing to take this.",
+                choices: [
+                    {
+                        text: "KEEP IT AS A SIDE THING: Continue performing occasionally, but do not allow comedy to become the center of your plans yet.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Security",
+                        feedback: "You prefer to explore your talent without immediately putting your future on the line."
+                    },
+                    {
+                        text: "TAKE THE STAGE SERIOUSLY: Commit to performing regularly. Accept that you will have bad sets, awkward rooms and rejection along the way.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Courage",
+                        feedback: "You are willing to repeatedly expose yourself to failure in order to improve."
+                    },
+                    {
+                        text: "FOCUS ON WRITING: Use your comedy instincts primarily through writing for television and other creative projects rather than making stand-up the main path.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Craft",
+                        feedback: "You prefer developing your creative identity through preparation and writing rather than relying entirely on live performance."
+                    }
+                ]
+            },
+            {
+                id: 'reveal',
+                emotion: 'mystery',
+                bg: '/assets/portrait-tanmay-bhat.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-tanmay-bhat.png',
+                text: "HISTORICAL REALITY:\nTanmay Bhat did enter the Mumbai stand-up circuit around 2008 and performed regularly at open-mic events. He continued developing as a performer while also working in writing and comedy-related creative work.\n\nThe historical record does NOT establish that he faced these exact three choices. The important historical reality is that he continued performing rather than treating comedy as a one-time experiment. By 2009, this path led to a significant breakthrough.\n\nLESSON:\nA creative career often begins before you have enough evidence to call it a career. At the beginning, you are not choosing between success and failure. You are choosing whether to keep showing up long enough to find out what you might become.",
+                choices: [
+                    {
+                        text: "Complete Level",
+                        next: 'COMPLETE',
+                        score: 0,
+                        feedbackTitle: "",
+                        feedback: ""
+                    }
+                ]
+            }
+        ]
+    },
+
+    // AGE 21: Tanmay Bhat - Part 2
+    'lvl_age_21_tanmay_2': {
+        title: "The Five Minutes",
+        source: "Source: Historical Context, 2008–2009",
+        frames: [
+            {
+                id: 'intro',
+                emotion: 'triumph',
+                bg: '/assets/portrait-tanmay-bhat.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-tanmay-bhat.png',
+                text: "You have been performing. You have been testing material. You have learned that getting laughs consistently is much harder than getting lucky once.\n\nNow you have another opportunity: Weirdass Ham-ateur Night. It is a competition. You are not guaranteed to win. Other comedians are there. You have only a short amount of stage time to show what you can do.\n\nYou have to decide what kind of performer you want to be when those few minutes begin. Do you play it safe? Do you go for the biggest possible reaction? Or do you trust the material and style you have been developing?",
+                choices: [
+                    {
+                        text: "PLAY IT SAFE: Use material you already know works. Minimize the risk of trying something experimental.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Reliability",
+                        feedback: "You prefer maximizing the probability of a solid outcome rather than chasing a bigger but uncertain one."
+                    },
+                    {
+                        text: "GO FOR THE BIG REACTION: Take a bigger creative risk. Use your strongest and most distinctive material even if the audience response could be unpredictable.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Boldness",
+                        feedback: "You are comfortable accepting greater risk when the potential reward is meaningful."
+                    },
+                    {
+                        text: "TRUST YOUR VOICE: Do not try to perform like anyone else. Focus on delivering the material in the style that feels most naturally yours.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Authenticity",
+                        feedback: "You value developing a recognizable identity rather than optimizing only for immediate approval."
+                    }
+                ]
+            },
+            {
+                id: 'reveal',
+                emotion: 'triumph',
+                bg: '/assets/portrait-tanmay-bhat.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-tanmay-bhat.png',
+                text: "HISTORICAL REALITY:\nIn 2009, Tanmay Bhat won Vir Das's Weirdass Ham-ateur Night in Mumbai. The competition was described as a national comic hunt. Following the win, Bhat joined the Weirdass Comedy writing team and opened for Vir Das's Walking on Broken Das.\n\nThis was a meaningful early professional breakthrough.\n\nLESSON:\nSometimes the first breakthrough does not prove that you have figured everything out. It proves something smaller: There is enough here to keep going. A single opportunity can turn a possibility into evidence. But it is still only evidence. The next decision remains yours.",
+                choices: [
+                    {
+                        text: "Complete Level",
+                        next: 'COMPLETE',
+                        score: 0,
+                        feedbackTitle: "",
+                        feedback: ""
+                    }
+                ]
+            }
+        ]
     }
 };
