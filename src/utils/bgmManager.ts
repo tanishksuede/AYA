@@ -82,8 +82,8 @@ class BGMManager {
     if (!buffer) {
       console.log(`BGM lazy loading: ${trackName}`)
       try {
-          const url = BGM_TRACKS[trackName] || `/music/bgm-${trackName}.mp3`
-          const response = await fetch(url)
+          const rawUrl = BGM_TRACKS[trackName] || `/music/bgm-${trackName}.mp3?v=20260808_sync`
+          const response = await fetch(rawUrl, { cache: 'no-cache' })
           if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
           const arrayBuffer = await response.arrayBuffer()
           buffer = await ctx.decodeAudioData(arrayBuffer)
@@ -127,6 +127,11 @@ class BGMManager {
     this.currentTrack = trackName
     
     console.log(`BGM playing: ${trackName}`)
+  }
+
+  clearCache() {
+    this.buffers.clear()
+    console.log('BGM buffer cache cleared for fresh audio sync')
   }
 
   private fadeOut(
@@ -211,36 +216,38 @@ class BGMManager {
 
 export const bgmManager = new BGMManager()
 
+const BGM_VER = '?v=20260808_sync'
+
 // Track list for preloading
 export const BGM_TRACKS: Record<string, string> = {
-  'onboarding':    '/music/bgm-onboarding.mp3',
-  'quiz':          '/music/bgm-quiz.mp3',
-  'neon-map':      '/music/bgm-neon-map.mp3',
-  'triumph':       '/music/bgm-triumph.mp3',
-  'grief':         '/music/bgm-grief.mp3',
-  'tension':       '/music/bgm-tension.mp3',
-  'joy':           '/music/bgm-joy.mp3',
-  'hope':          '/music/bgm-hope.mp3',
-  'love':          '/music/bgm-love.mp3',
-  'mystery':       '/music/bgm-mystery.mp3',
-  'calm':          '/music/bgm-calm.mp3',
-  'determination':'/music/bgm-determination.mp3',
-  'fear':          '/music/bgm-fear.mp3',
-  'anger':         '/music/bgm-anger.mp3',
-  'loneliness':    '/music/bgm-loneliness.mp3',
-  'wonder':        '/music/bgm-wonder.mp3',
-  'nostalgia':     '/music/bgm-nostalgia.mp3',
+  'onboarding':    `/music/bgm-onboarding.mp3${BGM_VER}`,
+  'quiz':          `/music/bgm-quiz.mp3${BGM_VER}`,
+  'neon-map':      `/music/bgm-neon-map.mp3${BGM_VER}`,
+  'triumph':       `/music/bgm-triumph.mp3${BGM_VER}`,
+  'grief':         `/music/bgm-grief.mp3${BGM_VER}`,
+  'tension':       `/music/bgm-tension.mp3${BGM_VER}`,
+  'joy':           `/music/bgm-joy.mp3${BGM_VER}`,
+  'hope':          `/music/bgm-hope.mp3${BGM_VER}`,
+  'love':          `/music/bgm-love.mp3${BGM_VER}`,
+  'mystery':       `/music/bgm-mystery.mp3${BGM_VER}`,
+  'calm':          `/music/bgm-calm.mp3${BGM_VER}`,
+  'determination':`/music/bgm-determination.mp3${BGM_VER}`,
+  'fear':          `/music/bgm-fear.mp3${BGM_VER}`,
+  'anger':         `/music/bgm-anger.mp3${BGM_VER}`,
+  'loneliness':    `/music/bgm-loneliness.mp3${BGM_VER}`,
+  'wonder':        `/music/bgm-wonder.mp3${BGM_VER}`,
+  'nostalgia':     `/music/bgm-nostalgia.mp3${BGM_VER}`,
 
   // Custom Emotion BGM Mappings for 15-Year-Old Stories & Specialized Emotions
-  'confusion':     '/music/bgm-mystery.mp3',
-  'courage':       '/music/bgm-determination.mp3',
-  'perfection':    '/music/bgm-tension.mp3',
-  'liberation':    '/music/bgm-hope.mp3',
-  'uncertainty':   '/music/bgm-loneliness.mp3',
-  'confidence':    '/music/bgm-triumph.mp3',
-  'pride':         '/music/bgm-hope.mp3',
-  'frustration':   '/music/bgm-tension.mp3',
-  'shyness':       '/music/bgm-calm.mp3',
-  'self-belief':   '/music/bgm-determination.mp3',
-  'curiosity':     '/music/bgm-wonder.mp3',
+  'confusion':     `/music/bgm-mystery.mp3${BGM_VER}`,
+  'courage':       `/music/bgm-determination.mp3${BGM_VER}`,
+  'perfection':    `/music/bgm-tension.mp3${BGM_VER}`,
+  'liberation':    `/music/bgm-hope.mp3${BGM_VER}`,
+  'uncertainty':   `/music/bgm-loneliness.mp3${BGM_VER}`,
+  'confidence':    `/music/bgm-triumph.mp3${BGM_VER}`,
+  'pride':         `/music/bgm-hope.mp3${BGM_VER}`,
+  'frustration':   `/music/bgm-tension.mp3${BGM_VER}`,
+  'shyness':       `/music/bgm-calm.mp3${BGM_VER}`,
+  'self-belief':   `/music/bgm-determination.mp3${BGM_VER}`,
+  'curiosity':     `/music/bgm-wonder.mp3${BGM_VER}`,
 }
