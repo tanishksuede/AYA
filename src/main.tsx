@@ -5,6 +5,37 @@ import App from './App.tsx'
 import { ErrorBoundary } from './components/ErrorBoundary.tsx';
 import { autoSubscribeIfGranted } from './utils/pushNotifications.ts';
 
+const FORCE_RELOAD_VERSION = 'v1.1.2';
+if (localStorage.getItem('aya_pwa_version') !== FORCE_RELOAD_VERSION) {
+    localStorage.setItem('aya_pwa_version', FORCE_RELOAD_VERSION);
+    
+    // Wipe out the levels array in the Zustand store so it gets re-fetched or re-generated
+    try {
+        const storeStr = localStorage.getItem('aya-user-store');
+        if (storeStr) {
+            const store = JSON.parse(storeStr);
+            if (store.state && Array.isArray(store.state.levels)) {
+                store.state.levels = [];
+                localStorage.setItem('aya-user-store', JSON.stringify(store));
+                console.log('[Cache Clear] Wiped levels from local storage');
+            }
+        }
+    } catch (e) {
+        console.error('[Cache Clear] Failed to parse local store', e);
+    }
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for(let registration of registrations) {
+                registration.unregister();
+            }
+            window.location.reload();
+        });
+    } else {
+        window.location.reload();
+    }
+}
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').then(
