@@ -1,4 +1,4 @@
-export type StoryEmotion = 'triumph' | 'grief' | 'tension' | 'joy' | 'hope' | 'love' | 'mystery' | 'calm' | 'determination' | 'fear' | 'anger' | 'loneliness' | 'wonder' | 'nostalgia' | 'uncertainty' | 'confidence' | 'pride' | 'frustration' | 'shyness' | 'self-belief' | 'confusion' | 'courage';
+export type StoryEmotion = 'triumph' | 'grief' | 'tension' | 'joy' | 'hope' | 'love' | 'mystery' | 'calm' | 'determination' | 'fear' | 'anger' | 'loneliness' | 'wonder' | 'nostalgia' | 'uncertainty' | 'confidence' | 'pride' | 'frustration' | 'shyness' | 'self-belief' | 'confusion' | 'courage' | 'curiosity';
 
 export interface EmotionTheme {
   emotion: StoryEmotion;
@@ -11,6 +11,15 @@ export interface EmotionTheme {
 }
 
 export const EMOTION_THEMES: Record<StoryEmotion, EmotionTheme> = {
+  curiosity: {
+    emotion: 'curiosity',
+    cardOverlay: 'rgba(6, 182, 212, 0.15)',
+    badgeColor: '#06b6d4',
+    badgeGlow: '0 0 20px #06b6d488',
+    choiceBorder: 'rgba(6, 182, 212, 0.4)',
+    vignette: 'rgba(8, 51, 68, 0.25)',
+    cardBorder: 'rgba(6, 182, 212, 0.3)',
+  },
   confusion: {
     emotion: 'confusion',
     cardOverlay: 'rgba(80, 20, 120, 0.2)',
