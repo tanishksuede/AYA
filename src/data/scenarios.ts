@@ -5261,5 +5261,93 @@ export const STORY_DATABASE: Record<string, any> = {
                 ]
             }
         ]
+    },
+
+    // AGE 22: Alia Bhatt
+    'lvl_age_22_alia': {
+        title: "More Than a Star",
+        source: "Source: Mumbai, Maharashtra, 2015",
+        frames: [
+            {
+                id: 'intro',
+                emotion: 'tension',
+                bg: '/assets/bg-alia-bhatt-mumbai-2015.png',
+                portrait: '/assets/portrait-alia-bhatt.png',
+                text: "You are 22 and already four films into your career.\n\nPeople are beginning to describe you as one of Bollywood's promising young actors. But internally, you don't see yourself as having “made it.” You know four films are not a lifetime of work.\n\nYour next film, Shaandaar, is a large commercial project. It could strengthen your position and broaden your audience—but it also means more expectations.\n\nThe question is no longer simply whether you can get work. What kind of actor do you want your next choices to make you?",
+                choices: [
+                    {
+                        text: "A) Choose another safe, commercially appealing role and strengthen your position with the audience.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Success Creates a New Problem",
+                        feedback: "You value momentum and audience connection over experimentation."
+                    },
+                    {
+                        text: "B) Prioritize challenging characters, even if they carry greater professional risk.",
+                        next: 'part1_reveal',
+                        score: 15,
+                        feedbackTitle: "Success Creates a New Problem",
+                        feedback: "You prioritize artistic growth even when the safer career path may be easier."
+                    },
+                    {
+                        text: "C) Balance both: take commercially accessible projects while deliberately searching for more demanding roles.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Success Creates a New Problem",
+                        feedback: "You believe ambition does not require choosing between commercial success and creative development immediately."
+                    }
+                ]
+            },
+            {
+                id: 'part1_reveal',
+                emotion: 'tension',
+                bg: '/assets/bg-alia-bhatt-mumbai-2015.png',
+                portrait: '/assets/portrait-alia-bhatt.png',
+                text: "What Alia actually did:\nAlia continued with Shaandaar, while increasingly seeking roles that allowed her to demonstrate different sides of her acting. She described the film as commercially important while also emphasizing the value of building her career and brand.\n\nLESSON: Success Creates a New Problem\nGetting opportunities is only the first challenge. Once opportunities arrive consistently, the harder question becomes what you want those opportunities to build.",
+                choices: [
+                    { text: "Next Part", next: 'part2_setup', score: 0, feedbackTitle: "", feedback: "" }
+                ]
+            },
+            {
+                id: 'part2_setup',
+                emotion: 'hope',
+                bg: '/assets/bg-alia-bhatt-mumbai-2015.png',
+                portrait: '/assets/portrait-alia-bhatt.png',
+                text: "You have established yourself unusually quickly.\n\nBut being known for a certain kind of performance can become its own limitation. If audiences already have an image of you, changing that image requires deliberately stepping outside it.\n\nYou could continue giving audiences versions of what they already like—or use your growing credibility to experiment.\n\nThe safer path protects what you have built. The riskier path could change how people see you.",
+                choices: [
+                    {
+                        text: "A) Continue strengthening the persona audiences already respond to.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Don't Let Early Success Define the Ceiling",
+                        feedback: "You prioritize consistency and protecting the audience relationship you've already built."
+                    },
+                    {
+                        text: "B) Actively pursue dramatically different characters, even if audiences are surprised by the change.",
+                        next: 'part2_reveal',
+                        score: 15,
+                        feedbackTitle: "Don't Let Early Success Define the Ceiling",
+                        feedback: "You prioritize exploration and are willing to make your audience reconsider what they expect from you."
+                    },
+                    {
+                        text: "C) Wait until you have more experience before making a major shift in your image.",
+                        next: 'part2_reveal',
+                        score: 5,
+                        feedbackTitle: "Don't Let Early Success Define the Ceiling",
+                        feedback: "You value patience and believe experimentation becomes more powerful after establishing a stronger foundation."
+                    }
+                ]
+            },
+            {
+                id: 'part2_reveal',
+                emotion: 'hope',
+                bg: '/assets/bg-alia-bhatt-mumbai-2015.png',
+                portrait: '/assets/portrait-alia-bhatt.png',
+                text: "What Alia actually did:\nAlia increasingly moved toward varied and demanding performances. The following year, she took roles in Udta Punjab and Dear Zindagi, demonstrating a significant expansion beyond her earlier image.\n\nLESSON: Don't Let Early Success Define the Ceiling\nEarly success gives you leverage, but it can also create expectations. Growth sometimes means deliberately using that success to make yourself harder to categorize.",
+                choices: [
+                    { text: "Complete Level", next: 'COMPLETE', score: 0, feedbackTitle: "", feedback: "" }
+                ]
+            }
+        ]
     }
 };

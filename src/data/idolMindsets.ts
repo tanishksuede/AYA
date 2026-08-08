@@ -375,6 +375,33 @@ export const IDOL_MINDSETS: Record<string, IdolMindset> = {
         },
         avatarUrl: '/assets/portrait-ranveer-singh.png'
     },
+    "Alia Bhatt": {
+        name: "Alia Bhatt",
+        archetypeTitle: "Chameleon Star",
+        quote: "Don't get too comfortable. If you don't surprise yourself, you will never surprise the audience.",
+        voice: {
+            tone: "Earnest, Curious, Determined",
+            intro: "Hi! Every role is a chance to learn something new about human nature. Let's see what boundaries we can push today."
+        },
+        missions: {
+            discipline: { title: "Character Preparation", desc: "Spend dedicated time today mastering an unfamiliar skill for your project.", xp: "+50 Craft" },
+            resilience: { title: "Beyond Expectations", desc: "Ignore preconceived labels and perform with quiet focus.", xp: "+50 Grit" },
+            risk: { title: "Unconventional Role", desc: "Say yes to a task or project that steps outside your comfort zone.", xp: "+50 Courage" },
+            leadership: { title: "Anchor the Scene", desc: "Support your team members so that the collective performance shines.", xp: "+50 Presence" },
+            creativity: { title: "Emotional Range", desc: "Explore a deeper, more nuanced emotion in your creative expression today.", xp: "+50 Depth" },
+            empathy: { title: "Understand the Character", desc: "Listen deeply to someone whose life experiences are completely different from yours.", xp: "+50 Perspective" },
+            vision: { title: "Beyond the Stars", desc: "Plan your development around long-term mastery rather than short-term acclaim.", xp: "+50 Legacy" }
+        },
+        profile: {
+            motivation: 'Impact',
+            risk: 'Bold',
+            emotional: 'Sensitive',
+            social: 'Creator',
+            passion: 'Creative',
+            coreValue: 'Excellence'
+        },
+        avatarUrl: '/assets/portrait-alia-bhatt.png'
+    },
     "Oprah Winfrey": {
         name: "Oprah Winfrey",
         archetypeTitle: "Soul Connector",
@@ -1258,6 +1285,7 @@ export const IDOL_PROFILES: Record<string, Record<string, number>> = {
     "Ashneer Grover": { analytical: 95, ambitious: 100, risk: 90, creativity: 80, social: 70 },
     "Bhuvan Bam": { analytical: 80, ambitious: 95, risk: 90, creativity: 100, social: 90 },
     "Ranveer Singh": { analytical: 75, ambitious: 100, risk: 95, creativity: 100, social: 95 },
+    "Alia Bhatt": { analytical: 80, ambitious: 95, risk: 85, creativity: 100, social: 90 },
     "Oprah Winfrey": { analytical: 75, ambitious: 95, risk: 80, creativity: 70, social: 100 },
     "Bill Gates": { analytical: 95, ambitious: 90, risk: 80, creativity: 75, social: 60 },
     "J.K. Rowling": { analytical: 60, ambitious: 85, risk: 80, creativity: 100, social: 55 },

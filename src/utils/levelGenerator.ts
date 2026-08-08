@@ -469,6 +469,16 @@ export function generateLevels(_age: number): Level[] {
             avatarUrl: '/assets/portrait-ranveer-singh.png', scenarioId: 'lvl_age_22_ranveer',
             idolTraits: { discipline: 85, resilience: 95, risk: 95, leadership: 85, creativity: 100, empathy: 85, vision: 95 }
         },
+        {
+            id: 'lvl_22_alia', title: 'More Than a Star', description: 'At 22, Alia Bhatt faces rising expectations after early success, deciding how to stretch her range beyond early acclaim.',
+            requiredStars: 0, year: 2015, age: 22, theme: 'Arts', age_mirror_text: 'balancing commercial expectations with a desire for deeper artistic growth in Mumbai', archetype: 'The Prodigy', personality: 'Alia Bhatt',
+            bio: 'A 22-year-old actor with four successful films behind her, looking to expand her artistic range beyond early expectations.',
+            fame: 'Critically acclaimed Hindi Cinema Superstar. National Film Award Winner.',
+            achievements: ['National Film Award for Best Actress', '6 Filmfare Awards', 'Time 100 Most Influential People'],
+            lesson: 'DON\'T LET EARLY SUCCESS DEFINE THE CEILING — use leverage to make yourself harder to categorize.',
+            avatarUrl: '/assets/portrait-alia-bhatt.png', scenarioId: 'lvl_age_22_alia',
+            idolTraits: { discipline: 90, resilience: 90, risk: 85, leadership: 80, creativity: 100, empathy: 90, vision: 95 }
+        },
         // Age 23: Shah Rukh Khan
         {
             id: 'lvl_23_srk', title: 'Gauri or Career', description: 'At 23, SRK must choose between love and the career opportunity of a lifetime.',
