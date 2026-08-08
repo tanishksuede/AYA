@@ -402,6 +402,33 @@ export const IDOL_MINDSETS: Record<string, IdolMindset> = {
         },
         avatarUrl: '/assets/portrait-alia-bhatt.png'
     },
+    "Bhagat Singh": {
+        name: "Bhagat Singh",
+        archetypeTitle: "Unshakable Idealist",
+        quote: "They may kill me, but they cannot kill my ideas. They can crush my body, but they will not be able to crush my spirit.",
+        voice: {
+            tone: "Resolute, Intellectual, Courageous",
+            intro: "Injustice prospers only when good people stay silent. Stand firm in your principles today, no matter the cost."
+        },
+        missions: {
+            discipline: { title: "Unbending Resolve", desc: "Stick to a difficult moral commitment today without compromise.", xp: "+50 Integrity" },
+            resilience: { title: "Endure the Trial", desc: "Maintain your composure and dignity in the face of unfair criticism.", xp: "+50 Fortitude" },
+            risk: { title: "Speak Truth to Power", desc: "Challenge a flawed process or unjust rule publicly.", xp: "+50 Defiance" },
+            leadership: { title: "Unify the Cause", desc: "Rally others around a shared principle rather than personal gain.", xp: "+50 Solidarity" },
+            creativity: { title: "The Written Manifesto", desc: "Articulate your core beliefs clearly in writing to inspire others.", xp: "+50 Conviction" },
+            empathy: { title: "Stand with the Oppressed", desc: "Advocate for someone who is being treated unfairly.", xp: "+50 Justice" },
+            vision: { title: "Legacy of Freedom", desc: "Make a choice today that benefits future generations rather than yourself.", xp: "+50 Purpose" }
+        },
+        profile: {
+            motivation: 'Impact',
+            risk: 'Bold',
+            emotional: 'Resilient',
+            social: 'Leader',
+            passion: 'Competitive',
+            coreValue: 'Justice'
+        },
+        avatarUrl: '/assets/portrait-bhagat-singh.png'
+    },
     "Oprah Winfrey": {
         name: "Oprah Winfrey",
         archetypeTitle: "Soul Connector",
@@ -1286,6 +1313,7 @@ export const IDOL_PROFILES: Record<string, Record<string, number>> = {
     "Bhuvan Bam": { analytical: 80, ambitious: 95, risk: 90, creativity: 100, social: 90 },
     "Ranveer Singh": { analytical: 75, ambitious: 100, risk: 95, creativity: 100, social: 95 },
     "Alia Bhatt": { analytical: 80, ambitious: 95, risk: 85, creativity: 100, social: 90 },
+    "Bhagat Singh": { analytical: 90, ambitious: 100, risk: 100, creativity: 85, social: 95 },
     "Oprah Winfrey": { analytical: 75, ambitious: 95, risk: 80, creativity: 70, social: 100 },
     "Bill Gates": { analytical: 95, ambitious: 90, risk: 80, creativity: 75, social: 60 },
     "J.K. Rowling": { analytical: 60, ambitious: 85, risk: 80, creativity: 100, social: 55 },

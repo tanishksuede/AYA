@@ -479,6 +479,16 @@ export function generateLevels(_age: number): Level[] {
             avatarUrl: '/assets/portrait-alia-bhatt.png', scenarioId: 'lvl_age_22_alia',
             idolTraits: { discipline: 90, resilience: 90, risk: 85, leadership: 80, creativity: 100, empathy: 90, vision: 95 }
         },
+        {
+            id: 'lvl_22_bhagat', title: 'The Price of a Voice', description: 'At 22, Bhagat Singh fights for political prisoner rights from inside Lahore Central Jail and turns the court into a platform.',
+            requiredStars: 0, year: 1929, age: 22, theme: 'History', age_mirror_text: 'enduring prison and courtroom trials in Lahore, defining conviction through sacrifice', archetype: 'The Revolutionary', personality: 'Bhagat Singh',
+            bio: 'A 22-year-old freedom fighter imprisoned in Lahore, leading historical hunger strikes and challenging colonial courts.',
+            fame: 'Iconic Indian Revolutionary Leader. Shaheed-e-Azam.',
+            achievements: ['116-day historical hunger strike', 'Central Assembly protest for worker rights', 'Enduring national symbol of courage'],
+            lesson: 'CONVICTION HAS A COST — deciding what price you are willing to pay for your principles.',
+            avatarUrl: '/assets/portrait-bhagat-singh.png', scenarioId: 'lvl_age_22_bhagat',
+            idolTraits: { discipline: 100, resilience: 100, risk: 100, leadership: 95, creativity: 85, empathy: 90, vision: 100 }
+        },
         // Age 23: Shah Rukh Khan
         {
             id: 'lvl_23_srk', title: 'Gauri or Career', description: 'At 23, SRK must choose between love and the career opportunity of a lifetime.',

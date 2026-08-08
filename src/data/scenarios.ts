@@ -5349,5 +5349,93 @@ export const STORY_DATABASE: Record<string, any> = {
                 ]
             }
         ]
+    },
+
+    // AGE 22: Bhagat Singh
+    'lvl_age_22_bhagat': {
+        title: "The Price of a Voice",
+        source: "Source: Lahore, British India, 1929-1930",
+        frames: [
+            {
+                id: 'intro',
+                emotion: 'grief',
+                bg: '/assets/bg-bhagat-singh-lahore-1929.png',
+                portrait: '/assets/portrait-bhagat-singh.png',
+                text: "You are 22 and have already spent months in prison.\n\nThe hunger strike began as a demand for better treatment of political prisoners. But now the situation has become far more serious.\n\nJatin Das has died after 63 days on hunger strike. Public anger is growing, but inside the jail the remaining prisoners are physically weakened.\n\nYou now have to decide whether continuing the protest is worth the personal cost when someone has already paid the ultimate price.",
+                choices: [
+                    {
+                        text: "A) End the hunger strike now. The death of Jatin Das has already exposed the prison conditions; continuing may only create more deaths.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Conviction Has a Cost",
+                        feedback: "You prioritize preserving life and recognize when a protest has already achieved significant visibility."
+                    },
+                    {
+                        text: "B) Continue the hunger strike. Ending now could mean surrendering the pressure that has been created.",
+                        next: 'part1_reveal',
+                        score: 15,
+                        feedbackTitle: "Conviction Has a Cost",
+                        feedback: "You believe sustained sacrifice is necessary when authorities have not meaningfully addressed the underlying injustice."
+                    },
+                    {
+                        text: "C) Pause the hunger strike and redirect the protest toward written statements, legal proceedings and public advocacy.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Conviction Has a Cost",
+                        feedback: "You value changing tactics rather than allowing one method of resistance to consume everything else."
+                    }
+                ]
+            },
+            {
+                id: 'part1_reveal',
+                emotion: 'grief',
+                bg: '/assets/bg-bhagat-singh-lahore-1929.png',
+                portrait: '/assets/portrait-bhagat-singh.png',
+                text: "What Bhagat Singh actually did:\nBhagat Singh continued the hunger strike despite Jatin Das's death. The strike ultimately lasted 116 days and ended on 5 October 1929.\n\nLESSON: Conviction Has a Cost\nA principle becomes much harder to defend when defending it begins to cost you personally. Conviction is not simply believing strongly—it is deciding what cost you are prepared to accept.",
+                choices: [
+                    { text: "Next Part", next: 'part2_setup', score: 0, feedbackTitle: "", feedback: "" }
+                ]
+            },
+            {
+                id: 'part2_setup',
+                emotion: 'tension',
+                bg: '/assets/bg-bhagat-singh-lahore-1929.png',
+                portrait: '/assets/portrait-bhagat-singh.png',
+                text: "The Lahore Conspiracy Case is moving forward.\n\nYou are facing a colonial tribunal whose authority you do not recognize. Yet the courtroom gives you something valuable: an audience.\n\nYou can participate in proceedings and use them to present your arguments, or refuse to cooperate when you believe the process itself is being used against you.\n\nEvery decision carries a cost. Participation can give you a platform. Refusal can become a protest in itself.",
+                choices: [
+                    {
+                        text: "A) Fully participate in the proceedings and use the courtroom as a platform to explain your political position.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "A Platform Can Become a Battlefield",
+                        feedback: "You believe influence comes from staying inside the system and using its visibility against it."
+                    },
+                    {
+                        text: "B) Refuse to participate when the court restricts your ability to defend yourself and challenge the proceedings.",
+                        next: 'part2_reveal',
+                        score: 15,
+                        feedbackTitle: "A Platform Can Become a Battlefield",
+                        feedback: "You believe refusing legitimacy can communicate more powerfully than participating."
+                    },
+                    {
+                        text: "C) Continue participating selectively—use the courtroom when it serves your political purpose but refuse proceedings you consider unjust.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "A Platform Can Become a Battlefield",
+                        feedback: "You prioritize tactical flexibility, choosing engagement based on whether it advances your larger objective."
+                    }
+                ]
+            },
+            {
+                id: 'part2_reveal',
+                emotion: 'tension',
+                bg: '/assets/bg-bhagat-singh-lahore-1929.png',
+                portrait: '/assets/portrait-bhagat-singh.png',
+                text: "What Bhagat Singh actually did:\nBhagat Singh and his comrades repeatedly challenged the proceedings. In January 1930, Bhagat Singh explained their refusal to attend court, citing restrictions on their defence and treatment of prisoners. Later, an “undefended accused” statement declared that they did not recognize the colonial government or the tribunal.\n\nLESSON: A Platform Can Become a Battlefield\nWhen you cannot control the institution you are facing, you can still decide how you engage with it. Participation, refusal and selective engagement can each become forms of strategy.",
+                choices: [
+                    { text: "Complete Level", next: 'COMPLETE', score: 0, feedbackTitle: "", feedback: "" }
+                ]
+            }
+        ]
     }
 };
