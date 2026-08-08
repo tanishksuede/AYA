@@ -4817,7 +4817,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'consequence_a',
-                bg: '/assets/bg-kobe-consequence-a.png',
+                bg: '/assets/kobe-gym-sunlight.png',
                 text: "You spend the season as a clear subordinate. Your fierce internal edge is blunted by backing down.",
                 choices: [
                     {
@@ -4831,7 +4831,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'consequence_b',
-                bg: '/assets/bg-kobe-consequence-b.png',
+                bg: '/assets/kobe-shoes-floor.png',
                 text: "The game continues, but the psychological hierarchy is cemented. You chose harmony over your own self-respect.",
                 choices: [
                     {
@@ -4845,7 +4845,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'consequence_c',
-                bg: '/assets/bg-kobe-consequence-c.png',
+                bg: '/assets/kobe-lakers-locker.png',
                 text: "You throw a flurry of punches before teammates frantically drag you apart. You are isolated from the leader, but you established a terrifying boundary.",
                 choices: [
                     {
@@ -4859,7 +4859,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'lesson_1',
-                bg: '/assets/bg-kobe-lesson-1.png',
+                bg: '/assets/kobe-whiteboard.png',
                 text: "LESSON: The Price of Parity\nTrue respect is rarely cleanly negotiated; it is usually extracted through conflict. Establishing boundaries guarantees isolation, but prevents subordination.",
                 choices: [
                     {
@@ -4873,7 +4873,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'part2_setup',
-                bg: '/assets/bg-kobe-losangeles-1998-part2.png',
+                bg: '/assets/kobe-arena-tunnel.png',
                 text: "The lockout ends, but the veterans ambush you in a closed-door meeting to demand you stop shooting so much. You sit entirely alone against a unified front.",
                 choices: [
                     {

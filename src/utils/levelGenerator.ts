@@ -401,7 +401,7 @@ export function generateLevels(_age: number): Level[] {
             fame: 'One of the greatest basketball players ever.',
             achievements: ['5-time NBA Champion', '18-time All-Star', 'Oscar Winner (Dear Basketball)'],
             lesson: 'DISCIPLINE to do the boring work when no one is watching.',
-            avatarUrl: '/assets/avatar_kobe.png', scenarioId: 'lvl_age_20_sports',
+            avatarUrl: '/assets/kobe-portrait.png', scenarioId: 'lvl_age_20_kobe',
             idolTraits: { discipline: 100, resilience: 100, risk: 75, leadership: 88, creativity: 70, empathy: 60, vision: 85 }
         },
         // Age 20: NV Sir
