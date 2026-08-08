@@ -74,6 +74,17 @@ export function generateLevels(_age: number): Level[] {
             avatarUrl: '/assets/portrait-bhagat-singh.png', scenarioId: 'lvl_age_15_bhagat_2',
             idolTraits: { discipline: 100, resilience: 100, risk: 100, leadership: 95, creativity: 85, empathy: 90, vision: 100 }
         },
+        // Age 15: Rani Lakshmibai (One Continuous Story: The Girl and the Crown)
+        {
+            id: 'lvl_15_rani_lakshmibai', title: 'The Girl and the Crown', description: 'At 15, Manikarnika becomes Lakshmibai, Rani of Jhansi, navigating the identity transition between her past and her new royal responsibilities.',
+            requiredStars: 0, year: 1843, age: 15, theme: 'History', age_mirror_text: 'entering a new life in Jhansi as Lakshmibai while holding on to Manu', archetype: 'The Sovereign', personality: 'Rani Lakshmibai',
+            bio: 'A 15-year-old in Jhansi transitioning from her independent childhood as Manu into her new royal role as Lakshmibai.',
+            fame: 'Rani of Jhansi & Heroine of Indian Resistance.',
+            achievements: ['Married Raja Gangadhar Rao in 1842', 'Retained martial skills and literacy in her court life', 'Pioneered independent female leadership in 19th-century India'],
+            lesson: 'WHAT YOU CARRY FORWARD — growing up does not mean becoming a completely different person; it means taking what is already strong inside you and learning how to use it responsibly.',
+            avatarUrl: '/assets/portrait-rani-lakshmibai.png', scenarioId: 'lvl_age_15_rani_lakshmibai',
+            idolTraits: { discipline: 100, resilience: 100, risk: 95, leadership: 100, creativity: 85, empathy: 90, vision: 100 }
+        },
         // Age 20: Billie Eilish (Story 2)
         {
             id: 'lvl_20_billie_2', title: 'The Person Who Left You On Seen', description: 'At 20, you must choose between chasing someone who ghosts you, or turning the pain into art.',
