@@ -30,6 +30,28 @@ export function generateLevels(_age: number): Level[] {
             avatarUrl: '/assets/portrait-anne-frank.png', scenarioId: 'lvl_age_13_anne_2',
             idolTraits: { discipline: 80, resilience: 100, risk: 70, leadership: 60, creativity: 100, empathy: 95, vision: 85 }
         },
+        // Age 15: Michael Jackson (Part 1)
+        {
+            id: 'lvl_15_michael_1', title: 'When Your Voice Changes', description: 'At 15, Michael Jackson experiences physical and vocal changes during adolescence while continuing his music career.',
+            requiredStars: 0, year: 1973, age: 15, theme: 'Music', age_mirror_text: 'noticing your voice and abilities changing as you grow up', archetype: 'The Perfectionist', personality: 'Michael Jackson',
+            bio: 'A 15-year-old artist going through adolescence as his singing voice changes and matures.',
+            fame: 'Solo Artist & Jackson 5 Lead Singer.',
+            achievements: ['Released Music & Me at age 15', 'Multiple solo & Jackson 5 hits', 'Adapted to vocal changes during adolescence'],
+            lesson: 'LEARNING TO USE WHAT YOU HAVE NOW — changing does not mean getting worse; it means learning how to use your new abilities.',
+            avatarUrl: '/assets/portrait-michael-jackson.png', scenarioId: 'lvl_age_15_michael_1',
+            idolTraits: { discipline: 95, resilience: 90, risk: 85, leadership: 85, creativity: 100, empathy: 80, vision: 100 }
+        },
+        // Age 15: Michael Jackson (Part 2)
+        {
+            id: 'lvl_15_michael_2', title: 'When People Expect the Old You', description: 'At 15, Michael Jackson decides how to navigate audience expectations as he grows out of his childhood identity.',
+            requiredStars: 0, year: 1973, age: 15, theme: 'Music', age_mirror_text: 'deciding how to grow up when people remember an older version of you', archetype: 'The Perfectionist', personality: 'Michael Jackson',
+            bio: 'A 15-year-old performer growing into a new stage of life while audience expectations remain tied to the past.',
+            fame: 'Solo Artist & Jackson 5 Lead Singer.',
+            achievements: ['Released Music & Me at age 15', 'Multiple solo & Jackson 5 hits', 'Adapted to vocal changes during adolescence'],
+            lesson: 'NOT STAYING THE SAME FOR OTHERS — real growth often happens between staying the same and becoming someone completely different.',
+            avatarUrl: '/assets/portrait-michael-jackson.png', scenarioId: 'lvl_age_15_michael_2',
+            idolTraits: { discipline: 95, resilience: 90, risk: 85, leadership: 85, creativity: 100, empathy: 80, vision: 100 }
+        },
         // Age 20: Billie Eilish (Story 2)
         {
             id: 'lvl_20_billie_2', title: 'The Person Who Left You On Seen', description: 'At 20, you must choose between chasing someone who ghosts you, or turning the pain into art.',

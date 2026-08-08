@@ -6408,5 +6408,121 @@ export const STORY_DATABASE: Record<string, any> = {
                 ]
             }
         ]
+    },
+
+    // AGE 15: Michael Jackson - Part 1
+    'lvl_age_15_michael_1': {
+        title: "When Your Voice Changes",
+        source: "Source: Historical Context, 1973–1974",
+        frames: [
+            {
+                id: 'intro',
+                emotion: 'confusion',
+                bg: '/assets/bg-michael-jackson-van-nuys-1981.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-michael-jackson.png',
+                text: "You are 15. You have been singing for years. People know your voice. You know how to perform. You know how to get on stage.\n\nBut you are growing up. Your voice is changing. The sound that once came naturally does not always feel exactly the same anymore.\n\nYou could try to keep doing everything exactly as you did before. You could accept the change and learn how to use your new voice. Or you could experiment and find a completely different way of performing.\n\nThere is no obvious answer.",
+                choices: [
+                    {
+                        text: "STAY WITH WHAT YOU KNOW: Keep using the style that has worked for you. Practise the old approach until you can make it feel natural again.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Consistency",
+                        feedback: "You prefer improving something familiar rather than changing direction when things become difficult."
+                    },
+                    {
+                        text: "LEARN THE NEW VERSION OF YOURSELF: Accept that your voice is changing. Instead of fighting it, practise until you understand what your new voice can do.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Adaptation",
+                        feedback: "You are comfortable accepting change and learning how to work with it."
+                    },
+                    {
+                        text: "TRY SOMETHING COMPLETELY DIFFERENT: Use the change as an opportunity. Experiment with different sounds, songs and ways of performing.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Exploration",
+                        feedback: "You see change as a chance to discover abilities you may not have known you had."
+                    }
+                ]
+            },
+            {
+                id: 'reveal',
+                emotion: 'confusion',
+                bg: '/assets/bg-michael-jackson-van-nuys-1981.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-michael-jackson.png',
+                text: "HISTORICAL REALITY:\nMichael's voice was changing as he moved through adolescence. At the same time, his career continued. He released Music & Me in 1973 and continued performing and recording.\n\nMotown also continued developing material for Michael and the Jackson 5 as the group's young performers matured.\n\nThe historical record does NOT establish that Michael faced the three exact choices presented here. The documented reality is that Michael continued working through a period of physical and artistic change while remaining active as a performer.\n\nLESSON:\nChanging does not mean you are getting worse. Sometimes the skill you had before changes shape. The important question is not: \"Can I stay exactly the same?\" It is: \"Can I learn how to use what I have now?\"",
+                choices: [
+                    {
+                        text: "Complete Level",
+                        next: 'COMPLETE',
+                        score: 0,
+                        feedbackTitle: "",
+                        feedback: ""
+                    }
+                ]
+            }
+        ]
+    },
+
+    // AGE 15: Michael Jackson - Part 2
+    'lvl_age_15_michael_2': {
+        title: "When People Expect the Old You",
+        source: "Source: Historical Context, 1973–1974",
+        frames: [
+            {
+                id: 'intro',
+                emotion: 'courage',
+                bg: '/assets/bg-michael-jackson-van-nuys-1981.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-michael-jackson.png',
+                text: "People already know what you sound like. They know the young performer they became fans of. They have expectations.\n\nBut you are not exactly the same person anymore. You are growing. Your voice is changing. Your interests are developing. Your musical ideas are changing too.\n\nYou have to decide how much you should listen to other people's expectations. This is not about ignoring everyone. It is about deciding how much of your future should be controlled by what worked in your past.",
+                choices: [
+                    {
+                        text: "GIVE PEOPLE WHAT THEY EXPECT: Stay close to the style people already love. There is value in giving an audience something familiar.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Responsibility",
+                        feedback: "You care about the people who support you and do not want to change simply for yourself."
+                    },
+                    {
+                        text: "FOLLOW YOUR OWN DEVELOPMENT: Accept that some people may need time to adjust. Focus on becoming the performer you are growing into.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Independence",
+                        feedback: "You believe personal growth sometimes requires allowing other people to see a different version of you."
+                    },
+                    {
+                        text: "CHANGE SLOWLY: Keep some familiar elements while gradually introducing new ideas. Give yourself and your audience time to adjust.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Balance",
+                        feedback: "You believe growth does not have to mean throwing everything away at once."
+                    }
+                ]
+            },
+            {
+                id: 'reveal',
+                emotion: 'courage',
+                bg: '/assets/bg-michael-jackson-van-nuys-1981.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-michael-jackson.png',
+                text: "HISTORICAL REALITY:\nMichael continued developing as both a solo artist and member of the Jackson 5 during his teenage years. His early solo work included Music & Me in 1973.\n\nThe important point for this story is that Michael did not remain frozen as the child performer audiences had first known. He continued developing as he grew older.\n\nThe exact three choices presented here are hypothetical. There is no single historically correct answer.\n\nLESSON:\nGrowing up can make other people uncomfortable because they remember an older version of you. You do not have to become a completely different person. But you also do not have to stay exactly the same just because people liked who you were before.\n\nReal growth often happens somewhere between: \"Stay the same.\" and \"Become someone completely different.\"",
+                choices: [
+                    {
+                        text: "Complete Level",
+                        next: 'COMPLETE',
+                        score: 0,
+                        feedbackTitle: "",
+                        feedback: ""
+                    }
+                ]
+            }
+        ]
     }
 };
