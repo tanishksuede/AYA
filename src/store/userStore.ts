@@ -337,7 +337,7 @@ export const useUserStore = create<UserState>()(
                     const mergedLevels = localLevels.map(localLevel => {
                         const dbLevel = dbLevelsMap.get(localLevel.id);
                         const score = currentScores[localLevel.id];
-                        const activeLevel = dbLevel || localLevel;
+                        const activeLevel = dbLevel ? { ...localLevel, ...dbLevel, age: localLevel.age } : localLevel;
                         
                         let computedStatus = activeLevel.status;
                         if (score !== undefined && score > 0) {
