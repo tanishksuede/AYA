@@ -4591,6 +4591,182 @@ export const STORY_DATABASE: Record<string, any> = {
         ]
     },
 
+    // AGE 20: Kobe Bryant
+    'lvl_age_20_kobe': {
+        title: "The Lockout Echo",
+        source: "Source: 1998-1999 Lockout Season",
+        frames: [
+            {
+                id: 'intro',
+                bg: '/assets/bg-kobe-losangeles-1998-setup.png',
+                text: "The 1998 NBA season is shut down, so you organize intense, unofficiated pickup games. After Shaquille O'Neal slaps you across the face for challenging his call, the gym falls into a suffocating silence.",
+                choices: [
+                    {
+                        text: "Walk off the court. Protect your contract.",
+                        next: 'consequence_a',
+                        score: -5,
+                        feedbackTitle: "",
+                        feedback: ""
+                    },
+                    {
+                        text: "Force a laugh. De-escalate for team chemistry.",
+                        next: 'consequence_b',
+                        score: -5,
+                        feedbackTitle: "",
+                        feedback: ""
+                    },
+                    {
+                        text: "Step directly into his massive frame and throw a punch.",
+                        next: 'consequence_c',
+                        score: 10,
+                        feedbackTitle: "",
+                        feedback: ""
+                    }
+                ]
+            },
+            {
+                id: 'consequence_a',
+                bg: '/assets/bg-kobe-consequence-a.png',
+                text: "You spend the season as a clear subordinate. Your fierce internal edge is blunted by backing down.",
+                choices: [
+                    {
+                        text: "Go back and choose again.",
+                        next: 'intro',
+                        score: 0,
+                        feedbackTitle: "The Cost of Retreat",
+                        feedback: "Wrong because: Retreating signals submission to an alpha. It costs: Your self-respect and the terrifying edge that makes your game work."
+                    }
+                ]
+            },
+            {
+                id: 'consequence_b',
+                bg: '/assets/bg-kobe-consequence-b.png',
+                text: "The game continues, but the psychological hierarchy is cemented. You chose harmony over your own self-respect.",
+                choices: [
+                    {
+                        text: "Go back and choose again.",
+                        next: 'intro',
+                        score: 0,
+                        feedbackTitle: "Hollow Compromise",
+                        feedback: "Wrong because: A hollow compromise trades respect for false peace. It costs: You lose your intimidation factor permanently."
+                    }
+                ]
+            },
+            {
+                id: 'consequence_c',
+                bg: '/assets/bg-kobe-consequence-c.png',
+                text: "You throw a flurry of punches before teammates frantically drag you apart. You are isolated from the leader, but you established a terrifying boundary.",
+                choices: [
+                    {
+                        text: "Continue",
+                        next: 'lesson_1',
+                        score: 10,
+                        feedbackTitle: "Establishing Parity",
+                        feedback: "Right because: Establishing psychological parity required choosing your boundaries over group comfort."
+                    }
+                ]
+            },
+            {
+                id: 'lesson_1',
+                bg: '/assets/bg-kobe-lesson-1.png',
+                text: "LESSON: The Price of Parity\nTrue respect is rarely cleanly negotiated; it is usually extracted through conflict. Establishing boundaries guarantees isolation, but prevents subordination.",
+                choices: [
+                    {
+                        text: "Next Part",
+                        next: 'part2_setup',
+                        score: 0,
+                        feedbackTitle: "",
+                        feedback: ""
+                    }
+                ]
+            },
+            {
+                id: 'part2_setup',
+                bg: '/assets/bg-kobe-losangeles-1998-part2.png',
+                text: "The lockout ends, but the veterans ambush you in a closed-door meeting to demand you stop shooting so much. You sit entirely alone against a unified front.",
+                choices: [
+                    {
+                        text: "Demand a trade. Escape to a franchise without politics.",
+                        next: 'p2_consequence_a',
+                        score: -5,
+                        feedbackTitle: "",
+                        feedback: ""
+                    },
+                    {
+                        text: "Publicly agree. Sacrifice your rhythm to keep the peace.",
+                        next: 'p2_consequence_b',
+                        score: -5,
+                        feedbackTitle: "",
+                        feedback: ""
+                    },
+                    {
+                        text: "Absorb their hatred in total silence. Refuse to alter your aggression.",
+                        next: 'p2_consequence_c',
+                        score: 10,
+                        feedbackTitle: "",
+                        feedback: ""
+                    }
+                ]
+            },
+            {
+                id: 'p2_consequence_a',
+                bg: '/assets/bg-kobe-p2-consequence-a.png',
+                text: "The front office refuses to move you, but the rumor leaks to the press. You spend the season viewed as a traitor who runs from adversity.",
+                choices: [
+                    {
+                        text: "Go back and choose again.",
+                        next: 'part2_setup',
+                        score: 0,
+                        feedbackTitle: "Escaping Friction",
+                        feedback: "Wrong because: Escaping friction prevents you from learning to dominate from within. It costs: Your reputation and your ability to lead a hostile system."
+                    }
+                ]
+            },
+            {
+                id: 'p2_consequence_b',
+                bg: '/assets/bg-kobe-p2-consequence-b.png',
+                text: "Your scoring drops, your rhythm vanishes, and the team still loses. You compromised your greatest weapon for dysfunctional harmony.",
+                choices: [
+                    {
+                        text: "Go back and choose again.",
+                        next: 'part2_setup',
+                        score: 0,
+                        feedbackTitle: "Shrinking Your Game",
+                        feedback: "Wrong because: Shrinking your game to appease others destroys your unique value. It costs: Your offensive pressure and the team's ultimate success."
+                    }
+                ]
+            },
+            {
+                id: 'p2_consequence_c',
+                bg: '/assets/bg-kobe-p2-consequence-c.png',
+                text: "You step onto the court and play with the exact same ruthless aggression. The tension is suffocating, but they are forced to play off your gravity.",
+                choices: [
+                    {
+                        text: "Continue",
+                        next: 'lesson_2',
+                        score: 10,
+                        feedbackTitle: "Trusting Preparation",
+                        feedback: "Right because: Trusting your preparation over their opinions forced them to adapt to your pace."
+                    }
+                ]
+            },
+            {
+                id: 'lesson_2',
+                bg: '/assets/bg-kobe-ending.png',
+                text: "LESSON: The Burden of Conviction\nGroup consensus is often just a collective demand for comfort. If your preparation justifies your actions, you must endure the loneliness of being misunderstood.\n\nHe walked out of that meeting an outcast, armed only with the certainty that his relentless work would force them to conform to his light.",
+                choices: [
+                    {
+                        text: "Complete Level",
+                        next: 'COMPLETE',
+                        score: 10,
+                        feedbackTitle: "Mission Accomplished",
+                        feedback: ""
+                    }
+                ]
+            }
+        ]
+    },
+
     // AGE 22: Michael Jackson
     'lvl_age_22_michael': {
         title: "The Life You Built",
