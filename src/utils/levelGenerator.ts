@@ -472,6 +472,26 @@ export function generateLevels(_age: number): Level[] {
             avatarUrl: '/assets/portrait-tanmay-bhat.png', scenarioId: 'lvl_age_21_tanmay_2',
             idolTraits: { discipline: 80, resilience: 90, risk: 95, leadership: 85, creativity: 100, empathy: 85, vision: 95 }
         },
+        {
+            id: 'lvl_21_michael_1', title: 'Not Just the Jackson 5', description: 'At 21, Michael Jackson enters the Off the Wall era in Los Angeles, deciding how to shape his adult solo musical identity with Quincy Jones.',
+            requiredStars: 0, year: 1979, age: 21, theme: 'Music', age_mirror_text: 'recording Off the Wall in Los Angeles, establishing an adult solo sound', archetype: 'The Perfectionist', personality: 'Michael Jackson',
+            bio: 'A 21-year-old artist in Los Angeles transitioning from child stardom to adult solo musical independence.',
+            fame: 'Grammy-winning Solo Artist. Off the Wall Era.',
+            achievements: ['First solo album with four Top 10 Billboard hits', 'Grammy winner for Don\'t Stop \'Til You Get Enough', 'Pioneered adult R&B/pop crossover'],
+            lesson: 'NOT REJECTING WHERE YOU CAME FROM — growing up does not mean becoming completely different; it means deciding which parts of your old identity still belong to you.',
+            avatarUrl: '/assets/portrait-michael-jackson.png', scenarioId: 'lvl_age_21_michael_1',
+            idolTraits: { discipline: 95, resilience: 90, risk: 85, leadership: 85, creativity: 100, empathy: 80, vision: 100 }
+        },
+        {
+            id: 'lvl_21_michael_2', title: 'Good Enough or Your Best?', description: 'At 21, as the music takes shape, Michael Jackson faces the tension between continuous refinement and releasing his work.',
+            requiredStars: 0, year: 1979, age: 21, theme: 'Music', age_mirror_text: 'in the Los Angeles recording studio, refining vocal takes and rhythm arrangements', archetype: 'The Perfectionist', personality: 'Michael Jackson',
+            bio: 'A 21-year-old solo artist learning when perfectionism serves the music and when the work must be released into the world.',
+            fame: 'Grammy-winning Solo Artist. Off the Wall Era.',
+            achievements: ['First solo album with four Top 10 Billboard hits', 'Grammy winner for Don\'t Stop \'Til You Get Enough', 'Pioneered adult R&B/pop crossover'],
+            lesson: 'LEAVING THE WORK IN THE WORLD — perfection can be a strength, but creative work also requires knowing when to release something into the world.',
+            avatarUrl: '/assets/portrait-michael-jackson.png', scenarioId: 'lvl_age_21_michael_2',
+            idolTraits: { discipline: 95, resilience: 90, risk: 85, leadership: 85, creativity: 100, empathy: 80, vision: 100 }
+        },
 
         // Age 21: Shah Rukh Khan
         {

@@ -6292,5 +6292,121 @@ export const STORY_DATABASE: Record<string, any> = {
                 ]
             }
         ]
+    },
+
+    // AGE 21: Michael Jackson - Part 1
+    'lvl_age_21_michael_1': {
+        title: "Not Just the Jackson 5",
+        source: "Source: Off the Wall Era, 1979–1980",
+        frames: [
+            {
+                id: 'intro',
+                emotion: 'liberation',
+                bg: '/assets/bg-michael-jackson-van-nuys-1981.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-michael-jackson.png',
+                text: "You are 21. You have spent most of your life performing. People already know your voice. They know your dancing. They know the group you came from.\n\nBut now you are creating music as a solo artist. The expectations are complicated. People already have an idea of who Michael Jackson is. But the music you are making now does not have to simply repeat the past.\n\nYou are working with Quincy Jones. You are surrounded by extraordinary musicians. There are different sounds you could explore. Different writers. Different arrangements. Different ways to present yourself.\n\nYou have to decide: Do you stay close to the sound people already associate with you? Do you take the opportunity to experiment? Or do you try to combine your established strengths with something new?",
+                choices: [
+                    {
+                        text: "STAY CLOSE TO WHAT PEOPLE KNOW: Build the album around the qualities audiences already associate with you. Do not risk moving too far away from the sound that already works.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Familiarity",
+                        feedback: "You value stability and believe a strong existing identity should be protected while expanding."
+                    },
+                    {
+                        text: "EXPERIMENT: Use this opportunity to explore new sounds, arrangements and musical influences. Accept that some choices may feel unfamiliar.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Curiosity",
+                        feedback: "You are willing to explore uncertainty because discovery may reveal something you could not have planned."
+                    },
+                    {
+                        text: "BUILD SOMETHING IN BETWEEN: Keep the strengths people already recognize while deliberately adding new influences and ideas.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Adaptability",
+                        feedback: "You believe evolution does not require abandoning everything that came before."
+                    }
+                ]
+            },
+            {
+                id: 'reveal',
+                emotion: 'liberation',
+                bg: '/assets/bg-michael-jackson-van-nuys-1981.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-michael-jackson.png',
+                text: "HISTORICAL REALITY:\nJackson's Off the Wall project did move into a more sophisticated adult R&B/pop direction. He worked with Quincy Jones and a group of major musicians and writers. The album included Jackson's own songwriting alongside contributions from artists such as Stevie Wonder and Paul McCartney.\n\nThe result was a record that separated his adult solo identity from the sound of his earlier Jackson 5 years.\n\nThe historical record does NOT establish that Jackson faced these exact three choices. The documented reality is that he did participate actively in shaping a new solo musical identity while collaborating with highly accomplished musicians.\n\nLESSON:\nGrowing up does not always mean becoming completely different. Sometimes it means deciding which parts of your old identity still belong to you. You do not have to reject where you came from to discover where you want to go.",
+                choices: [
+                    {
+                        text: "Complete Level",
+                        next: 'COMPLETE',
+                        score: 0,
+                        feedbackTitle: "",
+                        feedback: ""
+                    }
+                ]
+            }
+        ]
+    },
+
+    // AGE 21: Michael Jackson - Part 2
+    'lvl_age_21_michael_2': {
+        title: "Good Enough or Your Best?",
+        source: "Source: Off the Wall Era, 1979–1980",
+        frames: [
+            {
+                id: 'intro',
+                emotion: 'perfection',
+                bg: '/assets/bg-michael-jackson-van-nuys-1981.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-michael-jackson.png',
+                text: "The music is taking shape. You have talented people around you. You have strong songs. You have ideas.\n\nBut you keep hearing small things that could be improved. Another vocal take. Another arrangement. Another rhythm. Another detail.\n\nThere is always something that could potentially become better. At some point, you have to decide whether to stop or continue refining.\n\nYou have three possible approaches.",
+                choices: [
+                    {
+                        text: "KNOW WHEN TO STOP: Once the song communicates what you want, accept it and move forward.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Efficiency",
+                        feedback: "You understand that endless refinement can become another form of hesitation."
+                    },
+                    {
+                        text: "KEEP REFINING: Continue working until every detail feels as close as possible to what you imagined.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Perfectionism",
+                        feedback: "You are willing to invest more time because small details can fundamentally change the final experience."
+                    },
+                    {
+                        text: "TRUST THE TEAM: Listen carefully to the people around you and allow collaborators to tell you when the music is already working.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Trust",
+                        feedback: "You understand that great creative work does not always come from controlling every decision yourself."
+                    }
+                ]
+            },
+            {
+                id: 'reveal',
+                emotion: 'perfection',
+                bg: '/assets/bg-michael-jackson-van-nuys-1981.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-michael-jackson.png',
+                text: "HISTORICAL REALITY:\nOff the Wall was created through an unusually strong collaborative environment involving Quincy Jones, Jackson and many accomplished musicians, writers and engineers. Jackson contributed his own songwriting while also recording material written by other major artists.\n\nThe album ultimately became a major commercial and artistic success. \"Don't Stop 'Til You Get Enough\" became Jackson's first Grammy-winning song, and the album produced four Billboard Hot 100 Top 10 singles.\n\nLESSON:\nPerfection can be a strength. But creative work also requires knowing when to release something into the world. Sometimes the hardest part of making something great is accepting that eventually: the work has to leave your hands.",
+                choices: [
+                    {
+                        text: "Complete Level",
+                        next: 'COMPLETE',
+                        score: 0,
+                        feedbackTitle: "",
+                        feedback: ""
+                    }
+                ]
+            }
+        ]
     }
 };
