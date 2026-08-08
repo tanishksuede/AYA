@@ -1,4 +1,142 @@
 export const STORY_DATABASE: Record<string, any> = {
+    'lvl_age_13_anne_1': {
+        background: '/assets/anne-amsterdam-street.png',
+        characterRight: '/assets/portrait-anne-frank.png',
+        emotion: 'joy',
+        frames: [
+            {
+                id: 'intro',
+                bg: '/assets/anne-diary-joy.png',
+                speaker: 'Narrator',
+                text: "You are Anne Frank, 13 years old, living with your family in Amsterdam. It is your birthday. There are presents around you, family members nearby, and the ordinary concerns of being a teenager: school, friendships, people you like, things that annoy you, things you want to understand and things you do not necessarily want to say aloud. Among your presents is a red-and-white checked diary. You had chosen the diary yourself. Now it is yours. You have a choice about what this private book becomes.",
+                emotion: 'joy',
+                choices: [
+                    {
+                        text: 'Keep it private',
+                        next: 'choice_a_outcome',
+                        score: 1,
+                        feedbackTitle: 'Kept Private',
+                        feedbackText: 'You value privacy and emotional honesty. You prefer having one safe place where you can be completely yourself without needing anyone else\'s reaction.',
+                    },
+                    {
+                        text: 'Turn it into a record',
+                        next: 'choice_b_outcome',
+                        score: 1,
+                        feedbackTitle: 'Documented',
+                        feedbackText: 'You naturally observe the world around you. You look for meaning in ordinary events and tend to preserve experiences rather than simply live through them.',
+                    },
+                    {
+                        text: 'Write creatively',
+                        next: 'choice_c_outcome',
+                        score: 1,
+                        feedbackTitle: 'Creative Space',
+                        feedbackText: 'You are drawn toward self-expression and possibility. You would rather explore what you might create than simply record what already happened.',
+                    }
+                ]
+            },
+            {
+                id: 'choice_a_outcome',
+                bg: '/assets/anne-writing.png',
+                speaker: 'Narrator',
+                text: "Anne received the diary on her 13th birthday and began writing in it shortly afterward. Her early entries discussed her birthday, presents, family, classmates, friends, school and her personal experiences. She addressed the diary as 'Kitty' and used it as a place to confide her thoughts.",
+                emotion: 'joy',
+                choices: [{ text: 'Next', next: 'lesson', score: 0 }]
+            },
+            {
+                id: 'choice_b_outcome',
+                bg: '/assets/anne-desk.png',
+                speaker: 'Narrator',
+                text: "Anne received the diary on her 13th birthday and began writing in it shortly afterward. Her early entries discussed her birthday, presents, family, classmates, friends, school and her personal experiences. She addressed the diary as 'Kitty' and used it as a place to confide her thoughts.",
+                emotion: 'joy',
+                choices: [{ text: 'Next', next: 'lesson', score: 0 }]
+            },
+            {
+                id: 'choice_c_outcome',
+                bg: '/assets/anne-diary-smile.png',
+                speaker: 'Narrator',
+                text: "Anne received the diary on her 13th birthday and began writing in it shortly afterward. Her early entries discussed her birthday, presents, family, classmates, friends, school and her personal experiences. She addressed the diary as 'Kitty' and used it as a place to confide her thoughts.",
+                emotion: 'joy',
+                choices: [{ text: 'Next', next: 'lesson', score: 0 }]
+            },
+            {
+                id: 'lesson',
+                bg: '/assets/anne-diary-joy.png',
+                speaker: 'Narrator',
+                text: "LESSON: A private creative space can matter before anyone else sees its value.\n\nThe meaningful lesson is not 'write because you will become famous.' The documented experience shows something more immediate: at 13, Anne used writing to organize and express her experience of friendships, school, family and everyday life.",
+                emotion: 'joy',
+                choices: [{ text: 'Complete Level', next: 'COMPLETE', score: 10, feedbackTitle: 'Mission Accomplished' }]
+            }
+        ]
+    },
+    'lvl_age_13_anne_2': {
+        background: '/assets/anne-annex-room.png',
+        characterRight: '/assets/portrait-anne-frank.png',
+        emotion: 'fear',
+        frames: [
+            {
+                id: 'intro',
+                bg: '/assets/anne-fear.png',
+                speaker: 'Narrator',
+                text: "You are still 13. But the world outside your home is no longer something you can take for granted. Your sister has received a call-up to report for labour in Germany. Your parents have already prepared a hiding place. The plan changes quickly. On the morning of 6 July 1942, you leave your home with your family and walk toward the hiding place behind your father\'s business. You cannot simply decide to continue your normal school life. You cannot go outside whenever you want. You do not know how long this will last. You have your belongings with you. Among them is the diary you received only weeks earlier.",
+                emotion: 'fear',
+                choices: [
+                    {
+                        text: 'Hold tightly to routine',
+                        next: 'choice_a_outcome',
+                        score: 1,
+                        feedbackTitle: 'Maintained Routine',
+                        feedbackText: 'You respond to uncertainty by creating structure. When circumstances become uncontrollable, you look for the parts of life you can still organize.',
+                    },
+                    {
+                        text: 'Focus on the people around you',
+                        next: 'choice_b_outcome',
+                        score: 1,
+                        feedbackTitle: 'Observant',
+                        feedbackText: 'You respond to uncertainty through relationships. You look outward and try to understand other people before deciding how to act yourself.',
+                    },
+                    {
+                        text: 'Write everything down',
+                        next: 'choice_c_outcome',
+                        score: 1,
+                        feedbackTitle: 'Documented',
+                        feedbackText: 'You respond to uncertainty through reflection and documentation. When life becomes difficult to understand, you try to make sense of it by putting it into words.',
+                    }
+                ]
+            },
+            {
+                id: 'choice_a_outcome',
+                bg: '/assets/anne-window.png',
+                speaker: 'Narrator',
+                text: "Anne went into hiding with her parents and sister on 6 July 1942. Her diary was among the belongings she took with her. In the Secret Annex, she continued writing and also read and studied while the people in hiding were unable to go outside.",
+                emotion: 'fear',
+                choices: [{ text: 'Next', next: 'lesson', score: 0 }]
+            },
+            {
+                id: 'choice_b_outcome',
+                bg: '/assets/anne-annex-room.png',
+                speaker: 'Narrator',
+                text: "Anne went into hiding with her parents and sister on 6 July 1942. Her diary was among the belongings she took with her. In the Secret Annex, she continued writing and also read and studied while the people in hiding were unable to go outside.",
+                emotion: 'fear',
+                choices: [{ text: 'Next', next: 'lesson', score: 0 }]
+            },
+            {
+                id: 'choice_c_outcome',
+                bg: '/assets/anne-desk.png',
+                speaker: 'Narrator',
+                text: "Anne went into hiding with her parents and sister on 6 July 1942. Her diary was among the belongings she took with her. In the Secret Annex, she continued writing and also read and studied while the people in hiding were unable to go outside.",
+                emotion: 'fear',
+                choices: [{ text: 'Next', next: 'lesson', score: 0 }]
+            },
+            {
+                id: 'lesson',
+                bg: '/assets/anne-fear.png',
+                speaker: 'Narrator',
+                text: "LESSON: Sometimes the most important choice is not about controlling the situation. It is about deciding how you will respond when the situation is no longer yours to control.",
+                emotion: 'fear',
+                choices: [{ text: 'Complete Level', next: 'COMPLETE', score: 10, feedbackTitle: 'Mission Accomplished' }]
+            }
+        ]
+    },
     // AGE 19: Sachin Tendulkar
     'lvl_age_19_sachin': {
         title: "The Trial of Fire",
@@ -4789,7 +4927,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
-                bg: '/assets/bg-kobe-losangeles-1998-setup.png',
+                bg: '/assets/kobe-gym-wide.png',
                 text: "The 1998 NBA season is shut down, so you organize intense, unofficiated pickup games. After Shaquille O'Neal slaps you across the face for challenging his call, the gym falls into a suffocating silence.",
                 choices: [
                     {
@@ -4901,7 +5039,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'p2_consequence_a',
-                bg: '/assets/bg-kobe-p2-consequence-a.png',
+                bg: '/assets/kobe-office.png',
                 text: "The front office refuses to move you, but the rumor leaks to the press. You spend the season viewed as a traitor who runs from adversity.",
                 choices: [
                     {
@@ -4915,7 +5053,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'p2_consequence_b',
-                bg: '/assets/bg-kobe-p2-consequence-b.png',
+                bg: '/assets/kobe-locker-room.png',
                 text: "Your scoring drops, your rhythm vanishes, and the team still loses. You compromised your greatest weapon for dysfunctional harmony.",
                 choices: [
                     {
@@ -4929,7 +5067,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'p2_consequence_c',
-                bg: '/assets/bg-kobe-p2-consequence-c.png',
+                bg: '/assets/kobe-basketball.png',
                 text: "You step onto the court and play with the exact same ruthless aggression. The tension is suffocating, but they are forced to play off your gravity.",
                 choices: [
                     {
@@ -4944,7 +5082,7 @@ export const STORY_DATABASE: Record<string, any> = {
             {
                 id: 'lesson_2',
                 emotion: 'triumph',
-                bg: '/assets/bg-kobe-ending.png',
+                bg: '/assets/kobe-jersey.png',
                 text: "LESSON: The Burden of Conviction\nGroup consensus is often just a collective demand for comfort. If your preparation justifies your actions, you must endure the loneliness of being misunderstood.\n\nHe walked out of that meeting an outcast, armed only with the certainty that his relentless work would force them to conform to his light.",
                 choices: [
                     {
