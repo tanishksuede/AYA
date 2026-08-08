@@ -30,6 +30,17 @@ export function generateLevels(_age: number): Level[] {
             avatarUrl: '/assets/portrait-anne-frank.png', scenarioId: 'lvl_age_13_anne_2',
             idolTraits: { discipline: 80, resilience: 100, risk: 70, leadership: 60, creativity: 100, empathy: 95, vision: 85 }
         },
+        // Age 15: Elon Musk (One Continuous Story: The Thing You Love)
+        {
+            id: 'lvl_15_elon_musk', title: 'The Thing You Love', description: 'At 15, Elon Musk navigates being a bookish, introverted teenager with a passion for computers and coding, deciding how to protect his interests.',
+            requiredStars: 0, year: 1986, age: 15, theme: 'Technology', age_mirror_text: 'feeling different from others while spending hours reading, coding, and building', archetype: 'The Visionary', personality: 'Elon Musk',
+            bio: 'A 15-year-old in South Africa spending his time with books, computers, and self-taught programming.',
+            fame: 'Technology Entrepreneur & Engineer.',
+            achievements: ['Taught himself computer programming', 'Created and sold code for Blastar video game at age 12', 'Maintained intense reading habit through adolescence'],
+            lesson: 'PROTECTING WHAT MAKES YOU DIFFERENT — being different is not weakness; sometimes the thing that makes you different is worth protecting.',
+            avatarUrl: '/assets/avatar_elon_musk.png', scenarioId: 'lvl_age_15_elon_musk',
+            idolTraits: { discipline: 95, resilience: 90, risk: 95, leadership: 90, creativity: 100, empathy: 70, vision: 100 }
+        },
         // Age 15: Ratan Tata (One Continuous Story: The Quiet Voice)
         {
             id: 'lvl_15_ratan_tata', title: 'The Quiet Voice', description: 'At 15, Ratan Tata experiences shyness and fear of public speaking while attending school in Bombay, discovering how quiet self-expression can build confidence.',

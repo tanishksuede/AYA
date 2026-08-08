@@ -6970,5 +6970,115 @@ export const STORY_DATABASE: Record<string, any> = {
                 ]
             }
         ]
+    },
+
+    // AGE 15: Elon Musk (One Continuous Story: The Thing You Love)
+    'lvl_age_15_elon_musk': {
+        title: "The Thing You Love",
+        source: "Source: Historical Context, c. 1986",
+        frames: [
+            // PART 1: DIFFERENT
+            {
+                id: 'intro',
+                emotion: 'loneliness',
+                bg: '/assets/bg_musk_coding.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/avatar_elon_musk.png',
+                text: "Sometimes you feel like you don't fit in.\nOther people may not understand what interests you.\nYou have to decide what to do with that feeling.",
+                choices: [
+                    {
+                        text: "HIDE IT: Keep your interests private and try to fit in.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Belonging",
+                        feedback: "You value belonging, but hiding yourself can limit you."
+                    },
+                    {
+                        text: "IGNORE THE OPINIONS: Keep doing what interests you, even if others don't understand.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Independence",
+                        feedback: "You value independence, but isolation can become a risk."
+                    },
+                    {
+                        text: "FIND YOUR PEOPLE: Keep your interests and look for people who understand them.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Connection",
+                        feedback: "You value connection without giving up who you are."
+                    }
+                ]
+            },
+            {
+                id: 'part1_reveal',
+                emotion: 'loneliness',
+                bg: '/assets/bg_musk_coding.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/avatar_elon_musk.png',
+                text: "Musk was known as an introverted, bookish teenager.\nHe spent much of his time with books, computers and his own interests.\n\nBeing different is not automatically a weakness.\nSometimes the thing that makes you different is worth protecting.",
+                choices: [
+                    {
+                        text: "Continue: Keep Building",
+                        next: 'part2_intro',
+                        score: 0,
+                        feedbackTitle: "",
+                        feedback: ""
+                    }
+                ]
+            },
+            // PART 2: KEEP BUILDING
+            {
+                id: 'part2_intro',
+                emotion: 'curiosity',
+                bg: '/assets/bg_musk_coding.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/avatar_elon_musk.png',
+                text: "You have found something that fascinates you.\nNow you have a choice: keep learning it, share it, or move on.\nWhat do you do?",
+                choices: [
+                    {
+                        text: "GO DEEPER: Spend more time learning and understanding it.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Mastery",
+                        feedback: "You value mastery, but you may miss other opportunities."
+                    },
+                    {
+                        text: "BUILD SOMETHING: Stop only learning and try making something yourself.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Action",
+                        feedback: "You value action, but your first attempts may fail."
+                    },
+                    {
+                        text: "SHARE IT: Show someone what you have learned and hear their opinion.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Feedback",
+                        feedback: "You value feedback, but other people's opinions may change your direction."
+                    }
+                ]
+            },
+            {
+                id: 'part2_reveal',
+                emotion: 'curiosity',
+                bg: '/assets/bg_musk_coding.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/avatar_elon_musk.png',
+                text: "Musk had already taught himself programming and created Blastar years earlier.\nHis early interest in computers continued during his teenage years.\n\nYou don't need to know where an interest will lead.\nSometimes you just need to keep exploring it.",
+                choices: [
+                    {
+                        text: "Complete Level",
+                        next: 'COMPLETE',
+                        score: 0,
+                        feedbackTitle: "",
+                        feedback: ""
+                    }
+                ]
+            }
+        ]
     }
 };
