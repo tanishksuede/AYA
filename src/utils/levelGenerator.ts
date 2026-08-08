@@ -85,6 +85,17 @@ export function generateLevels(_age: number): Level[] {
             avatarUrl: '/assets/portrait-rani-lakshmibai.png', scenarioId: 'lvl_age_15_rani_lakshmibai',
             idolTraits: { discipline: 100, resilience: 100, risk: 95, leadership: 100, creativity: 85, empathy: 90, vision: 100 }
         },
+        // Age 15: Virat Kohli (One Continuous Story: More Than Your Own Score)
+        {
+            id: 'lvl_15_virat_kohli', title: 'More Than Your Own Score', description: 'At 15, Virat Kohli is appointed captain of Delhi Under-15, learning the balance between individual performance and team leadership.',
+            requiredStars: 0, year: 2003, age: 15, theme: 'Sports', age_mirror_text: 'captaining Delhi U-15 while deciding how to balance scoring runs and leading teammates', archetype: 'The Competitive Prodigy', personality: 'Virat Kohli',
+            bio: 'A 15-year-old batsman appointed captain of the Delhi Under-15 team, learning how to carry team responsibility.',
+            fame: 'Iconic Indian Cricketer & Former National Captain.',
+            achievements: ['Captained Delhi U-15 in 2003–04', 'Scored 390 runs at average 78 in U-15 season', 'Selected for Delhi U-17 team in 2004'],
+            lesson: 'LEADERSHIP IS BIGGER THAN PERSONAL SUCCESS — being the best player and being a good leader are not always the same thing.',
+            avatarUrl: '/assets/avatar_virat_kohli.jpg', scenarioId: 'lvl_age_15_virat_kohli',
+            idolTraits: { discipline: 95, resilience: 95, risk: 90, leadership: 95, creativity: 80, empathy: 75, vision: 95 }
+        },
         // Age 20: Billie Eilish (Story 2)
         {
             id: 'lvl_20_billie_2', title: 'The Person Who Left You On Seen', description: 'At 20, you must choose between chasing someone who ghosts you, or turning the pain into art.',

@@ -6750,5 +6750,115 @@ export const STORY_DATABASE: Record<string, any> = {
                 ]
             }
         ]
+    },
+
+    // AGE 15: Virat Kohli (One Continuous Story: More Than Your Own Score)
+    'lvl_age_15_virat_kohli': {
+        title: "More Than Your Own Score",
+        source: "Source: Delhi Under-15 Cricket, 2003–2004",
+        frames: [
+            // PART 1: THE CAPTAIN'S BAT
+            {
+                id: 'intro',
+                emotion: 'pride',
+                bg: '/assets/bg-virat-kohli-paschim-vihar-2000.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/avatar_virat_kohli.jpg',
+                text: "You are 15. You have just been given something many players your age want: responsibility. You are leading Delhi's Under-15 team.\n\nYou know you can bat. You know you can score runs. Now everyone is looking at you. You walk out to bat.\n\nYou have two thoughts: \"I want to score.\" and: \"I have to help my team win.\"\n\nSometimes those two things are the same. Sometimes they are not. Today, you have to decide what kind of captain you want to be.",
+                choices: [
+                    {
+                        text: "PLAY FOR THE BIG SCORE: Attack. Try to score as many runs as possible. If you make a huge score, you may give the team the best chance of winning.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Ambition",
+                        feedback: "You believe a leader should set the standard through personal performance. Strength: Your performance can inspire the team. Risk: You may focus too much on your own score."
+                    },
+                    {
+                        text: "PLAY FOR THE TEAM'S SITUATION: Forget about your personal score. Read the match. Take fewer risks if the team needs stability. Attack only when the situation demands it.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Responsibility",
+                        feedback: "You care more about what the team needs than what your own statistics look like. Strength: You make decisions based on the team's needs. Risk: You may miss the chance to take control of the match yourself."
+                    },
+                    {
+                        text: "SET THE TONE, THEN ADAPT: Start positively. Show confidence. But change your approach depending on what the team needs.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Judgment",
+                        feedback: "You believe leadership means knowing when to attack and when to be patient. Strength: You remain flexible. Risk: Constantly changing your approach can make decision-making harder."
+                    }
+                ]
+            },
+            {
+                id: 'part1_reveal',
+                emotion: 'pride',
+                bg: '/assets/bg-virat-kohli-paschim-vihar-2000.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/avatar_virat_kohli.jpg',
+                text: "HISTORICAL REALITY:\nVirat Kohli really was appointed captain of Delhi's Under-15 team during the 2003–04 season. He scored 390 runs at an average of 78, including two centuries. A contemporary report identified him as captain of the Delhi U-15 side.\n\nThe historical record does NOT establish that he faced the exact choices presented here. The documented reality is that at 15, Kohli was already combining strong individual performance with a leadership role for Delhi's junior team.\n\nLESSON:\nBeing good at something can get you noticed. But being trusted with other people is different. A captain is not only responsible for their own performance — they are responsible for what their decisions do to the team.",
+                choices: [
+                    {
+                        text: "Continue to Part 2: The Team Needs You",
+                        next: 'part2_intro',
+                        score: 0,
+                        feedbackTitle: "",
+                        feedback: ""
+                    }
+                ]
+            },
+            // PART 2: THE TEAM NEEDS YOU
+            {
+                id: 'part2_intro',
+                emotion: 'frustration',
+                bg: '/assets/bg-virat-kohli-paschim-vihar-2000.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/avatar_virat_kohli.jpg',
+                text: "Part 1 made you feel trusted. Now comes the harder part: What if your teammates are not doing what you expect?\n\n-------------------------\n\nPART 2: THE TEAM NEEDS YOU\n\nYou are still the captain. You are watching the match. One of your teammates makes a mistake. Then another.\n\nThe match is becoming harder. You are frustrated. You know you could try to take control yourself. You could also stop and help the other players regain confidence. Or you could be direct and tell them exactly what they need to fix.\n\nAll three could work. All three could also make things worse.",
+                choices: [
+                    {
+                        text: "TAKE CONTROL YOURSELF: Do more. Score more. Lead from the front. If the team is struggling, try to carry the responsibility yourself.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Drive",
+                        feedback: "When things go wrong, you naturally respond by increasing your own effort. Strength: You refuse to give up. Risk: You may unintentionally make teammates dependent on you."
+                    },
+                    {
+                        text: "TALK TO THE TEAM: Stop focusing only on your own performance. Help teammates understand what they can do better. Give them confidence and make them feel involved.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Empathy",
+                        feedback: "You understand that people often perform better when they feel trusted. Strength: You help others become better. Risk: You may spend too much energy helping others when the match still needs your own performance."
+                    },
+                    {
+                        text: "BE DIRECT: Tell the players clearly what is going wrong. Do not insult them. Do not hide the problem. Be honest and expect them to improve.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Accountability",
+                        feedback: "You believe people cannot improve if nobody tells them what they need to fix. Strength: Problems are confronted instead of ignored. Risk: Being correct does not always mean being effective."
+                    }
+                ]
+            },
+            {
+                id: 'part2_reveal',
+                emotion: 'frustration',
+                bg: '/assets/bg-virat-kohli-paschim-vihar-2000.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/avatar_virat_kohli.jpg',
+                text: "HISTORICAL REALITY:\nVirat Kohli's teenage cricket career continued to develop rapidly after his U-15 period. By the end of 2004, he was selected for Delhi's Under-17 team in the Vijay Merchant Trophy. In that competition, he scored 470 runs in four matches, including a score of 251 not out.\n\nThe player is being evaluated on decision-making. The historical outcome simply shows that Kohli's progression continued after the period represented in this story.\n\nLESSON:\nLeadership is not just about being the best player. Sometimes leadership means doing more yourself, sometimes it means helping someone else improve, and sometimes it means telling the truth when something is not working. The difficult part is knowing which one the situation needs.",
+                choices: [
+                    {
+                        text: "Complete Level",
+                        next: 'COMPLETE',
+                        score: 0,
+                        feedbackTitle: "",
+                        feedback: ""
+                    }
+                ]
+            }
+        ]
     }
 };
