@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { audioManager as audioSynth } from "../../utils/audioManager";
 import { Sparkles, Star, Zap, Heart, Flame, Brain, Shield, Grid3x3, RefreshCw, Copy, Check } from 'lucide-react';
 import type { PersonalityTraits, PsychologicalProfile } from '../../types/gameTypes';
-import { IDOL_MINDSETS, IDOL_PROFILES } from '../../data/idolMindsets';
+import { IDOL_PROFILES } from '../../data/idolMindsets';
 import { useUserStore } from '../../store/userStore';
 
 
@@ -207,11 +207,13 @@ const ToughCookieMeter = ({ score, isCandyMode }: { score: number, isCandyMode: 
     </div>
 );
 
+import { resolvePersonalityAvatar, PERSONALITY_AVATAR_MAP } from '../../utils/avatarUtils';
+
 export function MatchReport({ userTraits, userProfile, idolName, onClose }: MatchReportProps) {
     const [animatedPercent, setAnimatedPercent] = useState(0);
     const isCandyMode = useUserStore((state) => state.isCandyMode);
     const cleanIdolName = (idolName || "Default").trim();
-    const idolData = IDOL_MINDSETS[cleanIdolName] || IDOL_MINDSETS["Default"];
+    const mainAvatarUrl = resolvePersonalityAvatar(cleanIdolName);
 
     // Dynamic Trait Calculation based on Supabase mapped properties
     const TRAIT_MAP = [
@@ -284,12 +286,12 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
         return {
             idol1: {
                 name: top2[0],
-                avatarUrl: IDOL_MINDSETS[top2[0]]?.avatarUrl || '/assets/avatar_business.png',
+                avatarUrl: resolvePersonalityAvatar(top2[0]),
                 desc: getTraitDesc(top2[0])
             },
             idol2: {
                 name: top2[1],
-                avatarUrl: IDOL_MINDSETS[top2[1]]?.avatarUrl || '/assets/avatar_business.png',
+                avatarUrl: resolvePersonalityAvatar(top2[1]),
                 desc: getTraitDesc(top2[1])
             }
         };
@@ -448,10 +450,15 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
                                         : "border-[#0a0f28] bg-slate-900 shadow-[0_0_50px_rgba(77,217,255,0.4)] ring-2 ring-[#4DD9FF]/30"
                                 )}>
                                     <img 
-                                        src={idolData.avatarUrl || '/assets/avatar_business.png'} 
+                                        src={mainAvatarUrl} 
                                         alt={idolName} 
                                         className="w-full h-full object-cover" 
-                                        onError={(e) => { e.currentTarget.src = '/assets/avatar_business.png'; }}
+                                        onError={(e) => { 
+                                            const fallback = PERSONALITY_AVATAR_MAP[cleanIdolName];
+                                            if (fallback && e.currentTarget.src !== fallback) {
+                                                e.currentTarget.src = fallback;
+                                            }
+                                        }}
                                     />
                                     {/* Gloss Reflection */}
                                     <div className={clsx(
