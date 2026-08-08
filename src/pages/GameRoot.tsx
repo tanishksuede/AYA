@@ -202,6 +202,7 @@ export function GameRoot() {
                     name: user.name,
                     age: Number(user.age) || 18,
                     mobile: user.mobile,
+                    username: user.username ?? undefined,
                     total_xp: user.total_xp || 0,
                     level: user.level || 1,
                     current_streak: user.current_streak || 0,

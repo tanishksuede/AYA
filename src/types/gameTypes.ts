@@ -49,6 +49,7 @@ export interface MatchResult {
 export interface UserProfile {
     id?: string;
     mobile?: string;
+    username?: string | null;
     name: string;
     age: number;
     interests?: string[];

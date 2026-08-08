@@ -326,7 +326,7 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
             {/* Settings & Theme Buttons */}
             <div className="absolute top-20 left-4 md:top-24 md:left-6 z-[100] flex flex-col gap-2">
                 <button
-                    onClick={() => { audioSynth.playClick(); }}
+                    onClick={() => { audioSynth.playClick(); navigate('/game/settings'); }}
                     className="w-8 h-8 md:w-10 md:h-10 bg-white/5 hover:bg-white/10 active:bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-[#FFB347] transition-all border border-[#FFB347]/30 shadow-[0_0_10px_rgba(255,179,71,0.2)] hover:rotate-12 active:scale-90"
                     aria-label="Settings"
                 >

@@ -297,6 +297,11 @@ export function DnaProfile({ onBack }: DnaProfileProps) {
                     <h2 className="text-2xl md:text-3xl font-bold uppercase tracking-widest text-[#fcf8ff] drop-shadow-md">
                         {profile?.name || 'GUEST_0X'}
                     </h2>
+                    {profile?.username && (
+                        <p className="mt-1 text-[#00f1fe] font-bold tracking-widest text-sm">
+                            @{profile.username}
+                        </p>
+                    )}
                     <div className="mt-2 text-[#acaab5] tracking-[0.3em] text-sm uppercase flex items-center gap-4">
                         <span>AGE: <span className="text-[#99f7ff] font-bold">{profile?.age || 18}</span></span>
                         <span className="w-1.5 h-1.5 rounded-full bg-[#d575ff] shadow-[0_0_8px_#d575ff]" />

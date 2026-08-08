@@ -5,6 +5,8 @@ import { audioManager as audioSynth } from "../../utils/audioManager";
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { saveSession } from '../../utils/session';
 import { supabase } from '../../utils/supabase';
+import { useUsernameAvailability } from '../../hooks/useUsernameAvailability';
+import { UsernameField } from './UsernameField';
 
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -79,9 +81,21 @@ export function OnboardingWizard() {
     const [prefLang, setPrefLang] = useState<'en' | 'hi'>('en');
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
+    const [username, setUsername] = useState("");
     
     // Google Auth State
     const [googleAuthId, setGoogleAuthId] = useState<string | null>(null);
+    const [existingUserForSetup, setExistingUserForSetup] = useState<any>(null);
+
+    const isUsernameOnly = isRegisterMode && !!existingUserForSetup;
+    const isExistingGoogleConfirm = sessionStorage.getItem('aya_temp_existing_user') === 'true';
+    const needsUsername = isUsernameOnly || (isRegisterMode && !isExistingGoogleConfirm);
+
+    const usernameAvailability = useUsernameAvailability(
+        username,
+        existingUserForSetup?.id || null
+    );
+    const isUsernameReady = usernameAvailability.status === 'available';
 
     const isSubmitting = useRef(false);
 
@@ -92,11 +106,28 @@ export function OnboardingWizard() {
             const tempGoogleName = sessionStorage.getItem('aya_temp_google_name');
             const tempGoogleAge = sessionStorage.getItem('aya_temp_google_age');
             const tempGoogleMobile = sessionStorage.getItem('aya_temp_google_mobile');
+            const tempUsernameOnly = sessionStorage.getItem('aya_temp_username_only') === 'true';
+            const tempUserDataRaw = sessionStorage.getItem('aya_temp_user_data');
+
             if (tempGoogleId) {
                 setGoogleAuthId(tempGoogleId);
                 setName(tempGoogleName || "");
                 if (tempGoogleAge) setAge(Number(tempGoogleAge));
                 if (tempGoogleMobile) setMobile(tempGoogleMobile);
+            }
+
+            if (tempUsernameOnly && tempUserDataRaw) {
+                try {
+                    const uData = JSON.parse(tempUserDataRaw);
+                    setExistingUserForSetup(uData);
+                    if (uData.name) setName(uData.name);
+                    if (uData.age) setAge(Number(uData.age));
+                    if (uData.mobile) setMobile(uData.mobile);
+                } catch (e) {
+                    console.error("Failed to parse existing user data for username setup", e);
+                }
+            } else {
+                setExistingUserForSetup(null);
             }
             setIsLoading(false);
         }
@@ -152,14 +183,22 @@ export function OnboardingWizard() {
                     }
 
                     if (existingUser) {
-                        // EXISTING USER: Directly log them in!
-                        await performLogin(existingUser, googleId, true);
+                        if (existingUser.username && existingUser.username.trim() !== '') {
+                            await performLogin(existingUser, googleId, true);
+                            return;
+                        }
+                        sessionStorage.setItem('aya_temp_google_id', googleId);
+                        sessionStorage.setItem('aya_temp_existing_user', 'true');
+                        sessionStorage.setItem('aya_temp_user_data', JSON.stringify(existingUser));
+                        sessionStorage.setItem('aya_temp_username_only', 'true');
+                        navigate('/game/setup');
                         return;
                     } else {
                         // NEW USER: Redirect to setup page
                         sessionStorage.setItem('aya_temp_google_id', googleId);
                         sessionStorage.setItem('aya_temp_google_name', session.user.user_metadata.full_name || "");
                         sessionStorage.setItem('aya_temp_existing_user', 'false');
+                        sessionStorage.removeItem('aya_temp_username_only');
                         navigate('/game/setup');
                         return;
                     }
@@ -252,7 +291,8 @@ export function OnboardingWizard() {
         // Generate a fresh profile or load existing
         setProfile({
             id: userId, 
-            mobile: userData.mobile, 
+            mobile: userData.mobile,
+            username: userData.username ?? null,
             name: userData.name, 
             age: userData.age,
             access_type: userData.access_type || 'open',
@@ -283,7 +323,6 @@ export function OnboardingWizard() {
 
     const handleComplete = async () => {
         audioSynth.playClick();
-        if (!mobile.trim() || age < 13) return;
         if (isSubmitting.current) return;
         isSubmitting.current = true;
         
@@ -291,14 +330,75 @@ export function OnboardingWizard() {
         setIsLoading(true);
         setError("");
 
-        const cleanMobile = mobile.trim().replace(/\s+/g, '');
-
         // 20s escape hatch
         const fallback = setTimeout(() => {
             setIsLoading(false);
             isSubmitting.current = false;
             setError('Connection failed. Please check your internet and try again.');
         }, 20000);
+
+        // Existing user who only needs to claim a username
+        if (isUsernameOnly && existingUserForSetup) {
+            if (usernameAvailability.status !== 'available') {
+                clearTimeout(fallback);
+                setIsLoading(false);
+                isSubmitting.current = false;
+                setError('Please choose a valid, available username before continuing.');
+                return;
+            }
+
+            const cleanUsername = username.trim();
+            try {
+                const { data: updatedRows, error: updateError } = await supabase
+                    .from('users')
+                    .update({ username: cleanUsername })
+                    .eq('id', existingUserForSetup.id)
+                    .select();
+
+                if (updateError) {
+                    if (updateError.code === '23505') {
+                        clearTimeout(fallback);
+                        setIsLoading(false);
+                        isSubmitting.current = false;
+                        setError('Username is already taken. Please choose another.');
+                        return;
+                    }
+                    throw updateError;
+                }
+
+                if (!updatedRows || updatedRows.length === 0) {
+                    throw new Error('Unable to save username. Please try again.');
+                }
+
+                const updatedUser = { ...existingUserForSetup, username: cleanUsername };
+                clearTimeout(fallback);
+                await performLogin(updatedUser, googleAuthId, true);
+
+                sessionStorage.removeItem('aya_temp_google_id');
+                sessionStorage.removeItem('aya_temp_google_name');
+                sessionStorage.removeItem('aya_temp_google_age');
+                sessionStorage.removeItem('aya_temp_google_mobile');
+                sessionStorage.removeItem('aya_temp_existing_user');
+                sessionStorage.removeItem('aya_temp_user_data');
+                sessionStorage.removeItem('aya_temp_username_only');
+                return;
+            } catch (err: any) {
+                clearTimeout(fallback);
+                setIsLoading(false);
+                isSubmitting.current = false;
+                setError(err.message || 'Failed to update username. Please try again.');
+                return;
+            }
+        }
+
+        if (!mobile.trim() || age < 13) {
+            clearTimeout(fallback);
+            setIsLoading(false);
+            isSubmitting.current = false;
+            return;
+        }
+
+        const cleanMobile = mobile.trim().replace(/\s+/g, '');
 
         try {
             // Check if they are existing user logging in
@@ -334,6 +434,7 @@ export function OnboardingWizard() {
                         sessionStorage.removeItem('aya_temp_google_mobile');
                         sessionStorage.removeItem('aya_temp_existing_user');
                         sessionStorage.removeItem('aya_temp_user_data');
+                        sessionStorage.removeItem('aya_temp_username_only');
                         return;
                     } catch (e: any) {
                         console.error("Failed to process existing Google user", e);
@@ -359,8 +460,31 @@ export function OnboardingWizard() {
                     return;
                 }
 
+                if (!existingUser.username && username.trim() && usernameAvailability.status === 'available') {
+                    const { error: uErr } = await supabase
+                        .from('users')
+                        .update({ username: username.trim() })
+                        .eq('id', existingUser.id);
+                    if (!uErr) {
+                        existingUser.username = username.trim();
+                    } else if (uErr.code === '23505') {
+                        clearTimeout(fallback);
+                        setIsLoading(false);
+                        isSubmitting.current = false;
+                        setError('Username is already taken. Please choose another.');
+                        return;
+                    }
+                }
+
                 clearTimeout(fallback);
                 await performLogin(existingUser, googleAuthId, true);
+                sessionStorage.removeItem('aya_temp_google_id');
+                sessionStorage.removeItem('aya_temp_google_name');
+                sessionStorage.removeItem('aya_temp_google_age');
+                sessionStorage.removeItem('aya_temp_google_mobile');
+                sessionStorage.removeItem('aya_temp_existing_user');
+                sessionStorage.removeItem('aya_temp_user_data');
+                sessionStorage.removeItem('aya_temp_username_only');
             } else {
                 if (!name.trim()) {
                     clearTimeout(fallback);
@@ -369,12 +493,21 @@ export function OnboardingWizard() {
                     setError("Please enter your name to create a new account.");
                     return;
                 }
+
+                if (!username.trim() || usernameAvailability.status !== 'available') {
+                    clearTimeout(fallback);
+                    setIsLoading(false);
+                    isSubmitting.current = false;
+                    setError('Please choose a valid, available username before creating an account.');
+                    return;
+                }
                 
                 // Insert new user
                 const insertPayload: any = {
                     mobile: cleanMobile,
                     name: name.trim(),
                     age: age,
+                    username: username.trim(),
                     access_type: 'open',
                     access_start_date: new Date().toISOString().split('T')[0],
                     preferred_theme: 'city_dark',
@@ -391,14 +524,31 @@ export function OnboardingWizard() {
                     .single();
 
                 if (insertError) {
+                    if (insertError.code === '23505') {
+                        clearTimeout(fallback);
+                        setIsLoading(false);
+                        isSubmitting.current = false;
+                        setError('Username is already taken. Please choose another.');
+                        return;
+                    }
                     console.warn('[Register] Supabase insert failed (likely RLS). Falling back to local-only mode:', insertError);
                     clearTimeout(fallback);
-                    const localUser = { ...insertPayload, id: crypto.randomUUID() };
-                    await performLogin(localUser, googleAuthId, false);
+                    setIsLoading(false);
+                    isSubmitting.current = false;
+                    setError('Could not create account online. Please check your connection and try again.');
+                    return;
                 } else {
                     clearTimeout(fallback);
                     await performLogin(newUser, googleAuthId, false);
                 }
+
+                sessionStorage.removeItem('aya_temp_google_id');
+                sessionStorage.removeItem('aya_temp_google_name');
+                sessionStorage.removeItem('aya_temp_google_age');
+                sessionStorage.removeItem('aya_temp_google_mobile');
+                sessionStorage.removeItem('aya_temp_existing_user');
+                sessionStorage.removeItem('aya_temp_user_data');
+                sessionStorage.removeItem('aya_temp_username_only');
             }
         } catch (err: any) {
             clearTimeout(fallback);
@@ -459,7 +609,7 @@ export function OnboardingWizard() {
                     transition={{ duration: 0.8, ease: "easeOut" }}
                 >
                     <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#0f0f18] text-white drop-shadow-[0_0_20px_rgba(0,241,254,0.4)] text-center mb-6 leading-tight">
-                        {isRegisterMode ? (googleAuthId ? "Link Your Account" : "Let's get to \n know you!") : "Welcome to AYA"}
+                        {isRegisterMode ? (isUsernameOnly ? "Choose your username" : (googleAuthId ? "Link Your Account" : "Let's get to \n know you!")) : "Welcome to AYA"}
                     </h2>
                     
                     {!isRegisterMode && (
@@ -502,7 +652,7 @@ export function OnboardingWizard() {
 
                     {isRegisterMode && (
                         <>
-                            {googleAuthId && (
+                            {googleAuthId && !isUsernameOnly && (
                                 <motion.div 
                                     initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
                                     className="mb-6 p-4 bg-emerald-900/40 text-emerald-100 rounded-3xl border border-emerald-500/50 backdrop-blur-md text-center shadow-xl relative overflow-hidden"
@@ -514,6 +664,23 @@ export function OnboardingWizard() {
                             )}
 
                             <div className="space-y-4">
+                                {isUsernameOnly ? (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+                                        className="glass-panel p-6 rounded-3xl relative"
+                                    >
+                                        <UsernameField
+                                            label="Choose your username"
+                                            helperText="This is how others will recognize you on AYA."
+                                            value={username}
+                                            onChange={setUsername}
+                                            status={usernameAvailability.status}
+                                            errorMessage={usernameAvailability.errorMessage}
+                                            disabled={isLoading}
+                                        />
+                                    </motion.div>
+                                ) : (
+                                    <>
                                 <motion.div 
                                     initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
                                     className="glass-panel p-6 rounded-3xl relative"
@@ -574,6 +741,23 @@ export function OnboardingWizard() {
                                         disabled={isLoading}
                                     />
                                 </motion.div>
+
+                                <motion.div
+                                    initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}
+                                    className="glass-panel p-6 rounded-3xl relative"
+                                >
+                                    <UsernameField
+                                        label="Choose your username"
+                                        helperText="This is how others will recognize you on AYA."
+                                        value={username}
+                                        onChange={setUsername}
+                                        status={usernameAvailability.status}
+                                        errorMessage={usernameAvailability.errorMessage}
+                                        disabled={isLoading}
+                                    />
+                                </motion.div>
+                                    </>
+                                )}
                             </div>
 
                             <AnimatePresence>
@@ -590,7 +774,12 @@ export function OnboardingWizard() {
                             <div className="flex flex-col gap-4 mt-8">
                                 <motion.button
                                     initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }}
-                                    disabled={!mobile.trim() || isLoading}
+                                    disabled={
+                                        isLoading ||
+                                        (isUsernameOnly
+                                            ? !isUsernameReady
+                                            : (!mobile.trim() || (needsUsername && !isUsernameReady)))
+                                    }
                                     onClick={handleComplete}
                                     className="w-full py-4 bg-[#00f1fe] text-[#004145] font-black text-xl rounded-full shadow-[0_0_30px_rgba(0,241,254,0.4)] flex items-center justify-center space-x-2 relative group overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#99f7ff] transition-all"
                                 >
@@ -599,7 +788,15 @@ export function OnboardingWizard() {
                                         animate={{ opacity: [0, 0.4, 0] }}
                                         transition={{ duration: 2, repeat: Infinity }}
                                     />
-                                    <span className="relative z-10">{isLoading ? 'INITIALIZING...' : (sessionStorage.getItem('aya_temp_existing_user') === 'true' ? 'CONFIRM & ENTER GAME' : (googleAuthId ? 'LINK ACCOUNT' : 'START MY JOURNEY'))}</span>
+                                    <span className="relative z-10">
+                                        {isLoading
+                                            ? 'INITIALIZING...'
+                                            : (isUsernameOnly
+                                                ? 'CONTINUE'
+                                                : (sessionStorage.getItem('aya_temp_existing_user') === 'true'
+                                                    ? 'CONFIRM & ENTER GAME'
+                                                    : (googleAuthId ? 'LINK ACCOUNT' : 'START MY JOURNEY')))}
+                                    </span>
                                     {!isLoading && <Check size={24} className="relative z-10 stroke-[4]" />}
                                 </motion.button>
                                 
@@ -614,6 +811,7 @@ export function OnboardingWizard() {
                                         sessionStorage.removeItem('aya_temp_google_mobile');
                                         sessionStorage.removeItem('aya_temp_existing_user');
                                         sessionStorage.removeItem('aya_temp_user_data');
+                                        sessionStorage.removeItem('aya_temp_username_only');
                                         navigate('/game/welcome'); 
                                     }}
                                     className="w-full py-2 bg-transparent text-white/70 font-bold text-sm rounded-full transition-all hover:text-white mt-1"
