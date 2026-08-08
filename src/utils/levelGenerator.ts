@@ -8,6 +8,17 @@ export function generateLevels(_age: number): Level[] {
 
     // Master List of ALL Levels
     const levels: Omit<Level, 'status' | 'isLocked' | 'stars'>[] = [
+        // Age 20: Kobe Bryant
+        {
+            id: 'lvl_age_20_kobe', title: 'The Lockout Echo', description: 'Establish your boundaries against the most dominant force in the league.',
+            requiredStars: 0, year: 1998, age: 20, theme: 'Resilience', age_mirror_text: 'struggling with the clash between your ambition and group harmony', archetype: 'The Relentless', personality: 'Kobe Bryant',
+            bio: 'A 20-year-old rising NBA star facing physical humiliation from a dominant teammate during the lockout season.',
+            fame: '5x NBA Champion. Academy Award winner.',
+            achievements: ['18x NBA All-Star', '2x NBA Finals MVP', 'Scored 81 points in a game'],
+            lesson: 'THE BURDEN OF CONVICTION — if your preparation justifies your actions, you must endure the loneliness of being misunderstood.',
+            avatarUrl: '/assets/portrait-kobe-bryant.png', scenarioId: 'lvl_age_20_kobe',
+            idolTraits: { discipline: 100, resilience: 95, risk: 90, leadership: 90, creativity: 85, empathy: 60, vision: 95 }
+        },
         // Age 20: Billie Eilish (Story 2)
         {
             id: 'lvl_20_billie_2', title: 'The Person Who Left You On Seen', description: 'At 20, you must choose between chasing someone who ghosts you, or turning the pain into art.',
