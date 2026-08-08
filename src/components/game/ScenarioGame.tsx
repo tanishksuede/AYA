@@ -916,7 +916,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                 )}
 
                 {/* Emotion vignette overlay */}
-                {!isCandyMode && level.scenarioId !== 'lvl_age_18_virat' && (
+                {level.scenarioId !== 'lvl_age_18_virat' && (
                     <div
                         className="cinematic-vignette absolute inset-0 pointer-events-none"
                         style={{
@@ -1026,7 +1026,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                         isCandyTheme
                             ? "bg-white/90 border-yellow-400 text-yellow-900"
                             : "bg-slate-900/80 border-yellow-500/50 text-yellow-500"
-                    )} style={!isCandyMode ? { borderColor: `${currentTheme.badgeColor}80`, color: currentTheme.badgeColor } : {}}>
+                    )} style={{ borderColor: `${currentTheme.badgeColor}80`, color: currentTheme.badgeColor }}>
                         <Star className={clsx("w-6 h-6", isCandyTheme ? "text-yellow-500 fill-yellow-500" : "fill-current")} />
                         <span className="text-2xl font-black">{score} XP</span>
                     </div>
@@ -1140,10 +1140,10 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                                                     border: `1px solid ${currentTheme.cardBorder}`,
                                                 } : { backgroundColor: '#f59e0b' }}
                                                 onMouseEnter={(e) => {
-                                                    if (!isCandyMode) e.currentTarget.style.boxShadow = `0 12px 24px rgba(0,0,0,0.5), 0 0 30px ${currentTheme.badgeColor}cc`;
+                                                    e.currentTarget.style.boxShadow = `0 12px 24px rgba(0,0,0,0.5), 0 0 30px ${currentTheme.badgeColor}cc`;
                                                 }}
                                                 onMouseLeave={(e) => {
-                                                    if (!isCandyMode) e.currentTarget.style.boxShadow = `0 8px 16px rgba(0,0,0,0.4), ${currentTheme.badgeGlow}`;
+                                                    e.currentTarget.style.boxShadow = `0 8px 16px rgba(0,0,0,0.4), ${currentTheme.badgeGlow}`;
                                                 }}
                                             >
                                                 {choice.text}
@@ -1224,7 +1224,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                                             padding: window.innerWidth < 768 ? '12px 16px' : '16px 20px',
                                             whiteSpace: 'normal',
                                             wordBreak: 'break-word',
-                                            ...(isCandyMode ? {} : { borderColor: currentTheme.choiceBorder }),
+                                            borderColor: currentTheme.choiceBorder,
                                         }}
                                         onMouseEnter={(e) => {
                                             if (!isCandyMode) {
