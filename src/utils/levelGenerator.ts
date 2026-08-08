@@ -429,6 +429,16 @@ export function generateLevels(_age: number): Level[] {
             avatarUrl: '/assets/portrait-michael-jackson.png', scenarioId: 'lvl_age_22_michael',
             idolTraits: { discipline: 95, resilience: 90, risk: 85, leadership: 85, creativity: 100, empathy: 80, vision: 100 }
         },
+        {
+            id: 'lvl_22_ashneer', title: 'The Next Degree', description: 'At 22, Ashneer Grover stands between IIT Delhi and IIM Ahmedabad, deciding how to shape his career direction.',
+            requiredStars: 0, year: 2004, age: 22, theme: 'Business', age_mirror_text: 'entering IIM Ahmedabad after IIT Delhi, facing career uncertainty', archetype: 'The Analyst', personality: 'Ashneer Grover',
+            bio: 'A 22-year-old IIT Delhi graduate entering IIM Ahmedabad, learning to bridge engineering and finance.',
+            fame: 'Co-founder of BharatPe. Former Shark Tank India judge.',
+            achievements: ['IIT Delhi & INSA Lyon Exchange', 'IIM Ahmedabad MBA in Finance', 'Built BharatPe into a fintech giant'],
+            lesson: 'DON\'T OVERPROTECT YOUR PAST — combine technical skill and finance for a broader toolkit.',
+            avatarUrl: '/assets/portrait-ashneer-grover.png', scenarioId: 'lvl_age_22_ashneer',
+            idolTraits: { discipline: 90, resilience: 85, risk: 95, leadership: 90, creativity: 85, empathy: 60, vision: 95 }
+        },
         // Age 23: Shah Rukh Khan
         {
             id: 'lvl_23_srk', title: 'Gauri or Career', description: 'At 23, SRK must choose between love and the career opportunity of a lifetime.',

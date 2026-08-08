@@ -4867,5 +4867,107 @@ export const STORY_DATABASE: Record<string, any> = {
                 ]
             }
         ]
+    },
+
+    // AGE 22: Ashneer Grover
+    'lvl_age_22_ashneer': {
+        title: "The Next Degree",
+        source: "Source: Ahmedabad, India, 2004",
+        frames: [
+            {
+                id: 'intro',
+                emotion: 'mystery',
+                bg: '/assets/bg-ashneer-grover-ahmedabad-2004.png',
+                portrait: '/assets/portrait-ashneer-grover.png',
+                text: "It is 2004, and Ashneer Grover has just completed his B.Tech in Civil Engineering at IIT Delhi. He has already taken an unusual path once: during IIT, he was one of only six students selected from his batch for an exchange at INSA Lyon in France, supported by a French Embassy scholarship. Now another door is open — IIM Ahmedabad, where he has entered an MBA program in Finance. Engineering has given him a technical foundation, but finance is an entirely different world, and he has no guarantee of where it will lead. He has to commit to the next two years before knowing what kind of career he is actually building.",
+                choices: [
+                    {
+                        text: "A) Commit fully to the MBA in Finance and treat the next two years as a chance to build an entirely different professional skill set.",
+                        next: 'part1_reveal',
+                        score: 15,
+                        feedbackTitle: "Don't Overprotect Your Past",
+                        feedback: "You are willing to become a beginner again even after succeeding in one field. That creates discomfort now, but gives you a second professional language."
+                    },
+                    {
+                        text: "B) Stay closest to engineering and look for a path where his IIT training remains the center of his career.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Don't Overprotect Your Past",
+                        feedback: "You value depth and continuity over reinvention. It can make you exceptionally strong in one domain, but may close doors before you discover them."
+                    },
+                    {
+                        text: "C) Use the MBA mainly as a gateway into business, keeping his options open rather than deciding what he ultimately wants to become.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Don't Overprotect Your Past",
+                        feedback: "You want optionality more than certainty. You keep several futures alive, but must eventually accept that options only matter when you commit to one."
+                    },
+                    {
+                        text: "D) Step back from the expected academic path and spend time figuring out what kind of work he actually wants before committing further.",
+                        next: 'part1_reveal',
+                        score: 5,
+                        feedbackTitle: "Don't Overprotect Your Past",
+                        feedback: "You refuse to let prestige make the decision for you. The freedom is valuable, but stepping away also means giving up momentum that others would consider difficult to regain."
+                    }
+                ]
+            },
+            {
+                id: 'part1_reveal',
+                emotion: 'mystery',
+                bg: '/assets/bg-ashneer-grover-ahmedabad-2004.png',
+                portrait: '/assets/portrait-ashneer-grover.png',
+                text: "What they actually did:\nGrover went ahead with the MBA in Finance at IIM Ahmedabad, beginning the 2004–2006 chapter that would eventually lead to his first major corporate role after graduation.\n\nLESSON: Don't Overprotect Your Past\nAn engineering degree can become an identity if you let it. Grover's move into finance did not erase what IIT had taught him; it added another way of understanding how businesses work. Sometimes the useful decision is not choosing between your old skill and a new direction, but deliberately becoming someone who can use both.",
+                choices: [
+                    { text: "Next Part", next: 'part2_setup', score: 0, feedbackTitle: "", feedback: "" }
+                ]
+            },
+            {
+                id: 'part2_setup',
+                emotion: 'mystery',
+                bg: '/assets/bg-ashneer-grover-ahmedabad-2004.png',
+                portrait: '/assets/portrait-ashneer-grover.png',
+                text: "At IIM Ahmedabad, Grover is now moving from the structured world of engineering into finance, management, and business. His IIT background gives him analytical training, while the MBA forces him to think about companies, capital, and commercial decisions in a different way. The destination is still unclear, but the combination itself is becoming his advantage. The question is no longer whether he can succeed academically — it is what he intends to do with that combination when the degree ends.",
+                choices: [
+                    {
+                        text: "A) Aim for the strongest finance role available after the MBA, even if it means entering a highly structured corporate career.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Build the Combination",
+                        feedback: "You prioritize security, reputation, and a clear professional ladder. That can compound quickly, but it may pull you toward optimizing a career rather than designing one."
+                    },
+                    {
+                        text: "B) Look for a role where finance and business-building overlap, even if the path is less predictable.",
+                        next: 'part2_reveal',
+                        score: 15,
+                        feedbackTitle: "Build the Combination",
+                        feedback: "You are attracted to the intersection between analysis and creation. The path may be less obvious, but the combination can become more valuable than either skill alone."
+                    },
+                    {
+                        text: "C) Choose the opportunity that offers the steepest learning curve, regardless of whether the job title looks impressive.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Build the Combination",
+                        feedback: "You measure opportunities by what they teach rather than what they signal. That can produce unconventional experience, but requires patience when others are optimizing for status."
+                    },
+                    {
+                        text: "D) Keep pursuing credentials and high-signal institutions until the direction becomes clearer.",
+                        next: 'part2_reveal',
+                        score: 5,
+                        feedbackTitle: "Build the Combination",
+                        feedback: "You believe more credentials will eventually reveal the right answer. Sometimes they do; sometimes they simply postpone the harder work of choosing."
+                    }
+                ]
+            },
+            {
+                id: 'part2_reveal',
+                emotion: 'mystery',
+                bg: '/assets/bg-ashneer-grover-ahmedabad-2004.png',
+                portrait: '/assets/portrait-ashneer-grover.png',
+                text: "What they actually did:\nGrover completed the MBA in Finance in 2006 and entered investment banking through campus recruitment, joining Kotak Investment Banking as a Vice President.\n\nLESSON: Build the Combination\nThe important advantage was not IIT by itself or IIM by itself. It was the combination of technical training and financial thinking that later gave Grover a broader toolkit for business decisions. A career can become powerful when seemingly unrelated skills begin reinforcing each other.",
+                choices: [
+                    { text: "Complete Level", next: 'COMPLETE', score: 0, feedbackTitle: "", feedback: "" }
+                ]
+            }
+        ]
     }
 };

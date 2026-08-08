@@ -267,6 +267,33 @@ export const IDOL_MINDSETS: Record<string, IdolMindset> = {
         },
         avatarUrl: '/assets/portrait-michael-jackson.png'
     },
+    "Ashneer Grover": {
+        name: "Ashneer Grover",
+        archetypeTitle: "Truth Teller",
+        quote: "Make a business that makes money. The rest is just vanity.",
+        voice: {
+            tone: "Direct, Brutal, Pragmatic",
+            intro: "I don't deal in sugarcoated words. Tell me what you're actually building, or don't waste my time."
+        },
+        missions: {
+            discipline: { title: "Dhanda First", desc: "Spend 2 hours today working purely on revenue-generating actions.", xp: "+50 Grit" },
+            resilience: { title: "Duggal Sahab", desc: "Ignore advice from fake gurus today. Trust the numbers.", xp: "+50 Truth" },
+            risk: { title: "Doglapan Check", desc: "Speak an uncomfortable truth directly to someone. No filters.", xp: "+50 Audacity" },
+            leadership: { title: "Command the Boardroom", desc: "Take a decision based on logic, even if the entire group hates it.", xp: "+50 Resolve" },
+            creativity: { title: "Disrupt the Space", desc: "Find a simple, low-cost hack to speed up your workflow.", xp: "+50 Hustle" },
+            empathy: { title: "Filter the Noise", desc: "Help a colleague see through their own excuses and focus on reality.", xp: "+50 Reality" },
+            vision: { title: "Scale to Unicorn", desc: "Write a business plan that is profitable from day one.", xp: "+50 Scale" }
+        },
+        profile: {
+            motivation: 'Impact',
+            risk: 'Bold',
+            emotional: 'Analytical',
+            social: 'Leader',
+            passion: 'Competitive',
+            coreValue: 'Success'
+        },
+        avatarUrl: '/assets/portrait-ashneer-grover.png'
+    },
     "Oprah Winfrey": {
         name: "Oprah Winfrey",
         archetypeTitle: "Soul Connector",
@@ -1146,6 +1173,7 @@ export const IDOL_PROFILES: Record<string, Record<string, number>> = {
     "Steve Jobs": { analytical: 80, ambitious: 100, risk: 95, creativity: 95, social: 50 },
     "Walt Disney": { analytical: 65, ambitious: 90, risk: 95, creativity: 100, social: 85 },
     "Michael Jackson": { analytical: 75, ambitious: 95, risk: 85, creativity: 100, social: 80 },
+    "Ashneer Grover": { analytical: 95, ambitious: 100, risk: 90, creativity: 80, social: 70 },
     "Oprah Winfrey": { analytical: 75, ambitious: 95, risk: 80, creativity: 70, social: 100 },
     "Bill Gates": { analytical: 95, ambitious: 90, risk: 80, creativity: 75, social: 60 },
     "J.K. Rowling": { analytical: 60, ambitious: 85, risk: 80, creativity: 100, social: 55 },
