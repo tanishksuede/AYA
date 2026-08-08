@@ -4765,5 +4765,107 @@ export const STORY_DATABASE: Record<string, any> = {
                 ]
             }
         ]
+    },
+
+    // AGE 22: Michael Jackson
+    'lvl_age_22_michael': {
+        title: "The Life You Built",
+        source: "Source: Van Nuys, California, 1981",
+        frames: [
+            {
+                id: 'intro',
+                emotion: 'PRESSURE',
+                bg: 'D:\\AtYourAge game version\\public\\assets\\bg-michael-jackson-van-nuys-1981.png',
+                portrait: 'D:\\AtYourAge game version\\public\\assets\\portrait-michael-jackson.png',
+                text: "In 1981, Michael Jackson is 22 and already carrying two different versions of his career. His solo album Off the Wall has made him a major solo artist, while The Jacksons are preparing the Triumph Tour around the album the brothers recorded together. In a Van Nuys rehearsal space, the show has to work for five brothers, but Michael's solo material now occupies a large part of the set. He knows that the tour can strengthen the family group, but every week spent on it is also time away from developing what he has started on his own. The rehearsal stops, the room waits, and Michael has to decide how much of himself this next chapter belongs to the family.",
+                choices: [
+                    {
+                        text: "A) Commit fully to the tour and let the next solo project wait until the shows are finished.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Two Careers, One Life",
+                        feedback: "You value commitment over momentum. It protects the family project, but your own work has to wait for space that may become harder to find."
+                    },
+                    {
+                        text: "B) Stay involved with the brothers but reduce his role wherever the group can function without him.",
+                        next: 'part1_reveal',
+                        score: 5,
+                        feedbackTitle: "Two Careers, One Life",
+                        feedback: "You protect your independence through distance. It gives you more room, but the people beside you may experience that distance as withdrawal."
+                    },
+                    {
+                        text: "C) Treat the tour as a serious part of his own development and use it to build the kind of live show he wants for himself later.",
+                        next: 'part1_reveal',
+                        score: 15,
+                        feedbackTitle: "Two Careers, One Life",
+                        feedback: "You treat the current obligation as part of your future rather than an interruption. It may cost time, but it lets you learn from a stage you already have."
+                    },
+                    {
+                        text: "D) Ask his brothers to agree on a shorter commitment, even if that means reopening a decision everyone thought had already been made.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Two Careers, One Life",
+                        feedback: "You believe the arrangement should be renegotiated before the cost becomes larger. It gives everyone a clearer choice, but it risks reopening tensions that were already settled."
+                    }
+                ]
+            },
+            {
+                id: 'part1_reveal',
+                emotion: 'PRESSURE',
+                bg: 'D:\\AtYourAge game version\\public\\assets\\bg-michael-jackson-van-nuys-1981.png',
+                portrait: 'D:\\AtYourAge game version\\public\\assets\\portrait-michael-jackson.png',
+                text: "What Michael actually did:\nMichael committed to The Jacksons and the Triumph Tour. He remained deeply involved in the performances and helped shape the show's choreography, costumes and stage presentation while continuing to develop his solo direction.\n\nLESSON: Two Careers, One Life\nA choice can be meaningful without being permanent. Michael did not need to decide between his family and his solo career in one dramatic moment; he could give the family project everything he had while quietly learning what he would eventually need for himself. The difficult part was accepting that time given to one path could not also be spent building the other.",
+                choices: [
+                    { text: "Next Chapter", next: 'part2_setup', score: 0, feedbackTitle: "", feedback: "" }
+                ]
+            },
+            {
+                id: 'part2_setup',
+                emotion: 'PRESSURE',
+                bg: 'D:\\AtYourAge game version\\public\\assets\\bg-michael-jackson-van-nuys-1981.png',
+                portrait: 'D:\\AtYourAge game version\\public\\assets\\portrait-michael-jackson.png',
+                text: "Weeks of rehearsal turn the tour into something larger than a set of songs. Michael begins shaping the presentation with new costumes, choreography and stage ideas, drawing on the scale and precision he wants from a live performance. The set now places his solo songs beside the brothers' material, making the difference between the two parts of his career impossible to ignore. On the first night in Memphis, the audience responds to both, and the pressure of being the person expected to carry the show becomes real. After the performance, Michael has to decide what to take from this experience when the tour eventually ends.",
+                choices: [
+                    {
+                        text: "A) Keep the strongest ideas from the tour private until he has a solo project where he can control the entire presentation.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Learn Before Leaving",
+                        feedback: "You protect unfinished ideas by keeping them away from immediate expectations. That preserves control, but it also delays learning what those ideas can become in public."
+                    },
+                    {
+                        text: "B) Return to the studio immediately and build the next solo record around what the audience responded to tonight.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Learn Before Leaving",
+                        feedback: "You trust momentum and want to turn the audience's response into new work quickly. It can produce clarity, but speed can also make the next project inherit the last one's assumptions."
+                    },
+                    {
+                        text: "C) Spend more time refining the live show before moving on, even if the next record takes longer to begin.",
+                        next: 'part2_reveal',
+                        score: 5,
+                        feedbackTitle: "Learn Before Leaving",
+                        feedback: "You believe mastery comes from repetition before expansion. It deepens the craft, but the next opportunity may arrive before you feel completely ready."
+                    },
+                    {
+                        text: "D) Treat the tour as finished work and start from a completely different creative direction rather than repeating what already worked.",
+                        next: 'part2_reveal',
+                        score: 15,
+                        feedbackTitle: "Learn Before Leaving",
+                        feedback: "You value reinvention over continuation. It prevents you from becoming dependent on one formula, but it can discard useful lessons along with the old approach."
+                    }
+                ]
+            },
+            {
+                id: 'part2_reveal',
+                emotion: 'PRESSURE',
+                bg: 'D:\\AtYourAge game version\\public\\assets\\bg-michael-jackson-van-nuys-1981.png',
+                portrait: 'D:\\AtYourAge game version\\public\\assets\\portrait-michael-jackson.png',
+                text: "What Michael actually did:\nMichael completed the Triumph Tour with his brothers, performing both Jacksons material and songs from Off the Wall. After the tour ended, he returned to the studio and began the work that would become his next solo album, Thriller.\n\nLESSON: Learn Before Leaving\nLeaving something behind does not require rejecting everything it taught you. Michael's next step was not a clean break from the experience with his brothers; the discipline, staging and scale he developed there became part of the foundation for what came next. Sometimes the useful question is not whether to stay or leave, but what you are willing to carry forward.",
+                choices: [
+                    { text: "Complete Level", next: 'COMPLETE', score: 0, feedbackTitle: "", feedback: "" }
+                ]
+            }
+        ]
     }
 };
