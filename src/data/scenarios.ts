@@ -5816,6 +5816,10 @@ export const STORY_DATABASE: Record<string, any> = {
                 id: 'intro',
                 emotion: 'grief',
                 bg: '/assets/bg-ed-sheeran-london-2012.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
                 portrait: '/assets/portrait-ed-sheeran.png',
                 text: "You are 21. Your career is moving faster than you expected. People recognize you now. Photographers are following you. Fans are watching.\n\nBut underneath all of that, something much more personal has recently ended. You have just come through a difficult breakup after a four-year relationship. You have barely spoken to your former girlfriend since it ended.\n\nThen a photograph appears of you with another girl. To everyone else, it may be just another celebrity photograph. To you, it carries a different weight. You know the person who matters may see it. You cannot control what the photograph means to someone else.\n\nAnd you have a difficult choice: Do you explain yourself? Do you stay silent? Or do you simply accept that the relationship is over and continue forward?",
                 choices: [
@@ -5846,6 +5850,10 @@ export const STORY_DATABASE: Record<string, any> = {
                 id: 'reveal',
                 emotion: 'grief',
                 bg: '/assets/bg-ed-sheeran-london-2012.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
                 portrait: '/assets/portrait-ed-sheeran.png',
                 text: "HISTORICAL REALITY:\nIn an interview published on 16 February 2012, immediately before Sheeran's 21st birthday, he discussed a difficult breakup after four years. He said he had not really spoken to his former girlfriend since the breakup and was concerned about her seeing paparazzi photographs of him with another girl.\n\nThe historical record does NOT establish that he chose any of the three hypothetical approaches above. Therefore, there is no \"correct\" answer. The important historical fact is that Sheeran was entering age 21 while dealing with the aftermath of a significant relationship ending at the same time that his public profile was rapidly increasing.\n\nLESSON:\nSometimes personal loss does not wait for a convenient moment. A career can be accelerating while another part of your life is falling apart. The difficult part is not always choosing between success and failure. Sometimes it is learning how to carry personal pain while the rest of your life keeps moving.",
                 choices: [
@@ -5869,6 +5877,10 @@ export const STORY_DATABASE: Record<string, any> = {
                 id: 'intro',
                 emotion: 'calm',
                 bg: '/assets/bg-ed-sheeran-london-2012.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
                 portrait: '/assets/portrait-ed-sheeran.png',
                 text: "You are 21. Your calendar is filling up. There are performances. Travel. Writing. People asking for your time. More opportunities than before.\n\nBut there is another question underneath all of it. What happens to the people who knew you before all of this?\n\nYour friends still want to see you. Your family still wants you around. And your career keeps giving you reasons to leave again.\n\nYou have to decide what \"success\" is allowed to cost you. You cannot give everyone unlimited time. But you also cannot assume the people closest to you will always be there whenever you return.\n\nWhat do you prioritize?",
                 choices: [
@@ -5899,6 +5911,10 @@ export const STORY_DATABASE: Record<string, any> = {
                 id: 'reveal',
                 emotion: 'calm',
                 bg: '/assets/bg-ed-sheeran-london-2012.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
                 portrait: '/assets/portrait-ed-sheeran.png',
                 text: "HISTORICAL REALITY:\nIn an August 2012 interview, Sheeran spoke about the sacrifices involved in the life he was living. He described friends and family as central to what mattered to him and connected happiness with maintaining a good balance between those relationships and his work.\n\nThe historical record does NOT establish that he literally faced these exact three choices on a specific day. Instead, they represent a real tension in his life at that time.\n\nLESSON:\nSuccess changes your schedule before it changes your identity. The people who knew you before success can become even more important once everyone else starts wanting something from you.\n\nAmbition asks: \"What can I achieve?\"\nBalance asks: \"Who do I want beside me when I get there?\"",
                 choices: [
@@ -5922,6 +5938,8 @@ export const STORY_DATABASE: Record<string, any> = {
             {
                 id: 'intro',
                 bg: '/assets/bg-selena-gomez-los-angeles-2013.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
                 portrait: '/assets/avatar_selena.jpg?v=2',
                 emotion: 'love',
                 text: "Year: 2013. You are 21. You are old enough to know that your personal life belongs to you. But the world does not always treat it that way. Your relationship has become part of public conversation. Every appearance can become a headline. Every photograph can be interpreted. Every time you are seen together, people decide what it means.",
@@ -5952,6 +5970,8 @@ export const STORY_DATABASE: Record<string, any> = {
             {
                 id: 'protect',
                 bg: '/assets/bg-selena-gomez-los-angeles-2013.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
                 portrait: '/assets/avatar_selena.jpg?v=2',
                 emotion: 'love',
                 text: "HISTORICAL REALITY:\nDuring 2013, Selena Gomez and Justin Bieber's relationship remained a major subject of public attention. Their relationship had already gone through periods of separation and reconciliation, and media coverage continued to follow their interactions.\n\nThe historical record does NOT establish that Selena faced the exact three choices above.\n\nAt 21, Selena was navigating a period in which her personal relationship was being discussed publicly while she was simultaneously trying to establish her own adult identity. The important historical context is not whether she made one perfect relationship decision. It is that her private life had become difficult to separate from her public identity.\n\nLESSON:\nA relationship becomes harder to understand when everyone outside it has an opinion. Sometimes growing up means learning the difference between: \"What do I actually want?\" and \"What does everyone expect me to want?\"",
@@ -5960,6 +5980,8 @@ export const STORY_DATABASE: Record<string, any> = {
             {
                 id: 'step_back',
                 bg: '/assets/bg-selena-gomez-los-angeles-2013.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
                 portrait: '/assets/avatar_selena.jpg?v=2',
                 emotion: 'love',
                 text: "HISTORICAL REALITY:\nDuring 2013, Selena Gomez and Justin Bieber's relationship remained a major subject of public attention. Their relationship had already gone through periods of separation and reconciliation, and media coverage continued to follow their interactions.\n\nThe historical record does NOT establish that Selena faced the exact three choices above.\n\nAt 21, Selena was navigating a period in which her personal relationship was being discussed publicly while she was simultaneously trying to establish her own adult identity. The important historical context is not whether she made one perfect relationship decision. It is that her private life had become difficult to separate from her public identity.\n\nLESSON:\nA relationship becomes harder to understand when everyone outside it has an opinion. Sometimes growing up means learning the difference between: \"What do I actually want?\" and \"What does everyone expect me to want?\"",
@@ -5968,6 +5990,8 @@ export const STORY_DATABASE: Record<string, any> = {
             {
                 id: 'keep_trying',
                 bg: '/assets/bg-selena-gomez-los-angeles-2013.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
                 portrait: '/assets/avatar_selena.jpg?v=2',
                 emotion: 'love',
                 text: "HISTORICAL REALITY:\nDuring 2013, Selena Gomez and Justin Bieber's relationship remained a major subject of public attention. Their relationship had already gone through periods of separation and reconciliation, and media coverage continued to follow their interactions.\n\nThe historical record does NOT establish that Selena faced the exact three choices above.\n\nAt 21, Selena was navigating a period in which her personal relationship was being discussed publicly while she was simultaneously trying to establish her own adult identity. The important historical context is not whether she made one perfect relationship decision. It is that her private life had become difficult to separate from her public identity.\n\nLESSON:\nA relationship becomes harder to understand when everyone outside it has an opinion. Sometimes growing up means learning the difference between: \"What do I actually want?\" and \"What does everyone expect me to want?\"",
@@ -5984,6 +6008,8 @@ export const STORY_DATABASE: Record<string, any> = {
             {
                 id: 'intro',
                 bg: '/assets/bg-selena-gomez-los-angeles-2013.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
                 portrait: '/assets/avatar_selena.jpg?v=2',
                 emotion: 'determination',
                 text: "People have known you for years. They have watched you grow up. They have opinions about what you should wear. What you should sing. Who you should date. What kind of person you should become. But you are changing. You are releasing your own music. You are moving into a more mature phase of your career. You have an opportunity to define yourself rather than simply continue the identity people already know. The question is: \"How much of the person people know is actually the person I want to become?\"",
@@ -6014,6 +6040,8 @@ export const STORY_DATABASE: Record<string, any> = {
             {
                 id: 'play_safe',
                 bg: '/assets/bg-selena-gomez-los-angeles-2013.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
                 portrait: '/assets/avatar_selena.jpg?v=2',
                 emotion: 'determination',
                 text: "HISTORICAL REALITY:\nIn 2013, Selena Gomez released Stars Dance. The album debuted at number one on the Billboard 200, becoming her first number-one album. She subsequently embarked on the Stars Dance Tour, her first solo world tour.\n\nThis period represented an important step toward establishing Selena as an independent recording artist rather than only the young performer audiences had known from her earlier career.\n\nThe historical record does NOT establish that she faced the exact three choices above.\n\nLESSON:\nGrowing up publicly is different from growing up privately. You may change before everyone else is ready to accept the change. The people who knew an earlier version of you may not immediately understand the person you are becoming. You do not need to remain the same person simply because other people became comfortable with who you used to be.",
@@ -6022,6 +6050,8 @@ export const STORY_DATABASE: Record<string, any> = {
             {
                 id: 'define_yourself',
                 bg: '/assets/bg-selena-gomez-los-angeles-2013.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
                 portrait: '/assets/avatar_selena.jpg?v=2',
                 emotion: 'determination',
                 text: "HISTORICAL REALITY:\nIn 2013, Selena Gomez released Stars Dance. The album debuted at number one on the Billboard 200, becoming her first number-one album. She subsequently embarked on the Stars Dance Tour, her first solo world tour.\n\nThis period represented an important step toward establishing Selena as an independent recording artist rather than only the young performer audiences had known from her earlier career.\n\nThe historical record does NOT establish that she faced the exact three choices above.\n\nLESSON:\nGrowing up publicly is different from growing up privately. You may change before everyone else is ready to accept the change. The people who knew an earlier version of you may not immediately understand the person you are becoming. You do not need to remain the same person simply because other people became comfortable with who you used to be.",
@@ -6030,6 +6060,8 @@ export const STORY_DATABASE: Record<string, any> = {
             {
                 id: 'change_everything',
                 bg: '/assets/bg-selena-gomez-los-angeles-2013.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
                 portrait: '/assets/avatar_selena.jpg?v=2',
                 emotion: 'determination',
                 text: "HISTORICAL REALITY:\nIn 2013, Selena Gomez released Stars Dance. The album debuted at number one on the Billboard 200, becoming her first number-one album. She subsequently embarked on the Stars Dance Tour, her first solo world tour.\n\nThis period represented an important step toward establishing Selena as an independent recording artist rather than only the young performer audiences had known from her earlier career.\n\nThe historical record does NOT establish that she faced the exact three choices above.\n\nLESSON:\nGrowing up publicly is different from growing up privately. You may change before everyone else is ready to accept the change. The people who knew an earlier version of you may not immediately understand the person you are becoming. You do not need to remain the same person simply because other people became comfortable with who you used to be.",

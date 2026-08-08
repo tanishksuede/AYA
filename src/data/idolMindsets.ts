@@ -1269,14 +1269,8 @@ export const IDOL_MINDSETS: Record<string, IdolMindset> = {
         },
         avatarUrl: '/assets/avatar_neeraj.jpg?v=2'
     },
-    "Selena Gomez": {
-        name: "Selena Gomez",
-        archetypeTitle: "The Vulnerable",
-        quote: "Who says you're not perfect? Who says you're not worth it?",
-        voice: {
-            tone: "Warm, Honest, Empowering",
-            intro: "The bravest thing I ever did was admit I wasn't okay. That's where the real strength began."
-        },
+    "Ed Sheeran": { analytical: 40, ambitious: 75, risk: 60, creativity: 90, social: 85 },
+    "Selena Gomez": { analytical: 45, ambitious: 80, risk: 65, creativity: 85, social: 95 },,
         missions: {
             discipline: { title: "Boundary Work", desc: "Set one firm boundary today — and keep it.", xp: "+50 Self-Respect" },
             resilience: { title: "The Health Pivot", desc: "Turn a limitation into a new direction for your energy.", xp: "+50 Strength" },
@@ -1345,5 +1339,6 @@ export const IDOL_PROFILES: Record<string, Record<string, number>> = {
     "Viswanathan Anand": { analytical: 100, ambitious: 85, risk: 70, creativity: 90, social: 60 },
     "Zendaya": { analytical: 75, ambitious: 90, risk: 100, creativity: 95, social: 85 },
     "Neeraj Chopra": { analytical: 80, ambitious: 95, risk: 85, creativity: 75, social: 70 },
-    "Selena Gomez": { analytical: 70, ambitious: 85, risk: 90, creativity: 90, social: 100 }
+    "Ed Sheeran": { analytical: 40, ambitious: 75, risk: 60, creativity: 90, social: 85 },
+    "Selena Gomez": { analytical: 45, ambitious: 80, risk: 65, creativity: 85, social: 95 },
 };
