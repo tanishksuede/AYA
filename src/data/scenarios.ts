@@ -6524,5 +6524,121 @@ export const STORY_DATABASE: Record<string, any> = {
                 ]
             }
         ]
+    },
+
+    // AGE 15: Bhagat Singh - Part 1
+    'lvl_age_15_bhagat_1': {
+        title: "Don't Just Be Angry",
+        source: "Source: Historical Context, 1922–1923",
+        frames: [
+            {
+                id: 'intro',
+                emotion: 'anger',
+                bg: '/assets/bg-bhagat-singh-lahore-1929.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-bhagat-singh.png',
+                text: "You are 15. You are growing up in a time when the country around you is full of political tension. You hear adults talking about freedom. You hear different opinions about British rule. You see people disagreeing about what should happen next.\n\nYou are young, but you are paying attention. Something makes you angry. You feel that something is unfair. You want to do something.\n\nBut you have three ways to respond. You could react immediately. You could ignore it. Or you could learn more before deciding what action makes sense.",
+                choices: [
+                    {
+                        text: "ACT RIGHT AWAY: If something feels wrong, do not wait. Take some form of immediate action to show that you will not simply accept it.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Courage",
+                        feedback: "You are willing to act even when you do not have all the answers. Risk: Acting before understanding the situation can lead to mistakes."
+                    },
+                    {
+                        text: "STAY OUT OF IT: You are only 15. There are adults who understand politics better than you. Focus on your education and let other people deal with the larger problems.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Caution",
+                        feedback: "You understand that strong emotions do not automatically mean you are ready to act. Risk: Waiting too long can become an excuse for never doing anything."
+                    },
+                    {
+                        text: "LEARN BEFORE YOU ACT: Read. Ask questions. Listen to different opinions. Try to understand why people disagree before deciding what you believe.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Curiosity",
+                        feedback: "You believe understanding a problem is the first step toward changing it. Risk: Learning can take time, while the problem you care about may still be happening."
+                    }
+                ]
+            },
+            {
+                id: 'reveal',
+                emotion: 'anger',
+                bg: '/assets/bg-bhagat-singh-lahore-1929.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-bhagat-singh.png',
+                text: "HISTORICAL REALITY:\nBhagat Singh became deeply interested in political and historical ideas while still young. His education and later years at National College exposed him to nationalist thought, history, literature and political ideas.\n\nThe historical record does NOT establish that he faced these exact three choices at age 15. The documented lesson is that his political thinking developed over time. His later actions were shaped by years of reading, discussion, political experience and changing beliefs.\n\nLESSON:\nFeeling strongly about something is important. But strong feelings do not automatically tell you what to do. Before making a big decision, ask: \"What do I actually know?\"",
+                choices: [
+                    {
+                        text: "Complete Level",
+                        next: 'COMPLETE',
+                        score: 0,
+                        feedbackTitle: "",
+                        feedback: ""
+                    }
+                ]
+            }
+        ]
+    },
+
+    // AGE 15: Bhagat Singh - Part 2
+    'lvl_age_15_bhagat_2': {
+        title: "What If I'm Wrong?",
+        source: "Source: Historical Context, 1922–1923",
+        frames: [
+            {
+                id: 'intro',
+                emotion: 'curiosity',
+                bg: '/assets/bg-bhagat-singh-lahore-1929.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-bhagat-singh.png',
+                text: "You have started thinking more deeply about the world around you. You hear different people give completely different explanations for the same problem.\n\nOne person says: \"This is the answer.\" Another person says: \"No, that is completely wrong.\"\n\nYou are 15. You do not have to choose a side immediately. You could simply repeat what someone you trust says. You could choose the opinion that sounds strongest. Or you could spend time reading and comparing ideas yourself.\n\nThe choice is not about who is right. The choice is about how YOU decide what is right.",
+                choices: [
+                    {
+                        text: "TRUST SOMEONE YOU RESPECT: Choose the view of a person whose judgment you trust. You do not have enough experience to understand everything yourself.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Trust",
+                        feedback: "You value experience and believe learning from people you respect can prevent mistakes. Risk: A respected person can still be wrong."
+                    },
+                    {
+                        text: "CHOOSE THE STRONGEST ARGUMENT: Do not care who said it. Choose the idea that appears to make the most sense.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Reason",
+                        feedback: "You care more about the strength of an argument than the identity of the person making it. Risk: A convincing argument can still leave out important information."
+                    },
+                    {
+                        text: "KEEP INVESTIGATING: Do not decide yet. Read more. Listen to opposing views. Ask questions. Change your mind if the evidence changes.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Open-Mindedness",
+                        feedback: "You are comfortable admitting that you do not know enough yet. Risk: Waiting for complete certainty can sometimes prevent action."
+                    }
+                ]
+            },
+            {
+                id: 'reveal',
+                emotion: 'curiosity',
+                bg: '/assets/bg-bhagat-singh-lahore-1929.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-bhagat-singh.png',
+                text: "HISTORICAL REALITY:\nBhagat Singh later became known for his strong intellectual interests and extensive reading. His political ideas developed over time rather than appearing fully formed at age 15.\n\nHe studied history, political thought and revolutionary movements and was influenced by a wide range of ideas. His later writings show a person who thought deeply about politics, society, religion and freedom.\n\nLESSON:\nYou do not become independent just by disagreeing with everyone. You become independent when you can explain: \"Here is what I believe.\" and also: \"Here is why I believe it.\"\n\nThe strongest thinkers are willing to change their minds when they discover better information.",
+                choices: [
+                    {
+                        text: "Complete Level",
+                        next: 'COMPLETE',
+                        score: 0,
+                        feedbackTitle: "",
+                        feedback: ""
+                    }
+                ]
+            }
+        ]
     }
 };
