@@ -452,6 +452,26 @@ export function generateLevels(_age: number): Level[] {
             avatarUrl: '/assets/avatar_selena.jpg?v=2', scenarioId: 'lvl_age_21_selena_2',
             idolTraits: { discipline: 85, resilience: 90, risk: 80, leadership: 70, creativity: 100, empathy: 95, vision: 85 }
         },
+        {
+            id: 'lvl_21_tanmay_1', title: 'Should I Really Do This?', description: 'At 21, Tanmay Bhat enters the Mumbai stand-up comedy circuit, deciding how seriously to take his talent before having proof it will work.',
+            requiredStars: 0, year: 2008, age: 21, theme: 'Arts', age_mirror_text: 'performing open mics in Mumbai while deciding whether comedy can become a career', archetype: 'The Creator', personality: 'Tanmay Bhat',
+            bio: 'A 21-year-old performing at Mumbai open-mic events, figuring out if stand-up comedy is worth taking seriously.',
+            fame: 'Co-founder of All India Bakchod. Comedian and Digital Creator.',
+            achievements: ['Won Weirdass Ham-ateur Night (2009)', 'Over 100 stand-up shows by 2011', 'Co-founded AIB'],
+            lesson: 'A CREATIVE CAREER BEGINS BEFORE THE EVIDENCE — you are choosing whether to keep showing up long enough to find out what you might become.',
+            avatarUrl: '/assets/portrait-tanmay-bhat.png', scenarioId: 'lvl_age_21_tanmay_1',
+            idolTraits: { discipline: 80, resilience: 90, risk: 95, leadership: 85, creativity: 100, empathy: 85, vision: 95 }
+        },
+        {
+            id: 'lvl_21_tanmay_2', title: 'The Five Minutes', description: 'At 21, Tanmay Bhat gets his first major breakthrough opportunity at the Weirdass Ham-ateur Night competition in Mumbai.',
+            requiredStars: 0, year: 2009, age: 21, theme: 'Arts', age_mirror_text: 'standing backstage at Ham-ateur Night in Mumbai with five minutes to show his style', archetype: 'The Creator', personality: 'Tanmay Bhat',
+            bio: 'A 21-year-old comedian competing at Weirdass Ham-ateur Night, deciding how to approach a high-stakes 5-minute set.',
+            fame: 'Co-founder of All India Bakchod. Comedian and Digital Creator.',
+            achievements: ['Won Weirdass Ham-ateur Night (2009)', 'Joined Weirdass Comedy writing team', 'Opened for Vir Das'],
+            lesson: 'THE FIRST BREAKTHROUGH IS EVIDENCE — a single opportunity can turn a possibility into evidence.',
+            avatarUrl: '/assets/portrait-tanmay-bhat.png', scenarioId: 'lvl_age_21_tanmay_2',
+            idolTraits: { discipline: 80, resilience: 90, risk: 95, leadership: 85, creativity: 100, empathy: 85, vision: 95 }
+        },
 
         // Age 21: Shah Rukh Khan
         {
