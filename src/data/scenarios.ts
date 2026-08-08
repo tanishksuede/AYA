@@ -7080,5 +7080,115 @@ export const STORY_DATABASE: Record<string, any> = {
                 ]
             }
         ]
+    },
+
+    // AGE 15: Cristiano Ronaldo (One Continuous Story: Far From Home)
+    'lvl_age_15_ronaldo': {
+        title: "Far From Home",
+        source: "Source: Historical Context, c. 2000",
+        frames: [
+            // PART 1: THE NEW BOY
+            {
+                id: 'intro',
+                emotion: 'loneliness',
+                bg: '/assets/bg-cristiano-ronaldo-manchester-2007.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-cristiano-ronaldo.png',
+                text: "Everyone around you sounds different.\nYou miss home, and people notice that you are different.\nDo you try to fit in or stay yourself?",
+                choices: [
+                    {
+                        text: "FIT IN: Change how you act so people accept you.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Belonging",
+                        feedback: "You value belonging. But fitting in can make you hide yourself."
+                    },
+                    {
+                        text: "STAY YOURSELF: Keep your accent, personality and habits.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Identity",
+                        feedback: "You value identity. But staying different can feel lonely."
+                    },
+                    {
+                        text: "FIND YOUR PLACE: Stay yourself while slowly building new friendships.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Balance",
+                        feedback: "You value balance. But finding your people takes time."
+                    }
+                ]
+            },
+            {
+                id: 'part1_reveal',
+                emotion: 'loneliness',
+                bg: '/assets/bg-cristiano-ronaldo-manchester-2007.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-cristiano-ronaldo.png',
+                text: "Ronaldo struggled to adapt after moving to Lisbon.\nHe was teased for his accent and once wanted to leave.\n\nBeing different can feel lonely.\nIt does not mean you do not belong.",
+                choices: [
+                    {
+                        text: "Continue: Stay or Keep Going",
+                        next: 'part2_intro',
+                        score: 0,
+                        feedbackTitle: "",
+                        feedback: ""
+                    }
+                ]
+            },
+            // PART 2: STAY OR KEEP GOING
+            {
+                id: 'part2_intro',
+                emotion: 'determination',
+                bg: '/assets/bg-cristiano-ronaldo-manchester-2007.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-cristiano-ronaldo.png',
+                text: "Leaving would make things easier.\nStaying means facing the same challenge again.\nWhat matters more to you?",
+                choices: [
+                    {
+                        text: "KEEP GOING: Stay and give yourself more time to adapt.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Persistence",
+                        feedback: "You value persistence. But persistence can become stubbornness."
+                    },
+                    {
+                        text: "GO HOME: Choose your comfort and return to what feels familiar.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Well-Being",
+                        feedback: "You value your well-being. Leaving can also mean giving up an opportunity."
+                    },
+                    {
+                        text: "CHANGE YOUR APPROACH: Stay, but find a different way to handle the pressure.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Adaptability",
+                        feedback: "You value adaptability. Changing your approach takes patience."
+                    }
+                ]
+            },
+            {
+                id: 'part2_reveal',
+                emotion: 'determination',
+                bg: '/assets/bg-cristiano-ronaldo-manchester-2007.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-cristiano-ronaldo.png',
+                text: "Ronaldo stayed in Lisbon and continued with Sporting.\nHis difficult adjustment became part of his early football journey.\n\nSometimes the hardest part is simply staying.\nBut staying does not mean refusing to change.",
+                choices: [
+                    {
+                        text: "Complete Level",
+                        next: 'COMPLETE',
+                        score: 0,
+                        feedbackTitle: "",
+                        feedback: ""
+                    }
+                ]
+            }
+        ]
     }
 };

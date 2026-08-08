@@ -118,6 +118,17 @@ export function generateLevels(_age: number): Level[] {
             avatarUrl: '/assets/portrait-bhagat-singh.png', scenarioId: 'lvl_age_15_bhagat_2',
             idolTraits: { discipline: 100, resilience: 100, risk: 100, leadership: 95, creativity: 85, empathy: 90, vision: 100 }
         },
+        // Age 15: Cristiano Ronaldo (One Continuous Story: Far From Home)
+        {
+            id: 'lvl_15_ronaldo', title: 'Far From Home', description: 'At 15, Cristiano Ronaldo experiences loneliness and homesickness in Lisbon after moving from Madeira, deciding whether to stay and persevere or return home.',
+            requiredStars: 0, year: 2000, age: 15, theme: 'Sports', age_mirror_text: 'feeling far from home in Lisbon while deciding whether to stay and pursue your dream', archetype: 'The Competitor', personality: 'Cristiano Ronaldo',
+            bio: 'A 15-year-old youth player in Lisbon dealing with homesickness and adjusting to a new environment.',
+            fame: 'Iconic Global Footballer & Record Goalscorer.',
+            achievements: ['Moved from Madeira to Sporting CP academy at age 12', 'Overcame homesickness and cultural adjustment in Lisbon', 'Promoted through Sporting CP youth ranks'],
+            lesson: 'PERSEVERING THROUGH SOLITUDE — being different can feel lonely, but staying does not mean refusing to adapt.',
+            avatarUrl: '/assets/portrait-cristiano-ronaldo.png', scenarioId: 'lvl_age_15_ronaldo',
+            idolTraits: { discipline: 100, resilience: 100, risk: 95, leadership: 95, creativity: 90, empathy: 75, vision: 100 }
+        },
         // Age 20: Billie Eilish (Story 2)
         {
             id: 'lvl_20_billie_2', title: 'The Person Who Left You On Seen', description: 'At 20, you must choose between chasing someone who ghosts you, or turning the pain into art.',
