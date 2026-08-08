@@ -107,7 +107,7 @@ export function SelectionRouteHandler() {
     return (
         <CharacterSelection 
             age={activeAge}
-            options={levels.filter(l => l.age === activeAge)}
+            options={levels.filter(l => Number(l.age) === Number(activeAge))}
             onSelect={(level) => navigate(`/game/intro/${level.id}`)}
             onBack={() => navigate('/game')}
         />

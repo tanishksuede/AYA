@@ -298,6 +298,19 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
                     <div className="relative w-full max-w-md mx-auto mt-24 md:mt-32 pointer-events-none h-full map-content">
                         {/* NODES */}
 
+                        {/* EMPTY STATE FOR AGES WITH NO STORIES */}
+                        {ageLevels.length === 0 && (
+                            <div className="absolute top-1/3 left-1/2 -translate-x-1/2 text-center pointer-events-auto bg-black/60 backdrop-blur-md border border-white/10 p-8 rounded-2xl max-w-sm z-30 shadow-2xl">
+                                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-cyan-500/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400 text-2xl font-black">
+                                    {activeAge}
+                                </div>
+                                <h3 className="text-xl font-bold text-white mb-2">Age {activeAge}</h3>
+                                <p className="text-gray-300 text-sm leading-relaxed">
+                                    No stories available for Age {activeAge} yet. Check back soon for new historical stories!
+                                </p>
+                            </div>
+                        )}
+
                         {/* LEVEL NODES */}
                         {ageLevels.map((level, i) => {
                             const pos = getPosition(i);

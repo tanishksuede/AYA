@@ -43,7 +43,7 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
         checkAdmin();
     }, []);
     const activeAge = profile?.age || 18;
-    let processedLevels = levels.filter(l => l.age === activeAge);
+    let processedLevels = levels.filter(l => Number(l.age) === Number(activeAge));
 
     // New stories that should be visible to ALL users regardless of interests.
     const alwaysShowPersonalities = new Set([
