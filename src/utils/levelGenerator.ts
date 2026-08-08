@@ -439,6 +439,16 @@ export function generateLevels(_age: number): Level[] {
             avatarUrl: '/assets/portrait-ashneer-grover.png', scenarioId: 'lvl_age_22_ashneer',
             idolTraits: { discipline: 90, resilience: 85, risk: 95, leadership: 90, creativity: 85, empathy: 60, vision: 95 }
         },
+        {
+            id: 'lvl_22_bhuvan', title: 'When the Phone Started Working', description: 'At 22, Bhuvan Bam must choose between his original craft of music and the sudden explosive growth of BB Ki Vines.',
+            requiredStars: 0, year: 2016, age: 22, theme: 'Arts', age_mirror_text: 'performing live music in Delhi while his comedy channel crosses one million subscribers', archetype: 'The Creator', personality: 'Bhuvan Bam',
+            bio: 'A 22-year-old history graduate and musician whose home-shot YouTube comedy videos have suddenly gone viral in millions.',
+            fame: 'Pioneering Indian digital creator. Creator of BB Ki Vines.',
+            achievements: ['First Indian individual creator to cross 10 million subscribers', 'TEDx Speaker at age 22', 'Most Popular Channel award at WebTVAsia 2016'],
+            lesson: 'PROTECT WHAT MADE YOU DIFFERENT — build systems to support your growth without losing your unique voice.',
+            avatarUrl: '/assets/portrait-bhuvan-bam.png', scenarioId: 'lvl_age_22_bhuvan',
+            idolTraits: { discipline: 85, resilience: 90, risk: 95, leadership: 85, creativity: 100, empathy: 90, vision: 95 }
+        },
         // Age 23: Shah Rukh Khan
         {
             id: 'lvl_23_srk', title: 'Gauri or Career', description: 'At 23, SRK must choose between love and the career opportunity of a lifetime.',

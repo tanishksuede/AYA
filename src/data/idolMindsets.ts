@@ -294,6 +294,33 @@ export const IDOL_MINDSETS: Record<string, IdolMindset> = {
         },
         avatarUrl: '/assets/portrait-ashneer-grover.png'
     },
+    "Bhuvan Bam": {
+        name: "Bhuvan Bam",
+        archetypeTitle: "Master Creator",
+        quote: "Our work is our identity. Do not let scale dilute the purity of your craft.",
+        voice: {
+            tone: "Warm, Humorous, Relatable",
+            intro: "Hey, nice to meet you. I know how it feels when everything moves too fast. Let's keep our feet on the ground."
+        },
+        missions: {
+            discipline: { title: "One-Man Show", desc: "Write, shoot, and edit a short piece of work entirely by yourself today.", xp: "+50 Craft" },
+            resilience: { title: "Ignore the Critics", desc: "When facing doubt or negative comments today, smile and continue creating.", xp: "+50 Smile" },
+            risk: { title: "The Next Character", desc: "Try a completely new style or character in your work today. Surprise yourself.", xp: "+50 Versatility" },
+            leadership: { title: "Keep it Close", desc: "Refuse to delegate a key creative decision; own it completely.", xp: "+50 Ownership" },
+            creativity: { title: "Household Hack", desc: "Create something amazing using only the basic tools or props in your room.", xp: "+50 Resourcefulness" },
+            empathy: { title: "Connect to the Roots", desc: "Have a genuine conversation with an old friend who knew you before any success.", xp: "+50 Humility" },
+            vision: { title: "Artist's Dream", desc: "Write down your ultimate creative project that goes beyond short-form videos.", xp: "+50 Legacy" }
+        },
+        profile: {
+            motivation: 'Fame',
+            risk: 'Bold',
+            emotional: 'Sensitive',
+            social: 'Creator',
+            passion: 'Creative',
+            coreValue: 'Art'
+        },
+        avatarUrl: '/assets/portrait-bhuvan-bam.png'
+    },
     "Oprah Winfrey": {
         name: "Oprah Winfrey",
         archetypeTitle: "Soul Connector",
@@ -1174,6 +1201,7 @@ export const IDOL_PROFILES: Record<string, Record<string, number>> = {
     "Walt Disney": { analytical: 65, ambitious: 90, risk: 95, creativity: 100, social: 85 },
     "Michael Jackson": { analytical: 75, ambitious: 95, risk: 85, creativity: 100, social: 80 },
     "Ashneer Grover": { analytical: 95, ambitious: 100, risk: 90, creativity: 80, social: 70 },
+    "Bhuvan Bam": { analytical: 80, ambitious: 95, risk: 90, creativity: 100, social: 90 },
     "Oprah Winfrey": { analytical: 75, ambitious: 95, risk: 80, creativity: 70, social: 100 },
     "Bill Gates": { analytical: 95, ambitious: 90, risk: 80, creativity: 75, social: 60 },
     "J.K. Rowling": { analytical: 60, ambitious: 85, risk: 80, creativity: 100, social: 55 },

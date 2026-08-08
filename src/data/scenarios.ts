@@ -4969,5 +4969,107 @@ export const STORY_DATABASE: Record<string, any> = {
                 ]
             }
         ]
+    },
+
+    // AGE 22: Bhuvan Bam
+    'lvl_age_22_bhuvan': {
+        title: "When the Phone Started Working",
+        source: "Source: BB Ki Vines & TEDxIIITD, 2016",
+        frames: [
+            {
+                id: 'intro',
+                emotion: 'tension',
+                bg: '/assets/bg-bhuvan-bam-delhi-2016.png',
+                portrait: '/assets/portrait-bhuvan-bam.png',
+                text: "It is 2016, and Bhuvan Bam is 22, living in Delhi after graduating from Shaheed Bhagat Singh College with a degree in History. Music is not a side hobby for him; before BB Ki Vines became huge, singing and composing had been an important part of his life and income, including live performances. But his YouTube experiment has changed quickly. BB Ki Vines, launched in June 2015, has grown to more than a million subscribers within months, while his short Hindi comedy videos have found an audience far larger than he expected. He is still shooting and editing largely by himself, from a small room, using the same basic setup that got him there — but suddenly the internet is treating this as a real career.",
+                choices: [
+                    {
+                        text: "A) Keep YouTube as the main creative priority and continue making the videos yourself, even if that means turning down some opportunities that could accelerate the career.",
+                        next: 'part1_reveal',
+                        score: 15,
+                        feedbackTitle: "Momentum Is Not A Plan",
+                        feedback: "You protect the creative process that produced the audience, even if it means turning down faster growth. You are betting that authenticity is more valuable than scale."
+                    },
+                    {
+                        text: "B) Put more energy into live music and performances, using the new online audience to strengthen the career you already know how to sustain.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Momentum Is Not A Plan",
+                        feedback: "You trust the skill that existed before the internet noticed you. You are not rejecting the new audience; you are refusing to let it erase the craft that came first."
+                    },
+                    {
+                        text: "C) Start treating the channel as a professional entertainment career: accept outside opportunities, collaborations and larger productions even if the work becomes less personal.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Momentum Is Not A Plan",
+                        feedback: "You believe an opportunity becomes real only when you build something bigger around it. You accept that professionalizing the work may also change the work."
+                    },
+                    {
+                        text: "D) Keep both paths running for now, accepting that splitting your attention may slow the growth of either one while you figure out which audience is actually durable.",
+                        next: 'part1_reveal',
+                        score: 5,
+                        feedbackTitle: "Momentum Is Not A Plan",
+                        feedback: "You refuse to make a permanent decision from a temporary surge. You preserve optionality, but the cost is divided attention at exactly the moment momentum is hardest to replace."
+                    }
+                ]
+            },
+            {
+                id: 'part1_reveal',
+                emotion: 'tension',
+                bg: '/assets/bg-bhuvan-bam-delhi-2016.png',
+                portrait: '/assets/portrait-bhuvan-bam.png',
+                text: "What Bhuvan actually did:\nBam continued building BB Ki Vines while retaining music as an important part of his identity. He kept the low-tech, one-person creative process that had become part of his identity, while his audience and professional opportunities expanded rapidly. By the end of 2016, he had crossed one million subscribers and had been recognized at the WebTVAsia Awards.\n\nLESSON: Momentum Is Not A Plan\nSudden attention creates a strange problem: everyone around you starts behaving as though the future is already decided. But an audience is evidence that something is working, not proof that you know what to build next. The difficult part is deciding how much of the thing that made people notice you should change once people start watching.",
+                choices: [
+                    { text: "Next Part", next: 'part2_setup', score: 0, feedbackTitle: "", feedback: "" }
+                ]
+            },
+            {
+                id: 'part2_setup',
+                emotion: 'tension',
+                bg: '/assets/bg-bhuvan-bam-delhi-2016.png',
+                portrait: '/assets/portrait-bhuvan-bam.png',
+                text: "The experiment is no longer invisible. Bam is appearing outside his own channel, including in TVF's Bachelors, while invitations to speak and collaborate are beginning to arrive. In June 2016, he spoke at TEDxIIITD about originality and pursuing his dreams, and later that year his rapidly growing channel received major recognition at the WebTVAsia Awards in Seoul. The opportunities are beginning to move him from a creator working alone into a person other people want to build projects around. Now the harder question is not whether people are watching. It is how much of the new machine he should allow into his creative life.",
+                choices: [
+                    {
+                        text: "A) Take the strongest outside opportunities one at a time, but keep BB Ki Vines as the place where you retain complete creative control.",
+                        next: 'part2_reveal',
+                        score: 15,
+                        feedbackTitle: "Protect What Made You Different",
+                        feedback: "You separate experimentation from ownership. You are willing to explore outside opportunities as long as one place remains completely yours."
+                    },
+                    {
+                        text: "B) Say yes to bigger collaborations and professional projects while the attention is available, even if the schedule leaves less room for the small videos that built the audience.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Protect What Made You Different",
+                        feedback: "You understand that attention has a shelf life. You would rather risk creative exhaustion than discover later that you let a rare window of opportunity close."
+                    },
+                    {
+                        text: "C) Protect the channel above everything else and postpone larger opportunities until you know exactly what you want the Bhuvan Bam identity to become.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Protect What Made You Different",
+                        feedback: "You value identity over expansion. The risk is that protecting the original formula too carefully can become its own kind of limitation."
+                    },
+                    {
+                        text: "D) Build a small professional structure around yourself now, even though delegating work means accepting that the channel will no longer be entirely yours in the way it was at the beginning.",
+                        next: 'part2_reveal',
+                        score: 5,
+                        feedbackTitle: "Protect What Made You Different",
+                        feedback: "You recognize that scale eventually requires systems. You are willing to give up some control now in exchange for having the capacity to build something larger later."
+                    }
+                ]
+            },
+            {
+                id: 'part2_reveal',
+                emotion: 'tension',
+                bg: '/assets/bg-bhuvan-bam-delhi-2016.png',
+                portrait: '/assets/portrait-bhuvan-bam.png',
+                text: "What Bhuvan actually did:\nBam continued expanding beyond the original BB Ki Vines format. In 2016 he collaborated with The Viral Fever on Bachelors and continued pursuing other opportunities while maintaining the distinctive BB Ki Vines style. By the end of the year, he described the period as a roller-coaster and said that having an audience in the millions felt like an artist's dream, while also emphasizing that it was only the beginning.\n\nLESSON: Protect What Made You Different\nGrowth creates a new kind of pressure: once something works, other people naturally want to optimize it. The danger is not necessarily accepting help or taking bigger opportunities. It is losing the unusual process that made people care before anyone knew how valuable it was.",
+                choices: [
+                    { text: "Complete Level", next: 'COMPLETE', score: 0, feedbackTitle: "", feedback: "" }
+                ]
+            }
+        ]
     }
 };
