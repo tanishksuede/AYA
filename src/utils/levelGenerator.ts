@@ -426,7 +426,7 @@ export function generateLevels(_age: number): Level[] {
             fame: 'The King of Pop. Global Icon.',
             achievements: ['8 Grammy Awards in one night (Thriller)', 'Best-selling album of all time (Thriller)', 'Pioneered modern music videos'],
             lesson: 'TWO CAREERS, ONE LIFE — a choice can be meaningful without being permanent.',
-            avatarUrl: 'D:\\AtYourAge game version\\public\\assets\\portrait-michael-jackson.png', scenarioId: 'lvl_age_22_michael',
+            avatarUrl: '/assets/portrait-michael-jackson.png', scenarioId: 'lvl_age_22_michael',
             idolTraits: { discipline: 95, resilience: 90, risk: 85, leadership: 85, creativity: 100, empathy: 80, vision: 100 }
         },
         // Age 23: Shah Rukh Khan

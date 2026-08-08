@@ -4775,8 +4775,8 @@ export const STORY_DATABASE: Record<string, any> = {
             {
                 id: 'intro',
                 emotion: 'PRESSURE',
-                bg: 'D:\\AtYourAge game version\\public\\assets\\bg-michael-jackson-van-nuys-1981.png',
-                portrait: 'D:\\AtYourAge game version\\public\\assets\\portrait-michael-jackson.png',
+                bg: '/assets/bg-michael-jackson-van-nuys-1981.png',
+                portrait: '/assets/portrait-michael-jackson.png',
                 text: "In 1981, Michael Jackson is 22 and already carrying two different versions of his career. His solo album Off the Wall has made him a major solo artist, while The Jacksons are preparing the Triumph Tour around the album the brothers recorded together. In a Van Nuys rehearsal space, the show has to work for five brothers, but Michael's solo material now occupies a large part of the set. He knows that the tour can strengthen the family group, but every week spent on it is also time away from developing what he has started on his own. The rehearsal stops, the room waits, and Michael has to decide how much of himself this next chapter belongs to the family.",
                 choices: [
                     {
@@ -4812,8 +4812,8 @@ export const STORY_DATABASE: Record<string, any> = {
             {
                 id: 'part1_reveal',
                 emotion: 'PRESSURE',
-                bg: 'D:\\AtYourAge game version\\public\\assets\\bg-michael-jackson-van-nuys-1981.png',
-                portrait: 'D:\\AtYourAge game version\\public\\assets\\portrait-michael-jackson.png',
+                bg: '/assets/bg-michael-jackson-van-nuys-1981.png',
+                portrait: '/assets/portrait-michael-jackson.png',
                 text: "What Michael actually did:\nMichael committed to The Jacksons and the Triumph Tour. He remained deeply involved in the performances and helped shape the show's choreography, costumes and stage presentation while continuing to develop his solo direction.\n\nLESSON: Two Careers, One Life\nA choice can be meaningful without being permanent. Michael did not need to decide between his family and his solo career in one dramatic moment; he could give the family project everything he had while quietly learning what he would eventually need for himself. The difficult part was accepting that time given to one path could not also be spent building the other.",
                 choices: [
                     { text: "Next Chapter", next: 'part2_setup', score: 0, feedbackTitle: "", feedback: "" }
@@ -4822,8 +4822,8 @@ export const STORY_DATABASE: Record<string, any> = {
             {
                 id: 'part2_setup',
                 emotion: 'PRESSURE',
-                bg: 'D:\\AtYourAge game version\\public\\assets\\bg-michael-jackson-van-nuys-1981.png',
-                portrait: 'D:\\AtYourAge game version\\public\\assets\\portrait-michael-jackson.png',
+                bg: '/assets/bg-michael-jackson-van-nuys-1981.png',
+                portrait: '/assets/portrait-michael-jackson.png',
                 text: "Weeks of rehearsal turn the tour into something larger than a set of songs. Michael begins shaping the presentation with new costumes, choreography and stage ideas, drawing on the scale and precision he wants from a live performance. The set now places his solo songs beside the brothers' material, making the difference between the two parts of his career impossible to ignore. On the first night in Memphis, the audience responds to both, and the pressure of being the person expected to carry the show becomes real. After the performance, Michael has to decide what to take from this experience when the tour eventually ends.",
                 choices: [
                     {
@@ -4859,8 +4859,8 @@ export const STORY_DATABASE: Record<string, any> = {
             {
                 id: 'part2_reveal',
                 emotion: 'PRESSURE',
-                bg: 'D:\\AtYourAge game version\\public\\assets\\bg-michael-jackson-van-nuys-1981.png',
-                portrait: 'D:\\AtYourAge game version\\public\\assets\\portrait-michael-jackson.png',
+                bg: '/assets/bg-michael-jackson-van-nuys-1981.png',
+                portrait: '/assets/portrait-michael-jackson.png',
                 text: "What Michael actually did:\nMichael completed the Triumph Tour with his brothers, performing both Jacksons material and songs from Off the Wall. After the tour ended, he returned to the studio and began the work that would become his next solo album, Thriller.\n\nLESSON: Learn Before Leaving\nLeaving something behind does not require rejecting everything it taught you. Michael's next step was not a clean break from the experience with his brothers; the discipline, staging and scale he developed there became part of the foundation for what came next. Sometimes the useful question is not whether to stay or leave, but what you are willing to carry forward.",
                 choices: [
                     { text: "Complete Level", next: 'COMPLETE', score: 0, feedbackTitle: "", feedback: "" }

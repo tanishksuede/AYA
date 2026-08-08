@@ -265,7 +265,7 @@ export const IDOL_MINDSETS: Record<string, IdolMindset> = {
             passion: 'Creative',
             coreValue: 'Art'
         },
-        avatarUrl: 'D:\\AtYourAge game version\\public\\assets\\portrait-michael-jackson.png'
+        avatarUrl: '/assets/portrait-michael-jackson.png'
     },
     "Oprah Winfrey": {
         name: "Oprah Winfrey",
