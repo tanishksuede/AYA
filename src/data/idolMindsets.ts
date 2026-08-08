@@ -1349,6 +1349,60 @@ export const IDOL_MINDSETS: Record<string, IdolMindset> = {
             coreValue: 'Authenticity'
         },
         avatarUrl: '/assets/avatar_selena.jpg?v=2'
+    },
+    "Elon Musk": {
+        name: "Elon Musk",
+        archetypeTitle: "The Visionary Architect",
+        quote: "When something is important enough, you do it even if the odds are not in your favor.",
+        voice: {
+            tone: "Intense, Analytical, First-Principles",
+            intro: "Think from first principles. What is physically possible?"
+        },
+        missions: {
+            discipline: { title: "Deep Focus", desc: "Spend 2 unbroken hours reading or building something complex.", xp: "+50 Focus" },
+            resilience: { title: "Iterate Rapidly", desc: "When your code or project fails, fix it immediately without despair.", xp: "+50 Grit" },
+            risk: { title: "First Principles", desc: "Question an assumption that everyone around you takes for granted.", xp: "+50 Innovation" },
+            leadership: { title: "Build the Future", desc: "Share a bold vision with someone and explain how to build it.", xp: "+50 Vision" },
+            creativity: { title: "Systems Thinking", desc: "Design a solution to a problem using first-principles logic.", xp: "+50 Synthesis" },
+            empathy: { title: "Connect", desc: "Listen carefully to a perspective different from yours.", xp: "+50 Connection" },
+            vision: { title: "Multiplanetary Horizon", desc: "Write down a long-term goal that sounds impossible today.", xp: "+50 Foresight" }
+        },
+        profile: {
+            motivation: 'Impact',
+            risk: 'Bold',
+            emotional: 'Analytical',
+            social: 'Observer',
+            passion: 'Intellectual',
+            coreValue: 'Impact'
+        },
+        avatarUrl: '/assets/avatar_elon_musk.png'
+    },
+    "Rani Lakshmibai": {
+        name: "Rani Lakshmibai",
+        archetypeTitle: "The Sovereign Leader",
+        quote: "I shall not give up my Jhansi.",
+        voice: {
+            tone: "Fierce, Courageous, Unwavering",
+            intro: "True courage is protecting your people and holding fast to who you are."
+        },
+        missions: {
+            discipline: { title: "Martial Discipline", desc: "Train your mind and body consistently today.", xp: "+50 Discipline" },
+            resilience: { title: "Unshakable Will", desc: "Stand your ground against pressure or doubt.", xp: "+50 Courage" },
+            risk: { title: "Lead from Front", desc: "Take initiative in a difficult situation.", xp: "+50 Leadership" },
+            leadership: { title: "Protect the Realm", desc: "Help and guide someone who depends on your strength.", xp: "+50 Protection" },
+            creativity: { title: "Strategic Vision", desc: "Find a creative way out of a tight constraint.", xp: "+50 Strategy" },
+            empathy: { title: "People's Heart", desc: "Listen to the concerns of your peers with respect.", xp: "+50 Compassion" },
+            vision: { title: "Sovereign Purpose", desc: "Define your core values and pledge never to compromise them.", xp: "+50 Conviction" }
+        },
+        profile: {
+            motivation: 'Impact',
+            risk: 'Bold',
+            emotional: 'Resilient',
+            social: 'Leader',
+            passion: 'Competitive',
+            coreValue: 'Impact'
+        },
+        avatarUrl: '/assets/portrait-rani-lakshmibai.png'
     }
 };
 
@@ -1394,6 +1448,8 @@ export const IDOL_PROFILES: Record<string, Record<string, number>> = {
     "Falguni Nayar": { analytical: 90, ambitious: 95, risk: 80, creativity: 75, social: 85 },
     "Nikola Tesla": { analytical: 100, ambitious: 90, risk: 90, creativity: 100, social: 30 },
     "Default": { analytical: 50, ambitious: 50, risk: 50, creativity: 50, social: 50 },
+    "Elon Musk": { analytical: 95, ambitious: 100, risk: 95, creativity: 90, social: 50 },
+    "Rani Lakshmibai": { analytical: 80, ambitious: 95, risk: 100, creativity: 75, social: 90 },
     "Shubman Gill": { analytical: 80, ambitious: 95, risk: 85, creativity: 70, social: 75 },
     "Prajakta Koli": { analytical: 80, ambitious: 90, risk: 85, creativity: 95, social: 90 },
     "Viswanathan Anand": { analytical: 100, ambitious: 85, risk: 70, creativity: 90, social: 60 },

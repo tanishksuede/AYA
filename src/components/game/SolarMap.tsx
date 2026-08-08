@@ -9,6 +9,7 @@ import { AudioController } from '../shared/AudioController';
 import { audioManager as audioSynth } from "../../utils/audioManager";
 import { motion, useScroll } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { resolvePersonalityAvatar } from '../../utils/avatarUtils';
 
 
 // Using Canvas with preloaded JPEG sequence (optimized to 60 frames)
@@ -478,7 +479,7 @@ export function SolarMap({ onPlayLevel, onOpenDnaProfile, isMapActive = true }: 
                                                 ? "border-4 border-[#FFB347] ring-4 ring-[#FFB347]/30 shadow-[0_0_30px_rgba(255,179,71,0.8),0_10px_20px_rgba(0,0,0,0.8)]"
                                                 : "border-transparent ring-2 ring-[#FFB347]/50 shadow-[0_5px_15px_rgba(0,0,0,0.6)]"
                                         )}>
-                                            <img src={level.avatarUrl || '/assets/avatar_business.png'} alt={level.archetype} className="w-full h-full object-cover" />
+                                            <img src={level.avatarUrl || resolvePersonalityAvatar(level.personality || '')} alt={level.archetype} className="w-full h-full object-cover" />
                                             {!isUnlocked && (
                                                 <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/60 backdrop-blur-[2px]">
                                                     <Lock size={20} className="text-slate-400 opacity-80 md:w-6 md:h-6" />
