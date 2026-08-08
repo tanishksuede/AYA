@@ -17,6 +17,7 @@ export default defineConfig({
         skipWaiting: true,
         clientsClaim: true,
         cleanupOutdatedCaches: true,
+        globIgnores: ['**/music/**', '**/*.mp3'],
       },
     })
   ],
