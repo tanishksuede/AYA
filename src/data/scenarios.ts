@@ -6,6 +6,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'fear',
                 bg: '/assets/bg_sachin_perth.jpg',
                 text: "It is 1992. You are 19 years old. You are in Perth, Australia, facing the most terrifyingly fast bowling attack in the world on a pitch that bounces violently. Senior batters in your team are struggling. A bouncer just hit you flush on the helmet.",
                 choices: [
@@ -48,6 +49,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'attack',
+                emotion: 'triumph',
                 bg: '/assets/bg_sachin_perth.jpg',
                 text: "You are dominating the world's best. You are nearing a historic century. But the tail-end batsmen are falling quickly. You might run out of partners before you reach 100.",
                 choices: [
@@ -69,6 +71,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'selfish',
+                emotion: 'triumph',
                 bg: '/assets/bg_sachin_perth.jpg',
                 text: "You missed the milestone because you rushed the process. True mastery requires infinite patience in the final stretch.",
                 choices: [
@@ -83,6 +86,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'century',
+                emotion: 'triumph',
                 bg: '/assets/avatar_sachin.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -115,6 +119,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING_SACHIN',
+                emotion: 'triumph',
                 bg: '/assets/bg_sachin_perth.jpg',
                 text: "LESSON: Courage. When placed in an incredibly hostile environment, playing defensively guarantees failure. True greats attack their extreme fears.",
                 choices: [
@@ -131,6 +136,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'tension',
                 bg: '/assets/bg_sundar_iit.jpg',
                 text: "You are 19. You are a student at IIT Kharagpur studying Metallurgical Engineering. The academic pressure is suffocating. You are fascinated by computers, but there are only a few slow terminals on campus, and using them takes time away from your core coursework.",
                 choices: [
@@ -173,6 +179,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'computers',
+                emotion: 'hope',
                 bg: '/assets/bg_sundar_iit.jpg',
                 text: "You want to study abroad to dive deeper into technology, but your family in Chennai cannot afford a plane ticket to America, let alone the tuition.",
                 choices: [
@@ -208,6 +215,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'stanford',
+                emotion: 'hope',
                 bg: '/assets/avatar_sundar.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -240,6 +248,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING_SUNDAR',
+                emotion: 'hope',
                 bg: '/assets/bg_sundar_iit.jpg',
                 text: "LESSON: Curiosity. The system rewards those who follow the rules, but history rewards those who risk their comfort to explore what fascinates them outside the syllabus.",
                 choices: [
@@ -256,6 +265,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'grief',
                 bg: '/assets/bg_srk_delhi.jpg',
                 bgPosition: 'object-top',
                 text: "You are 19. You live in Delhi. Your father just passed away unexpectedly, leaving your family in a precarious financial state. Despite doing well in Economics at Hansraj College, all you want to do is perform in the local theatre.",
@@ -300,6 +310,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'theatre',
+                emotion: 'hope',
                 bg: '/assets/bg_srk_delhi.jpg',
                 bgPosition: 'object-top',
                 text: "Your performances are brilliant but unorthodox. A television director notices you and offers you a role in a show called 'Fauji'. The pay is okay, but television is looked down upon by pure theatre artists who want to do cinema.",
@@ -322,6 +333,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'cinema_wait',
+                emotion: 'hope',
                 bg: '/assets/bg_srk_delhi.jpg',
                 bgPosition: 'object-top',
                 text: "Waiting for the perfect launch vehicle is pointless if no one knows who you are.",
@@ -337,6 +349,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'tv_success',
+                emotion: 'hope',
                 bg: '/assets/avatar_srk.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -369,6 +382,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING_SRK',
+                emotion: 'hope',
                 bg: '/assets/bg_srk_delhi.jpg',
                 bgPosition: 'object-top',
                 text: "LESSON: Passion. When dealing with immense pain, the logical choice is to seek safety. The extraordinary choice is to channel that devastation into an undeniable, obsessive drive for your craft.",
@@ -385,6 +399,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'grief',
                 bg: '/assets/bg_virat_pavilion.jpg',
                 text: "December 19, 2006. You are 18. You are batting overnight on 40 for Delhi in a crucial Ranji Trophy match against Karnataka. Your team is struggling and staring at a follow-on. At 3 AM, your father passes away from a stroke.",
                 choices: [
@@ -427,6 +442,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'go_bat',
+                emotion: 'determination',
                 bg: '/assets/bg_virat_pitch.jpg',
                 text: "You walk out to the middle. The opposition is fierce, knowing your mental state. Every ball is a test of your focus.",
                 choices: [
@@ -448,6 +464,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'aggressive',
+                emotion: 'determination',
                 bg: '/assets/bg_virat_pitch.jpg',
                 text: "Your anger clouded your judgment. But your resolve is noted by the selectors.",
                 choices: [
@@ -462,6 +479,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'disciplined_90',
+                emotion: 'determination',
                 bg: '/assets/bg_virat_pitch.jpg',
                 text: "After you were controversially given out on 90, you saved Delhi from the follow-on. Only after the day's play did you go straight to your father's cremation.",
                 choices: [
@@ -476,6 +494,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'hope',
                 bg: '/assets/avatar_virat_kohli.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -508,6 +527,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING_VIRAT',
+                emotion: 'determination',
                 bg: '/assets/bg_virat_pitch.jpg',
                 text: "LESSON: Resilience. When personal tragedy strikes, the greats channel their pain into their craft, transforming grief into unwavering focus.",
                 choices: [
@@ -524,6 +544,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'wonder',
                 bg: '/assets/bg_kalam_college.jpg',
                 text: "It is 1949. You are 18. You've arrived at St. Joseph's College in Tiruchirappalli from the small temple town of Rameswaram. You used to deliver newspapers. Now, you are surrounded by wealthy, English-speaking, city-bred students.",
                 choices: [
@@ -566,6 +587,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'library',
+                emotion: 'determination',
                 bg: '/assets/bg_kalam_college.jpg',
                 text: "Your dedication is absolute. Your roommate, reading a novel, asks you to take a break and go to town.",
                 choices: [
@@ -601,6 +623,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'focus_physics',
+                emotion: 'determination',
                 bg: '/assets/bg_kalam_college.jpg',
                 text: "Through pure grit, you excel. A visiting professor talks about a new field: Aeronautics. Your eyes light up.",
                 choices: [
@@ -615,6 +638,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'determination',
                 bg: '/assets/avatar_apj_kalam.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -631,6 +655,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'fail',
+                emotion: 'determination',
                 bg: '/assets/avatar_apj_kalam.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -647,6 +672,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING_KALAM',
+                emotion: 'determination',
                 bg: '/assets/bg_kalam_college.jpg',
                 text: "LESSON: Self-Belief. Your current circumstances or background do not define your potential. Knowledge is the ultimate equalizer.",
                 choices: [
@@ -663,6 +689,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'determination',
                 bg: '/assets/bg_tata_cornell.jpg',
                 text: "It is 1955. You are an 18-year-old Ratan Tata. You have just arrived at Cornell University in New York. Your father strongly expects you to study Engineering and join the family business.",
                 choices: [
@@ -705,6 +732,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'architecture',
+                emotion: 'fear',
                 bg: '/assets/bg_tata_cornell.jpg',
                 text: "You switch to architecture. When your father finds out, he is furious. He cuts off significant financial support.",
                 choices: [
@@ -726,6 +754,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'odd_jobs',
+                emotion: 'fear',
                 bg: '/assets/bg_tata_cornell.jpg',
                 text: "You graduate with a degree in Architecture. Your grandmother, Navajbai, is proud of your independence.",
                 choices: [
@@ -740,6 +769,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'fear',
                 bg: '/assets/avatar_ratan_tata.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -756,6 +786,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'fail',
+                emotion: 'fear',
                 bg: '/assets/avatar_ratan_tata.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -772,6 +803,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING_TATA',
+                emotion: 'fear',
                 bg: '/assets/bg_tata_cornell.jpg',
                 text: "LESSON: Authenticity. Defying expectations to follow your true passion is painful, but it gives you a unique perspective that conformity never could.",
                 choices: [
@@ -787,6 +819,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'determination',
                 bg: '/assets/bg_taylor_cafe.png',
                 text: "It's 2008. You are 15 (but let's say 18 for game flow). You're sitting in the Bluebird Cafe in Nashville. Scott Borchetta from a new indie label 'Big Machine' is watching you.",
                 choices: [
@@ -816,6 +849,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'risk_route',
+                emotion: 'hope',
                 bg: '/assets/bg_taylor_studio.png',
                 text: "Scott offers you a deal, but it's a tiny label with no money. RCA Records also wants you, but they want you to sing other people's songs.",
                 choices: [
@@ -837,6 +871,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'rca_fail',
+                emotion: 'hope',
                 bg: '/assets/bg_taylor_studio.png',
                 text: "You sign with RCA. They shelf you for 2 years because they 'don't know what to do with you'. Authenticity matters more than budget.",
                 choices: [
@@ -845,6 +880,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'tour_grind',
+                emotion: 'hope',
                 bg: '/assets/bg_taylor_bus.png',
                 text: "The album is out. It's doing okay, but you need more fans. Radio stations are the gatekeepers.",
                 choices: [
@@ -866,6 +902,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'hope',
                 bg: '/assets/avatar_taylor_swift.png',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -876,6 +913,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING',
+                emotion: 'hope',
                 bg: '/assets/avatar_taylor_swift.png',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -894,6 +932,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'determination',
                 bg: '/assets/bg_zuck_dorm.png',
                 text: "It's 2004. You are 19. Harvard classes are getting in the way of your side project, 'TheFacebook'. It's growing too fast.",
                 choices: [
@@ -936,6 +975,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'growth',
+                emotion: 'tension',
                 bg: '/assets/scenario_office.jpg',
                 text: "You kept control. Now you need to hire. A brilliant engineer comes in, but he's wearing pajamas to the interview.",
                 choices: [
@@ -957,6 +997,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'tension',
                 bg: '/assets/zuck_happy.jpg',
                 text: "The network hits 500 million users. You connected the world.",
                 choices: [
@@ -965,6 +1006,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING',
+                emotion: 'tension',
                 bg: '/assets/zuck_happy.jpg',
                 text: "LESSON: CONVICTION. When you have data that the world doesn't see yet, you have to trust it. Even when a billion dollars is on the table.",
                 choices: [
@@ -983,6 +1025,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'loneliness',
                 bg: '/assets/bg_taylor_awards.png',
                 bgPosition: 'object-right',
                 text: "It's 2010. You are 20. Critics are saying you don't write your own songs and that you rely on Nashville pros.",
@@ -1013,6 +1056,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'solo_write',
+                emotion: 'triumph',
                 bg: '/assets/bg_taylor_room.png',
                 text: "It's lonely and hard. You have no one to bounce ideas off of. But the songs are brutally honest.",
                 choices: [
@@ -1034,6 +1078,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'triumph',
                 bg: '/assets/avatar_taylor_swift.png',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -1044,6 +1089,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING',
+                emotion: 'triumph',
                 bg: '/assets/avatar_taylor_swift.png',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -1062,6 +1108,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'determination',
                 bg: '/assets/bg_kobe_court.png',
                 bgPosition: 'object-left',
                 text: "It's 1998. You are 20. You play for the Lakers. The team is going out to a club in LA to celebrate a win.",
@@ -1141,6 +1188,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'tension',
                 bg: '/assets/bg_nv_sir_family.jpg',
                 bgPosition: 'object-center',
                 text: "Your family needs financial support NOW. Your IIT degree is 2 years away. A relative offers you a part-time BPO night shift job — ₹8,000/month, stable. A local school offers you a teaching gig — ₹2,000/month, uncertain.",
@@ -1201,6 +1249,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'teaching_job',
+                emotion: 'determination',
                 bg: '/assets/bg_nv_sir_teaching.jpg',
                 text: "The only good coaching institute that'll hire you is 44 km away. Your friend says 'bro just tutor 5 kids at home, you'll earn the same with zero travel.' Your senior says 'that institute has 200 students — your career will explode if you crack it.'",
                 choices: [
@@ -1236,6 +1285,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'home_tuition',
+                emotion: 'determination',
                 bg: '/assets/bg_nv_sir_teaching.jpg',
                 text: "You earn decent money, but your impact remains small.",
                 choices: [
@@ -1252,6 +1302,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'safe_exit',
+                emotion: 'determination',
                 bg: '/assets/bg_nv_sir_teaching.jpg',
                 text: "You chose safety over passion, missing out on your true calling.",
                 choices: [
@@ -1260,6 +1311,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'determination',
                 bg: '/assets/avatar_nv_sir.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black', // add black bg fill
@@ -1270,6 +1322,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING',
+                emotion: 'determination',
                 bg: '/assets/avatar_nv_sir.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black', // add black bg fill
@@ -1288,6 +1341,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'grief',
                 bg: '/assets/bg_frida_bed.png',
                 bgPosition: 'object-left',
                 text: "It's 1927. You are 20. A bus accident shattered your spine. You are stuck in a body cast in bed for months.",
@@ -1319,6 +1373,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'paint',
+                emotion: 'wonder',
                 bg: '/assets/bg_frida_painting.png',
                 text: "You paint your pain. It's raw and weird. Critics might find it too personal.",
                 choices: [
@@ -1340,6 +1395,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'wonder',
                 bg: '/assets/avatar_frida.png',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -1350,6 +1406,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING',
+                emotion: 'wonder',
                 bg: '/assets/avatar_frida.png',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -1368,6 +1425,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'wonder',
                 bg: '/assets/bg_gates_dorm.png',
                 bgPosition: 'object-left',
                 text: "It's 1975. You are 20. You see the Altair 8800 on the cover of Popular Electronics. It's the first 'Personal Computer'.",
@@ -1411,6 +1469,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'ibm_deal',
+                emotion: 'tension',
                 bg: '/assets/bg_gates_boardroom.png',
                 text: "Microsoft is growing. IBM comes knocking. They need an OS for their new PC. You don't have one.",
                 choices: [
@@ -1432,6 +1491,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'tension',
                 bg: '/assets/avatar_bill_gates.png',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -1442,6 +1502,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING',
+                emotion: 'tension',
                 bg: '/assets/avatar_bill_gates.png',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -1460,6 +1521,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'determination',
                 bg: '/assets/bg_jobs_garage.png',
                 bgPosition: 'object-left',
                 text: "It's 1976. You are 21. You and Wozniak built the Apple I circuit board in your parents' garage.",
@@ -1503,6 +1565,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'vision',
+                emotion: 'wonder',
                 bg: '/assets/scenario_office.jpg',
                 text: "You are building the Apple II. Engineers want to add expansion slots for hackers. You want it sealed and beautiful.",
                 choices: [
@@ -1524,6 +1587,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'wonder',
                 bg: '/assets/avatar_steve_jobs.png',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -1534,6 +1598,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING',
+                emotion: 'wonder',
                 bg: '/assets/avatar_steve_jobs.png',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -1552,6 +1617,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'grief',
                 bg: '/assets/bg_disney_studio_old.png',
                 bgPosition: 'object-left',
                 text: "It's 1923. You are 22. Your first animation studio 'Laugh-O-Gram' has gone bankrupt. You can't pay rent.",
@@ -1595,6 +1661,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'triumph',
                 bg: '/assets/avatar_walt_disney.png',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -1605,6 +1672,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING',
+                emotion: 'triumph',
                 bg: '/assets/avatar_walt_disney.png',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -1623,6 +1691,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'grief',
                 bg: '/assets/bg_oprah_newsroom.png',
                 bgPosition: 'object-left',
                 text: "It's 1977. You are 23. You land a huge job as a news anchor in Baltimore. But you get too emotional reading the stories.",
@@ -1645,6 +1714,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'fired',
+                emotion: 'triumph',
                 bg: '/assets/bg_oprah_talkshow.png',
                 text: "They demote you to a low-rated morning talk show 'People Are Talking'. It feels like a failure.",
                 choices: [
@@ -1666,6 +1736,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'triumph',
                 bg: '/assets/avatar_oprah.png',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -1676,6 +1747,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING',
+                emotion: 'triumph',
                 bg: '/assets/avatar_oprah.png',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -1765,6 +1837,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'wonder',
                 bg: '/assets/bg_rowling_train_window.png',
                 bgPosition: 'object-left',
                 text: "It's 1990. You are 25. You are stuck on a delayed train from Manchester to London for 4 hours.",
@@ -1787,6 +1860,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'idea',
+                emotion: 'determination',
                 bg: '/assets/bg_rowling_train_carriage.png',
                 text: "You don't have a pen! The idea is flooding your brain.",
                 choices: [
@@ -1808,6 +1882,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'determination',
                 bg: '/assets/avatar_jk_rowling.png',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -1818,6 +1893,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING',
+                emotion: 'determination',
                 bg: '/assets/avatar_jk_rowling.png',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -1837,6 +1913,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'fear',
                 bg: '/assets/bg_arnold_train.jpg',
                 text: "You are 20. Private in the Austrian Army. The 'Mr. Universe' competition is tomorrow in Germany. You are forbidden to leave.",
                 choices: [
@@ -1881,6 +1958,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'escape_win',
+                emotion: 'determination',
                 bg: '/assets/avatar_arnold.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -1891,6 +1969,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING_ARNOLD',
+                emotion: 'determination',
                 bg: '/assets/avatar_arnold.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -1909,6 +1988,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'grief',
                 bg: '/assets/bg_hawking_study.jpg',
                 text: "You are 20. The doctors say you have ALS. Two years to live. Your body is failing.",
                 choices: [
@@ -1953,6 +2033,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'purpose_win',
+                emotion: 'wonder',
                 bg: '/assets/avatar_hawking.png',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -1963,6 +2044,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING_HAWKING',
+                emotion: 'wonder',
                 bg: '/assets/avatar_hawking.png',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -1981,6 +2063,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'loneliness',
                 bg: '/assets/bg_college_canteen.jpg',
                 text: "It's your final year at LSR. Everyone is going on a 'Farewell Trip' to Goa. It's the last time to bond with friends.",
                 choices: [
@@ -2017,6 +2100,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'balance_fail',
+                emotion: 'determination',
                 bg: '/assets/bg_college_canteen.jpg',
                 text: "'Balance' is for average people. Toppers are obsessed.",
                 choices: [
@@ -2025,6 +2109,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'determination',
                 bg: '/assets/avatar_tina_dabi.png',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -2035,6 +2120,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING_TINA_1',
+                emotion: 'determination',
                 bg: '/assets/avatar_tina_dabi.png',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -2056,6 +2142,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'wonder',
                 bg: '/assets/bg_shelley_villa.jpg',
                 bgPosition: 'object-left',
                 text: "It's 1816. You are 19 (nearly 20). You are at Villa Diodati with Lord Byron. A storm traps you inside. Byron suggests a ghost story contest.",
@@ -2086,6 +2173,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'monster_idea',
+                emotion: 'fear',
                 bg: '/assets/bg_shelley_writing.jpg',
                 text: "You have the idea, but it's terrifying. A reanimated corpse. People might call it blasphemy.",
                 choices: [
@@ -2107,6 +2195,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'fear',
                 bg: '/assets/avatar_mary_shelley.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -2117,6 +2206,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING',
+                emotion: 'fear',
                 bg: '/assets/avatar_mary_shelley.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -2135,6 +2225,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'determination',
                 bg: '/assets/bg_spielberg_universal.jpg',
                 bgPosition: 'object-left',
                 text: "It's 1966. You are 20. You've been rejected from USC film school 3 times. You are on a tour bus at Universal Studios.",
@@ -2165,6 +2256,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'sneak',
+                emotion: 'wonder',
                 bg: '/assets/bg_spielberg_office.jpg',
                 text: "You find an empty office in the editorial department. It's unlocked.",
                 choices: [
@@ -2186,6 +2278,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'wonder',
                 bg: '/assets/avatar_spielberg_young.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -2196,6 +2289,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING',
+                emotion: 'wonder',
                 bg: '/assets/avatar_spielberg_young.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -2213,6 +2307,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'fear',
                 bg: '/assets/bg_sindhu.jpg',
                 audio_hi: '/assets/voice_sindhu_intro_hi_v2.mp3',
                 text: "It is 2012. You are 17. You are facing Li Xuerui, the reigning Olympic gold medalist. She is older, stronger, and seemingly invincible. Your body is exhausted from the tournament. The pressure is immense.",
@@ -2249,6 +2344,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'attack',
+                emotion: 'determination',
                 bg: '/assets/bg_sindhu.jpg',
                 text: "You win the first set. But your stamina is dropping dangerously low. The coach warns you to slow down, but Li is turning up the pressure.",
                 choices: [
@@ -2270,6 +2366,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'slow',
+                emotion: 'determination',
                 bg: '/assets/bg_sindhu.jpg',
                 text: "You lost the momentum and the match. You realize that sometimes, momentum is more important than energy.",
                 choices: [
@@ -2284,6 +2381,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'push',
+                emotion: 'determination',
                 bg: '/assets/avatar_sindhu.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -2301,6 +2399,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'grief',
                 bg: '/assets/bg_rahman.jpg',
                 text: "It is 1984. You are 17. Your father has passed away, leaving your family in deep financial trouble. You are gifted at the keyboard, but your mother urges you to drop out of school to become a full-time session musician for film composers.",
                 choices: [
@@ -2336,6 +2435,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'drop',
+                emotion: 'determination',
                 bg: '/assets/bg_rahman.jpg',
                 text: "You are working endlessly for other composers. They take the credit, and you just get a daily wage. You are exhausted and feeling creatively stifled.",
                 choices: [
@@ -2357,6 +2457,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'complacent',
+                emotion: 'determination',
                 bg: '/assets/bg_rahman.jpg',
                 text: "You feel hollow. Playing other people's music isn't why you were given this gift.",
                 choices: [
@@ -2371,6 +2472,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'jingles',
+                emotion: 'determination',
                 bg: '/assets/avatar_rahman.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -2388,6 +2490,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'hope',
                 bg: '/assets/bg_malala.jpg',
                 text: "It is 2014. You are 17. You survived a horrific assassination attempt by the Taliban. Now, you have just been awarded the Nobel Peace Prize. The world wants you to be their spokesperson, but you just want to pass your high school exams.",
                 choices: [
@@ -2423,6 +2526,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'balance',
+                emotion: 'anger',
                 bg: '/assets/bg_malala.jpg',
                 text: "Balancing schoolwork and meeting world leaders is exhausting. Politicians try to use your image for their own agendas.",
                 choices: [
@@ -2444,6 +2548,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'safe',
+                emotion: 'anger',
                 bg: '/assets/bg_malala.jpg',
                 text: "You realize you didn't survive a bullet just to read safe PR scripts.",
                 choices: [
@@ -2458,6 +2563,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'truth',
+                emotion: 'anger',
                 bg: '/assets/avatar_malala.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -2475,6 +2581,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'determination',
                 bg: '/assets/bg_jobs.jpg',
                 text: "It is 1972. You are 17. You are enrolled at Reed College, an expensive private school. Your working-class parents are draining their life savings to pay for it, but you have no idea what you want to do with your life, and the required classes bore you.",
                 choices: [
@@ -2510,6 +2617,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'drop',
+                emotion: 'wonder',
                 bg: '/assets/bg_jobs.jpg',
                 text: "You are auditing classes for free. One of them is Calligraphy. It has zero practical application in your life, but you find it beautiful.",
                 choices: [
@@ -2531,6 +2639,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'practical',
+                emotion: 'wonder',
                 bg: '/assets/bg_jobs.jpg',
                 text: "Repairing TVs is fine, but you feel empty without the art.",
                 choices: [
@@ -2545,6 +2654,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'fonts',
+                emotion: 'wonder',
                 bg: '/assets/avatar_jobs.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -2562,6 +2672,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'anger',
                 bg: '/assets/bg_nooyi.jpg',
                 text: "It is 1972. You are 17, studying at Madras Christian College in conservative Chennai. Society expects you to be quiet, demure, and prepare for an arranged marriage. Instead, you want to join an all-girls rock band and play guitar.",
                 choices: [
@@ -2597,6 +2708,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'rebel',
+                emotion: 'determination',
                 bg: '/assets/bg_nooyi.jpg',
                 text: "You are rocking out on stage, but now the college has formed a women's cricket team. It's rough, physical, and even more controversial than the band.",
                 choices: [
@@ -2618,6 +2730,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'safe',
+                emotion: 'determination',
                 bg: '/assets/bg_nooyi.jpg',
                 text: "You realize you shouldn't limit yourself just because society thinks you've 'done enough'.",
                 choices: [
@@ -2632,6 +2745,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'compete',
+                emotion: 'determination',
                 bg: '/assets/avatar_nooyi.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -2650,6 +2764,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'grief',
                 bg: '/assets/bg_srk_age17.jpg',
                 portrait: '/assets/portrait-srk-17.png.jpg',
                 text: "It's 1982. You are 17. Your father just passed away. Your family has very little money. Your theatre teacher says you have a rare gift. Your mother needs you to focus on studies. Your friends are all preparing for engineering exams.",
@@ -2679,6 +2794,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'choice_a',
+                emotion: 'determination',
                 bg: '/assets/bg_srk_age17.jpg',
                 portrait: '/assets/portrait-srk-17.png.jpg',
                 text: "You study hard, but the stage calls to you every night. A year passes and you feel hollow despite your grades. SRK chose differently — he studied hard AND trained under Barry John at Theatre Action Group, performing late into the nights.",
@@ -2694,6 +2810,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'choice_c',
+                emotion: 'determination',
                 bg: '/assets/bg_srk_age17.jpg',
                 portrait: '/assets/portrait-srk-17.png.jpg',
                 text: "Your mother listens. She can't promise support but she doesn't forbid it either. SRK went further — he committed to both fully, neither asking permission nor abandoning responsibility.",
@@ -2709,6 +2826,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'lesson',
+                emotion: 'determination',
                 bg: '/assets/bg_srk_age17.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -2727,6 +2845,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'love',
                 bg: '/assets/bg_srk_age19b.jpg',
                 portrait: '/assets/portrait-srk-19.png.jpg',
                 text: "It's 1984. You are 19. You've been performing with Theatre Action Group for 2 years. Doordarshan has noticed you. Mumbai is calling. But your mother is unwell. Your sister depends on you. You have no contacts in Mumbai, no money saved, no place to stay.",
@@ -2756,6 +2875,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'choice_a',
+                emotion: 'determination',
                 bg: '/assets/bg_srk_age19b.jpg',
                 portrait: '/assets/portrait-srk-19.png.jpg',
                 text: "You stay. You take every Delhi opportunity — Doordarshan, theatre, TV serials. Years later, when you finally move, you carry no guilt — only foundation. This is exactly what SRK did.",
@@ -2771,6 +2891,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'choice_b',
+                emotion: 'determination',
                 bg: '/assets/bg_srk_age19b.jpg',
                 portrait: '/assets/portrait-srk-19.png.jpg',
                 text: "Mumbai is harder than you imagined. No contacts, no money, and the guilt of leaving your family weighs heavy. SRK waited until he was truly ready — he only moved to Mumbai after his mother passed away in 1991 at age 25.",
@@ -2786,6 +2907,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'lesson',
+                emotion: 'determination',
                 bg: '/assets/bg_srk_age19b.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -2804,6 +2926,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'fear',
                 bg: '/assets/bg_srk_age21.jpg',
                 portrait: '/assets/portrait-srk-21.png.jpg',
                 text: "It's 1986. You are 21. A director offers you a villain role — dark, menacing, psychologically complex. Everyone advises against it. 'First impressions matter. If audiences see you as evil, they'll never love you as a hero.' Another director is offering you a safe romantic lead.",
@@ -2833,6 +2956,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'choice_a',
+                emotion: 'determination',
                 bg: '/assets/bg_srk_age21.jpg',
                 portrait: '/assets/portrait-srk-21.png.jpg',
                 text: "The romantic lead role is forgettable. You are likeable but unmemorable. SRK's villain roles in Darr and Baazigar made him a superstar — not his hero roles. Complex characters reveal true talent.",
@@ -2848,6 +2972,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'choice_c',
+                emotion: 'determination',
                 bg: '/assets/bg_srk_age21.jpg',
                 portrait: '/assets/portrait-srk-21.png.jpg',
                 text: "Two weeks later, the villain director has moved on — he found someone willing to commit. The window closed while you were thinking. SRK always said: when the right material finds you, you know it in your gut.",
@@ -2863,6 +2988,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'lesson',
+                emotion: 'determination',
                 bg: '/assets/bg_srk_age21.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -2881,6 +3007,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'love',
                 bg: '/assets/bg_srk_age23.jpg',
                 portrait: '/assets/portrait-srk-23.png.jpg',
                 text: "It's 1988. You are 23. You've been with Gauri for 3 years. Both families have objections. Mumbai producers are interested — this is the moment you've waited for. Gauri says she'll wait but she's scared. Some people say focus on career first, relationships later.",
@@ -2910,6 +3037,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'choice_a',
+                emotion: 'determination',
                 bg: '/assets/bg_srk_age23.jpg',
                 portrait: '/assets/portrait-srk-23.png.jpg',
                 text: "You reach Mumbai. Career is moving. But the loneliness is louder than the applause. You miss Gauri. SRK went to Mumbai AND fought for Gauri — they married in 1991 against family resistance. He refused to choose between love and ambition.",
@@ -2925,6 +3053,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'choice_c',
+                emotion: 'determination',
                 bg: '/assets/bg_srk_age23.jpg',
                 portrait: '/assets/portrait-srk-23.png.jpg',
                 text: "A year passes. The producer who was interested has moved on. The window was real and it closed. SRK learned that the best move is often the bold one — take the opportunity and take the person you love, together.",
@@ -2940,6 +3069,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'lesson',
+                emotion: 'determination',
                 bg: '/assets/bg_srk_age23.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -2958,6 +3088,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'grief',
                 bg: '/assets/bg_srk_age25.jpg',
                 portrait: '/assets/portrait-srk-25.png.jpg',
                 text: "It's 1990. You are 25. You moved to Mumbai. Bollywood is not opening its doors. You've been rejected from multiple films. Money is running out. A producer offers you a supporting role in a big film — good pay but not the lead. Another option: a small independent film where you're the lead but no guarantee of release.",
@@ -2987,6 +3118,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'choice_a',
+                emotion: 'determination',
                 bg: '/assets/bg_srk_age25.jpg',
                 portrait: '/assets/portrait-srk-25.png.jpg',
                 text: "The big film releases. You're barely noticed in the background. The money helped, but you're no closer to being a lead. SRK took Deewana (1992) as a lead — it released and made him a star overnight. He bet on himself when no one else would.",
@@ -3002,6 +3134,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'choice_c',
+                emotion: 'determination',
                 bg: '/assets/bg_srk_age25.jpg',
                 portrait: '/assets/portrait-srk-25.png.jpg',
                 text: "Months pass. Savings run out. You have to leave Mumbai and go back to Delhi. The independent film got made — without you. SRK took Deewana as a calculated bet and it changed everything. Staying in the game matters.",
@@ -3017,6 +3150,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'lesson',
+                emotion: 'determination',
                 bg: '/assets/bg_srk_age25.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -3036,6 +3170,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'triumph',
                 bg: '/assets/bg_billie_la.jpg',
                 text: "Year: 2020. Los Angeles. You are 19. You just won 5 Grammy Awards in one night — the most by any artist your age in history. But you haven't slept properly in 6 months. You have body dysmorphia, depression and anxiety. Your management wants you to start your next album immediately. Your therapist says you need 6 months completely off.",
                 choices: [
@@ -3078,6 +3213,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'rest',
+                emotion: 'calm',
                 bg: '/assets/bg_billie_la.jpg',
                 text: "Six months pass. You speak publicly about your mental health struggles. The world doesn't abandon you — millions write that your honesty saved them. Now you return to the studio, full.",
                 choices: [
@@ -3092,6 +3228,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'middle',
+                emotion: 'calm',
                 bg: '/assets/bg_billie_la.jpg',
                 text: "Writing privately helps. You process through lyrics what you can't say in interviews. Slowly the songs become honest again.",
                 choices: [
@@ -3106,6 +3243,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'calm',
                 bg: '/assets/avatar_billie.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -3124,6 +3262,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'determination',
                 bg: '/assets/bg_mrbeast_nc.jpg',
                 text: "Year: 2017. North Carolina. You are 19. You've been making YouTube videos for 5 years with almost no success — 30,000 subscribers. Your mom is begging you to go to college. You just had an idea for a video counting to 100,000. It will take days. It's ridiculous. College applications are due tomorrow.",
                 choices: [
@@ -3152,6 +3291,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'college',
+                emotion: 'tension',
                 bg: '/assets/bg_mrbeast_nc.jpg',
                 text: "You enroll. Classes are fine. But every night you're watching YouTube analytics instead of studying. The idea for the counting video won't leave your head.",
                 choices: [
@@ -3180,6 +3320,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'count',
+                emotion: 'tension',
                 bg: '/assets/bg_mrbeast_nc.jpg',
                 text: "You film for 40+ hours straight, counting to 100,000 on camera. Your team thinks you've lost your mind. You upload it anyway.",
                 choices: [
@@ -3194,6 +3335,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'tension',
                 bg: '/assets/avatar_mrbeast.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -3212,6 +3354,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'wonder',
                 bg: '/assets/bg_ritesh_india.jpg',
                 text: "Year: 2012. India. You are 19. You dropped out of college after one semester. You've been traveling across India staying in budget hotels — all terrible. You have an idea: standardize them. But you have no money, no MBA, no experience. Just ₹2,000 in your pocket. The Thiel Fellowship is offering $100,000 to young entrepreneurs to NOT go to college.",
                 choices: [
@@ -3254,6 +3397,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'start_small',
+                emotion: 'hope',
                 bg: '/assets/bg_ritesh_india.jpg',
                 text: "You partner with one guesthouse owner. The results are promising. Now the Thiel Fellowship application is open — your real-world data makes your pitch stronger.",
                 choices: [
@@ -3268,6 +3412,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'thiel',
+                emotion: 'hope',
                 bg: '/assets/bg_ritesh_india.jpg',
                 text: "You make it through the grueling interview rounds. The final round is tomorrow. You're the youngest applicant and the only one from India.",
                 choices: [
@@ -3282,6 +3427,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'hope',
                 bg: '/assets/avatar_ritesh.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -3300,6 +3446,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'anger',
                 bg: '/assets/bg_ali_rome.jpg',
                 text: "Year: 1960. Rome Olympics. You are 19. You just won the Olympic gold medal in boxing. You return home to Louisville as a hero. But at a restaurant, a white waiter refuses to serve you. You — an Olympic gold medalist — are told to use the back entrance. You are so disgusted you consider throwing your medal into the Ohio River.",
                 choices: [
@@ -3342,6 +3489,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'speak',
+                emotion: 'determination',
                 bg: '/assets/bg_ali_rome.jpg',
                 text: "Your words reach millions. But the medal sits heavy. You realize symbols matter — what you hold says something about what you believe.",
                 choices: [
@@ -3356,6 +3504,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'throw',
+                emotion: 'determination',
                 bg: '/assets/bg_ali_rome.jpg',
                 text: "The medal hits the water. Your trainer calls you crazy. Your family says don't make trouble. But something inside you has never felt more free.",
                 choices: [
@@ -3370,6 +3519,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'determination',
                 bg: '/assets/avatar_ali.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -3388,6 +3538,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'loneliness',
                 bg: '/assets/bg_dhruv_germany.png',
                 text: "Year: 2014. Germany. You are 20, studying mechanical engineering on a scholarship. You started making YouTube videos about Indian politics — nobody is watching. You have 500 subscribers. A German company offers you a prestigious internship. But you feel a burning rage about misinformation spreading in India. Someone needs to speak up.",
                 choices: [
@@ -3416,6 +3567,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'youtube',
+                emotion: 'determination',
                 bg: '/assets/bg_dhruv_germany.png',
                 text: "You quit your studies. Without credentials, your videos struggle to be taken seriously. You realize authority and research depth matter for this kind of content.",
                 choices: [
@@ -3444,6 +3596,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'both',
+                emotion: 'determination',
                 bg: '/assets/bg_dhruv_germany.png',
                 text: "You study by day and research-write by night. The videos are slow but consistent. Your engineering brain makes your research unusually rigorous.",
                 choices: [
@@ -3458,6 +3611,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'determination',
                 bg: '/assets/avatar_dhruv.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -3476,6 +3630,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'determination',
                 bg: '/assets/bg_falguni_iim.jpg',
                 text: "Year: 1982. Mumbai. You are 19, one of very few women at IIM Ahmedabad. Society expects you to get a safe job and marry. You have a burning desire to build something of your own someday. Everyone says: get experience first, build credentials. Your family wants a good job first.",
                 choices: [
@@ -3518,6 +3673,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'network',
+                emotion: 'calm',
                 bg: '/assets/bg_falguni_iim.jpg',
                 text: "Your IIM connections open doors at Kotak Mahindra. You join. Over 19 years you build expertise AND relationships that will become Nykaa's backbone.",
                 choices: [
@@ -3532,6 +3688,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'conventional',
+                emotion: 'calm',
                 bg: '/assets/bg_falguni_iim.jpg',
                 text: "You join Kotak Mahindra. 19 years of investment banking builds your expertise, your network, and your understanding of capital markets — the exact skills Nykaa will need.",
                 choices: [
@@ -3546,6 +3703,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'calm',
                 bg: '/assets/avatar_falguni.png',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -3564,6 +3722,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'wonder',
                 bg: '/assets/bg_tesla_austria.jpg',
                 text: "Year: 1875. Austria. You are 19, studying electrical engineering. You are obsessed — studying 20 hours a day. You've started having visions: literal visualizations of electrical machines in your mind that you can mentally test. Your professors think you're having a mental crisis. You have a revolutionary idea about alternating current that contradicts everything they teach.",
                 choices: [
@@ -3606,6 +3765,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'document',
+                emotion: 'determination',
                 bg: '/assets/bg_tesla_austria.jpg',
                 text: "You secretly fill notebooks with AC designs while passing your exams. You're building a double life — conformist by day, revolutionary by night.",
                 choices: [
@@ -3620,6 +3780,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'visions',
+                emotion: 'determination',
                 bg: '/assets/bg_tesla_austria.jpg',
                 text: "You trust the visions completely. Your professors call it a breakdown. But you can see the machine working in your mind with perfect clarity — every coil, every spark, every rotation.",
                 choices: [
@@ -3634,6 +3795,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'determination',
                 bg: '/assets/avatar_tesla.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -3651,6 +3813,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'grief',
                 bg: '/assets/bg_shubman_nz.jpg',
                 text: "2018-2019. You’ve just won the U-19 World Cup. You are being hailed as the 'Next Kohli.' Suddenly, you are thrown into the senior Indian team in New Zealand. You fail. You score 9 and 7. The media says you were 'hyped too early.'",
                 choices: [
@@ -3693,6 +3856,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'international',
+                emotion: 'determination',
                 bg: '/assets/bg_shubman_nz.jpg',
                 text: "The criticism gets louder. Former players question your technique against swing bowling. Your confidence is completely shattered.",
                 choices: [
@@ -3714,6 +3878,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'change_technique',
+                emotion: 'determination',
                 bg: '/assets/bg_shubman_nz.jpg',
                 text: "Your mind is cluttered. You forgot how to play your natural game.",
                 choices: [
@@ -3728,6 +3893,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'trust_process',
+                emotion: 'determination',
                 bg: '/assets/bg_shubman_nz.jpg',
                 text: "You are selected for the historic Gabba Test in Australia. The pitch is lethal, the bowlers are breathing fire, and history is on the line.",
                 choices: [
@@ -3742,6 +3908,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'determination',
                 bg: '/assets/avatar_shubman.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -3758,6 +3925,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'fail',
+                emotion: 'determination',
                 bg: '/assets/avatar_shubman.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -3774,6 +3942,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING_SHUBMAN',
+                emotion: 'determination',
                 bg: '/assets/bg_shubman_nz.jpg',
                 text: "LESSON: Conviction. When everyone writes you off, the only voice that matters is your own. Trust the talent that brought you to the arena.",
                 choices: [
@@ -3790,6 +3959,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'fear',
                 bg: '/assets/bg_prajakta_silence.jpg',
                 text: "2014. Mumbai.\nYou are 20. For ten years, your only dream was to be a Radio Jockey (RJ). You finally got the internship at a major station. This is it. But it's a nightmare. You're exhausted, the creative freedom is zero, and you realize the \"dream\" was a lie. You meet a talent scout who sees your funny personality and says, \"Quit. Start a YouTube channel.\"\nIt's 2014. In India, \"YouTuber\" isn't a career—it's what people do when they're unemployed. Your parents expect you to have a 'real' job.\nWhat do you do?",
                 choices: [
@@ -3818,6 +3988,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'hope',
                 bg: '/assets/avatar_prajakta.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -3834,6 +4005,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'fail',
+                emotion: 'hope',
                 bg: '/assets/avatar_prajakta.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -3850,6 +4022,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING_PRAJAKTA',
+                emotion: 'hope',
                 bg: '/assets/bg_prajakta_silence.jpg',
                 text: "LESSON: DON'T CLING TO A MISTAKE JUST BECAUSE YOU SPENT A LONG TIME MAKING IT.\nShe traded a \"prestigious\" title for a \"silly\" YouTube channel. Today, she has 7M+ subscribers and has spoken at the UN.",
                 choices: [
@@ -3866,6 +4039,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'determination',
                 bg: '/assets/bg_anand_chess.jpg',
                 text: "1987. You are 18. You are the first Indian to ever win the World Junior Chess Championship. The 'Grandmasters' in Europe don't take you seriously because you play too fast—they call you 'The Coffee-Shop Player'.",
                 choices: [
@@ -3929,6 +4103,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'stubborn',
+                emotion: 'calm',
                 bg: '/assets/bg_anand_chess.jpg',
                 text: "You realize you can't beat the World Champion on instinct alone.",
                 choices: [
@@ -3943,6 +4118,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'mastery',
+                emotion: 'calm',
                 bg: '/assets/bg_anand_chess.jpg',
                 text: "You face the elite. With your refined speed and flawless preparation, you conquer the chess world, winning the World Championship 5 times across all formats.",
                 choices: [
@@ -3957,6 +4133,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'calm',
                 bg: '/assets/avatar_anand.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -3973,6 +4150,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'fail',
+                emotion: 'calm',
                 bg: '/assets/avatar_anand.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -3989,6 +4167,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING_ANAND',
+                emotion: 'calm',
                 bg: '/assets/bg_anand_chess.jpg',
                 text: "LESSON: Uniqueness. Never apologize for your natural style. Refine it, protect it, but never abandon it to look 'normal' to the establishment.",
                 choices: [
@@ -4005,6 +4184,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'anger',
                 bg: '/assets/bg_zendaya_boardroom.jpg',
                 text: "2014. Hollywood.\nYou are 18. You are a Disney star with a massive following, but you feel like a puppet. You are cast in a new show, K.C. Undercover. The script is \"classic Disney\"—you’re a girl who is clumsy, can’t dance, and is obsessed with boys.\nThe producers tell you, \"This is what works. Don't break the formula.\" But you know this isn't who you are, and it isn't what girls need to see. You want the character to be a martial artist, a tech-wiz, and socially awkward—a real person.\nThey tell you to just \"be grateful\" for the lead role.\nWhat do you do?",
                 choices: [
@@ -4033,6 +4213,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'determination',
                 bg: '/assets/avatar_zendaya.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -4049,6 +4230,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'fail',
+                emotion: 'determination',
                 bg: '/assets/avatar_zendaya.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -4065,6 +4247,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING_ZENDAYA',
+                emotion: 'determination',
                 bg: '/assets/bg_zendaya_boardroom.jpg',
                 text: "LESSON: POWER ISN'T GIVEN, IT'S TAKEN.\nShe knew her value. By demanding a seat at the table early, she transitioned from \"Disney Kid\" to the most respected actress of her generation.",
                 choices: [
@@ -4081,6 +4264,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'loneliness',
                 bg: '/assets/bg_neeraj_track.jpg',
                 audio: '/assets/voice_neeraj_intro.mp3',
                 text: "2016. Poland/India.\nYou are 19. You just threw the Javelin 86.48m—a World Junior Record. You are the first Indian athlete to ever hold a world record. You are a national hero.\nBut there is a catch. The Olympic qualification deadline passed just a few days ago. Even though you are literally one of the best in the world, you cannot go to the Rio Olympics.\nThe \"system\" tells you to stay in India, do the celebrity award shows, and wait for the next four years. Your body is tired, and the hype is distracting.\nWhat do you do?",
@@ -4110,6 +4294,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'determination',
                 bg: '/assets/avatar_neeraj.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -4126,6 +4311,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'fail',
+                emotion: 'determination',
                 bg: '/assets/avatar_neeraj.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -4142,6 +4328,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING_NEERAJ',
+                emotion: 'determination',
                 bg: '/assets/bg_neeraj_track.jpg',
                 text: "LESSON: FAME IS A DISTRACTION; MASTERY IS THE GOAL.\nWhile others were celebrating his \"Junior\" record, he was already training for \"Senior\" gold. That isolation is what turned a 19-year-old talent into an Olympic Champion.",
                 choices: [
@@ -4158,6 +4345,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'fear',
                 bg: '/assets/bg_selena_spotlight.jpg',
                 text: "2012-2013. Global Tour.\nYou are 20. To the world, you have everything: a hit album, a famous boyfriend, and a perfect life.\nBut behind the scenes, your body is failing. You’ve been diagnosed with Lupus, an autoimmune disease. You are in pain, your hair is thinning, and you need chemotherapy.\nThe tabloids are brutal. They say you’re \"going to rehab\" for drugs or \"acting crazy\" because of a breakup. If you tell the truth, you look \"weak\" and might lose your tour contracts. If you stay silent, the world thinks you’re a mess.\nWhat do you do?",
                 choices: [
@@ -4186,6 +4374,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'success',
+                emotion: 'calm',
                 bg: '/assets/avatar_selena.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -4202,6 +4391,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'fail',
+                emotion: 'calm',
                 bg: '/assets/avatar_selena.jpg',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
@@ -4218,6 +4408,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING_SELENA',
+                emotion: 'calm',
                 bg: '/assets/bg_selena_spotlight.jpg',
                 text: "LESSON: VULNERABILITY IS THE ULTIMATE STRENGTH.\nShe realized that her \"perfect\" image was a cage. By being honest about her pain, she built a deeper connection with millions of people that a \"perfect\" pop star never could.",
                 choices: [
@@ -4396,7 +4587,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
-                emotion: 'tension',
+                emotion: 'loneliness',
                 bg: '/assets/bg-justin-hotel-room-2013.png',
                 portrait: '/assets/portrait-justin-19.png',
                 text: "It's 2013. You are 19. You are one of the most famous people on Earth. Crowds scream your name. Headlines follow your every move. But your relationship is collapsing in public. Every fight becomes trending news. Tonight, after another argument, you sit alone in a hotel room staring at your phone. One text could restart everything. Or destroy you again.",
@@ -4440,7 +4631,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'scene_2A',
-                emotion: 'grief',
+                emotion: 'anger',
                 bg: '/assets/bg-justin-hotel-room-2013.png',
                 portrait: '/assets/portrait-justin-19.png',
                 text: "They reply instantly. For a second, it feels warm. Familiar. Then the argument starts again. Old jealousy. Old accusations. Old pain neither of you fixed. You suddenly realize something terrifying: You don't know whether you miss THEM... or just the feeling of not being alone.",
@@ -4477,7 +4668,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'scene_2B',
-                emotion: 'grief',
+                emotion: 'anger',
                 bg: '/assets/bg-justin-studio-night-2013.png',
                 portrait: '/assets/portrait-justin-19.png',
                 text: "The studio is silent except for the beat playing through the speakers. You record for hours without stopping. The producer finally says: 'You sound angry.' You stare at the mic. Because the truth is... you ARE angry. At them. At yourself. At the pressure of pretending to be okay while falling apart internally.",
@@ -4514,7 +4705,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'LEARNING_LESSON',
-                emotion: 'grief',
+                emotion: 'anger',
                 bg: '/assets/bg-justin-hotel-room-2013.png',
                 text: "LESSON: THE EMPTINESS UNDERNEATH. Justin later said the hardest part of being 19 wasn't the fame — it was realizing he had never learned how to be alone. He had gone from his parents' house to tour buses to hotel rooms. He had never once sat with himself long enough to know who he actually was. The relationship didn't break him. The emptiness underneath did.",
                 choices: [
@@ -4523,7 +4714,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'reflection_1',
-                emotion: 'grief',
+                emotion: 'anger',
                 bg: '/assets/bg-justin-hotel-room-2013.png',
                 text: "Reflection: Can two emotionally broken people heal together, or only damage each other more?",
                 choices: [
@@ -4532,7 +4723,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'reflection_2',
-                emotion: 'grief',
+                emotion: 'anger',
                 bg: '/assets/bg-justin-hotel-room-2013.png',
                 text: "Reflection: Is missing someone the same as loving them?",
                 choices: [
@@ -4541,7 +4732,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'reflection_3',
-                emotion: 'grief',
+                emotion: 'anger',
                 bg: '/assets/bg-justin-hotel-room-2013.png',
                 text: "Reflection: Does fame make loneliness worse or just more visible?",
                 choices: [
@@ -4752,6 +4943,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'lesson_2',
+                emotion: 'triumph',
                 bg: '/assets/bg-kobe-ending.png',
                 text: "LESSON: The Burden of Conviction\nGroup consensus is often just a collective demand for comfort. If your preparation justifies your actions, you must endure the loneliness of being misunderstood.\n\nHe walked out of that meeting an outcast, armed only with the certainty that his relentless work would force them to conform to his light.",
                 choices: [
@@ -4774,7 +4966,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
-                emotion: 'PRESSURE',
+                emotion: 'determination',
                 bg: '/assets/bg-michael-jackson-van-nuys-1981.png',
                 portrait: '/assets/portrait-michael-jackson.png',
                 text: "In 1981, Michael Jackson is 22 and already carrying two different versions of his career. His solo album Off the Wall has made him a major solo artist, while The Jacksons are preparing the Triumph Tour around the album the brothers recorded together. In a Van Nuys rehearsal space, the show has to work for five brothers, but Michael's solo material now occupies a large part of the set. He knows that the tour can strengthen the family group, but every week spent on it is also time away from developing what he has started on his own. The rehearsal stops, the room waits, and Michael has to decide how much of himself this next chapter belongs to the family.",
@@ -4811,7 +5003,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'part1_reveal',
-                emotion: 'PRESSURE',
+                emotion: 'determination',
                 bg: '/assets/bg-michael-jackson-van-nuys-1981.png',
                 portrait: '/assets/portrait-michael-jackson.png',
                 text: "What Michael actually did:\nMichael committed to The Jacksons and the Triumph Tour. He remained deeply involved in the performances and helped shape the show's choreography, costumes and stage presentation while continuing to develop his solo direction.\n\nLESSON: Two Careers, One Life\nA choice can be meaningful without being permanent. Michael did not need to decide between his family and his solo career in one dramatic moment; he could give the family project everything he had while quietly learning what he would eventually need for himself. The difficult part was accepting that time given to one path could not also be spent building the other.",
@@ -4821,7 +5013,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'part2_setup',
-                emotion: 'PRESSURE',
+                emotion: 'triumph',
                 bg: '/assets/bg-michael-jackson-van-nuys-1981.png',
                 portrait: '/assets/portrait-michael-jackson.png',
                 text: "Weeks of rehearsal turn the tour into something larger than a set of songs. Michael begins shaping the presentation with new costumes, choreography and stage ideas, drawing on the scale and precision he wants from a live performance. The set now places his solo songs beside the brothers' material, making the difference between the two parts of his career impossible to ignore. On the first night in Memphis, the audience responds to both, and the pressure of being the person expected to carry the show becomes real. After the performance, Michael has to decide what to take from this experience when the tour eventually ends.",
@@ -4858,7 +5050,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'part2_reveal',
-                emotion: 'PRESSURE',
+                emotion: 'triumph',
                 bg: '/assets/bg-michael-jackson-van-nuys-1981.png',
                 portrait: '/assets/portrait-michael-jackson.png',
                 text: "What Michael actually did:\nMichael completed the Triumph Tour with his brothers, performing both Jacksons material and songs from Off the Wall. After the tour ended, he returned to the studio and began the work that would become his next solo album, Thriller.\n\nLESSON: Learn Before Leaving\nLeaving something behind does not require rejecting everything it taught you. Michael's next step was not a clean break from the experience with his brothers; the discipline, staging and scale he developed there became part of the foundation for what came next. Sometimes the useful question is not whether to stay or leave, but what you are willing to carry forward.",
@@ -4923,7 +5115,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'part2_setup',
-                emotion: 'mystery',
+                emotion: 'determination',
                 bg: '/assets/bg-ashneer-grover-ahmedabad-2004.png',
                 portrait: '/assets/portrait-ashneer-grover.png',
                 text: "At IIM Ahmedabad, Grover is now moving from the structured world of engineering into finance, management, and business. His IIT background gives him analytical training, while the MBA forces him to think about companies, capital, and commercial decisions in a different way. The destination is still unclear, but the combination itself is becoming his advantage. The question is no longer whether he can succeed academically — it is what he intends to do with that combination when the degree ends.",
@@ -4978,7 +5170,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
-                emotion: 'tension',
+                emotion: 'wonder',
                 bg: '/assets/bg-bhuvan-bam-delhi-2016.png',
                 portrait: '/assets/portrait-bhuvan-bam.png',
                 text: "It is 2016, and Bhuvan Bam is 22, living in Delhi after graduating from Shaheed Bhagat Singh College with a degree in History. Music is not a side hobby for him; before BB Ki Vines became huge, singing and composing had been an important part of his life and income, including live performances. But his YouTube experiment has changed quickly. BB Ki Vines, launched in June 2015, has grown to more than a million subscribers within months, while his short Hindi comedy videos have found an audience far larger than he expected. He is still shooting and editing largely by himself, from a small room, using the same basic setup that got him there — but suddenly the internet is treating this as a real career.",
@@ -5025,7 +5217,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'part2_setup',
-                emotion: 'tension',
+                emotion: 'hope',
                 bg: '/assets/bg-bhuvan-bam-delhi-2016.png',
                 portrait: '/assets/portrait-bhuvan-bam.png',
                 text: "The experiment is no longer invisible. Bam is appearing outside his own channel, including in TVF's Bachelors, while invitations to speak and collaborate are beginning to arrive. In June 2016, he spoke at TEDxIIITD about originality and pursuing his dreams, and later that year his rapidly growing channel received major recognition at the WebTVAsia Awards in Seoul. The opportunities are beginning to move him from a creator working alone into a person other people want to build projects around. Now the harder question is not whether people are watching. It is how much of the new machine he should allow into his creative life.",
@@ -5080,7 +5272,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
-                emotion: 'tension',
+                emotion: 'determination',
                 bg: '/assets/bg-cristiano-ronaldo-manchester-2007.png',
                 portrait: '/assets/portrait-cristiano-ronaldo.png',
                 text: "It is April 2007, and Cristiano Ronaldo is 22, entering the most important stage of his development at Manchester United. The boy who arrived from Sporting CP as an exciting teenager has become a central player in Sir Alex Ferguson's side, but the expectations have changed with him. He has scored twice against Roma in the Champions League quarter-final as United win 7–1, helping them reach the semi-finals, while he is also being recognized as one of the best young players in England. But the next challenge is different: against AC Milan, talent alone will not guarantee that he controls the game. He now has to decide how much of his instinctive, expressive style should remain when every mistake is being judged at the highest level.",
@@ -5127,7 +5319,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'part2_setup',
-                emotion: 'tension',
+                emotion: 'triumph',
                 bg: '/assets/bg-cristiano-ronaldo-manchester-2007.png',
                 portrait: '/assets/portrait-cristiano-ronaldo.png',
                 text: "By May, the season has become a strange mixture of success and unfinished business. Manchester United have won the Premier League, and Ronaldo has scored the only goal in the Manchester derby that effectively seals the title. He has also won the PFA Players' Player of the Year, PFA Young Player of the Year, PFA Fans' Player of the Year and the Football Writers' Footballer of the Year awards. Yet the FA Cup final against Chelsea is still ahead, and United's Champions League exit has shown that individual brilliance cannot guarantee the biggest prizes. At 22, he is receiving more recognition than ever while also having more expectations placed on him than ever.",
@@ -5222,7 +5414,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'part2_setup',
-                emotion: 'tension',
+                emotion: 'determination',
                 bg: '/assets/bg-ranveer-singh-mumbai-2007.png',
                 portrait: '/assets/portrait-ranveer-singh.png',
                 text: "Your advertising experience has given you a foothold in the creative industry, but being close to filmmaking is beginning to matter more.\n\nAn assistant-director opportunity provides another way into the film world. It is not the same as being an actor, but it offers something advertising cannot: proximity to actual film production and the people who make movies.\n\nYet choosing this path means accepting that you are still not getting what you ultimately want.\n\nYou could remain in a more established professional environment, use filmmaking experience as a stepping stone, or commit yourself more directly to acting despite the uncertainty.",
