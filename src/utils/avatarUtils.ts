@@ -7,6 +7,7 @@ export const PERSONALITY_AVATAR_MAP: Record<string, string> = {
     'Michael Jackson': '/assets/portrait-michael-jackson.png',
     'Rani Lakshmibai': '/assets/portrait-rani-lakshmibai.png',
     'Bhagat Singh': '/assets/portrait-bhagat-singh.png',
+    'Cristiano Ronaldo': '/assets/portrait-cristiano-ronaldo.png',
 };
 
 export const resolvePersonalityAvatar = (name: string): string => {
