@@ -1,4 +1,4 @@
-export type StoryEmotion = 'triumph' | 'grief' | 'tension' | 'joy' | 'hope' | 'love' | 'mystery' | 'calm';
+export type StoryEmotion = 'triumph' | 'grief' | 'tension' | 'joy' | 'hope' | 'love' | 'mystery' | 'calm' | 'determination' | 'fear' | 'anger' | 'loneliness' | 'wonder' | 'nostalgia';
 
 export interface EmotionTheme {
   emotion: StoryEmotion;
@@ -82,6 +82,60 @@ export const EMOTION_THEMES: Record<StoryEmotion, EmotionTheme> = {
     choiceBorder: 'rgba(52, 211, 153, 0.4)',
     vignette: 'rgba(0, 50, 30, 0.2)',
     cardBorder: 'rgba(52, 211, 153, 0.3)',
+  },
+  determination: {
+    emotion: 'determination',
+    cardOverlay: 'rgba(30, 58, 138, 0.25)',
+    badgeColor: '#2563eb',
+    badgeGlow: '0 0 20px #2563eb88',
+    choiceBorder: 'rgba(37, 99, 235, 0.4)',
+    vignette: 'rgba(15, 23, 42, 0.3)',
+    cardBorder: 'rgba(37, 99, 235, 0.3)',
+  },
+  fear: {
+    emotion: 'fear',
+    cardOverlay: 'rgba(49, 46, 129, 0.3)',
+    badgeColor: '#6366f1',
+    badgeGlow: '0 0 20px #6366f188',
+    choiceBorder: 'rgba(99, 102, 241, 0.4)',
+    vignette: 'rgba(30, 27, 75, 0.35)',
+    cardBorder: 'rgba(99, 102, 241, 0.3)',
+  },
+  anger: {
+    emotion: 'anger',
+    cardOverlay: 'rgba(127, 29, 29, 0.3)',
+    badgeColor: '#dc2626',
+    badgeGlow: '0 0 20px #dc262688',
+    choiceBorder: 'rgba(220, 38, 38, 0.4)',
+    vignette: 'rgba(69, 10, 10, 0.35)',
+    cardBorder: 'rgba(220, 38, 38, 0.3)',
+  },
+  loneliness: {
+    emotion: 'loneliness',
+    cardOverlay: 'rgba(71, 85, 105, 0.25)',
+    badgeColor: '#64748b',
+    badgeGlow: '0 0 20px #64748b88',
+    choiceBorder: 'rgba(100, 116, 139, 0.4)',
+    vignette: 'rgba(30, 41, 59, 0.3)',
+    cardBorder: 'rgba(100, 116, 139, 0.3)',
+  },
+  wonder: {
+    emotion: 'wonder',
+    cardOverlay: 'rgba(14, 116, 144, 0.2)',
+    badgeColor: '#06b6d4',
+    badgeGlow: '0 0 20px #06b6d488',
+    choiceBorder: 'rgba(6, 182, 212, 0.4)',
+    vignette: 'rgba(22, 78, 99, 0.25)',
+    cardBorder: 'rgba(6, 182, 212, 0.3)',
+  },
+  nostalgia: {
+    emotion: 'nostalgia',
+    cardOverlay: 'rgba(120, 60, 25, 0.2)',
+    badgeColor: '#c08457',
+    badgeGlow: '0 0 20px #c0845788',
+    choiceBorder: 'rgba(192, 132, 87, 0.4)',
+    vignette: 'rgba(80, 40, 15, 0.25)',
+    cardBorder: 'rgba(192, 132, 87, 0.3)',
   }
 };
 

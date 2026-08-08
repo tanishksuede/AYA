@@ -5270,7 +5270,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
-                emotion: 'tension',
+                emotion: 'determination',
                 bg: '/assets/bg-alia-bhatt-mumbai-2015.png',
                 portrait: '/assets/portrait-alia-bhatt.png',
                 text: "You are 22 and already four films into your career.\n\nPeople are beginning to describe you as one of Bollywood's promising young actors. But internally, you don't see yourself as having “made it.” You know four films are not a lifetime of work.\n\nYour next film, Shaandaar, is a large commercial project. It could strengthen your position and broaden your audience—but it also means more expectations.\n\nThe question is no longer simply whether you can get work. What kind of actor do you want your next choices to make you?",
@@ -5300,7 +5300,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'part1_reveal',
-                emotion: 'tension',
+                emotion: 'determination',
                 bg: '/assets/bg-alia-bhatt-mumbai-2015.png',
                 portrait: '/assets/portrait-alia-bhatt.png',
                 text: "What Alia actually did:\nAlia continued with Shaandaar, while increasingly seeking roles that allowed her to demonstrate different sides of her acting. She described the film as commercially important while also emphasizing the value of building her career and brand.\n\nLESSON: Success Creates a New Problem\nGetting opportunities is only the first challenge. Once opportunities arrive consistently, the harder question becomes what you want those opportunities to build.",
@@ -5310,7 +5310,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'part2_setup',
-                emotion: 'hope',
+                emotion: 'wonder',
                 bg: '/assets/bg-alia-bhatt-mumbai-2015.png',
                 portrait: '/assets/portrait-alia-bhatt.png',
                 text: "You have established yourself unusually quickly.\n\nBut being known for a certain kind of performance can become its own limitation. If audiences already have an image of you, changing that image requires deliberately stepping outside it.\n\nYou could continue giving audiences versions of what they already like—or use your growing credibility to experiment.\n\nThe safer path protects what you have built. The riskier path could change how people see you.",
@@ -5340,7 +5340,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'part2_reveal',
-                emotion: 'hope',
+                emotion: 'wonder',
                 bg: '/assets/bg-alia-bhatt-mumbai-2015.png',
                 portrait: '/assets/portrait-alia-bhatt.png',
                 text: "What Alia actually did:\nAlia increasingly moved toward varied and demanding performances. The following year, she took roles in Udta Punjab and Dear Zindagi, demonstrating a significant expansion beyond her earlier image.\n\nLESSON: Don't Let Early Success Define the Ceiling\nEarly success gives you leverage, but it can also create expectations. Growth sometimes means deliberately using that success to make yourself harder to categorize.",
@@ -5398,7 +5398,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'part2_setup',
-                emotion: 'tension',
+                emotion: 'anger',
                 bg: '/assets/bg-bhagat-singh-lahore-1929.png',
                 portrait: '/assets/portrait-bhagat-singh.png',
                 text: "The Lahore Conspiracy Case is moving forward.\n\nYou are facing a colonial tribunal whose authority you do not recognize. Yet the courtroom gives you something valuable: an audience.\n\nYou can participate in proceedings and use them to present your arguments, or refuse to cooperate when you believe the process itself is being used against you.\n\nEvery decision carries a cost. Participation can give you a platform. Refusal can become a protest in itself.",
@@ -5428,7 +5428,7 @@ export const STORY_DATABASE: Record<string, any> = {
             },
             {
                 id: 'part2_reveal',
-                emotion: 'tension',
+                emotion: 'anger',
                 bg: '/assets/bg-bhagat-singh-lahore-1929.png',
                 portrait: '/assets/portrait-bhagat-singh.png',
                 text: "What Bhagat Singh actually did:\nBhagat Singh and his comrades repeatedly challenged the proceedings. In January 1930, Bhagat Singh explained their refusal to attend court, citing restrictions on their defence and treatment of prisoners. Later, an “undefended accused” statement declared that they did not recognize the colonial government or the tribunal.\n\nLESSON: A Platform Can Become a Battlefield\nWhen you cannot control the institution you are facing, you can still decide how you engage with it. Participation, refusal and selective engagement can each become forms of strategy.",
