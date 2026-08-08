@@ -6640,5 +6640,115 @@ export const STORY_DATABASE: Record<string, any> = {
                 ]
             }
         ]
+    },
+
+    // AGE 15: Rani Lakshmibai (One Continuous Story: The Girl and the Crown)
+    'lvl_age_15_rani_lakshmibai': {
+        title: "The Girl and the Crown",
+        source: "Source: Historical Context, c. 1842–1844",
+        frames: [
+            // PART 1: A NEW NAME
+            {
+                id: 'intro',
+                emotion: 'uncertainty',
+                bg: '/assets/bg-rani-lakshmibai-jhansi-1851.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-rani-lakshmibai.png',
+                text: "Yesterday, people knew you as Manu.\n\nNow your life has a new name. You have entered the household of Jhansi's ruler. People see you differently. There are new customs. New expectations. New responsibilities.\n\nBut inside, you are still the same young person who grew up learning, riding and training.\n\nNobody can tell you exactly how to feel. You have to decide how you will enter this new life.",
+                choices: [
+                    {
+                        text: "BECOME THE ROLE: Put your old life aside for now. Learn the customs. Learn the responsibilities. Focus on becoming the person this new role requires.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Responsibility",
+                        feedback: "You are willing to change yourself when a new responsibility demands it. Risk: You may begin to lose touch with parts of yourself that once made you confident."
+                    },
+                    {
+                        text: "HOLD ON TO MANU: Keep as much of your old identity as possible. Continue valuing the interests, confidence and independence that shaped you before the marriage.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Identity",
+                        feedback: "You believe a new role should not erase the person you already are. Risk: Holding too tightly to the past can make adapting to a new life harder."
+                    },
+                    {
+                        text: "TAKE BOTH WITH YOU: Learn the new responsibilities while keeping the qualities that made you who you were. You do not have to choose between Manu and Lakshmibai.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "Adaptation",
+                        feedback: "You believe growing up means adding new responsibilities without throwing away your old strengths. Risk: Trying to balance two identities can be harder than choosing one."
+                    }
+                ]
+            },
+            {
+                id: 'part1_reveal',
+                emotion: 'uncertainty',
+                bg: '/assets/bg-rani-lakshmibai-jhansi-1851.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-rani-lakshmibai.png',
+                text: "HISTORICAL REALITY:\nManikarnika Tambe married Raja Gangadhar Rao of Jhansi in 1842 and became known as Lakshmibai after the marriage. Historical sources describe her childhood as unusually active and independent for a girl of her time, including education and training in riding and martial skills.\n\nThe historical record does NOT establish that she faced these exact three choices. Her life really did involve a major transition from Manu to Lakshmibai.\n\nLESSON:\nGrowing up sometimes means entering a role you did not create yourself. You can accept new responsibility without forgetting who you were before it.",
+                choices: [
+                    {
+                        text: "Continue to Part 2: What I Carry With Me",
+                        next: 'part2_intro',
+                        score: 0,
+                        feedbackTitle: "",
+                        feedback: ""
+                    }
+                ]
+            },
+            // PART 2: WHAT I CARRY WITH ME
+            {
+                id: 'part2_intro',
+                emotion: 'confidence',
+                bg: '/assets/bg-rani-lakshmibai-jhansi-1851.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-rani-lakshmibai.png',
+                text: "The new role is no longer something you are simply entering. It is becoming part of your everyday life.\n\nNow comes the harder question: What parts of yourself will you keep?\n\n-------------------------\n\nPART 2: WHAT I CARRY WITH ME\n\nThe new life is beginning to feel more familiar. You have responsibilities now. People expect things from you.\n\nBut you have also learned something: A new role does not automatically decide what kind of person you become. You still have choices.\n\nYou can be disciplined without becoming silent. You can be responsible without losing your independence. You can learn new things without forgetting the skills that made you confident.\n\nNow you must decide what kind of strength you want to carry forward.",
+                choices: [
+                    {
+                        text: "LEARN FIRST: Spend your time understanding the new responsibilities. Listen. Observe. Learn how things work before trying to change anything.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Patience",
+                        feedback: "You believe understanding a situation deeply is the first step toward handling it well. Risk: Waiting too long can make others mistake patience for weakness."
+                    },
+                    {
+                        text: "KEEP YOUR INDEPENDENCE: Continue developing the skills and confidence that were already part of your identity. Do not let your new position make you passive.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Self-Belief",
+                        feedback: "You believe a new responsibility should make you stronger, not smaller. Risk: Confidence without enough understanding can become stubbornness."
+                    },
+                    {
+                        text: "COMBINE BOTH: Learn the new world carefully while continuing to strengthen yourself. Do not rush. Do not disappear into the role. Build your own version of what the role can become.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Leadership",
+                        feedback: "You believe real strength comes from combining knowledge, responsibility and confidence. Risk: This requires patience and effort because neither side can be ignored."
+                    }
+                ]
+            },
+            {
+                id: 'part2_reveal',
+                emotion: 'confidence',
+                bg: '/assets/bg-rani-lakshmibai-jhansi-1851.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-rani-lakshmibai.png',
+                text: "HISTORICAL REALITY:\nSources describe Lakshmibai as having retained qualities associated with her unusual childhood education and physical training even after becoming the Rani of Jhansi.\n\nLater accounts portray her as a capable leader, but at age 15, the important historical point is much simpler: She had entered a new role while still very young. The famous leader she later became should NOT be used to erase the uncertainty of this earlier period.\n\nLESSON:\nGrowing up does not mean becoming a completely different person. Sometimes it means taking what is already strong inside you and learning how to use it responsibly.\n\nA title can change. A situation can change. But your character is built by what you choose to carry forward.",
+                choices: [
+                    {
+                        text: "Complete Level",
+                        next: 'COMPLETE',
+                        score: 0,
+                        feedbackTitle: "",
+                        feedback: ""
+                    }
+                ]
+            }
+        ]
     }
 };
