@@ -419,6 +419,16 @@ export function generateLevels(_age: number): Level[] {
             avatarUrl: '/assets/avatar_walt_disney.png', scenarioId: 'lvl_age_22',
             idolTraits: { discipline: 85, resilience: 95, risk: 90, leadership: 85, creativity: 100, empathy: 85, vision: 100 }
         },
+        {
+            id: 'lvl_22_michael', title: 'The Life You Built', description: 'At 22, Michael must balance the Triumph Tour with his brothers and his rising solo aspirations.',
+            requiredStars: 0, year: 1981, age: 22, theme: 'Music', age_mirror_text: 'rehearsing in Van Nuys while carrying the weight of two careers', archetype: 'The Perfectionist', personality: 'Michael Jackson',
+            bio: 'A 22-year-old superstar preparing the Triumph Tour while preparing to redefine the global music landscape.',
+            fame: 'The King of Pop. Global Icon.',
+            achievements: ['8 Grammy Awards in one night (Thriller)', 'Best-selling album of all time (Thriller)', 'Pioneered modern music videos'],
+            lesson: 'TWO CAREERS, ONE LIFE — a choice can be meaningful without being permanent.',
+            avatarUrl: 'D:\\AtYourAge game version\\public\\assets\\portrait-michael-jackson.png', scenarioId: 'lvl_age_22_michael',
+            idolTraits: { discipline: 95, resilience: 90, risk: 85, leadership: 85, creativity: 100, empathy: 80, vision: 100 }
+        },
         // Age 23: Shah Rukh Khan
         {
             id: 'lvl_23_srk', title: 'Gauri or Career', description: 'At 23, SRK must choose between love and the career opportunity of a lifetime.',

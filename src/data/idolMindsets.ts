@@ -240,6 +240,33 @@ export const IDOL_MINDSETS: Record<string, IdolMindset> = {
         },
         avatarUrl: '/assets/avatar_walt_disney.png'
     },
+    "Michael Jackson": {
+        name: "Michael Jackson",
+        archetypeTitle: "King of Pop",
+        quote: "In a world filled with hate, we must still dare to hope. In a world filled with anger, we must still dare to comfort.",
+        voice: {
+            tone: "Soft, Intense, Passionate",
+            intro: "I hear the music in you. Every step, every beat... it all matters. Let's see what you will build."
+        },
+        missions: {
+            discipline: { title: "Perfection in Rehearsal", desc: "Repeat a difficult routine or task 10 times until it is second nature.", xp: "+50 Precision" },
+            resilience: { title: "The Show Goes On", desc: "When facing a major setback today, push through and finish what you started.", xp: "+50 Rhythm" },
+            risk: { title: "The Moonwalk", desc: "Take a creative risk that goes against what others expect from you.", xp: "+50 Boldness" },
+            leadership: { title: "Direct the Stage", desc: "Take charge of a presentation or coordination, ensuring every detail fits your vision.", xp: "+50 Stage Presence" },
+            creativity: { title: "Innovate the Costume", desc: "Add a unique, personal touch to your outfit or workspaces today.", xp: "+50 Magic" },
+            empathy: { title: "Heal the World", desc: "Do a kind act today for someone who is feeling overwhelmed or left behind.", xp: "+50 Compassion" },
+            vision: { title: "Thriller Scope", desc: "Plan a project on a scale that is twice as large as anything you have done before.", xp: "+50 Imagination" }
+        },
+        profile: {
+            motivation: 'Fame',
+            risk: 'Bold',
+            emotional: 'Sensitive',
+            social: 'Creator',
+            passion: 'Creative',
+            coreValue: 'Art'
+        },
+        avatarUrl: 'D:\\AtYourAge game version\\public\\assets\\portrait-michael-jackson.png'
+    },
     "Oprah Winfrey": {
         name: "Oprah Winfrey",
         archetypeTitle: "Soul Connector",
@@ -1118,6 +1145,7 @@ export const IDOL_PROFILES: Record<string, Record<string, number>> = {
     "Mark Zuckerberg": { analytical: 95, ambitious: 90, risk: 85, creativity: 75, social: 60 },
     "Steve Jobs": { analytical: 80, ambitious: 100, risk: 95, creativity: 95, social: 50 },
     "Walt Disney": { analytical: 65, ambitious: 90, risk: 95, creativity: 100, social: 85 },
+    "Michael Jackson": { analytical: 75, ambitious: 95, risk: 85, creativity: 100, social: 80 },
     "Oprah Winfrey": { analytical: 75, ambitious: 95, risk: 80, creativity: 70, social: 100 },
     "Bill Gates": { analytical: 95, ambitious: 90, risk: 80, creativity: 75, social: 60 },
     "J.K. Rowling": { analytical: 60, ambitious: 85, risk: 80, creativity: 100, social: 55 },
