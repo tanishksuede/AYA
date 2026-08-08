@@ -459,6 +459,16 @@ export function generateLevels(_age: number): Level[] {
             avatarUrl: '/assets/portrait-cristiano-ronaldo.png', scenarioId: 'lvl_age_22_ronaldo',
             idolTraits: { discipline: 100, resilience: 95, risk: 95, leadership: 90, creativity: 95, empathy: 70, vision: 95 }
         },
+        {
+            id: 'lvl_22_ranveer', title: 'The Role You Can\'t See Yet', description: 'At 22, Ranveer Singh returns to Mumbai after studying in the US, figuring out how to build a runway toward acting.',
+            requiredStars: 0, year: 2007, age: 22, theme: 'Arts', age_mirror_text: 'working in advertising and assistant directing in Mumbai while holding onto an acting dream', archetype: 'The Performer', personality: 'Ranveer Singh',
+            bio: 'A 22-year-old returnee from Indiana University, working in advertising and assistant directing while looking for a way into acting.',
+            fame: 'A-list Hindi Cinema Superstar. Filmfare Award Winner.',
+            achievements: ['Breakthrough debut in Band Baaja Baaraat', '5 Filmfare Awards', 'One of highest-grossing Indian actors'],
+            lesson: 'PROXIMITY IS NOT THE DESTINATION — stepping stones are useful, but eventually you must pursue the target directly.',
+            avatarUrl: '/assets/portrait-ranveer-singh.png', scenarioId: 'lvl_age_22_ranveer',
+            idolTraits: { discipline: 85, resilience: 95, risk: 95, leadership: 85, creativity: 100, empathy: 85, vision: 95 }
+        },
         // Age 23: Shah Rukh Khan
         {
             id: 'lvl_23_srk', title: 'Gauri or Career', description: 'At 23, SRK must choose between love and the career opportunity of a lifetime.',

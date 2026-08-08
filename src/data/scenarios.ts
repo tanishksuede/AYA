@@ -5173,5 +5173,93 @@ export const STORY_DATABASE: Record<string, any> = {
                 ]
             }
         ]
+    },
+
+    // AGE 22: Ranveer Singh
+    'lvl_age_22_ranveer': {
+        title: "The Role You Can't See Yet",
+        source: "Source: Mumbai, Maharashtra, 2007-2008",
+        frames: [
+            {
+                id: 'intro',
+                emotion: 'mystery',
+                bg: '/assets/bg-ranveer-singh-mumbai-2007.png',
+                portrait: '/assets/portrait-ranveer-singh.png',
+                text: "You are 22, back in Mumbai after studying in the United States.\n\nYou know you want a creative life, and acting has become more than just an old childhood fantasy. You have taken acting classes and explored theatre, but the reality of breaking into Hindi cinema is very different from performing in college.\n\nThere is no guaranteed film waiting for you. You need to establish yourself professionally while figuring out whether acting can actually become your career.\n\nAdvertising offers a legitimate creative path, while acting remains uncertain and difficult to enter.\n\nThe question is not whether you have a dream. The question is what you are willing to do while the dream has no proof yet.",
+                choices: [
+                    {
+                        text: "A) Take the advertising route seriously. Build professional experience and financial stability while continuing to develop creatively on the side.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "A Dream Needs a Runway",
+                        feedback: "You prioritize stability and skill-building. You are willing to let your ambition develop gradually rather than demanding immediate proof."
+                    },
+                    {
+                        text: "B) Push aggressively toward acting immediately. Spend your time approaching people in the film industry, building a portfolio and looking for auditions, even without knowing when an opportunity will arrive.",
+                        next: 'part1_reveal',
+                        score: 15,
+                        feedbackTitle: "A Dream Needs a Runway",
+                        feedback: "You prioritize direct pursuit over security. You accept uncertainty because getting closer to the goal matters more than having a predictable professional path."
+                    },
+                    {
+                        text: "C) Look for a hybrid path. Take creative industry work that can provide exposure to filmmaking while continuing to pursue acting.",
+                        next: 'part1_reveal',
+                        score: 10,
+                        feedbackTitle: "A Dream Needs a Runway",
+                        feedback: "You value optionality. You want proximity to the creative world without betting everything on an outcome you cannot yet control."
+                    }
+                ]
+            },
+            {
+                id: 'part1_reveal',
+                emotion: 'mystery',
+                bg: '/assets/bg-ranveer-singh-mumbai-2007.png',
+                portrait: '/assets/portrait-ranveer-singh.png',
+                text: "What Ranveer actually did:\nRanveer returned to Mumbai in 2007 and worked in advertising as a copywriter, including work associated with agencies such as O&M and J. Walter Thompson. He continued moving toward the film industry rather than abandoning acting altogether.\n\nLESSON: A Dream Needs a Runway\nAt 22, the important decision was not simply “dream or no dream.” A practical career could provide experience and stability while the larger ambition remained uncertain. Ranveer's early path shows that pursuing a creative ambition does not always begin with the glamorous version of that career.",
+                choices: [
+                    { text: "Next Part", next: 'part2_setup', score: 0, feedbackTitle: "", feedback: "" }
+                ]
+            },
+            {
+                id: 'part2_setup',
+                emotion: 'tension',
+                bg: '/assets/bg-ranveer-singh-mumbai-2007.png',
+                portrait: '/assets/portrait-ranveer-singh.png',
+                text: "Your advertising experience has given you a foothold in the creative industry, but being close to filmmaking is beginning to matter more.\n\nAn assistant-director opportunity provides another way into the film world. It is not the same as being an actor, but it offers something advertising cannot: proximity to actual film production and the people who make movies.\n\nYet choosing this path means accepting that you are still not getting what you ultimately want.\n\nYou could remain in a more established professional environment, use filmmaking experience as a stepping stone, or commit yourself more directly to acting despite the uncertainty.",
+                choices: [
+                    {
+                        text: "A) Stay in advertising and continue developing your career there while pursuing acting when opportunities appear.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Proximity Is Not the Destination",
+                        feedback: "You protect your existing professional foundation. You prefer controlled risk and believe the dream can be pursued without abandoning stability."
+                    },
+                    {
+                        text: "B) Move into assistant-director work. Learn filmmaking from inside the industry, build relationships and accept that acting may have to wait.",
+                        next: 'part2_reveal',
+                        score: 10,
+                        feedbackTitle: "Proximity Is Not the Destination",
+                        feedback: "You value proximity and learning. You are willing to temporarily accept a different role because being inside the filmmaking environment may teach you things that cannot be learned from outside."
+                    },
+                    {
+                        text: "C) Treat assistant-director work only as a temporary bridge and leave as soon as possible to pursue acting directly.",
+                        next: 'part2_reveal',
+                        score: 15,
+                        feedbackTitle: "Proximity Is Not the Destination",
+                        feedback: "You prioritize the destination over the stepping stone. You are willing to sacrifice certainty because you believe divided attention may keep you from seriously pursuing acting."
+                    }
+                ]
+            },
+            {
+                id: 'part2_reveal',
+                emotion: 'tension',
+                bg: '/assets/bg-ranveer-singh-mumbai-2007.png',
+                portrait: '/assets/portrait-ranveer-singh.png',
+                text: "What Ranveer actually did:\nRanveer did work as an assistant director after his advertising experience, but ultimately left that route to pursue acting seriously. He then began approaching directors with his portfolio and attending auditions. His breakthrough would still take several years; Yash Raj Films eventually selected him for Band Baaja Baaraat in 2010.\n\nLESSON: Proximity Is Not the Destination\nGetting closer to the industry is not automatically the same as getting closer to the career you actually want. A stepping-stone role can teach you, connect you and open doors—but eventually you have to decide whether the stepping stone is becoming a destination.",
+                choices: [
+                    { text: "Complete Level", next: 'COMPLETE', score: 0, feedbackTitle: "", feedback: "" }
+                ]
+            }
+        ]
     }
 };

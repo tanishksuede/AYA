@@ -348,6 +348,33 @@ export const IDOL_MINDSETS: Record<string, IdolMindset> = {
         },
         avatarUrl: '/assets/portrait-cristiano-ronaldo.png'
     },
+    "Ranveer Singh": {
+        name: "Ranveer Singh",
+        archetypeTitle: "Electric Performer",
+        quote: "Express yourself without fear. Put 100% of your energy into whatever you touch.",
+        voice: {
+            tone: "High-Energy, Passionate, Fearless",
+            intro: "Hey! Life is too short to play it small. Whatever you're working on today, give it everything!"
+        },
+        missions: {
+            discipline: { title: "Copywriting Rigor", desc: "Complete a routine professional task with absolute focus before chasing creative work.", xp: "+50 Runway" },
+            resilience: { title: "Audition Rejection", desc: "Bounce back immediately after receiving a 'no' today and double your efforts.", xp: "+50 Energy" },
+            risk: { title: "Audacious Pitch", desc: "Showcase your work or talent to someone influential, despite fear of judgment.", xp: "+50 Passion" },
+            leadership: { title: "Set-Floor Presence", desc: "Bring infectious energy to a group project to elevate everyone's mood.", xp: "+50 Magnetism" },
+            creativity: { title: "Unapologetic Style", desc: "Inject raw originality and vibrant energy into your work today.", xp: "+50 Flair" },
+            empathy: { title: "Listen to the Director", desc: "Observe and assist someone else's vision with total dedication.", xp: "+50 Proximity" },
+            vision: { title: "Band Baaja Vision", desc: "Commit to a long-term dream even when there is no immediate proof of success.", xp: "+50 Breakthrough" }
+        },
+        profile: {
+            motivation: 'Fame',
+            risk: 'Bold',
+            emotional: 'Passionate',
+            social: 'Creator',
+            passion: 'Creative',
+            coreValue: 'Art'
+        },
+        avatarUrl: '/assets/portrait-ranveer-singh.png'
+    },
     "Oprah Winfrey": {
         name: "Oprah Winfrey",
         archetypeTitle: "Soul Connector",
@@ -1230,6 +1257,7 @@ export const IDOL_PROFILES: Record<string, Record<string, number>> = {
     "Michael Jackson": { analytical: 75, ambitious: 95, risk: 85, creativity: 100, social: 80 },
     "Ashneer Grover": { analytical: 95, ambitious: 100, risk: 90, creativity: 80, social: 70 },
     "Bhuvan Bam": { analytical: 80, ambitious: 95, risk: 90, creativity: 100, social: 90 },
+    "Ranveer Singh": { analytical: 75, ambitious: 100, risk: 95, creativity: 100, social: 95 },
     "Oprah Winfrey": { analytical: 75, ambitious: 95, risk: 80, creativity: 70, social: 100 },
     "Bill Gates": { analytical: 95, ambitious: 90, risk: 80, creativity: 75, social: 60 },
     "J.K. Rowling": { analytical: 60, ambitious: 85, risk: 80, creativity: 100, social: 55 },
