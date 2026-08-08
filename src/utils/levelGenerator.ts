@@ -431,6 +431,28 @@ export function generateLevels(_age: number): Level[] {
             idolTraits: { discipline: 85, resilience: 90, risk: 80, leadership: 70, creativity: 100, empathy: 95, vision: 85 }
         },
 
+        
+        {
+            id: 'lvl_21_selena_1', title: 'When Everyone Has an Opinion', description: 'At 21, you must choose how to handle the painful intersection of a recent relationship and sudden public attention.',
+            requiredStars: 0, year: 2013, age: 21, theme: 'Music', archetype: 'The Vulnerable', personality: 'Selena Gomez',
+            bio: 'A 21-year-old musician trying to understand what she wants from a relationship while everyone else tries to decide for her.',
+            fame: 'Global pop star transitioning to a mature era',
+            achievements: ['First Billboard 200 number-one album with Stars Dance'],
+            lesson: 'A relationship becomes harder to understand when everyone outside it has an opinion.',
+            avatarUrl: '/assets/avatar_selena.jpg?v=2', scenarioId: 'lvl_age_21_selena_1',
+            idolTraits: { discipline: 85, resilience: 90, risk: 80, leadership: 70, creativity: 100, empathy: 95, vision: 85 }
+        },
+        {
+            id: 'lvl_21_selena_2', title: 'Your Own Name', description: 'At 21, you must decide how much of the person people know is actually the person you want to become.',
+            requiredStars: 0, year: 2013, age: 21, theme: 'Music', archetype: 'The Vulnerable', personality: 'Selena Gomez',
+            bio: 'A 21-year-old establishing her independent creative identity while the world watches her grow up.',
+            fame: 'Global pop star transitioning to a mature era',
+            achievements: ['First Billboard 200 number-one album with Stars Dance'],
+            lesson: 'You do not need to remain the same person simply because other people became comfortable with who you used to be.',
+            avatarUrl: '/assets/avatar_selena.jpg?v=2', scenarioId: 'lvl_age_21_selena_2',
+            idolTraits: { discipline: 85, resilience: 90, risk: 80, leadership: 70, creativity: 100, empathy: 95, vision: 85 }
+        },
+
         // Age 21: Shah Rukh Khan
         {
             id: 'lvl_21_srk', title: 'The Role That Could Destroy You', description: 'At 21, SRK faces a villain role that could define or end his career.',
