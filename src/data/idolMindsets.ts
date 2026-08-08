@@ -1269,8 +1269,68 @@ export const IDOL_MINDSETS: Record<string, IdolMindset> = {
         },
         avatarUrl: '/assets/avatar_neeraj.jpg?v=2'
     },
-    "Ed Sheeran": { analytical: 40, ambitious: 75, risk: 60, creativity: 90, social: 85 },
-    "Selena Gomez": { analytical: 45, ambitious: 80, risk: 65, creativity: 85, social: 95 },,
+    "Ed Sheeran": {
+        name: "Ed Sheeran",
+        archetypeTitle: "Heartfelt Storyteller",
+        quote: "Success is the best revenge for anything.",
+        voice: {
+            tone: "Genuine, Relatable, Grounded",
+            intro: "Your stories are the most valuable thing you own. Let's see how you tell them."
+        },
+        missions: {
+            discipline: { title: "Daily Strum", desc: "Practice your core skill for 20 minutes.", xp: "+50 Craft" },
+            resilience: { title: "Busker's Spirit", desc: "Face rejection today and keep singing anyway.", xp: "+50 Grit" },
+            risk: { title: "Open Mic", desc: "Share something you created before it's perfect.", xp: "+50 Courage" },
+            leadership: { title: "Connect the Crowd", desc: "Bring two disconnected friends together.", xp: "+50 Harmony" },
+            creativity: { title: "Loop Pedal", desc: "Take a simple idea and build layers onto it.", xp: "+50 Invention" },
+            empathy: { title: "Write Their Song", desc: "Listen to someone's problem as if it were your own.", xp: "+50 Empathy" },
+            vision: { title: "Stadium Dreams", desc: "Plan the biggest possible outcome for your current project.", xp: "+50 Belief" }
+        },
+        profile: {
+            motivation: 'Connection',
+            risk: 'Balanced',
+            emotional: 'Resilient',
+            social: 'Empathic',
+            passion: 'Creative',
+            coreValue: 'Authenticity'
+        },
+        avatarUrl: '/assets/portrait-ed-sheeran.png'
+    },
+    "Tanmay Bhat": {
+        name: "Tanmay Bhat",
+        archetypeTitle: "The Creative Risk-Taker",
+        quote: "You don't need a guarantee before you bet on a creative idea.",
+        voice: {
+            tone: "Witty, Observational, Grounded",
+            intro: "Small ideas often hold the biggest surprises. Let's see how you navigate the uncertainty of building something new."
+        },
+        missions: {
+            discipline: { title: "Daily Craft", desc: "Spend 30 minutes writing or honing your craft without distractions.", xp: "+50 Focus" },
+            resilience: { title: "Test the Waters", desc: "Try a new format or idea publicly, even if it feels unproven.", xp: "+50 Grit" },
+            risk: { title: "Bet on the Idea", desc: "Take a creative risk before knowing whether anyone will care.", xp: "+50 Courage" },
+            leadership: { title: "Find the Chemistry", desc: "Collaborate with others and focus on building strong group chemistry.", xp: "+50 Synergy" },
+            creativity: { title: "Experiment", desc: "Try a new creative angle without overthinking the outcome.", xp: "+50 Innovation" },
+            empathy: { title: "Listen to the Room", desc: "Pay close attention to what resonates with your audience.", xp: "+50 Connection" },
+            vision: { title: "Think Bigger", desc: "Look beyond current limitations when an idea starts gaining traction.", xp: "+50 Vision" }
+        },
+        profile: {
+            motivation: 'Impact',
+            risk: 'Bold',
+            emotional: 'Resilient',
+            social: 'Collaborative',
+            passion: 'Creative',
+            coreValue: 'Experimentation'
+        },
+        avatarUrl: '/assets/portrait-tanmay-bhat.png'
+    },
+    "Selena Gomez": {
+        name: "Selena Gomez",
+        archetypeTitle: "The Vulnerable",
+        quote: "Who says you're not perfect? Who says you're not worth it?",
+        voice: {
+            tone: "Warm, Honest, Empowering",
+            intro: "The bravest thing I ever did was admit I wasn't okay. That's where the real strength began."
+        },
         missions: {
             discipline: { title: "Boundary Work", desc: "Set one firm boundary today — and keep it.", xp: "+50 Self-Respect" },
             resilience: { title: "The Health Pivot", desc: "Turn a limitation into a new direction for your energy.", xp: "+50 Strength" },
@@ -1340,5 +1400,6 @@ export const IDOL_PROFILES: Record<string, Record<string, number>> = {
     "Zendaya": { analytical: 75, ambitious: 90, risk: 100, creativity: 95, social: 85 },
     "Neeraj Chopra": { analytical: 80, ambitious: 95, risk: 85, creativity: 75, social: 70 },
     "Ed Sheeran": { analytical: 40, ambitious: 75, risk: 60, creativity: 90, social: 85 },
+    "Tanmay Bhat": { analytical: 75, ambitious: 90, risk: 95, creativity: 100, social: 85 },
     "Selena Gomez": { analytical: 45, ambitious: 80, risk: 65, creativity: 85, social: 95 },
 };

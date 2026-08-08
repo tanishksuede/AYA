@@ -5818,8 +5818,6 @@ export const STORY_DATABASE: Record<string, any> = {
                 bg: '/assets/bg-ed-sheeran-london-2012.png',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
-                bgSize: 'object-contain',
-                bgPosition: 'object-center bg-black',
                 portrait: '/assets/portrait-ed-sheeran.png',
                 text: "You are 21. Your career is moving faster than you expected. People recognize you now. Photographers are following you. Fans are watching.\n\nBut underneath all of that, something much more personal has recently ended. You have just come through a difficult breakup after a four-year relationship. You have barely spoken to your former girlfriend since it ended.\n\nThen a photograph appears of you with another girl. To everyone else, it may be just another celebrity photograph. To you, it carries a different weight. You know the person who matters may see it. You cannot control what the photograph means to someone else.\n\nAnd you have a difficult choice: Do you explain yourself? Do you stay silent? Or do you simply accept that the relationship is over and continue forward?",
                 choices: [
@@ -5852,8 +5850,6 @@ export const STORY_DATABASE: Record<string, any> = {
                 bg: '/assets/bg-ed-sheeran-london-2012.png',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
-                bgSize: 'object-contain',
-                bgPosition: 'object-center bg-black',
                 portrait: '/assets/portrait-ed-sheeran.png',
                 text: "HISTORICAL REALITY:\nIn an interview published on 16 February 2012, immediately before Sheeran's 21st birthday, he discussed a difficult breakup after four years. He said he had not really spoken to his former girlfriend since the breakup and was concerned about her seeing paparazzi photographs of him with another girl.\n\nThe historical record does NOT establish that he chose any of the three hypothetical approaches above. Therefore, there is no \"correct\" answer. The important historical fact is that Sheeran was entering age 21 while dealing with the aftermath of a significant relationship ending at the same time that his public profile was rapidly increasing.\n\nLESSON:\nSometimes personal loss does not wait for a convenient moment. A career can be accelerating while another part of your life is falling apart. The difficult part is not always choosing between success and failure. Sometimes it is learning how to carry personal pain while the rest of your life keeps moving.",
                 choices: [
@@ -5877,8 +5873,6 @@ export const STORY_DATABASE: Record<string, any> = {
                 id: 'intro',
                 emotion: 'calm',
                 bg: '/assets/bg-ed-sheeran-london-2012.png',
-                bgSize: 'object-contain',
-                bgPosition: 'object-center bg-black',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/portrait-ed-sheeran.png',
@@ -5911,8 +5905,6 @@ export const STORY_DATABASE: Record<string, any> = {
                 id: 'reveal',
                 emotion: 'calm',
                 bg: '/assets/bg-ed-sheeran-london-2012.png',
-                bgSize: 'object-contain',
-                bgPosition: 'object-center bg-black',
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/portrait-ed-sheeran.png',
@@ -6068,6 +6060,121 @@ export const STORY_DATABASE: Record<string, any> = {
                 choices: []
             }
         ]
-    }
+    },
 
+    // AGE 22: Tanmay Bhat - Part 1
+    'lvl_age_22_tanmay_1': {
+        title: "Just 200 People",
+        source: "Source: Historical Context, 2012–2013",
+        frames: [
+            {
+                id: 'intro',
+                emotion: 'hope',
+                bg: '/assets/portrait-tanmay-bhat.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-tanmay-bhat.png',
+                text: "You are 22. You are already working in comedy and writing. But you do not have a giant audience. There is no guarantee that people will show up.\n\nYou and Gursimran Khamba have started a comedy and pop-culture podcast. The idea is simple: talk about things you find funny and make something that feels like your own.\n\nYou could keep treating comedy as a series of individual performances and writing jobs. Or you could invest your time in this new project. The target is not enormous. You just want people to show up. Maybe 200. But even 200 people means something.\n\nHow seriously do you take an idea before it has proven itself?",
+                choices: [
+                    {
+                        text: "KEEP IT SMALL: Treat the podcast as a side project. Continue prioritizing existing writing and comedy opportunities while experimenting with the podcast when time allows.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Security",
+                        feedback: "You prefer to protect the opportunities that already exist before committing heavily to something uncertain."
+                    },
+                    {
+                        text: "BET ON THE IDEA: Put serious time into the podcast. Accept that the project may fail, but give it enough attention to discover whether it can become something larger.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Risk",
+                        feedback: "You are willing to invest in an uncertain possibility before there is evidence that it will work."
+                    },
+                    {
+                        text: "BUILD IT WITH THE GROUP: Treat the project primarily as a collaborative experiment. Focus on finding the chemistry between different comedians rather than worrying about immediate scale.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Collaboration",
+                        feedback: "You believe the right people and creative chemistry can matter more than having a perfect plan."
+                    }
+                ]
+            },
+            {
+                id: 'reveal',
+                emotion: 'hope',
+                bg: '/assets/portrait-tanmay-bhat.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-tanmay-bhat.png',
+                text: "HISTORICAL REALITY:\nTanmay Bhat and Gursimran Khamba started the All India Bakchod podcast in March 2012. Rohan Joshi and Ashish Shakya subsequently became part of the group.\n\nThe early ambition was relatively modest. Tanmay later described wanting around 200 people in a room for a show. As the audience grew, the group's ambitions expanded.\n\nThe historical record does NOT establish that Tanmay faced these exact three choices. Therefore, do not tell the player that one option was \"correct.\" The historically important fact is that he DID choose to invest in the new collaborative comedy project.\n\nLESSON:\nYou do not always know whether an idea is good before you invest in it. Sometimes the first evidence is not success — it is simply that a few people care enough to come back. Small beginnings are still decisions.",
+                choices: [
+                    {
+                        text: "Complete Level",
+                        next: 'COMPLETE',
+                        score: 0,
+                        feedbackTitle: "",
+                        feedback: ""
+                    }
+                ]
+            }
+        ]
+    },
+
+    // AGE 22: Tanmay Bhat - Part 2
+    'lvl_age_22_tanmay_2': {
+        title: "What If We Go Bigger?",
+        source: "Source: Historical Context, 2012–2013",
+        frames: [
+            {
+                id: 'intro',
+                emotion: 'wonder',
+                bg: '/assets/portrait-tanmay-bhat.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-tanmay-bhat.png',
+                text: "The experiment is no longer feeling completely invisible. The audience is growing. The group is developing chemistry. The idea that started small is becoming harder to ignore.\n\nYou have a choice: Do you keep the project exactly as it is? Do you start thinking bigger? Or do you expand carefully without losing what made the original idea enjoyable?\n\nThere is still no guarantee. You are only beginning to see the possibility.",
+                choices: [
+                    {
+                        text: "KEEP THE ORIGINAL FORMULA: Do not chase growth. Keep making the kind of comedy that feels natural and enjoyable.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Authenticity",
+                        feedback: "You prefer protecting the original creative identity rather than changing it for growth."
+                    },
+                    {
+                        text: "THINK BIGGER: Start treating the project as something that could become a much larger comedy platform. Take the possibility seriously before there is certainty.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Vision",
+                        feedback: "You naturally look beyond the current size of an opportunity."
+                    },
+                    {
+                        text: "EXPERIMENT: Try new formats while keeping the original spirit. Use the audience response to discover what works instead of committing to one direction immediately.",
+                        next: 'reveal',
+                        score: 10,
+                        feedbackTitle: "Adaptability",
+                        feedback: "You prefer learning through experimentation rather than making one irreversible commitment."
+                    }
+                ]
+            },
+            {
+                id: 'reveal',
+                emotion: 'wonder',
+                bg: '/assets/portrait-tanmay-bhat.png',
+                bgSize: 'object-contain',
+                bgPosition: 'object-center bg-black',
+                portrait: '/assets/portrait-tanmay-bhat.png',
+                text: "HISTORICAL REALITY:\nThe group did expand. All India Bakchod developed beyond the original podcast format. In 2013, the four founders began making YouTube sketches.\n\nTanmay later recalled that their original expectations were modest, but the audience growth significantly exceeded what they initially imagined. Forbes India reported that after initially aiming for roughly 200 people in a room, the audience grew to 500 and beyond, eventually leading the group to recognize that they were building something much larger.\n\nThe experiment became bigger than its original expectations.\n\nLESSON:\nYou do not need to know that something will become huge before taking it seriously. Sometimes the most useful signal is simply that reality is exceeding your original expectations. When that happens, the next decision is not whether you were right — it is whether you are willing to change your plans because the world responded differently than you expected.",
+                choices: [
+                    {
+                        text: "Complete Level",
+                        next: 'COMPLETE',
+                        score: 0,
+                        feedbackTitle: "",
+                        feedback: ""
+                    }
+                ]
+            }
+        ]
+    }
 };
