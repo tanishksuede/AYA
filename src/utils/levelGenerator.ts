@@ -8,6 +8,28 @@ export function generateLevels(_age: number): Level[] {
 
     // Master List of ALL Levels
     const levels: Omit<Level, 'status' | 'isLocked' | 'stars'>[] = [
+        // Age 13: Anne Frank (Part 1)
+        {
+            id: 'lvl_13_anne_1', title: 'The Notebook', description: 'At 13, Anne receives a diary for her birthday. What will she use it for?',
+            requiredStars: 0, year: 1942, age: 13, theme: 'History', archetype: 'The Writer', personality: 'Anne Frank', age_mirror_text: 'celebrating your 13th birthday with family and friends',
+            bio: 'A 13-year-old girl in Amsterdam experiencing the ordinary joys of a birthday amidst growing restrictions.',
+            fame: 'One of the most discussed victims of the Holocaust. Author of a famous diary.',
+            achievements: ['Her diary has been translated into over 70 languages', 'A powerful symbol of the Holocaust', 'A lasting voice for humanity'],
+            lesson: 'A private creative space can matter before anyone else sees its value.',
+            avatarUrl: '/assets/portrait-anne-frank.png', scenarioId: 'lvl_age_13_anne_1',
+            idolTraits: { discipline: 80, resilience: 90, risk: 70, leadership: 60, creativity: 100, empathy: 95, vision: 85 }
+        },
+        // Age 13: Anne Frank (Part 2)
+        {
+            id: 'lvl_13_anne_2', title: 'When Ordinary Life Disappears', description: 'Weeks later, Anne\'s family must go into hiding. How will she cope?',
+            requiredStars: 0, year: 1942, age: 13, theme: 'History', archetype: 'The Writer', personality: 'Anne Frank', age_mirror_text: 'packing your belongings to walk to a secret hiding place',
+            bio: 'A 13-year-old girl forced into hiding in the Secret Annex, taking her diary with her.',
+            fame: 'One of the most discussed victims of the Holocaust. Author of a famous diary.',
+            achievements: ['Her diary has been translated into over 70 languages', 'A powerful symbol of the Holocaust', 'A lasting voice for humanity'],
+            lesson: 'Sometimes the most important choice is not about controlling the situation, but deciding how to respond.',
+            avatarUrl: '/assets/portrait-anne-frank.png', scenarioId: 'lvl_age_13_anne_2',
+            idolTraits: { discipline: 80, resilience: 100, risk: 70, leadership: 60, creativity: 100, empathy: 95, vision: 85 }
+        },
         // Age 20: Billie Eilish (Story 2)
         {
             id: 'lvl_20_billie_2', title: 'The Person Who Left You On Seen', description: 'At 20, you must choose between chasing someone who ghosts you, or turning the pain into art.',
