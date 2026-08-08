@@ -6422,7 +6422,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/portrait-michael-jackson.png',
-                text: "You are 15. You have been singing for years. People know your voice. You know how to perform. You know how to get on stage.\n\nBut you are growing up. Your voice is changing. The sound that once came naturally does not always feel exactly the same anymore.\n\nYou could try to keep doing everything exactly as you did before. You could accept the change and learn how to use your new voice. Or you could experiment and find a completely different way of performing.\n\nThere is no obvious answer.",
+                text: "You are 15, and your singing voice is beginning to change.\nThe sound that once came naturally does not feel the same anymore.\nHow will you adapt as your voice matures?",
                 choices: [
                     {
                         text: "STAY WITH WHAT YOU KNOW: Keep using the style that has worked for you. Practise the old approach until you can make it feel natural again.",
@@ -6454,7 +6454,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/portrait-michael-jackson.png',
-                text: "HISTORICAL REALITY:\nMichael's voice was changing as he moved through adolescence. At the same time, his career continued. He released Music & Me in 1973 and continued performing and recording.\n\nMotown also continued developing material for Michael and the Jackson 5 as the group's young performers matured.\n\nThe historical record does NOT establish that Michael faced the three exact choices presented here. The documented reality is that Michael continued working through a period of physical and artistic change while remaining active as a performer.\n\nLESSON:\nChanging does not mean you are getting worse. Sometimes the skill you had before changes shape. The important question is not: \"Can I stay exactly the same?\" It is: \"Can I learn how to use what I have now?\"",
+                text: "Michael continued recording and performing as his voice matured in 1973.\nHe adapted to physical changes while releasing new music.\n\nChanging does not mean getting worse.\nLearn to work with what you have now.",
                 choices: [
                     {
                         text: "Complete Level",
@@ -6480,7 +6480,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/portrait-michael-jackson.png',
-                text: "People already know what you sound like. They know the young performer they became fans of. They have expectations.\n\nBut you are not exactly the same person anymore. You are growing. Your voice is changing. Your interests are developing. Your musical ideas are changing too.\n\nYou have to decide how much you should listen to other people's expectations. This is not about ignoring everyone. It is about deciding how much of your future should be controlled by what worked in your past.",
+                text: "People still expect the child performer they became fans of.\nBut your voice and musical ideas are developing.\nHow much will you let past expectations shape your future?",
                 choices: [
                     {
                         text: "GIVE PEOPLE WHAT THEY EXPECT: Stay close to the style people already love. There is value in giving an audience something familiar.",
@@ -6512,7 +6512,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/portrait-michael-jackson.png',
-                text: "HISTORICAL REALITY:\nMichael continued developing as both a solo artist and member of the Jackson 5 during his teenage years. His early solo work included Music & Me in 1973.\n\nThe important point for this story is that Michael did not remain frozen as the child performer audiences had first known. He continued developing as he grew older.\n\nThe exact three choices presented here are hypothetical. There is no single historically correct answer.\n\nLESSON:\nGrowing up can make other people uncomfortable because they remember an older version of you. You do not have to become a completely different person. But you also do not have to stay exactly the same just because people liked who you were before.\n\nReal growth often happens somewhere between: \"Stay the same.\" and \"Become someone completely different.\"",
+                text: "Michael continued developing as both a solo artist and Jackson 5 member.\nHe refused to remain frozen as a childhood star as he grew older.\n\nYou don't have to stay the same just because people liked who you were.\nReal growth happens when you allow yourself to evolve.",
                 choices: [
                     {
                         text: "Complete Level",
@@ -6538,7 +6538,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/portrait-bhagat-singh.png',
-                text: "You are 15. You are growing up in a time when the country around you is full of political tension. You hear adults talking about freedom. You hear different opinions about British rule. You see people disagreeing about what should happen next.\n\nYou are young, but you are paying attention. Something makes you angry. You feel that something is unfair. You want to do something.\n\nBut you have three ways to respond. You could react immediately. You could ignore it. Or you could learn more before deciding what action makes sense.",
+                text: "You are 15, growing up surrounded by political tension in Lahore.\nYou feel angry about unfairness, but how will you respond?\nWill you react immediately, stay out of it, or learn first?",
                 choices: [
                     {
                         text: "ACT RIGHT AWAY: If something feels wrong, do not wait. Take some form of immediate action to show that you will not simply accept it.",
@@ -6570,7 +6570,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/portrait-bhagat-singh.png',
-                text: "HISTORICAL REALITY:\nBhagat Singh became deeply interested in political and historical ideas while still young. His education and later years at National College exposed him to nationalist thought, history, literature and political ideas.\n\nThe historical record does NOT establish that he faced these exact three choices at age 15. The documented lesson is that his political thinking developed over time. His later actions were shaped by years of reading, discussion, political experience and changing beliefs.\n\nLESSON:\nFeeling strongly about something is important. But strong feelings do not automatically tell you what to do. Before making a big decision, ask: \"What do I actually know?\"",
+                text: "Bhagat Singh spent his youth studying history and political ideas.\nHis beliefs were shaped through years of reading and discussion.\n\nFeeling strongly is important, but understanding comes first.\nBefore making a big decision, ask what you actually know.",
                 choices: [
                     {
                         text: "Complete Level",
@@ -6596,7 +6596,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/portrait-bhagat-singh.png',
-                text: "You have started thinking more deeply about the world around you. You hear different people give completely different explanations for the same problem.\n\nOne person says: \"This is the answer.\" Another person says: \"No, that is completely wrong.\"\n\nYou are 15. You do not have to choose a side immediately. You could simply repeat what someone you trust says. You could choose the opinion that sounds strongest. Or you could spend time reading and comparing ideas yourself.\n\nThe choice is not about who is right. The choice is about how YOU decide what is right.",
+                text: "Different people give completely opposite answers to the same problem.\nYou are 15 and don't have to pick a side immediately.\nHow will you decide what is right?",
                 choices: [
                     {
                         text: "TRUST SOMEONE YOU RESPECT: Choose the view of a person whose judgment you trust. You do not have enough experience to understand everything yourself.",
@@ -6628,7 +6628,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/portrait-bhagat-singh.png',
-                text: "HISTORICAL REALITY:\nBhagat Singh later became known for his strong intellectual interests and extensive reading. His political ideas developed over time rather than appearing fully formed at age 15.\n\nHe studied history, political thought and revolutionary movements and was influenced by a wide range of ideas. His later writings show a person who thought deeply about politics, society, religion and freedom.\n\nLESSON:\nYou do not become independent just by disagreeing with everyone. You become independent when you can explain: \"Here is what I believe.\" and also: \"Here is why I believe it.\"\n\nThe strongest thinkers are willing to change their minds when they discover better information.",
+                text: "Bhagat Singh became known for extensive reading and open-mindedness.\nHis ideas evolved through continuous learning and investigation.\n\nReal independence means explaining why you believe what you believe.\nStrong thinkers change their minds when they discover better information.",
                 choices: [
                     {
                         text: "Complete Level",
@@ -6655,7 +6655,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/portrait-rani-lakshmibai.png',
-                text: "Yesterday, people knew you as Manu.\n\nNow your life has a new name. You have entered the household of Jhansi's ruler. People see you differently. There are new customs. New expectations. New responsibilities.\n\nBut inside, you are still the same young person who grew up learning, riding and training.\n\nNobody can tell you exactly how to feel. You have to decide how you will enter this new life.",
+                text: "Yesterday you were Manu. Now you are Lakshmibai in Jhansi.\nYou face new royal customs and high expectations.\nHow will you step into this new life?",
                 choices: [
                     {
                         text: "BECOME THE ROLE: Put your old life aside for now. Learn the customs. Learn the responsibilities. Focus on becoming the person this new role requires.",
@@ -6687,7 +6687,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/portrait-rani-lakshmibai.png',
-                text: "HISTORICAL REALITY:\nManikarnika Tambe married Raja Gangadhar Rao of Jhansi in 1842 and became known as Lakshmibai after the marriage. Historical sources describe her childhood as unusually active and independent for a girl of her time, including education and training in riding and martial skills.\n\nThe historical record does NOT establish that she faced these exact three choices. Her life really did involve a major transition from Manu to Lakshmibai.\n\nLESSON:\nGrowing up sometimes means entering a role you did not create yourself. You can accept new responsibility without forgetting who you were before it.",
+                text: "Manikarnika married into Jhansi in 1842 and became Rani Lakshmibai.\nShe carried her active, independent childhood skills into court life.\n\nGrowing up sometimes means entering a role you did not create.\nYou can accept new responsibility without forgetting who you were.",
                 choices: [
                     {
                         text: "Continue: What I Carry With Me",
@@ -6706,7 +6706,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/portrait-rani-lakshmibai.png',
-                text: "The new role is no longer something you are simply entering. It is becoming part of your everyday life. Now comes the harder question: What parts of yourself will you keep?\n\nThe new life is beginning to feel more familiar. You have responsibilities now. People expect things from you.\n\nBut you have also learned something: A new role does not automatically decide what kind of person you become. You still have choices.\n\nYou can be disciplined without becoming silent. You can be responsible without losing your independence. You can learn new things without forgetting the skills that made you confident.\n\nNow you must decide what kind of strength you want to carry forward.",
+                text: "The new role is becoming part of your everyday life.\nNow comes the harder question: What parts of yourself will you keep?\nDecide what kind of strength you want to carry forward.",
                 choices: [
                     {
                         text: "LEARN FIRST: Spend your time understanding the new responsibilities. Listen. Observe. Learn how things work before trying to change anything.",
@@ -6738,7 +6738,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/portrait-rani-lakshmibai.png',
-                text: "HISTORICAL REALITY:\nSources describe Lakshmibai as having retained qualities associated with her unusual childhood education and physical training even after becoming the Rani of Jhansi.\n\nLater accounts portray her as a capable leader, but at age 15, the important historical point is much simpler: She had entered a new role while still very young. The famous leader she later became should NOT be used to erase the uncertainty of this earlier period.\n\nLESSON:\nGrowing up does not mean becoming a completely different person. Sometimes it means taking what is already strong inside you and learning how to use it responsibly.\n\nA title can change. A situation can change. But your character is built by what you choose to carry forward.",
+                text: "Lakshmibai retained her childhood training and martial skills as Rani of Jhansi.\nShe entered her leadership role while still very young.\n\nGrowing up does not mean becoming a different person.\nTake what is strong inside you and learn how to use it responsibly.",
                 choices: [
                     {
                         text: "Complete Level",
@@ -6765,7 +6765,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/avatar_virat_kohli.jpg',
-                text: "You are 15. You have just been given something many players your age want: responsibility. You are leading Delhi's Under-15 team.\n\nYou know you can bat. You know you can score runs. Now everyone is looking at you. You walk out to bat.\n\nYou have two thoughts: \"I want to score.\" and: \"I have to help my team win.\"\n\nSometimes those two things are the same. Sometimes they are not. Today, you have to decide what kind of captain you want to be.",
+                text: "You are 15 and leading Delhi's Under-15 team.\nEveryone is watching as you walk out to bat.\nWill you play for your personal score or for the team's needs?",
                 choices: [
                     {
                         text: "PLAY FOR THE BIG SCORE: Attack. Try to score as many runs as possible. If you make a huge score, you may give the team the best chance of winning.",
@@ -6797,7 +6797,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/avatar_virat_kohli.jpg',
-                text: "HISTORICAL REALITY:\nVirat Kohli really was appointed captain of Delhi's Under-15 team during the 2003–04 season. He scored 390 runs at an average of 78, including two centuries. A contemporary report identified him as captain of the Delhi U-15 side.\n\nThe historical record does NOT establish that he faced the exact choices presented here. The documented reality is that at 15, Kohli was already combining strong individual performance with a leadership role for Delhi's junior team.\n\nLESSON:\nBeing good at something can get you noticed. But being trusted with other people is different. A captain is not only responsible for their own performance — they are responsible for what their decisions do to the team.",
+                text: "Kohli captained Delhi U-15 in 2003–04, scoring 390 runs at an average of 78.\nHe combined top batting performance with team leadership.\n\nBeing skilled gets you noticed, but leading requires more.\nA captain is responsible for how their decisions affect the whole team.",
                 choices: [
                     {
                         text: "Continue: The Team Needs You",
@@ -6816,7 +6816,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/avatar_virat_kohli.jpg',
-                text: "Being captain made you feel trusted. Now comes the harder part: What if your teammates are not doing what you expect?\n\nYou are still the captain. You are watching the match. One of your teammates makes a mistake. Then another.\n\nThe match is becoming harder. You are frustrated. You know you could try to take control yourself. You could also stop and help the other players regain confidence. Or you could be direct and tell them exactly what they need to fix.\n\nAll three could work. All three could also make things worse.",
+                text: "Being captain made you feel trusted. Now teammates are making mistakes.\nThe match is getting tough, and frustration is setting in.\nHow will you help your team overcome this moment?",
                 choices: [
                     {
                         text: "TAKE CONTROL YOURSELF: Do more. Score more. Lead from the front. If the team is struggling, try to carry the responsibility yourself.",
@@ -6848,7 +6848,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/avatar_virat_kohli.jpg',
-                text: "HISTORICAL REALITY:\nVirat Kohli's teenage cricket career continued to develop rapidly after his U-15 period. By the end of 2004, he was selected for Delhi's Under-17 team in the Vijay Merchant Trophy. In that competition, he scored 470 runs in four matches, including a score of 251 not out.\n\nThe player is being evaluated on decision-making. The historical outcome simply shows that Kohli's progression continued after the period represented in this story.\n\nLESSON:\nLeadership is not just about being the best player. Sometimes leadership means doing more yourself, sometimes it means helping someone else improve, and sometimes it means telling the truth when something is not working. The difficult part is knowing which one the situation needs.",
+                text: "Kohli progressed rapidly to Delhi's U-17 team, scoring 470 runs in 4 matches.\nHis leadership and performance continued to elevate his career.\n\nLeadership isn't just about being the best player.\nGreat leaders know when to carry the team, encourage others, or speak directly.",
                 choices: [
                     {
                         text: "Complete Level",
@@ -6875,7 +6875,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/avatar_ratan_tata.jpg',
-                text: "You are 15. You are sitting in a classroom. You know the answer. You have an idea.\n\nBut speaking in front of everyone feels uncomfortable. Some people seem naturally good at talking. They raise their hands. They speak loudly. They make everyone look at them.\n\nYou are different. You think before you speak. That can be a strength. But sometimes it can also stop you from speaking at all. You have to decide what to do with that.",
+                text: "You are 15, sitting in a classroom with an idea in mind.\nSpeaking out loud feels uncomfortable, but you think before you speak.\nHow will you handle your quiet nature?",
                 choices: [
                     {
                         text: "STAY QUIET: If you are not comfortable speaking, do not force yourself. Listen carefully. Think. Speak only when you are sure.",
@@ -6907,7 +6907,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/avatar_ratan_tata.jpg',
-                text: "HISTORICAL REALITY:\nRatan Tata later recalled that he was shy during his school years and had a fear of public speaking. He said that the students who spoke publicly at school were generally those who participated in debates or read at assembly, and he was not among them. He also recalled that he was not particularly involved in extracurricular activities.\n\nThe historical record does NOT establish that he faced these exact three choices. Ratan Tata himself later described being shy and uncomfortable with public speaking during his school years.\n\nLESSON:\nBeing quiet is not the same as being weak. Some people think before they speak. The goal is not to become the loudest person in the room. The goal is to make sure your quietness does not stop your ideas from being heard.",
+                text: "Ratan Tata recalled being shy in school with a fear of public speaking.\nHe spent his youth thinking deeply rather than seeking assembly debates.\n\nBeing quiet is not the same as being weak.\nDon't let your quietness stop your ideas from being heard.",
                 choices: [
                     {
                         text: "Continue: Say It Anyway",
@@ -6926,7 +6926,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/avatar_ratan_tata.jpg',
-                text: "You are beginning to see that being quiet is not a weakness. Now comes the next step: How do you make sure your quietness does not stop your ideas from being heard?\n\nYou are still quiet. That has not suddenly disappeared. But you are beginning to understand something.\n\nYou do not need to change your personality completely. You can be quiet and still have strong opinions. You can listen and still disagree. You can be nervous and still speak.\n\nNow someone asks what you think. You have three choices.",
+                text: "Being quiet is not a weakness, but you still want your voice to matter.\nYou can be quiet and still hold strong opinions.\nWhen someone asks for your view, how will you respond?",
                 choices: [
                     {
                         text: "WAIT UNTIL YOU ARE CERTAIN: Think carefully. Check your idea. Speak only when you feel confident that you are right.",
@@ -6958,7 +6958,7 @@ export const STORY_DATABASE: Record<string, any> = {
                 bgSize: 'object-contain',
                 bgPosition: 'object-center bg-black',
                 portrait: '/assets/avatar_ratan_tata.jpg',
-                text: "HISTORICAL REALITY:\nRatan Tata's later life showed that being naturally quiet did not prevent him from taking on major responsibilities. The documented teenage reality is simply that he was shy and had a fear of public speaking. His schooling continued through several institutions, and he eventually went on to study architecture and structural engineering.\n\nThe later career should NOT be used as a clue to the player's choice. The point of this story is the teenage lesson: A quiet personality can coexist with strong thinking and meaningful action.\n\nLESSON:\nYou do not have to become loud to become confident. Confidence can be quiet. Sometimes confidence is simply saying: \"I have thought about this. And I believe it is worth saying.\"",
+                text: "Ratan Tata's shyness did not prevent him from taking on great responsibilities.\nHis early quiet thoughtfulness laid the groundwork for strong leadership.\n\nYou don't have to become loud to be confident.\nConfidence is simply knowing your thoughts are worth sharing.",
                 choices: [
                     {
                         text: "Complete Level",
