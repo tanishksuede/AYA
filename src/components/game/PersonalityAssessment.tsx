@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import clsx from 'clsx';
 import type { PersonalityTraits, PsychologicalProfile, MotivationType, RiskAppetite, EmotionalStyle, SocialRole, PassionType, CoreValue } from '../../types/gameTypes';
 import { bgmManager } from '../../utils/bgmManager';
+import { MascotQuizGuide, type MascotAction } from './MascotQuizGuide';
 
 const QUESTIONS = [
     {
@@ -154,6 +155,15 @@ export function PersonalityAssessment() {
         answers: string[]
     }[]>([]);
 
+    // Mascot Controller Action State
+    const [mascotAction, setMascotAction] = useState<MascotAction>('none');
+    const [mascotActionTimestamp, setMascotActionTimestamp] = useState<number>(0);
+
+    const triggerMascotAction = (action: MascotAction) => {
+        setMascotAction(action);
+        setMascotActionTimestamp(Date.now());
+    };
+
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth < 768);
         window.addEventListener('resize', handleResize);
@@ -173,15 +183,18 @@ export function PersonalityAssessment() {
         const currentQ = QUESTIONS[step] as any;
         if (currentSelection.some(o => o.text === option.text)) {
             setCurrentSelection(currentSelection.filter(o => o.text !== option.text));
+            triggerMascotAction('deselect');
         } else {
             if (currentQ.maxOptions === 1 || !currentQ.multiSelect) {
                 setCurrentSelection([option]);
+                triggerMascotAction('select');
                 return;
             }
             if (currentQ.maxOptions && currentSelection.length >= currentQ.maxOptions) {
                 return;
             }
             setCurrentSelection([...currentSelection, option]);
+            triggerMascotAction('select');
         }
     };
 
@@ -220,9 +233,14 @@ export function PersonalityAssessment() {
         setAnswers(newAnswers);
         setCurrentSelection([]);
 
+        if (step === 4) {
+            triggerMascotAction('q5_complete');
+        }
+
         if (step < QUESTIONS.length - 1) {
             navigate('/game/assessment/' + (step + 2));
         } else {
+            triggerMascotAction('q9_complete');
             setIsSaving(true);
             try {
                 if (userProfile?.id) {
@@ -368,28 +386,21 @@ export function PersonalityAssessment() {
                             </div>
                         </div>
 
-                        {/* Icon Badge */}
-                        <div className="relative mb-6 group">
-                            <div className={clsx(
-                                "absolute inset-0 blur-xl opacity-60 animate-pulse transition-opacity duration-700 rounded-full",
-                                isViolet ? "bg-[#c084fc]" : "bg-[#00f1fe]"
-                            )}></div>
-                            <div className={clsx(
-                                "relative w-24 h-24 rounded-full flex items-center justify-center shadow-[0_10px_20px_rgba(0,0,0,0.5)] border-4 z-10",
-                                isViolet ? "bg-[#3b0764] border-[#9333ea] shadow-[0_0_30px_rgba(147,51,234,0.6)]" : "bg-slate-950 border-[#00f1fe] shadow-[0_0_20px_rgba(0,241,254,0.4)]"
-                            )}>
-                                <Icon size={40} className={clsx(
-                                    "transition-colors", 
-                                    isViolet ? "text-[#e9d5ff] drop-shadow-[0_0_10px_#e9d5ff]" : "text-[#00f1fe] drop-shadow-[0_0_8px_rgba(0,241,254,0.8)]"
-                                )} />
-                                {/* Rotating Ring */}
-                                {isViolet && (
-                                    <motion.div 
-                                        className="absolute inset-[-8px] border border-[#d8b4fe]/30 rounded-full border-t-[#d8b4fe]"
-                                        animate={{ rotateZ: 360 }}
-                                        transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
-                                    />
-                                )}
+                        {/* Dynamic DotLottie Mascot Guide */}
+                        <div className="relative mb-4 flex flex-col items-center group pointer-events-none">
+                            <MascotQuizGuide
+                                currentStep={step}
+                                lastAction={mascotAction}
+                                actionTimestamp={mascotActionTimestamp}
+                                isSaving={isSaving}
+                            />
+                            
+                            {/* Category Badge overlay */}
+                            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#191925]/90 border border-white/10 backdrop-blur-md shadow-md -mt-2 z-20">
+                                <Icon size={14} className={isViolet ? "text-[#c084fc]" : "text-[#00f1fe]"} />
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-300">
+                                    {currentQ.dimension.replace('_', ' ')}
+                                </span>
                             </div>
                         </div>
 
