@@ -107,7 +107,7 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
               animate={{ opacity: 1, x: 0, rotateY: 0 }}
               exit={{ opacity: 0, x: -100, rotateY: -15 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="text-center w-full max-w-[680px] mx-auto px-4 md:px-0"
+              className="text-center w-full max-w-md mx-auto px-4 md:px-0"
             >
               {/* Blurred Silhouettes */}
               <div className="absolute inset-0 z-[-1] pointer-events-none flex items-center justify-center">
@@ -175,7 +175,7 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
               key="slide2"
               initial={{ opacity: 0, x: 100 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -100 }}
               transition={{ duration: 0.6 }}
-              className="w-full max-w-[600px] mx-auto px-6 md:px-0"
+              className="w-full max-w-md mx-auto px-6 md:px-0"
             >
               <h2 className="text-3xl sm:text-5xl font-black text-center mb-8 sm:mb-12 text-white drop-shadow-[0_0_25px_rgba(255,255,255,0.4)]">How AYA Works</h2>
               <div className="space-y-4 sm:space-y-5 [transform-style:preserve-3d]">
@@ -216,7 +216,7 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
               key="slide3"
               initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.1 }}
               transition={{ duration: 0.6 }}
-              className="w-full max-w-[680px] mx-auto px-4 md:px-0 text-center"
+              className="w-full max-w-md mx-auto px-4 md:px-0 text-center"
             >
               <h2 className="text-2xl sm:text-4xl font-black mb-4 drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]">Which exam are you preparing for?</h2>
               <p className="text-base sm:text-lg text-[#acaab5] mb-8 font-['Manrope']">We'll suggest the perfect story for you today</p>

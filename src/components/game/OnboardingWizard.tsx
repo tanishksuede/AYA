@@ -466,7 +466,7 @@ export function OnboardingWizard() {
             {cinematicBackground}
 
             {/* Relative Form Wrapper with Pinned Absolute Side Mascot */}
-            <div className="relative z-10 mx-auto w-full max-w-[450px] my-auto py-6">
+            <div className="relative z-10 w-full max-w-md mx-auto my-auto py-6">
                 
                 {/* Form Container */}
                 <motion.div 
