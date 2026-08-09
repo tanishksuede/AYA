@@ -77,6 +77,7 @@ export function OnboardingWizard() {
     const [name, setName] = useState("");
     const [age, setAge] = useState<number>(20);
     const [mobile, setMobile] = useState("");
+    const [username, setUsername] = useState("");
     const [prefLang, setPrefLang] = useState<'en' | 'hi'>('en');
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
@@ -93,11 +94,13 @@ export function OnboardingWizard() {
             const tempGoogleName = sessionStorage.getItem('aya_temp_google_name');
             const tempGoogleAge = sessionStorage.getItem('aya_temp_google_age');
             const tempGoogleMobile = sessionStorage.getItem('aya_temp_google_mobile');
+            const tempGoogleUsername = sessionStorage.getItem('aya_temp_google_username');
             if (tempGoogleId) {
                 setGoogleAuthId(tempGoogleId);
                 setName(tempGoogleName || "");
                 if (tempGoogleAge) setAge(Number(tempGoogleAge));
                 if (tempGoogleMobile) setMobile(tempGoogleMobile);
+                if (tempGoogleUsername) setUsername(tempGoogleUsername);
             }
             setIsLoading(false);
         }
@@ -230,7 +233,7 @@ export function OnboardingWizard() {
         }
 
         // Persist session to localStorage + sessionStorage
-        saveSession({ id: userId, mobile: userData.mobile, name: userData.name, age: userData.age });
+        saveSession({ id: userId, mobile: userData.mobile, name: userData.name, age: userData.age, username: userData.username });
 
         // Extract level_scores from userData if they exist
         const dbScores: Record<string, number> = {};
@@ -265,6 +268,7 @@ export function OnboardingWizard() {
                 id: userId, 
                 mobile: userData.mobile, 
                 name: userData.name, 
+                username: userData.username,
                 age: userData.age,
                 access_type: userData.access_type || 'open',
                 access_start_date: userData.access_start_date,
@@ -305,6 +309,44 @@ export function OnboardingWizard() {
         setError("");
 
         const cleanMobile = mobile.trim().replace(/\s+/g, '');
+        const cleanUsername = username.trim();
+
+        if (isRegisterMode) {
+                if (!name.trim() || !cleanMobile || !cleanUsername) {
+                    setIsLoading(false);
+                    isSubmitting.current = false;
+                    setError("Please fill in all required fields (Name, Username, Mobile).");
+                    return;
+                }
+                if (cleanUsername.length < 3) {
+                    setIsLoading(false);
+                    isSubmitting.current = false;
+                    setError("Username must be at least 3 characters long.");
+                    return;
+                }
+
+                // Check username availability
+                const { data: existingUsername, error: usernameError } = await supabase
+                    .from('users')
+                    .select('id')
+                    .eq('username', cleanUsername)
+                    .maybeSingle();
+
+                if (usernameError) throw usernameError;
+                if (existingUsername) {
+                    setIsLoading(false);
+                    isSubmitting.current = false;
+                    setError("This username is not available");
+                    return;
+                }
+            } else {
+                if (!cleanMobile) {
+                    setIsLoading(false);
+                    isSubmitting.current = false;
+                    setError("Please enter your mobile number.");
+                    return;
+                }
+            }
 
         // 20s escape hatch
         const fallback = setTimeout(() => {
@@ -329,13 +371,15 @@ export function OnboardingWizard() {
                                 .update({
                                     name: name.trim(),
                                     age: age,
-                                    mobile: cleanMobile
+                                    mobile: cleanMobile,
+                                    username: cleanUsername
                                 })
                                 .eq('id', userData.id);
                             if (updateError) console.warn("Failed to update user details on login", updateError);
                             userData.name = name.trim();
                             userData.age = age;
                             userData.mobile = cleanMobile;
+                            userData.username = cleanUsername;
                         }
                         clearTimeout(fallback);
                         await performLogin(userData, googleAuthId, true);
@@ -345,6 +389,7 @@ export function OnboardingWizard() {
                         sessionStorage.removeItem('aya_temp_google_name');
                         sessionStorage.removeItem('aya_temp_google_age');
                         sessionStorage.removeItem('aya_temp_google_mobile');
+                        sessionStorage.removeItem('aya_temp_google_username');
                         sessionStorage.removeItem('aya_temp_existing_user');
                         sessionStorage.removeItem('aya_temp_user_data');
                         return;
@@ -387,6 +432,7 @@ export function OnboardingWizard() {
                 const insertPayload: any = {
                     mobile: cleanMobile,
                     name: name.trim(),
+                    username: cleanUsername,
                     age: age,
                     access_type: 'open',
                     access_start_date: new Date().toISOString().split('T')[0],
@@ -573,6 +619,25 @@ export function OnboardingWizard() {
                                         disabled={isLoading}
                                     />
                                 </motion.div>
+
+                                {isRegisterMode && (
+                                    <motion.div 
+                                        initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+                                        className="glass-panel p-6 rounded-3xl relative"
+                                    >
+                                        <label className="block text-xs font-bold text-[#f2effb] mb-2 uppercase tracking-wider">Username</label>
+                                        <input
+                                            type="text"
+                                            value={username}
+                                            onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+                                            className={`${baseInputClasses} py-3 px-4 focus:ring-4 focus:ring-[#9333ea]/30 focus:border-[#9333ea] focus:shadow-[0_0_20px_rgba(147,51,234,0.3)]`}
+                                            placeholder="Choose a unique username"
+                                            disabled={isLoading}
+                                            minLength={3}
+                                        />
+                                        <p className="text-[#acaab5] text-[10px] mt-2 ml-1">Must be at least 3 characters. Letters, numbers, and underscores only.</p>
+                                    </motion.div>
+                                )}
 
                                 <motion.div 
                                     initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}

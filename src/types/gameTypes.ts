@@ -50,6 +50,7 @@ export interface UserProfile {
     id?: string;
     mobile?: string;
     name: string;
+    username?: string;
     age: number;
     interests?: string[];
     roleModels?: string[];

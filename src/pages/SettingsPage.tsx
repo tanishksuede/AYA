@@ -11,6 +11,8 @@ export function SettingsPage() {
     const navigate = useNavigate();
     const [newAge, setNewAge] = useState(18);
     const [newPreferredMap, setNewPreferredMap] = useState('standard');
+    const [newUsername, setNewUsername] = useState('');
+    const [error, setError] = useState('');
 
     const profile = useUserStore((state) => state.profile);
     const setProfile = useUserStore((state) => state.setProfile);
@@ -34,6 +36,7 @@ export function SettingsPage() {
         if (profile) {
             if (profile.age) setNewAge(profile.age);
             if (profile.preferred_map) setNewPreferredMap(profile.preferred_map);
+            if (profile.username) setNewUsername(profile.username);
         }
     }, [profile]);
 
@@ -48,13 +51,40 @@ export function SettingsPage() {
     }, [sfxVolume, isSfxMuted]);
 
     const handleSave = async () => {
+        setError('');
         if (profile) {
-            setProfile({ ...profile, age: newAge, preferred_map: newPreferredMap });
+            const cleanUsername = newUsername.trim();
+            if (cleanUsername && cleanUsername.length < 3) {
+                setError('Username must be at least 3 characters long.');
+                return;
+            }
+
+            if (cleanUsername !== profile.username) {
+                const { supabase } = await import('../utils/supabase');
+                const { data: existingUsername, error: usernameError } = await supabase
+                    .from('users')
+                    .select('id')
+                    .eq('username', cleanUsername)
+                    .maybeSingle();
+
+                if (usernameError) {
+                    setError('Error checking username availability.');
+                    return;
+                }
+                
+                if (existingUsername) {
+                    setError('This username is not available');
+                    return;
+                }
+            }
+
+            setProfile({ ...profile, age: newAge, preferred_map: newPreferredMap, username: cleanUsername });
             try {
                 const { supabase } = await import('../utils/supabase');
                 await supabase.from('users').update({ 
                     age: newAge,
-                    preferred_map: newPreferredMap
+                    preferred_map: newPreferredMap,
+                    username: cleanUsername
                 }).eq('id', profile.id);
             } catch (err) {
                 console.error("Failed to update profile in Supabase", err);
@@ -143,6 +173,18 @@ export function SettingsPage() {
                     <hr className="border-slate-700" />
 
                     <div>
+                        <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Username</label>
+                        <input
+                            type="text"
+                            value={newUsername}
+                            onChange={(e) => setNewUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+                            className="w-full bg-slate-800 text-white rounded-lg px-4 py-3 border border-slate-700 focus:outline-none focus:border-[#00f1fe]"
+                            placeholder="Choose a unique username"
+                            minLength={3}
+                        />
+                    </div>
+
+                    <div>
                         <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Current Age</label>
                         <input
                             type="number"
@@ -164,6 +206,13 @@ export function SettingsPage() {
                             <option value="upsc">UPSC</option>
                         </select>
                     </div>
+
+                    {error && (
+                        <div className="bg-red-900/50 border border-red-500/50 text-red-200 text-sm p-3 rounded-lg text-center">
+                            {error}
+                        </div>
+                    )}
+
                     <button onClick={() => { audioSynth.playClick(); handleSave(); }} className="w-full bg-pink-600 hover:bg-pink-500 text-white font-bold py-3 rounded-xl shadow-lg transform active:scale-95 transition-all mt-4">
                         UPDATE TIMELINE
                     </button>
