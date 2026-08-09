@@ -511,18 +511,8 @@ export function PersonalityAssessment() {
                 </motion.div>
             </div>
 
-            {/* Desktop Mascot: Sidekick Column on Right Side */}
-            <div className="hidden lg:flex shrink-0 items-center justify-center pointer-events-none select-none z-20">
-                <MascotQuizGuide
-                    currentStep={step}
-                    lastAction={mascotAction}
-                    actionTimestamp={mascotActionTimestamp}
-                    isSaving={isSaving}
-                />
-            </div>
-
-            {/* Mobile Mascot: Compact Floating Companion in Top-Right Corner */}
-            <div className="flex lg:hidden fixed top-3 right-3 sm:top-6 sm:right-6 pointer-events-none select-none z-[120] opacity-95">
+            {/* Desktop Mascot: Sidekick Column on Right Side (Hidden on Mobile) */}
+            <div className="hidden md:flex shrink-0 items-center justify-center pointer-events-none select-none z-20">
                 <MascotQuizGuide
                     currentStep={step}
                     lastAction={mascotAction}

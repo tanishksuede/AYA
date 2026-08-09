@@ -22,7 +22,7 @@ export const CyberpunkAmbientBackground: React.FC<CyberpunkAmbientBackgroundProp
     isCyan = false,
 }) => {
     return (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 select-none bg-[#0d0d16]">
+        <div className="hidden md:block absolute inset-0 overflow-hidden pointer-events-none z-0 select-none bg-[#0d0d16]">
             {/* Vignette Depth Layer */}
             <div className="absolute inset-0 shadow-[inset_0_0_180px_rgba(0,0,0,0.95)] z-10" />
 

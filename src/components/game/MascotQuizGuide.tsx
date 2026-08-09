@@ -29,7 +29,17 @@ export const MascotQuizGuide: React.FC<MascotQuizGuideProps> = ({
     const [overrideMascot, setOverrideMascot] = useState<string | null>(null);
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    // Preload the 4 core lottie files into browser cache on mount
+    // Clean up timer on unmount to prevent memory leaks
+    useEffect(() => {
+        return () => {
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+                timerRef.current = null;
+            }
+        };
+    }, []);
+
+    // Preload the 4 core lottie files into browser HTTP cache on mount
     useEffect(() => {
         Object.values(MASCOT_ASSETS).forEach((assetUrl) => {
             fetch(encodeURI(assetUrl)).catch(() => {});
@@ -52,10 +62,10 @@ export const MascotQuizGuide: React.FC<MascotQuizGuideProps> = ({
                 setOverrideMascot(null);
             }, 1500);
         }
-        // Note: 'next' action does NOT trigger celebration (retains current Phase Idle)
+        // Note: 'next' action does NOT trigger any celebration (retains current Phase Idle loop)
     }, [actionTimestamp, lastAction]);
 
-    // Compute active mascot asset based on the refined state machine
+    // Compute active mascot asset based on the strict state machine
     const getActiveMascot = (): string => {
         // 1. Quiz Completion (Q9 final submission or saving)
         if (isSaving || lastAction === 'complete') {
@@ -81,7 +91,7 @@ export const MascotQuizGuide: React.FC<MascotQuizGuideProps> = ({
     const isWinner = activeMascot === MASCOT_ASSETS.WINNER;
 
     return (
-        <div className={`pointer-events-none relative flex flex-col items-center justify-center select-none ${className}`}>
+        <div className={`hidden md:flex pointer-events-none relative flex-col items-center justify-center select-none ${className}`}>
             <AnimatePresence mode="wait">
                 <motion.div
                     key={activeMascot}
@@ -93,7 +103,7 @@ export const MascotQuizGuide: React.FC<MascotQuizGuideProps> = ({
                             ? { type: 'spring', stiffness: 200, damping: 14 }
                             : { opacity: { duration: 0.3 }, scale: { duration: 0.3 } }
                     }
-                    className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-64 md:h-64 lg:w-[380px] lg:h-[380px] flex items-center justify-center drop-shadow-2xl"
+                    className="relative w-72 h-72 md:w-[350px] md:h-[350px] lg:w-[380px] lg:h-[380px] flex items-center justify-center drop-shadow-2xl"
                 >
                     {/* Glowing background aura */}
                     <div
