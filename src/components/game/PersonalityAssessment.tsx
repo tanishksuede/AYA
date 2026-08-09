@@ -10,6 +10,7 @@ import clsx from 'clsx';
 import type { PersonalityTraits, PsychologicalProfile, MotivationType, RiskAppetite, EmotionalStyle, SocialRole, PassionType, CoreValue } from '../../types/gameTypes';
 import { bgmManager } from '../../utils/bgmManager';
 import { MascotQuizGuide, type MascotAction } from './MascotQuizGuide';
+import { CyberpunkAmbientBackground } from './CyberpunkAmbientBackground';
 
 const QUESTIONS = [
     {
@@ -313,22 +314,8 @@ export function PersonalityAssessment() {
     return (
         <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center font-sans overflow-hidden transition-colors duration-1000 bg-[#0d0d16]">
             
-            {/* Clean Background Layer - Removed heavy particles and blurs */}
-            <div className={`absolute inset-0 bg-[#0d0d16] pointer-events-none transition-opacity duration-1000 z-0`}>
-                <div className="absolute inset-0 shadow-[inset_0_0_150px_rgba(0,0,0,0.9)] z-20 pointer-events-none" />
-                
-                {isViolet && (
-                    <>
-                        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(147,51,234,0.15)_0%,transparent_70%)]" />
-                    </>
-                )}
-
-                {isCyan && (
-                     <>
-                        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(0,241,254,0.1)_0%,transparent_70%)]" />
-                    </>
-                )}
-            </div>
+            {/* Cyberpunk Ambient 3D Space Fillers & Particles */}
+            <CyberpunkAmbientBackground isViolet={isViolet} isCyan={isCyan} />
 
             {/* Main Outer Layout: Side-by-Side Flex Container */}
             <div className="relative z-10 w-full max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-center h-full md:h-auto min-h-screen p-4 gap-6 lg:gap-12">
@@ -524,13 +511,22 @@ export function PersonalityAssessment() {
                 </motion.div>
             </div>
 
-            {/* Prominent Sidekick Mascot (Right Side Container) */}
+            {/* Desktop Mascot: Sidekick Column on Right Side */}
             <div className="hidden lg:flex shrink-0 items-center justify-center pointer-events-none select-none z-20">
                 <MascotQuizGuide
                     currentStep={step}
                     lastAction={mascotAction}
                     actionTimestamp={mascotActionTimestamp}
-                    hasSelection={currentSelection.length > 0}
+                    isSaving={isSaving}
+                />
+            </div>
+
+            {/* Mobile Mascot: Compact Floating Companion in Top-Right Corner */}
+            <div className="flex lg:hidden fixed top-3 right-3 sm:top-6 sm:right-6 pointer-events-none select-none z-[120] opacity-95">
+                <MascotQuizGuide
+                    currentStep={step}
+                    lastAction={mascotAction}
+                    actionTimestamp={mascotActionTimestamp}
                     isSaving={isSaving}
                 />
             </div>
