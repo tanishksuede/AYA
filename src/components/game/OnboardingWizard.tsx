@@ -451,7 +451,7 @@ export function OnboardingWizard() {
     ), []);
 
     return (
-        <div className="relative h-full w-full bg-[#0a0a0f] flex flex-col px-4 md:px-8 pt-8 pb-12 overflow-y-auto overflow-x-hidden selection:bg-[#00f1fe] selection:text-black">
+        <div className="relative min-h-screen w-full bg-[#0a0a0f] flex flex-col items-center justify-center px-4 md:px-8 pt-8 pb-12 overflow-y-auto overflow-x-hidden selection:bg-[#00f1fe] selection:text-black">
             
             {/* Background Grid Pattern */}
             <div className="absolute inset-0 z-0 opacity-20 pointer-events-none" style={{
@@ -466,58 +466,71 @@ export function OnboardingWizard() {
             {cinematicBackground}
 
             {/* Relative Form Wrapper with Pinned Absolute Side Mascot */}
-            <div className="relative z-10 w-full max-w-md mx-auto my-auto py-6">
+            <div className="relative z-10 w-full my-auto py-6 flex items-center justify-center">
                 
-                {/* Form Container */}
-                <motion.div 
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                >
-                    <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#0f0f18] text-white drop-shadow-[0_0_20px_rgba(0,241,254,0.4)] text-center mb-6 leading-tight">
-                        {isRegisterMode ? (googleAuthId ? "Link Your Account" : "Let's get to \n know you!") : "Welcome to AYA"}
-                    </h2>
-                    
-                    {!isRegisterMode && (
-                        <div className="flex flex-col gap-4 mt-6">
-                            <motion.button
-                                initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                                disabled={isLoading}
-                                onClick={handleGoogleSignIn}
-                                className="w-full py-4 bg-white text-black font-black text-xl rounded-full shadow-lg flex items-center justify-center space-x-3 transition-all hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                {isLoading ? (
-                                    <span>INITIALIZING...</span>
-                                ) : (
+                {/* 1. SIGN-IN COMPONENT ("Welcome to AYA") */}
+                {!isRegisterMode && (
+                    <div className="w-full max-w-[400px] mx-auto flex flex-col px-4">
+                        <motion.div 
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, ease: "easeOut" }}
+                        >
+                            <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#0f0f18] text-white drop-shadow-[0_0_20px_rgba(0,241,254,0.4)] text-center mb-6 leading-tight">
+                                Welcome to AYA
+                            </h2>
+                            
+                            <div className="flex flex-col gap-4 mt-6">
+                                <motion.button
+                                    initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+                                    disabled={isLoading}
+                                    onClick={handleGoogleSignIn}
+                                    className="w-full py-4 bg-white text-black font-black text-xl rounded-full shadow-lg flex items-center justify-center space-x-3 transition-all hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {isLoading ? (
+                                        <span>INITIALIZING...</span>
+                                    ) : (
+                                        <>
+                                            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-8 h-8" />
+                                            <span>SIGN IN WITH GOOGLE</span>
+                                        </>
+                                    )}
+                                </motion.button>
+
+                                {!isLoading && (
                                     <>
-                                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-8 h-8" />
-                                        <span>SIGN IN WITH GOOGLE</span>
+                                        <div className="flex items-center gap-4 my-2 opacity-50">
+                                            <div className="h-px bg-white flex-1" />
+                                            <span className="text-white text-sm font-bold uppercase tracking-widest">OR</span>
+                                            <div className="h-px bg-white flex-1" />
+                                        </div>
+
+                                        <motion.button
+                                            initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+                                            onClick={() => { audioSynth.playClick(); navigate('/game/setup'); }}
+                                            className="w-full py-4 bg-transparent border-2 border-[#2b2b38] text-white font-bold text-lg rounded-full hover:bg-white/10 transition-all shadow-lg"
+                                        >
+                                            USE MOBILE NUMBER
+                                        </motion.button>
                                     </>
                                 )}
-                            </motion.button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
 
-                            {!isLoading && (
-                                <>
-                                    <div className="flex items-center gap-4 my-2 opacity-50">
-                                        <div className="h-px bg-white flex-1" />
-                                        <span className="text-white text-sm font-bold uppercase tracking-widest">OR</span>
-                                        <div className="h-px bg-white flex-1" />
-                                    </div>
+                {/* 2. ONBOARDING FORM COMPONENT ("Let's get to know you!") */}
+                {isRegisterMode && (
+                    <div className="relative w-full max-w-[450px] mx-auto flex flex-col px-4">
+                        <motion.div 
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, ease: "easeOut" }}
+                        >
+                            <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#0f0f18] text-white drop-shadow-[0_0_20px_rgba(0,241,254,0.4)] text-center mb-6 leading-tight">
+                                {googleAuthId ? "Link Your Account" : "Let's get to \n know you!"}
+                            </h2>
 
-                                    <motion.button
-                                        initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-                                        onClick={() => { audioSynth.playClick(); navigate('/game/setup'); }}
-                                        className="w-full py-4 bg-transparent border-2 border-[#2b2b38] text-white font-bold text-lg rounded-full hover:bg-white/10 transition-all shadow-lg"
-                                    >
-                                        USE MOBILE NUMBER
-                                    </motion.button>
-                                </>
-                            )}
-                        </div>
-                    )}
-
-                    {isRegisterMode && (
-                        <>
                             {googleAuthId && (
                                 <motion.div 
                                     initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
@@ -637,30 +650,30 @@ export function OnboardingWizard() {
                                     BACK
                                 </motion.button>
                             </div>
-                        </>
-                    )}
-                </motion.div>
+                        </motion.div>
 
-                {/* Onboarding Sidekick Mascot (Pinned Absolutely to Right Side, Hidden on Mobile/Tablet) */}
-                <div className="hidden lg:block absolute left-full ml-10 lg:ml-16 top-1/2 -translate-y-1/2 w-80 lg:w-[360px] pointer-events-none select-none z-20">
-                    <div className="relative w-80 h-80 lg:w-[360px] lg:h-[360px] flex items-center justify-center drop-shadow-2xl">
-                        {/* Glowing Background Aura */}
-                        <div
-                            className={`absolute inset-4 rounded-full blur-3xl opacity-35 transition-colors duration-500 ${
-                                mascotState === 'happy' ? 'bg-amber-400 opacity-70 animate-pulse' : 'bg-purple-500 opacity-40'
-                            }`}
-                        />
+                        {/* Onboarding Sidekick Mascot (Pinned Absolutely to Right Side, Hidden on Mobile/Tablet) */}
+                        <div className="hidden lg:block absolute left-full ml-8 lg:ml-12 top-1/2 -translate-y-1/2 w-80 lg:w-[360px] pointer-events-none select-none z-20">
+                            <div className="relative w-80 h-80 lg:w-[360px] lg:h-[360px] flex items-center justify-center drop-shadow-2xl">
+                                {/* Glowing Background Aura */}
+                                <div
+                                    className={`absolute inset-4 rounded-full blur-3xl opacity-35 transition-colors duration-500 ${
+                                        mascotState === 'happy' ? 'bg-amber-400 opacity-70 animate-pulse' : 'bg-purple-500 opacity-40'
+                                    }`}
+                                />
 
-                        <DotLottieReact
-                            key={mascotState}
-                            src={encodeURI(mascotState === 'happy' ? '/assets/Macot/happy mascot.lottie' : '/assets/Macot/waving mascot.lottie')}
-                            loop
-                            autoplay
-                            style={{ width: '100%', height: '100%' }}
-                            className="w-full h-full object-contain relative z-10"
-                        />
+                                <DotLottieReact
+                                    key={mascotState}
+                                    src={encodeURI(mascotState === 'happy' ? '/assets/Macot/happy mascot.lottie' : '/assets/Macot/waving mascot.lottie')}
+                                    loop
+                                    autoplay
+                                    style={{ width: '100%', height: '100%' }}
+                                    className="w-full h-full object-contain relative z-10"
+                                />
+                            </div>
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
         </div>
     );
