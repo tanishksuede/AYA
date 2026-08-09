@@ -40,9 +40,16 @@ export const PwaHeader: FC = () => {
                     "flex items-center gap-1 sm:gap-2 truncate",
                     isCandyMode ? "text-slate-700" : "text-[#f2effb]"
                 )}>
-                    <span className="font-bold uppercase tracking-wider text-[10px] sm:text-xs truncate max-w-[50px] sm:max-w-[100px]">
-                        {profile.name || "GUEST"}
-                    </span>
+                    <div className="flex flex-col items-start truncate min-w-0 leading-tight">
+                        <span className="font-bold uppercase tracking-wider text-[10px] sm:text-xs truncate max-w-[65px] sm:max-w-[120px]">
+                            {profile.name || "GUEST"}
+                        </span>
+                        {profile.username && (
+                            <span className="text-[9px] sm:text-[10px] font-bold text-[#00f2ff] tracking-wide truncate max-w-[65px] sm:max-w-[120px]">
+                                @{profile.username}
+                            </span>
+                        )}
+                    </div>
                     <span className="text-slate-500 text-[8px] sm:text-xs">•</span>
                     <span className={clsx(
                         "text-[9px] sm:text-xs font-bold uppercase tracking-wider truncate max-w-[90px] sm:max-w-[150px]",

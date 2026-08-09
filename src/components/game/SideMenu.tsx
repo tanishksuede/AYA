@@ -68,7 +68,7 @@ export function SideMenu({
                 )}
             >
                 {/* Header with Close Button */}
-                <div className="flex justify-between items-center mb-2">
+                <div className="flex justify-between items-center mb-1">
                     <span className={clsx(
                         "text-lg font-black uppercase tracking-widest",
                         isCandyMode ? "text-pink-500" : "text-[#00f2ff]"
@@ -83,6 +83,28 @@ export function SideMenu({
                         <X size={24} />
                     </button>
                 </div>
+
+                {/* User Profile Identity Banner */}
+                {profile && (
+                    <div className={clsx(
+                        "flex flex-col items-start px-3 py-2 rounded-xl border backdrop-blur-md",
+                        isCandyMode
+                            ? "bg-pink-50/80 border-pink-200"
+                            : "bg-slate-800/50 border-[#00f2ff]/30 shadow-[0_0_10px_rgba(0,242,255,0.15)]"
+                    )}>
+                        <span className={clsx(
+                            "font-extrabold text-xs uppercase tracking-wider",
+                            isCandyMode ? "text-slate-800" : "text-white"
+                        )}>
+                            {profile.name || 'GUEST'}
+                        </span>
+                        {profile.username && (
+                            <span className="text-[11px] font-bold text-[#00f2ff] tracking-widest">
+                                @{profile.username}
+                            </span>
+                        )}
+                    </div>
+                )}
                 {/* Vibe Spinner */}
                 <div className="w-full flex justify-center origin-top mt-10">
                     <VibeSpinnerButton
