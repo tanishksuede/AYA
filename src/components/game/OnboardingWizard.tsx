@@ -451,7 +451,7 @@ export function OnboardingWizard() {
     ), []);
 
     return (
-        <div className="relative min-h-screen w-full bg-[#0a0a0f] flex flex-col items-center justify-center px-4 md:px-8 pt-8 pb-12 overflow-y-auto overflow-x-hidden selection:bg-[#00f1fe] selection:text-black">
+        <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#0a0a0f] selection:bg-[#00f1fe] selection:text-black">
             
             {/* Background Grid Pattern */}
             <div className="absolute inset-0 z-0 opacity-20 pointer-events-none" style={{
@@ -465,22 +465,23 @@ export function OnboardingWizard() {
             {/* Cinematic Background */}
             {cinematicBackground}
 
-            {/* Relative Form Wrapper with Pinned Absolute Side Mascot */}
+            {/* Main Center Content Container */}
             <div className="relative z-10 w-full my-auto py-6 flex items-center justify-center">
                 
-                {/* 1. SIGN-IN COMPONENT ("Welcome to AYA") */}
+                {/* 1. STRICT AUTH COMPONENT ("Welcome to AYA") */}
                 {!isRegisterMode && (
-                    <div className="w-full max-w-[400px] mx-auto flex flex-col px-4">
+                    <div className="relative z-10 w-full max-w-[400px] mx-auto px-6 flex flex-col items-center justify-center">
                         <motion.div 
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, ease: "easeOut" }}
+                            className="w-full text-center"
                         >
                             <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#0f0f18] text-white drop-shadow-[0_0_20px_rgba(0,241,254,0.4)] text-center mb-6 leading-tight">
                                 Welcome to AYA
                             </h2>
                             
-                            <div className="flex flex-col gap-4 mt-6">
+                            <div className="flex flex-col gap-4 mt-6 w-full">
                                 <motion.button
                                     initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
                                     disabled={isLoading}
@@ -499,7 +500,7 @@ export function OnboardingWizard() {
 
                                 {!isLoading && (
                                     <>
-                                        <div className="flex items-center gap-4 my-2 opacity-50">
+                                        <div className="flex items-center gap-4 my-2 opacity-50 w-full">
                                             <div className="h-px bg-white flex-1" />
                                             <span className="text-white text-sm font-bold uppercase tracking-widest">OR</span>
                                             <div className="h-px bg-white flex-1" />
@@ -516,16 +517,31 @@ export function OnboardingWizard() {
                                 )}
                             </div>
                         </motion.div>
+
+                        {/* Auth Greeting Mascot (Pinned Absolutely to Right Side on Desktop) */}
+                        <div className="hidden lg:block absolute left-full ml-8 lg:ml-12 top-1/2 -translate-y-1/2 w-80 lg:w-[360px] pointer-events-none select-none z-20">
+                            <div className="relative w-80 h-80 lg:w-[360px] lg:h-[360px] flex items-center justify-center drop-shadow-2xl">
+                                <div className="absolute inset-4 rounded-full blur-3xl opacity-35 bg-purple-500 transition-colors duration-500" />
+                                <DotLottieReact
+                                    src={encodeURI('/assets/Macot/waving mascot.lottie')}
+                                    loop
+                                    autoplay
+                                    style={{ width: '100%', height: '100%' }}
+                                    className="w-full h-full object-contain relative z-10"
+                                />
+                            </div>
+                        </div>
                     </div>
                 )}
 
-                {/* 2. ONBOARDING FORM COMPONENT ("Let's get to know you!") */}
+                {/* 2. STRICT ONBOARDING FORM COMPONENT ("Let's get to know you!") */}
                 {isRegisterMode && (
-                    <div className="relative w-full max-w-[450px] mx-auto flex flex-col px-4">
+                    <div className="relative z-10 w-full max-w-[400px] mx-auto px-6 flex flex-col items-center justify-center">
                         <motion.div 
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, ease: "easeOut" }}
+                            className="w-full"
                         >
                             <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#0f0f18] text-white drop-shadow-[0_0_20px_rgba(0,241,254,0.4)] text-center mb-6 leading-tight">
                                 {googleAuthId ? "Link Your Account" : "Let's get to \n know you!"}
@@ -534,7 +550,7 @@ export function OnboardingWizard() {
                             {googleAuthId && (
                                 <motion.div 
                                     initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                                    className="mb-6 p-4 bg-emerald-900/40 text-emerald-100 rounded-3xl border border-emerald-500/50 backdrop-blur-md text-center shadow-xl relative overflow-hidden"
+                                    className="mb-6 p-4 bg-emerald-900/40 text-emerald-100 rounded-3xl border border-emerald-500/50 backdrop-blur-md text-center shadow-xl relative overflow-hidden w-full"
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent pointer-events-none" />
                                     <h3 className="font-black text-xl text-emerald-400 mb-1">Google Authenticated!</h3>
@@ -542,10 +558,10 @@ export function OnboardingWizard() {
                                 </motion.div>
                             )}
 
-                            <div className="space-y-4">
+                            <div className="space-y-4 w-full">
                                 <motion.div 
                                     initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                                    className="glass-panel p-6 rounded-3xl relative"
+                                    className="glass-panel p-6 rounded-3xl relative w-full"
                                 >
                                     <label className="block text-xs font-bold text-[#f2effb] mb-2 uppercase tracking-wider">Identity</label>
                                     <input
@@ -560,14 +576,14 @@ export function OnboardingWizard() {
 
                                 <motion.div 
                                     initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-                                    className="glass-panel p-6 rounded-3xl relative flex flex-col items-center"
+                                    className="glass-panel p-6 rounded-3xl relative flex flex-col items-center w-full"
                                 >
                                     <AgeSelector value={age} onChange={setAge} />
                                 </motion.div>
 
                                 <motion.div 
                                     initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-                                    className="glass-panel p-6 rounded-3xl relative flex flex-col items-center"
+                                    className="glass-panel p-6 rounded-3xl relative flex flex-col items-center w-full"
                                 >
                                     <label className="block text-xs font-bold text-[#f2effb] mb-4 uppercase tracking-wider">Preferred Language</label>
                                     <div className="flex gap-4 w-full">
@@ -588,7 +604,7 @@ export function OnboardingWizard() {
 
                                 <motion.div 
                                     initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
-                                    className="glass-panel p-6 rounded-3xl relative"
+                                    className="glass-panel p-6 rounded-3xl relative w-full"
                                 >
                                     <label className="block text-xs font-bold text-[#f2effb] mb-2 uppercase tracking-wider">Access Code (Mobile)</label>
                                     <input
@@ -609,14 +625,14 @@ export function OnboardingWizard() {
                                 {error && (
                                     <motion.div 
                                         initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
-                                        className="mt-4 p-4 bg-red-900/40 text-red-100 rounded-xl border border-red-500/50 backdrop-blur-md text-center font-bold"
+                                        className="mt-4 p-4 bg-red-900/40 text-red-100 rounded-xl border border-red-500/50 backdrop-blur-md text-center font-bold w-full"
                                     >
                                         <p>{error}</p>
                                     </motion.div>
                                 )}
                             </AnimatePresence>
 
-                            <div className="flex flex-col gap-4 mt-8">
+                            <div className="flex flex-col gap-4 mt-8 w-full">
                                 <motion.button
                                     initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }}
                                     disabled={!mobile.trim() || isLoading}
