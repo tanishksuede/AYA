@@ -272,7 +272,6 @@ export function PersonalityAssessment() {
             } catch (err) {
                 console.error("Failed to save to Supabase", err);
             } finally {
-                setIsSaving(false);
                 if (audioSynth.playLevelComplete) audioSynth.playLevelComplete();
 
                 const finalProfile: PsychologicalProfile = {
@@ -287,8 +286,12 @@ export function PersonalityAssessment() {
                     interest_domain: newProfile.interest_domain
                 };
 
-                completeAssessment(newTraits, finalProfile);
-                navigate('/game');
+                // 2500ms delay so Winner Mascot animation plays fully before navigation
+                setTimeout(() => {
+                    setIsSaving(false);
+                    completeAssessment(newTraits, finalProfile);
+                    navigate('/game');
+                }, 2500);
             }
         }
     };

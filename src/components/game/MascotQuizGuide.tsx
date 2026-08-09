@@ -50,6 +50,7 @@ export const MascotQuizGuide: React.FC<MascotQuizGuideProps> = ({
     useEffect(() => {
         if (actionTimestamp <= 0) return;
 
+        // Clean up previous timer immediately for rapid-click safety
         if (timerRef.current) {
             clearTimeout(timerRef.current);
             timerRef.current = null;
@@ -60,9 +61,12 @@ export const MascotQuizGuide: React.FC<MascotQuizGuideProps> = ({
             setOverrideMascot(MASCOT_ASSETS.HAPPY);
             timerRef.current = setTimeout(() => {
                 setOverrideMascot(null);
+                timerRef.current = null;
             }, 1500);
+        } else if (lastAction === 'next') {
+            // Clicking NEXT resets override immediately so mascot stays in current Phase Idle loop
+            setOverrideMascot(null);
         }
-        // Note: 'next' action does NOT trigger any celebration (retains current Phase Idle loop)
     }, [actionTimestamp, lastAction]);
 
     // Compute active mascot asset based on the strict state machine

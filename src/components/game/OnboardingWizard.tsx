@@ -7,6 +7,7 @@ import { saveSession } from '../../utils/session';
 import { supabase } from '../../utils/supabase';
 
 import { motion, AnimatePresence } from 'framer-motion';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 const AgeSelector = ({ value, onChange }: { value: number; onChange: (val: number) => void }) => {
     const MIN = 13;
@@ -183,6 +184,15 @@ export function OnboardingWizard() {
         return () => subscription.unsubscribe();
     }, [isRegisterMode]);
 
+    // Mascot Animation State for Onboarding Form
+    const [mascotState, setMascotState] = useState<'waving' | 'happy'>('waving');
+
+    // Preload onboarding mascot dotlotties
+    useEffect(() => {
+        fetch(encodeURI('/assets/Macot/waving mascot.lottie')).catch(() => {});
+        fetch(encodeURI('/assets/Macot/happy mascot.lottie')).catch(() => {});
+    }, []);
+
     const performLogin = async (userData: any, gId: string | null, isExisting: boolean) => {
         let userId = userData.id;
         let existingProfile: any = null;
@@ -249,36 +259,38 @@ export function OnboardingWizard() {
             levelScores: { ...state.levelScores, ...dbScores }
         }));
 
-        // Generate a fresh profile or load existing
-        setProfile({
-            id: userId, 
-            mobile: userData.mobile, 
-            name: userData.name, 
-            age: userData.age,
-            access_type: userData.access_type || 'open',
-            access_start_date: userData.access_start_date,
-            preferred_map: userData.preferred_map || 'solar',
-            interests: [], 
-            roleModels: [],
-            traits: existingProfile ? {
-                discipline: existingProfile.trait_discipline || 50,
-                resilience: existingProfile.trait_resilience || 50,
-                risk: existingProfile.trait_risk_taker || 50,
-                leadership: existingProfile.trait_ambitious || 50,
-                creativity: existingProfile.trait_creative || 50,
-                empathy: existingProfile.trait_social || 50,
-                vision: existingProfile.trait_vision || 50
-            } : { discipline: 50, resilience: 50, risk: 50, leadership: 50, creativity: 50, empathy: 50, vision: 50 },
-            assessmentCompleted: !!existingProfile || (userData.total_xp > 0 || userData.stories_completed > 0 || userData.level > 1),
-            total_xp: userData.total_xp || 0,
-            level: userData.level || 1,
-            stories_completed: userData.stories_completed || 0,
-            current_streak: userData.current_streak || 0,
-            longest_streak: userData.longest_streak || 0,
-            last_active_date: userData.last_active_date || new Date().toISOString().split('T')[0],
-            daily_challenge_completed: userData.daily_challenge_completed || false,
-            isAdmin
-        });
+        // Delay setProfile & transition by 1500ms so user sees the Happy Mascot reaction!
+        setTimeout(() => {
+            setProfile({
+                id: userId, 
+                mobile: userData.mobile, 
+                name: userData.name, 
+                age: userData.age,
+                access_type: userData.access_type || 'open',
+                access_start_date: userData.access_start_date,
+                preferred_map: userData.preferred_map || 'solar',
+                interests: [], 
+                roleModels: [],
+                traits: existingProfile ? {
+                    discipline: existingProfile.trait_discipline || 50,
+                    resilience: existingProfile.trait_resilience || 50,
+                    risk: existingProfile.trait_risk_taker || 50,
+                    leadership: existingProfile.trait_ambitious || 50,
+                    creativity: existingProfile.trait_creative || 50,
+                    empathy: existingProfile.trait_social || 50,
+                    vision: existingProfile.trait_vision || 50
+                } : { discipline: 50, resilience: 50, risk: 50, leadership: 50, creativity: 50, empathy: 50, vision: 50 },
+                assessmentCompleted: !!existingProfile || (userData.total_xp > 0 || userData.stories_completed > 0 || userData.level > 1),
+                total_xp: userData.total_xp || 0,
+                level: userData.level || 1,
+                stories_completed: userData.stories_completed || 0,
+                current_streak: userData.current_streak || 0,
+                longest_streak: userData.longest_streak || 0,
+                last_active_date: userData.last_active_date || new Date().toISOString().split('T')[0],
+                daily_challenge_completed: userData.daily_challenge_completed || false,
+                isAdmin
+            });
+        }, 1500);
     };
 
     const handleComplete = async () => {
@@ -287,6 +299,7 @@ export function OnboardingWizard() {
         if (isSubmitting.current) return;
         isSubmitting.current = true;
         
+        setMascotState('happy');
         useUserStore.getState().setAppLanguage(prefLang);
         setIsLoading(true);
         setError("");
@@ -452,178 +465,204 @@ export function OnboardingWizard() {
             {/* Cinematic Background */}
             {cinematicBackground}
 
-            <div className="relative z-10 mx-auto w-full" style={{ maxWidth: '450px' }}>
-                <motion.div 
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                >
-                    <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#0f0f18] text-white drop-shadow-[0_0_20px_rgba(0,241,254,0.4)] text-center mb-6 leading-tight">
-                        {isRegisterMode ? (googleAuthId ? "Link Your Account" : "Let's get to \n know you!") : "Welcome to AYA"}
-                    </h2>
-                    
-                    {!isRegisterMode && (
-                        <div className="flex flex-col gap-4 mt-6">
-                            <motion.button
-                                initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                                disabled={isLoading}
-                                onClick={handleGoogleSignIn}
-                                className="w-full py-4 bg-white text-black font-black text-xl rounded-full shadow-lg flex items-center justify-center space-x-3 transition-all hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                {isLoading ? (
-                                    <span>INITIALIZING...</span>
-                                ) : (
+            {/* Main Outer Layout: Side-by-Side Flex Container */}
+            <div className="relative z-10 mx-auto w-full max-w-6xl flex flex-col md:flex-row items-center justify-center gap-8 lg:gap-16 my-auto py-6">
+                
+                {/* Form Container */}
+                <div className="w-full max-w-[450px] shrink-0">
+                    <motion.div 
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, ease: "easeOut" }}
+                    >
+                        <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#0f0f18] text-white drop-shadow-[0_0_20px_rgba(0,241,254,0.4)] text-center mb-6 leading-tight">
+                            {isRegisterMode ? (googleAuthId ? "Link Your Account" : "Let's get to \n know you!") : "Welcome to AYA"}
+                        </h2>
+                        
+                        {!isRegisterMode && (
+                            <div className="flex flex-col gap-4 mt-6">
+                                <motion.button
+                                    initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+                                    disabled={isLoading}
+                                    onClick={handleGoogleSignIn}
+                                    className="w-full py-4 bg-white text-black font-black text-xl rounded-full shadow-lg flex items-center justify-center space-x-3 transition-all hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {isLoading ? (
+                                        <span>INITIALIZING...</span>
+                                    ) : (
+                                        <>
+                                            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-8 h-8" />
+                                            <span>SIGN IN WITH GOOGLE</span>
+                                        </>
+                                    )}
+                                </motion.button>
+
+                                {!isLoading && (
                                     <>
-                                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-8 h-8" />
-                                        <span>SIGN IN WITH GOOGLE</span>
+                                        <div className="flex items-center gap-4 my-2 opacity-50">
+                                            <div className="h-px bg-white flex-1" />
+                                            <span className="text-white text-sm font-bold uppercase tracking-widest">OR</span>
+                                            <div className="h-px bg-white flex-1" />
+                                        </div>
+
+                                        <motion.button
+                                            initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+                                            onClick={() => { audioSynth.playClick(); navigate('/game/setup'); }}
+                                            className="w-full py-4 bg-transparent border-2 border-[#2b2b38] text-white font-bold text-lg rounded-full hover:bg-white/10 transition-all shadow-lg"
+                                        >
+                                            USE MOBILE NUMBER
+                                        </motion.button>
                                     </>
                                 )}
-                            </motion.button>
-
-                            {!isLoading && (
-                                <>
-                                    <div className="flex items-center gap-4 my-2 opacity-50">
-                                        <div className="h-px bg-white flex-1" />
-                                        <span className="text-white text-sm font-bold uppercase tracking-widest">OR</span>
-                                        <div className="h-px bg-white flex-1" />
-                                    </div>
-
-                                    <motion.button
-                                        initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-                                        onClick={() => { audioSynth.playClick(); navigate('/game/setup'); }}
-                                        className="w-full py-4 bg-transparent border-2 border-[#2b2b38] text-white font-bold text-lg rounded-full hover:bg-white/10 transition-all shadow-lg"
-                                    >
-                                        USE MOBILE NUMBER
-                                    </motion.button>
-                                </>
-                            )}
-                        </div>
-                    )}
-
-                    {isRegisterMode && (
-                        <>
-                            {googleAuthId && (
-                                <motion.div 
-                                    initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                                    className="mb-6 p-4 bg-emerald-900/40 text-emerald-100 rounded-3xl border border-emerald-500/50 backdrop-blur-md text-center shadow-xl relative overflow-hidden"
-                                >
-                                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent pointer-events-none" />
-                                    <h3 className="font-black text-xl text-emerald-400 mb-1">Google Authenticated!</h3>
-                                    <p className="text-xs font-medium">To restore progress, enter your mobile number. Or enter a new one to start fresh.</p>
-                                </motion.div>
-                            )}
-
-                            <div className="space-y-4">
-                                <motion.div 
-                                    initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                                    className="glass-panel p-6 rounded-3xl relative"
-                                >
-                                    <label className="block text-xs font-bold text-[#f2effb] mb-2 uppercase tracking-wider">Identity</label>
-                                    <input
-                                        type="text"
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
-                                        className={`${baseInputClasses} py-3 px-4 focus:ring-4 focus:ring-[#9333ea]/30 focus:border-[#9333ea] focus:shadow-[0_0_20px_rgba(147,51,234,0.3)]`}
-                                        placeholder="Enter your full name"
-                                        disabled={isLoading}
-                                    />
-                                </motion.div>
-
-                                <motion.div 
-                                    initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-                                    className="glass-panel p-6 rounded-3xl relative flex flex-col items-center"
-                                >
-                                    <AgeSelector value={age} onChange={setAge} />
-                                </motion.div>
-
-                                <motion.div 
-                                    initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-                                    className="glass-panel p-6 rounded-3xl relative flex flex-col items-center"
-                                >
-                                    <label className="block text-xs font-bold text-[#f2effb] mb-4 uppercase tracking-wider">Preferred Language</label>
-                                    <div className="flex gap-4 w-full">
-                                        <button 
-                                            onClick={() => { audioSynth.playClick(); setPrefLang('en'); }}
-                                            className={`flex-1 py-3 rounded-2xl font-bold transition-all border-2 ${prefLang === 'en' ? 'bg-[#00f1fe] text-[#004145] border-[#00f1fe] shadow-[0_0_15px_rgba(0,241,254,0.4)]' : 'bg-black/40 text-[#acaab5] border-[#2b2b38] hover:border-[#00f1fe]/50 hover:text-white'}`}
-                                        >
-                                            English
-                                        </button>
-                                        <button 
-                                            onClick={() => { audioSynth.playClick(); setPrefLang('hi'); }}
-                                            className={`flex-1 py-3 rounded-2xl font-bold transition-all border-2 ${prefLang === 'hi' ? 'bg-[#00f1fe] text-[#004145] border-[#00f1fe] shadow-[0_0_15px_rgba(0,241,254,0.4)]' : 'bg-black/40 text-[#acaab5] border-[#2b2b38] hover:border-[#00f1fe]/50 hover:text-white'}`}
-                                        >
-                                            हिंदी (Hindi)
-                                        </button>
-                                    </div>
-                                </motion.div>
-
-                                <motion.div 
-                                    initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
-                                    className="glass-panel p-6 rounded-3xl relative"
-                                >
-                                    <label className="block text-xs font-bold text-[#f2effb] mb-2 uppercase tracking-wider">Access Code (Mobile)</label>
-                                    <input
-                                        type="tel"
-                                        inputMode="numeric"
-                                        pattern="[0-9]*"
-                                        autoComplete="tel"
-                                        value={mobile}
-                                        onChange={(e) => setMobile(e.target.value)}
-                                        className={`${baseInputClasses} py-3 px-4 focus:ring-4 focus:ring-[#00f1fe]/30 focus:border-[#00f1fe] focus:shadow-[0_0_20px_rgba(0,241,254,0.3)]`}
-                                        placeholder="E.g. 9876543210"
-                                        disabled={isLoading}
-                                    />
-                                </motion.div>
                             </div>
+                        )}
 
-                            <AnimatePresence>
-                                {error && (
+                        {isRegisterMode && (
+                            <>
+                                {googleAuthId && (
                                     <motion.div 
-                                        initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
-                                        className="mt-4 p-4 bg-red-900/40 text-red-100 rounded-xl border border-red-500/50 backdrop-blur-md text-center font-bold"
+                                        initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                                        className="mb-6 p-4 bg-emerald-900/40 text-emerald-100 rounded-3xl border border-emerald-500/50 backdrop-blur-md text-center shadow-xl relative overflow-hidden"
                                     >
-                                        <p>{error}</p>
+                                        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent pointer-events-none" />
+                                        <h3 className="font-black text-xl text-emerald-400 mb-1">Google Authenticated!</h3>
+                                        <p className="text-xs font-medium">To restore progress, enter your mobile number. Or enter a new one to start fresh.</p>
                                     </motion.div>
                                 )}
-                            </AnimatePresence>
 
-                            <div className="flex flex-col gap-4 mt-8">
-                                <motion.button
-                                    initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }}
-                                    disabled={!mobile.trim() || isLoading}
-                                    onClick={handleComplete}
-                                    className="w-full py-4 bg-[#00f1fe] text-[#004145] font-black text-xl rounded-full shadow-[0_0_30px_rgba(0,241,254,0.4)] flex items-center justify-center space-x-2 relative group overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#99f7ff] transition-all"
-                                >
+                                <div className="space-y-4">
                                     <motion.div 
-                                        className="absolute inset-0 bg-white"
-                                        animate={{ opacity: [0, 0.4, 0] }}
-                                        transition={{ duration: 2, repeat: Infinity }}
-                                    />
-                                    <span className="relative z-10">{isLoading ? 'INITIALIZING...' : (sessionStorage.getItem('aya_temp_existing_user') === 'true' ? 'CONFIRM & ENTER GAME' : (googleAuthId ? 'LINK ACCOUNT' : 'START MY JOURNEY'))}</span>
-                                    {!isLoading && <Check size={24} className="relative z-10 stroke-[4]" />}
-                                </motion.button>
-                                
-                                <motion.button
-                                    initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9 }}
-                                    disabled={isLoading}
-                                    onClick={() => { 
-                                        audioSynth.playClick(); 
-                                        sessionStorage.removeItem('aya_temp_google_id');
-                                        sessionStorage.removeItem('aya_temp_google_name');
-                                        sessionStorage.removeItem('aya_temp_google_age');
-                                        sessionStorage.removeItem('aya_temp_google_mobile');
-                                        sessionStorage.removeItem('aya_temp_existing_user');
-                                        sessionStorage.removeItem('aya_temp_user_data');
-                                        navigate('/game/welcome'); 
-                                    }}
-                                    className="w-full py-2 bg-transparent text-white/70 font-bold text-sm rounded-full transition-all hover:text-white mt-1"
-                                >
-                                    BACK
-                                </motion.button>
-                            </div>
-                        </>
-                    )}
-                </motion.div>
+                                        initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+                                        className="glass-panel p-6 rounded-3xl relative"
+                                    >
+                                        <label className="block text-xs font-bold text-[#f2effb] mb-2 uppercase tracking-wider">Identity</label>
+                                        <input
+                                            type="text"
+                                            value={name}
+                                            onChange={(e) => setName(e.target.value)}
+                                            className={`${baseInputClasses} py-3 px-4 focus:ring-4 focus:ring-[#9333ea]/30 focus:border-[#9333ea] focus:shadow-[0_0_20px_rgba(147,51,234,0.3)]`}
+                                            placeholder="Enter your full name"
+                                            disabled={isLoading}
+                                        />
+                                    </motion.div>
+
+                                    <motion.div 
+                                        initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+                                        className="glass-panel p-6 rounded-3xl relative flex flex-col items-center"
+                                    >
+                                        <AgeSelector value={age} onChange={setAge} />
+                                    </motion.div>
+
+                                    <motion.div 
+                                        initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+                                        className="glass-panel p-6 rounded-3xl relative flex flex-col items-center"
+                                    >
+                                        <label className="block text-xs font-bold text-[#f2effb] mb-4 uppercase tracking-wider">Preferred Language</label>
+                                        <div className="flex gap-4 w-full">
+                                            <button 
+                                                onClick={() => { audioSynth.playClick(); setPrefLang('en'); }}
+                                                className={`flex-1 py-3 rounded-2xl font-bold transition-all border-2 ${prefLang === 'en' ? 'bg-[#00f1fe] text-[#004145] border-[#00f1fe] shadow-[0_0_15px_rgba(0,241,254,0.4)]' : 'bg-black/40 text-[#acaab5] border-[#2b2b38] hover:border-[#00f1fe]/50 hover:text-white'}`}
+                                            >
+                                                English
+                                            </button>
+                                            <button 
+                                                onClick={() => { audioSynth.playClick(); setPrefLang('hi'); }}
+                                                className={`flex-1 py-3 rounded-2xl font-bold transition-all border-2 ${prefLang === 'hi' ? 'bg-[#00f1fe] text-[#004145] border-[#00f1fe] shadow-[0_0_15px_rgba(0,241,254,0.4)]' : 'bg-black/40 text-[#acaab5] border-[#2b2b38] hover:border-[#00f1fe]/50 hover:text-white'}`}
+                                            >
+                                                हिंदी (Hindi)
+                                            </button>
+                                        </div>
+                                    </motion.div>
+
+                                    <motion.div 
+                                        initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
+                                        className="glass-panel p-6 rounded-3xl relative"
+                                    >
+                                        <label className="block text-xs font-bold text-[#f2effb] mb-2 uppercase tracking-wider">Access Code (Mobile)</label>
+                                        <input
+                                            type="tel"
+                                            inputMode="numeric"
+                                            pattern="[0-9]*"
+                                            autoComplete="tel"
+                                            value={mobile}
+                                            onChange={(e) => setMobile(e.target.value)}
+                                            className={`${baseInputClasses} py-3 px-4 focus:ring-4 focus:ring-[#00f1fe]/30 focus:border-[#00f1fe] focus:shadow-[0_0_20px_rgba(0,241,254,0.3)]`}
+                                            placeholder="E.g. 9876543210"
+                                            disabled={isLoading}
+                                        />
+                                    </motion.div>
+                                </div>
+
+                                <AnimatePresence>
+                                    {error && (
+                                        <motion.div 
+                                            initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
+                                            className="mt-4 p-4 bg-red-900/40 text-red-100 rounded-xl border border-red-500/50 backdrop-blur-md text-center font-bold"
+                                        >
+                                            <p>{error}</p>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+
+                                <div className="flex flex-col gap-4 mt-8">
+                                    <motion.button
+                                        initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }}
+                                        disabled={!mobile.trim() || isLoading}
+                                        onClick={handleComplete}
+                                        className="w-full py-4 bg-[#00f1fe] text-[#004145] font-black text-xl rounded-full shadow-[0_0_30px_rgba(0,241,254,0.4)] flex items-center justify-center space-x-2 relative group overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#99f7ff] transition-all"
+                                    >
+                                        <motion.div 
+                                            className="absolute inset-0 bg-white"
+                                            animate={{ opacity: [0, 0.4, 0] }}
+                                            transition={{ duration: 2, repeat: Infinity }}
+                                        />
+                                        <span className="relative z-10">{isLoading ? 'INITIALIZING...' : (sessionStorage.getItem('aya_temp_existing_user') === 'true' ? 'CONFIRM & ENTER GAME' : (googleAuthId ? 'LINK ACCOUNT' : 'START MY JOURNEY'))}</span>
+                                        {!isLoading && <Check size={24} className="relative z-10 stroke-[4]" />}
+                                    </motion.button>
+                                    
+                                    <motion.button
+                                        initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9 }}
+                                        disabled={isLoading}
+                                        onClick={() => { 
+                                            audioSynth.playClick(); 
+                                            sessionStorage.removeItem('aya_temp_google_id');
+                                            sessionStorage.removeItem('aya_temp_google_name');
+                                            sessionStorage.removeItem('aya_temp_google_age');
+                                            sessionStorage.removeItem('aya_temp_google_mobile');
+                                            sessionStorage.removeItem('aya_temp_existing_user');
+                                            sessionStorage.removeItem('aya_temp_user_data');
+                                            navigate('/game/welcome'); 
+                                        }}
+                                        className="w-full py-2 bg-transparent text-white/70 font-bold text-sm rounded-full transition-all hover:text-white mt-1"
+                                    >
+                                        BACK
+                                    </motion.button>
+                                </div>
+                            </>
+                        )}
+                    </motion.div>
+                </div>
+
+                {/* Onboarding Sidekick Mascot Container (Hidden on Mobile) */}
+                <div className="hidden md:flex flex-col items-center justify-center shrink-0 pointer-events-none select-none z-20">
+                    <div className="relative w-72 h-72 md:w-80 md:h-80 lg:w-[360px] lg:h-[360px] flex items-center justify-center drop-shadow-2xl">
+                        {/* Glowing Background Aura */}
+                        <div
+                            className={`absolute inset-4 rounded-full blur-3xl opacity-35 transition-colors duration-500 ${
+                                mascotState === 'happy' ? 'bg-amber-400 opacity-70 animate-pulse' : 'bg-purple-500 opacity-40'
+                            }`}
+                        />
+
+                        <DotLottieReact
+                            key={mascotState}
+                            src={encodeURI(mascotState === 'happy' ? '/assets/Macot/happy mascot.lottie' : '/assets/Macot/waving mascot.lottie')}
+                            loop
+                            autoplay
+                            style={{ width: '100%', height: '100%' }}
+                            className="w-full h-full object-contain relative z-10"
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     );
