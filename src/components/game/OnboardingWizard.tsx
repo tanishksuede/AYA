@@ -1,12 +1,10 @@
-﻿import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useUserStore } from '../../store/userStore';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { audioManager as audioSynth } from "../../utils/audioManager";
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { saveSession } from '../../utils/session';
 import { supabase } from '../../utils/supabase';
-import { useUsernameAvailability } from '../../hooks/useUsernameAvailability';
-import { UsernameField } from './UsernameField';
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
@@ -79,24 +77,13 @@ export function OnboardingWizard() {
     const [name, setName] = useState("");
     const [age, setAge] = useState<number>(20);
     const [mobile, setMobile] = useState("");
+    const [username, setUsername] = useState("");
     const [prefLang, setPrefLang] = useState<'en' | 'hi'>('en');
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
-    const [username, setUsername] = useState("");
     
     // Google Auth State
     const [googleAuthId, setGoogleAuthId] = useState<string | null>(null);
-    const [existingUserForSetup, setExistingUserForSetup] = useState<any>(null);
-
-    const isUsernameOnly = isRegisterMode && !!existingUserForSetup;
-    const isExistingGoogleConfirm = sessionStorage.getItem('aya_temp_existing_user') === 'true';
-    const needsUsername = isUsernameOnly || (isRegisterMode && !isExistingGoogleConfirm);
-
-    const usernameAvailability = useUsernameAvailability(
-        username,
-        existingUserForSetup?.id || null
-    );
-    const isUsernameReady = usernameAvailability.status === 'available';
 
     const isSubmitting = useRef(false);
 
@@ -107,28 +94,13 @@ export function OnboardingWizard() {
             const tempGoogleName = sessionStorage.getItem('aya_temp_google_name');
             const tempGoogleAge = sessionStorage.getItem('aya_temp_google_age');
             const tempGoogleMobile = sessionStorage.getItem('aya_temp_google_mobile');
-            const tempUsernameOnly = sessionStorage.getItem('aya_temp_username_only') === 'true';
-            const tempUserDataRaw = sessionStorage.getItem('aya_temp_user_data');
-
+            const tempGoogleUsername = sessionStorage.getItem('aya_temp_google_username');
             if (tempGoogleId) {
                 setGoogleAuthId(tempGoogleId);
                 setName(tempGoogleName || "");
                 if (tempGoogleAge) setAge(Number(tempGoogleAge));
                 if (tempGoogleMobile) setMobile(tempGoogleMobile);
-            }
-
-            if (tempUsernameOnly && tempUserDataRaw) {
-                try {
-                    const uData = JSON.parse(tempUserDataRaw);
-                    setExistingUserForSetup(uData);
-                    if (uData.name) setName(uData.name);
-                    if (uData.age) setAge(Number(uData.age));
-                    if (uData.mobile) setMobile(uData.mobile);
-                } catch (e) {
-                    console.error("Failed to parse existing user data for username setup", e);
-                }
-            } else {
-                setExistingUserForSetup(null);
+                if (tempGoogleUsername) setUsername(tempGoogleUsername);
             }
             setIsLoading(false);
         }
@@ -184,22 +156,14 @@ export function OnboardingWizard() {
                     }
 
                     if (existingUser) {
-                        if (existingUser.username && existingUser.username.trim() !== '') {
-                            await performLogin(existingUser, googleId, true);
-                            return;
-                        }
-                        sessionStorage.setItem('aya_temp_google_id', googleId);
-                        sessionStorage.setItem('aya_temp_existing_user', 'true');
-                        sessionStorage.setItem('aya_temp_user_data', JSON.stringify(existingUser));
-                        sessionStorage.setItem('aya_temp_username_only', 'true');
-                        navigate('/game/setup');
+                        // EXISTING USER: Directly log them in!
+                        await performLogin(existingUser, googleId, true);
                         return;
                     } else {
                         // NEW USER: Redirect to setup page
                         sessionStorage.setItem('aya_temp_google_id', googleId);
                         sessionStorage.setItem('aya_temp_google_name', session.user.user_metadata.full_name || "");
                         sessionStorage.setItem('aya_temp_existing_user', 'false');
-                        sessionStorage.removeItem('aya_temp_username_only');
                         navigate('/game/setup');
                         return;
                     }
@@ -269,7 +233,7 @@ export function OnboardingWizard() {
         }
 
         // Persist session to localStorage + sessionStorage
-        saveSession({ id: userId, mobile: userData.mobile, name: userData.name, age: userData.age });
+        saveSession({ id: userId, mobile: userData.mobile, name: userData.name, age: userData.age, username: userData.username });
 
         // Extract level_scores from userData if they exist
         const dbScores: Record<string, number> = {};
@@ -301,15 +265,15 @@ export function OnboardingWizard() {
         // Delay setProfile & transition by 1500ms so user sees the Happy Mascot reaction!
         setTimeout(() => {
             setProfile({
-                id: userId,
-                mobile: userData.mobile,
-                username: userData.username ?? null,
-                name: userData.name,
+                id: userId, 
+                mobile: userData.mobile, 
+                name: userData.name, 
+                username: userData.username,
                 age: userData.age,
                 access_type: userData.access_type || 'open',
                 access_start_date: userData.access_start_date,
                 preferred_map: userData.preferred_map || 'solar',
-                interests: [],
+                interests: [], 
                 roleModels: [],
                 traits: existingProfile ? {
                     discipline: existingProfile.trait_discipline || 50,
@@ -319,32 +283,15 @@ export function OnboardingWizard() {
                     creativity: existingProfile.trait_creative || 50,
                     empathy: existingProfile.trait_social || 50,
                     vision: existingProfile.trait_vision || 50
-                } : {
-                    discipline: 50,
-                    resilience: 50,
-                    risk: 50,
-                    leadership: 50,
-                    creativity: 50,
-                    empathy: 50,
-                    vision: 50
-                },
-                assessmentCompleted:
-                    !!existingProfile ||
-                    (
-                        userData.total_xp > 0 ||
-                        userData.stories_completed > 0 ||
-                        userData.level > 1
-                    ),
+                } : { discipline: 50, resilience: 50, risk: 50, leadership: 50, creativity: 50, empathy: 50, vision: 50 },
+                assessmentCompleted: !!existingProfile || (userData.total_xp > 0 || userData.stories_completed > 0 || userData.level > 1),
                 total_xp: userData.total_xp || 0,
                 level: userData.level || 1,
                 stories_completed: userData.stories_completed || 0,
                 current_streak: userData.current_streak || 0,
                 longest_streak: userData.longest_streak || 0,
-                last_active_date:
-                    userData.last_active_date ||
-                    new Date().toISOString().split('T')[0],
-                daily_challenge_completed:
-                    userData.daily_challenge_completed || false,
+                last_active_date: userData.last_active_date || new Date().toISOString().split('T')[0],
+                daily_challenge_completed: userData.daily_challenge_completed || false,
                 isAdmin
             });
         }, 1500);
@@ -352,6 +299,7 @@ export function OnboardingWizard() {
 
     const handleComplete = async () => {
         audioSynth.playClick();
+        if (!mobile.trim() || age < 13) return;
         if (isSubmitting.current) return;
         isSubmitting.current = true;
         
@@ -360,75 +308,52 @@ export function OnboardingWizard() {
         setIsLoading(true);
         setError("");
 
+        const cleanMobile = mobile.trim().replace(/\s+/g, '');
+        const cleanUsername = username.trim();
+
+        if (isRegisterMode) {
+                if (!name.trim() || !cleanMobile || !cleanUsername) {
+                    setIsLoading(false);
+                    isSubmitting.current = false;
+                    setError("Please fill in all required fields (Name, Username, Mobile).");
+                    return;
+                }
+                if (cleanUsername.length < 3) {
+                    setIsLoading(false);
+                    isSubmitting.current = false;
+                    setError("Username must be at least 3 characters long.");
+                    return;
+                }
+
+                // Check username availability
+                const { data: existingUsername, error: usernameError } = await supabase
+                    .from('users')
+                    .select('id')
+                    .eq('username', cleanUsername)
+                    .maybeSingle();
+
+                if (usernameError) throw usernameError;
+                if (existingUsername) {
+                    setIsLoading(false);
+                    isSubmitting.current = false;
+                    setError("This username is not available");
+                    return;
+                }
+            } else {
+                if (!cleanMobile) {
+                    setIsLoading(false);
+                    isSubmitting.current = false;
+                    setError("Please enter your mobile number.");
+                    return;
+                }
+            }
+
         // 20s escape hatch
         const fallback = setTimeout(() => {
             setIsLoading(false);
             isSubmitting.current = false;
             setError('Connection failed. Please check your internet and try again.');
         }, 20000);
-
-        // Existing user who only needs to claim a username
-        if (isUsernameOnly && existingUserForSetup) {
-            if (usernameAvailability.status !== 'available') {
-                clearTimeout(fallback);
-                setIsLoading(false);
-                isSubmitting.current = false;
-                setError('Please choose a valid, available username before continuing.');
-                return;
-            }
-
-            const cleanUsername = username.trim();
-            try {
-                const { data: updatedRows, error: updateError } = await supabase
-                    .from('users')
-                    .update({ username: cleanUsername })
-                    .eq('id', existingUserForSetup.id)
-                    .select();
-
-                if (updateError) {
-                    if (updateError.code === '23505') {
-                        clearTimeout(fallback);
-                        setIsLoading(false);
-                        isSubmitting.current = false;
-                        setError('Username is already taken. Please choose another.');
-                        return;
-                    }
-                    throw updateError;
-                }
-
-                if (!updatedRows || updatedRows.length === 0) {
-                    throw new Error('Unable to save username. Please try again.');
-                }
-
-                const updatedUser = { ...existingUserForSetup, username: cleanUsername };
-                clearTimeout(fallback);
-                await performLogin(updatedUser, googleAuthId, true);
-
-                sessionStorage.removeItem('aya_temp_google_id');
-                sessionStorage.removeItem('aya_temp_google_name');
-                sessionStorage.removeItem('aya_temp_google_age');
-                sessionStorage.removeItem('aya_temp_google_mobile');
-                sessionStorage.removeItem('aya_temp_existing_user');
-                sessionStorage.removeItem('aya_temp_user_data');
-                sessionStorage.removeItem('aya_temp_username_only');
-                return;
-            } catch (err: any) {
-                clearTimeout(fallback);
-                setIsLoading(false);
-                isSubmitting.current = false;
-                setError(err.message || 'Failed to update username. Please try again.');
-                return;
-            }
-        }
-
-        if (!mobile.trim() || age < 13) {
-            clearTimeout(fallback);
-            setIsLoading(false);
-            isSubmitting.current = false;
-            return;
-        }
-
-        const cleanMobile = mobile.trim().replace(/\s+/g, '');
 
         try {
             // Check if they are existing user logging in
@@ -446,13 +371,15 @@ export function OnboardingWizard() {
                                 .update({
                                     name: name.trim(),
                                     age: age,
-                                    mobile: cleanMobile
+                                    mobile: cleanMobile,
+                                    username: cleanUsername
                                 })
                                 .eq('id', userData.id);
                             if (updateError) console.warn("Failed to update user details on login", updateError);
                             userData.name = name.trim();
                             userData.age = age;
                             userData.mobile = cleanMobile;
+                            userData.username = cleanUsername;
                         }
                         clearTimeout(fallback);
                         await performLogin(userData, googleAuthId, true);
@@ -462,9 +389,9 @@ export function OnboardingWizard() {
                         sessionStorage.removeItem('aya_temp_google_name');
                         sessionStorage.removeItem('aya_temp_google_age');
                         sessionStorage.removeItem('aya_temp_google_mobile');
+                        sessionStorage.removeItem('aya_temp_google_username');
                         sessionStorage.removeItem('aya_temp_existing_user');
                         sessionStorage.removeItem('aya_temp_user_data');
-                        sessionStorage.removeItem('aya_temp_username_only');
                         return;
                     } catch (e: any) {
                         console.error("Failed to process existing Google user", e);
@@ -490,31 +417,8 @@ export function OnboardingWizard() {
                     return;
                 }
 
-                if (!existingUser.username && username.trim() && usernameAvailability.status === 'available') {
-                    const { error: uErr } = await supabase
-                        .from('users')
-                        .update({ username: username.trim() })
-                        .eq('id', existingUser.id);
-                    if (!uErr) {
-                        existingUser.username = username.trim();
-                    } else if (uErr.code === '23505') {
-                        clearTimeout(fallback);
-                        setIsLoading(false);
-                        isSubmitting.current = false;
-                        setError('Username is already taken. Please choose another.');
-                        return;
-                    }
-                }
-
                 clearTimeout(fallback);
                 await performLogin(existingUser, googleAuthId, true);
-                sessionStorage.removeItem('aya_temp_google_id');
-                sessionStorage.removeItem('aya_temp_google_name');
-                sessionStorage.removeItem('aya_temp_google_age');
-                sessionStorage.removeItem('aya_temp_google_mobile');
-                sessionStorage.removeItem('aya_temp_existing_user');
-                sessionStorage.removeItem('aya_temp_user_data');
-                sessionStorage.removeItem('aya_temp_username_only');
             } else {
                 if (!name.trim()) {
                     clearTimeout(fallback);
@@ -523,21 +427,13 @@ export function OnboardingWizard() {
                     setError("Please enter your name to create a new account.");
                     return;
                 }
-
-                if (!username.trim() || usernameAvailability.status !== 'available') {
-                    clearTimeout(fallback);
-                    setIsLoading(false);
-                    isSubmitting.current = false;
-                    setError('Please choose a valid, available username before creating an account.');
-                    return;
-                }
                 
                 // Insert new user
                 const insertPayload: any = {
                     mobile: cleanMobile,
                     name: name.trim(),
+                    username: cleanUsername,
                     age: age,
-                    username: username.trim(),
                     access_type: 'open',
                     access_start_date: new Date().toISOString().split('T')[0],
                     preferred_theme: 'city_dark',
@@ -554,31 +450,14 @@ export function OnboardingWizard() {
                     .single();
 
                 if (insertError) {
-                    if (insertError.code === '23505') {
-                        clearTimeout(fallback);
-                        setIsLoading(false);
-                        isSubmitting.current = false;
-                        setError('Username is already taken. Please choose another.');
-                        return;
-                    }
                     console.warn('[Register] Supabase insert failed (likely RLS). Falling back to local-only mode:', insertError);
                     clearTimeout(fallback);
-                    setIsLoading(false);
-                    isSubmitting.current = false;
-                    setError('Could not create account online. Please check your connection and try again.');
-                    return;
+                    const localUser = { ...insertPayload, id: crypto.randomUUID() };
+                    await performLogin(localUser, googleAuthId, false);
                 } else {
                     clearTimeout(fallback);
                     await performLogin(newUser, googleAuthId, false);
                 }
-
-                sessionStorage.removeItem('aya_temp_google_id');
-                sessionStorage.removeItem('aya_temp_google_name');
-                sessionStorage.removeItem('aya_temp_google_age');
-                sessionStorage.removeItem('aya_temp_google_mobile');
-                sessionStorage.removeItem('aya_temp_existing_user');
-                sessionStorage.removeItem('aya_temp_user_data');
-                sessionStorage.removeItem('aya_temp_username_only');
             }
         } catch (err: any) {
             clearTimeout(fallback);
@@ -618,7 +497,7 @@ export function OnboardingWizard() {
     ), []);
 
     return (
-        <div className="relative h-full w-full bg-[#0a0a0f] flex flex-col px-4 md:px-8 pt-8 pb-12 overflow-y-auto overflow-x-hidden selection:bg-[#00f1fe] selection:text-black">
+        <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#0a0a0f] selection:bg-[#00f1fe] selection:text-black">
             
             {/* Background Grid Pattern */}
             <div className="absolute inset-0 z-0 opacity-20 pointer-events-none" style={{
@@ -632,63 +511,92 @@ export function OnboardingWizard() {
             {/* Cinematic Background */}
             {cinematicBackground}
 
-            {/* Relative Form Wrapper with Pinned Absolute Side Mascot */}
-            <div className="relative z-10 w-full max-w-md mx-auto my-auto py-6">
+            {/* Main Center Content Container */}
+            <div className="relative z-10 w-full my-auto py-6 flex items-center justify-center">
                 
-                {/* Form Container */}
-                <motion.div 
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                >
-                    <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#0f0f18] text-white drop-shadow-[0_0_20px_rgba(0,241,254,0.4)] text-center mb-6 leading-tight">
-                        {isRegisterMode ? (isUsernameOnly ? "Choose your username" : (googleAuthId ? "Link Your Account" : "Let's get to \n know you!")) : "Welcome to AYA"}
-                    </h2>
-                    
-                    {!isRegisterMode && (
-                        <div className="flex flex-col gap-4 mt-6">
-                            <motion.button
-                                initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                                disabled={isLoading}
-                                onClick={handleGoogleSignIn}
-                                className="w-full py-4 bg-white text-black font-black text-xl rounded-full shadow-lg flex items-center justify-center space-x-3 transition-all hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                {isLoading ? (
-                                    <span>INITIALIZING...</span>
-                                ) : (
+                {/* 1. STRICT AUTH COMPONENT ("Welcome to AYA") */}
+                {!isRegisterMode && (
+                    <div className="relative z-10 w-full max-w-[400px] mx-auto px-6 flex flex-col items-center justify-center">
+                        <motion.div 
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, ease: "easeOut" }}
+                            className="w-full text-center"
+                        >
+                            <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#0f0f18] text-white drop-shadow-[0_0_20px_rgba(0,241,254,0.4)] text-center mb-6 leading-tight">
+                                Welcome to AYA
+                            </h2>
+                            
+                            <div className="flex flex-col gap-4 mt-6 w-full">
+                                <motion.button
+                                    initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+                                    disabled={isLoading}
+                                    onClick={handleGoogleSignIn}
+                                    className="w-full py-4 bg-white text-black font-black text-xl rounded-full shadow-lg flex items-center justify-center space-x-3 transition-all hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {isLoading ? (
+                                        <span>INITIALIZING...</span>
+                                    ) : (
+                                        <>
+                                            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-8 h-8" />
+                                            <span>SIGN IN WITH GOOGLE</span>
+                                        </>
+                                    )}
+                                </motion.button>
+
+                                {!isLoading && (
                                     <>
-                                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-8 h-8" />
-                                        <span>SIGN IN WITH GOOGLE</span>
+                                        <div className="flex items-center gap-4 my-2 opacity-50 w-full">
+                                            <div className="h-px bg-white flex-1" />
+                                            <span className="text-white text-sm font-bold uppercase tracking-widest">OR</span>
+                                            <div className="h-px bg-white flex-1" />
+                                        </div>
+
+                                        <motion.button
+                                            initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+                                            onClick={() => { audioSynth.playClick(); navigate('/game/setup'); }}
+                                            className="w-full py-4 bg-transparent border-2 border-[#2b2b38] text-white font-bold text-lg rounded-full hover:bg-white/10 transition-all shadow-lg"
+                                        >
+                                            USE MOBILE NUMBER
+                                        </motion.button>
                                     </>
                                 )}
-                            </motion.button>
+                            </div>
+                        </motion.div>
 
-                            {!isLoading && (
-                                <>
-                                    <div className="flex items-center gap-4 my-2 opacity-50">
-                                        <div className="h-px bg-white flex-1" />
-                                        <span className="text-white text-sm font-bold uppercase tracking-widest">OR</span>
-                                        <div className="h-px bg-white flex-1" />
-                                    </div>
-
-                                    <motion.button
-                                        initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-                                        onClick={() => { audioSynth.playClick(); navigate('/game/setup'); }}
-                                        className="w-full py-4 bg-transparent border-2 border-[#2b2b38] text-white font-bold text-lg rounded-full hover:bg-white/10 transition-all shadow-lg"
-                                    >
-                                        USE MOBILE NUMBER
-                                    </motion.button>
-                                </>
-                            )}
+                        {/* Auth Greeting Mascot (Pinned Absolutely to Right Side on Desktop) */}
+                        <div className="hidden lg:block absolute left-full ml-8 lg:ml-12 top-1/2 -translate-y-1/2 w-80 lg:w-[360px] pointer-events-none select-none z-20">
+                            <div className="relative w-80 h-80 lg:w-[360px] lg:h-[360px] flex items-center justify-center drop-shadow-2xl">
+                                <div className="absolute inset-4 rounded-full blur-3xl opacity-35 bg-purple-500 transition-colors duration-500" />
+                                <DotLottieReact
+                                    src={encodeURI('/assets/Macot/waving mascot.lottie')}
+                                    loop
+                                    autoplay
+                                    style={{ width: '100%', height: '100%' }}
+                                    className="w-full h-full object-contain relative z-10"
+                                />
+                            </div>
                         </div>
-                    )}
+                    </div>
+                )}
 
-                    {isRegisterMode && (
-                        <>
-                            {googleAuthId && !isUsernameOnly && (
+                {/* 2. STRICT ONBOARDING FORM COMPONENT ("Let's get to know you!") */}
+                {isRegisterMode && (
+                    <div className="relative z-10 w-full max-w-[400px] mx-auto px-6 flex flex-col items-center justify-center">
+                        <motion.div 
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, ease: "easeOut" }}
+                            className="w-full"
+                        >
+                            <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#0f0f18] text-white drop-shadow-[0_0_20px_rgba(0,241,254,0.4)] text-center mb-6 leading-tight">
+                                {googleAuthId ? "Link Your Account" : "Let's get to \n know you!"}
+                            </h2>
+
+                            {googleAuthId && (
                                 <motion.div 
                                     initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                                    className="mb-6 p-4 bg-emerald-900/40 text-emerald-100 rounded-3xl border border-emerald-500/50 backdrop-blur-md text-center shadow-xl relative overflow-hidden"
+                                    className="mb-6 p-4 bg-emerald-900/40 text-emerald-100 rounded-3xl border border-emerald-500/50 backdrop-blur-md text-center shadow-xl relative overflow-hidden w-full"
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent pointer-events-none" />
                                     <h3 className="font-black text-xl text-emerald-400 mb-1">Google Authenticated!</h3>
@@ -696,27 +604,10 @@ export function OnboardingWizard() {
                                 </motion.div>
                             )}
 
-                            <div className="space-y-4">
-                                {isUsernameOnly ? (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                                        className="glass-panel p-6 rounded-3xl relative"
-                                    >
-                                        <UsernameField
-                                            label="Choose your username"
-                                            helperText="This is how others will recognize you on AYA."
-                                            value={username}
-                                            onChange={setUsername}
-                                            status={usernameAvailability.status}
-                                            errorMessage={usernameAvailability.errorMessage}
-                                            disabled={isLoading}
-                                        />
-                                    </motion.div>
-                                ) : (
-                                    <>
+                            <div className="space-y-4 w-full">
                                 <motion.div 
                                     initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                                    className="glass-panel p-6 rounded-3xl relative"
+                                    className="glass-panel p-6 rounded-3xl relative w-full"
                                 >
                                     <label className="block text-xs font-bold text-[#f2effb] mb-2 uppercase tracking-wider">Identity</label>
                                     <input
@@ -729,16 +620,35 @@ export function OnboardingWizard() {
                                     />
                                 </motion.div>
 
+                                {isRegisterMode && (
+                                    <motion.div 
+                                        initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+                                        className="glass-panel p-6 rounded-3xl relative"
+                                    >
+                                        <label className="block text-xs font-bold text-[#f2effb] mb-2 uppercase tracking-wider">Username</label>
+                                        <input
+                                            type="text"
+                                            value={username}
+                                            onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+                                            className={`${baseInputClasses} py-3 px-4 focus:ring-4 focus:ring-[#9333ea]/30 focus:border-[#9333ea] focus:shadow-[0_0_20px_rgba(147,51,234,0.3)]`}
+                                            placeholder="Choose a unique username"
+                                            disabled={isLoading}
+                                            minLength={3}
+                                        />
+                                        <p className="text-[#acaab5] text-[10px] mt-2 ml-1">Must be at least 3 characters. Letters, numbers, and underscores only.</p>
+                                    </motion.div>
+                                )}
+
                                 <motion.div 
                                     initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-                                    className="glass-panel p-6 rounded-3xl relative flex flex-col items-center"
+                                    className="glass-panel p-6 rounded-3xl relative flex flex-col items-center w-full"
                                 >
                                     <AgeSelector value={age} onChange={setAge} />
                                 </motion.div>
 
                                 <motion.div 
                                     initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-                                    className="glass-panel p-6 rounded-3xl relative flex flex-col items-center"
+                                    className="glass-panel p-6 rounded-3xl relative flex flex-col items-center w-full"
                                 >
                                     <label className="block text-xs font-bold text-[#f2effb] mb-4 uppercase tracking-wider">Preferred Language</label>
                                     <div className="flex gap-4 w-full">
@@ -752,14 +662,14 @@ export function OnboardingWizard() {
                                             onClick={() => { audioSynth.playClick(); setPrefLang('hi'); }}
                                             className={`flex-1 py-3 rounded-2xl font-bold transition-all border-2 ${prefLang === 'hi' ? 'bg-[#00f1fe] text-[#004145] border-[#00f1fe] shadow-[0_0_15px_rgba(0,241,254,0.4)]' : 'bg-black/40 text-[#acaab5] border-[#2b2b38] hover:border-[#00f1fe]/50 hover:text-white'}`}
                                         >
-                                            à¤¹à¤¿à¤‚à¤¦à¥€ (Hindi)
+                                            हिंदी (Hindi)
                                         </button>
                                     </div>
                                 </motion.div>
 
                                 <motion.div 
                                     initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
-                                    className="glass-panel p-6 rounded-3xl relative"
+                                    className="glass-panel p-6 rounded-3xl relative w-full"
                                 >
                                     <label className="block text-xs font-bold text-[#f2effb] mb-2 uppercase tracking-wider">Access Code (Mobile)</label>
                                     <input
@@ -774,45 +684,23 @@ export function OnboardingWizard() {
                                         disabled={isLoading}
                                     />
                                 </motion.div>
-
-                                <motion.div
-                                    initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}
-                                    className="glass-panel p-6 rounded-3xl relative"
-                                >
-                                    <UsernameField
-                                        label="Choose your username"
-                                        helperText="This is how others will recognize you on AYA."
-                                        value={username}
-                                        onChange={setUsername}
-                                        status={usernameAvailability.status}
-                                        errorMessage={usernameAvailability.errorMessage}
-                                        disabled={isLoading}
-                                    />
-                                </motion.div>
-                                    </>
-                                )}
                             </div>
 
                             <AnimatePresence>
                                 {error && (
                                     <motion.div 
                                         initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
-                                        className="mt-4 p-4 bg-red-900/40 text-red-100 rounded-xl border border-red-500/50 backdrop-blur-md text-center font-bold"
+                                        className="mt-4 p-4 bg-red-900/40 text-red-100 rounded-xl border border-red-500/50 backdrop-blur-md text-center font-bold w-full"
                                     >
                                         <p>{error}</p>
                                     </motion.div>
                                 )}
                             </AnimatePresence>
 
-                            <div className="flex flex-col gap-4 mt-8">
+                            <div className="flex flex-col gap-4 mt-8 w-full">
                                 <motion.button
                                     initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }}
-                                    disabled={
-                                        isLoading ||
-                                        (isUsernameOnly
-                                            ? !isUsernameReady
-                                            : (!mobile.trim() || (needsUsername && !isUsernameReady)))
-                                    }
+                                    disabled={!mobile.trim() || isLoading}
                                     onClick={handleComplete}
                                     className="w-full py-4 bg-[#00f1fe] text-[#004145] font-black text-xl rounded-full shadow-[0_0_30px_rgba(0,241,254,0.4)] flex items-center justify-center space-x-2 relative group overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#99f7ff] transition-all"
                                 >
@@ -821,15 +709,7 @@ export function OnboardingWizard() {
                                         animate={{ opacity: [0, 0.4, 0] }}
                                         transition={{ duration: 2, repeat: Infinity }}
                                     />
-                                    <span className="relative z-10">
-                                        {isLoading
-                                            ? 'INITIALIZING...'
-                                            : (isUsernameOnly
-                                                ? 'CONTINUE'
-                                                : (sessionStorage.getItem('aya_temp_existing_user') === 'true'
-                                                    ? 'CONFIRM & ENTER GAME'
-                                                    : (googleAuthId ? 'LINK ACCOUNT' : 'START MY JOURNEY')))}
-                                    </span>
+                                    <span className="relative z-10">{isLoading ? 'INITIALIZING...' : (sessionStorage.getItem('aya_temp_existing_user') === 'true' ? 'CONFIRM & ENTER GAME' : (googleAuthId ? 'LINK ACCOUNT' : 'START MY JOURNEY'))}</span>
                                     {!isLoading && <Check size={24} className="relative z-10 stroke-[4]" />}
                                 </motion.button>
                                 
@@ -844,7 +724,6 @@ export function OnboardingWizard() {
                                         sessionStorage.removeItem('aya_temp_google_mobile');
                                         sessionStorage.removeItem('aya_temp_existing_user');
                                         sessionStorage.removeItem('aya_temp_user_data');
-                                        sessionStorage.removeItem('aya_temp_username_only');
                                         navigate('/game/welcome'); 
                                     }}
                                     className="w-full py-2 bg-transparent text-white/70 font-bold text-sm rounded-full transition-all hover:text-white mt-1"
@@ -852,32 +731,31 @@ export function OnboardingWizard() {
                                     BACK
                                 </motion.button>
                             </div>
-                        </>
-                    )}
-                </motion.div>
+                        </motion.div>
 
-                {/* Onboarding Sidekick Mascot (Pinned Absolutely to Right Side, Hidden on Mobile/Tablet) */}
-                <div className="hidden lg:block absolute left-full ml-10 lg:ml-16 top-1/2 -translate-y-1/2 w-80 lg:w-[360px] pointer-events-none select-none z-20">
-                    <div className="relative w-80 h-80 lg:w-[360px] lg:h-[360px] flex items-center justify-center drop-shadow-2xl">
-                        {/* Glowing Background Aura */}
-                        <div
-                            className={`absolute inset-4 rounded-full blur-3xl opacity-35 transition-colors duration-500 ${
-                                mascotState === 'happy' ? 'bg-amber-400 opacity-70 animate-pulse' : 'bg-purple-500 opacity-40'
-                            }`}
-                        />
+                        {/* Onboarding Sidekick Mascot (Pinned Absolutely to Right Side, Hidden on Mobile/Tablet) */}
+                        <div className="hidden lg:block absolute left-full ml-8 lg:ml-12 top-1/2 -translate-y-1/2 w-80 lg:w-[360px] pointer-events-none select-none z-20">
+                            <div className="relative w-80 h-80 lg:w-[360px] lg:h-[360px] flex items-center justify-center drop-shadow-2xl">
+                                {/* Glowing Background Aura */}
+                                <div
+                                    className={`absolute inset-4 rounded-full blur-3xl opacity-35 transition-colors duration-500 ${
+                                        mascotState === 'happy' ? 'bg-amber-400 opacity-70 animate-pulse' : 'bg-purple-500 opacity-40'
+                                    }`}
+                                />
 
-                        <DotLottieReact
-                            key={mascotState}
-                            src={encodeURI(mascotState === 'happy' ? '/assets/Macot/happy mascot.lottie' : '/assets/Macot/waving mascot.lottie')}
-                            loop
-                            autoplay
-                            style={{ width: '100%', height: '100%' }}
-                            className="w-full h-full object-contain relative z-10"
-                        />
+                                <DotLottieReact
+                                    key={mascotState}
+                                    src={encodeURI(mascotState === 'happy' ? '/assets/Macot/happy mascot.lottie' : '/assets/Macot/waving mascot.lottie')}
+                                    loop
+                                    autoplay
+                                    style={{ width: '100%', height: '100%' }}
+                                    className="w-full h-full object-contain relative z-10"
+                                />
+                            </div>
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
         </div>
     );
 }
-

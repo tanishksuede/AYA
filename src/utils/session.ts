@@ -26,7 +26,7 @@ const safeRemove = (key: string) => {
   try { sessionStorage.removeItem(key); } catch {}
 };
 
-export const saveSession = (user: { id: string; mobile: string; name: string; age: number }) => {
+export const saveSession = (user: { id: string; mobile: string; name: string; age: number; username?: string }) => {
   safeSet(KEYS.userId, user.id);
   safeSet(KEYS.mobile, user.mobile);
   safeSet(KEYS.name, user.name);
