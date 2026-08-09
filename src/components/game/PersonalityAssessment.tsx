@@ -233,14 +233,11 @@ export function PersonalityAssessment() {
         setAnswers(newAnswers);
         setCurrentSelection([]);
 
-        if (step === 4) {
-            triggerMascotAction('q5_complete');
-        }
-
         if (step < QUESTIONS.length - 1) {
+            triggerMascotAction('next');
             navigate('/game/assessment/' + (step + 2));
         } else {
-            triggerMascotAction('q9_complete');
+            triggerMascotAction('complete');
             setIsSaving(true);
             try {
                 if (userProfile?.id) {
@@ -333,84 +330,95 @@ export function PersonalityAssessment() {
                 )}
             </div>
 
-            <div 
-                className={clsx(
-                    "relative z-10 w-full mx-auto flex flex-col h-full md:h-auto md:max-h-[90vh] perspective-1000",
-                    isMobile ? "justify-between" : "justify-center p-4"
-                )}
-                style={{ maxWidth: '600px' }}
-            >
-                <motion.div 
-                    key={`card-${step}`}
-                    initial={{ opacity: 0, y: 50, rotateX: 10 }}
-                    animate={{ opacity: 1, y: 0, rotateX: 0 }}
-                    transition={{ duration: 0.6, type: "spring", damping: 20 }}
+            {/* Main Outer Layout: Side-by-Side Flex Container */}
+            <div className="relative z-10 w-full max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-center h-full md:h-auto min-h-screen p-4 gap-6 lg:gap-12">
+                
+                {/* Quiz Card Container */}
+                <div 
                     className={clsx(
-                        "flex flex-col overflow-hidden relative transition-all duration-700 bg-[#13131c] shadow-2xl",
-                        isViolet ? "border border-[#9333ea]/50 shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_40px_rgba(147,51,234,0.4)] md:h-[85vh]" : "border border-[#00f1fe]/30 shadow-[0_0_40px_rgba(0,241,254,0.15)] md:h-[85vh]",
-                        isMobile ? "flex-grow pt-safe-top m-4 rounded-[2.5rem]" : "rounded-[3rem]"
+                        "relative w-full flex flex-col h-full md:h-auto md:max-h-[90vh] perspective-1000 shrink-0",
+                        isMobile ? "justify-between" : "justify-center p-2"
                     )}
+                    style={{ maxWidth: '580px' }}
                 >
-                    <div className="p-6 md:p-10 pb-0 text-center flex flex-col items-center shrink-0">
-                        {/* Progress Header */}
-                        <div className="w-full flex items-center justify-between mb-6 md:mb-8">
-                            <div className="flex items-center gap-2 shrink-0">
-                                {step > 0 && (
-                                    <button 
-                                        onClick={handleBack}
-                                        className={clsx(
-                                            "flex items-center justify-center w-8 h-8 rounded-full transition-colors border backdrop-blur-md shadow-lg",
-                                            isViolet ? "text-[#e9d5ff] border-[#a855f7] bg-[#581c87]/50 hover:bg-[#a855f7]/30 shadow-[0_0_15px_rgba(168,85,247,0.5)]" : "text-[#99f7ff] border-[#00f1fe]/50 bg-[#004145]/50 hover:bg-[#00f1fe]/30 shadow-[0_0_10px_rgba(0,241,254,0.3)]"
-                                        )}
-                                        aria-label="Go Back"
-                                    >
-                                        <ChevronLeft size={16} strokeWidth={3} />
-                                    </button>
-                                )}
-                                <span className={clsx(
-                                    "font-bold uppercase tracking-widest text-xs px-3 py-1 rounded-full backdrop-blur-md transition-colors duration-500 border shadow-lg shrink-0",
-                                    isViolet ? "text-[#e9d5ff] border-[#a855f7] bg-[#581c87]/50 shadow-[0_0_15px_rgba(168,85,247,0.5)]" : "text-[#99f7ff] border-[#00f1fe]/50 bg-[#004145]/50 shadow-[0_0_10px_rgba(0,241,254,0.3)]"
-                                )}>
-                                    {step + 1} / {QUESTIONS.length}
-                                </span>
-                            </div>
-                            <div className="flex-1 ml-4 h-3 rounded-full overflow-hidden border bg-[#191923] border-white/10 relative">
-                                <motion.div
-                                    className={clsx(
-                                        "absolute top-0 left-0 h-full transition-all duration-500 ease-out",
-                                        isViolet ? "bg-gradient-to-r from-[#7e22ce] to-[#c084fc] shadow-[0_0_20px_rgba(192,132,252,0.8)]" : "bg-gradient-to-r from-[#00b4d8] to-[#00f1fe] shadow-[0_0_15px_rgba(0,241,254,0.8)]"
+                    <motion.div 
+                        key={`card-${step}`}
+                        initial={{ opacity: 0, y: 50, rotateX: 10 }}
+                        animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                        transition={{ duration: 0.6, type: "spring", damping: 20 }}
+                        className={clsx(
+                            "flex flex-col overflow-hidden relative transition-all duration-700 bg-[#13131c] shadow-2xl",
+                            isViolet ? "border border-[#9333ea]/50 shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_40px_rgba(147,51,234,0.4)] md:h-[85vh]" : "border border-[#00f1fe]/30 shadow-[0_0_40px_rgba(0,241,254,0.15)] md:h-[85vh]",
+                            isMobile ? "flex-grow pt-safe-top m-4 rounded-[2.5rem]" : "rounded-[3rem]"
+                        )}
+                    >
+                        <div className="p-6 md:p-10 pb-0 text-center flex flex-col items-center shrink-0">
+                            {/* Progress Header */}
+                            <div className="w-full flex items-center justify-between mb-6 md:mb-8">
+                                <div className="flex items-center gap-2 shrink-0">
+                                    {step > 0 && (
+                                        <button 
+                                            onClick={handleBack}
+                                            className={clsx(
+                                                "flex items-center justify-center w-8 h-8 rounded-full transition-colors border backdrop-blur-md shadow-lg",
+                                                isViolet ? "text-[#e9d5ff] border-[#a855f7] bg-[#581c87]/50 hover:bg-[#a855f7]/30 shadow-[0_0_15px_rgba(168,85,247,0.5)]" : "text-[#99f7ff] border-[#00f1fe]/50 bg-[#004145]/50 hover:bg-[#00f1fe]/30 shadow-[0_0_10px_rgba(0,241,254,0.3)]"
+                                            )}
+                                            aria-label="Go Back"
+                                        >
+                                            <ChevronLeft size={16} strokeWidth={3} />
+                                        </button>
                                     )}
-                                    initial={{ width: 0 }}
-                                    animate={{ width: `${((step + 1) / QUESTIONS.length) * 100}%` }}
-                                />
+                                    <span className={clsx(
+                                        "font-bold uppercase tracking-widest text-xs px-3 py-1 rounded-full backdrop-blur-md transition-colors duration-500 border shadow-lg shrink-0",
+                                        isViolet ? "text-[#e9d5ff] border-[#a855f7] bg-[#581c87]/50 shadow-[0_0_15px_rgba(168,85,247,0.5)]" : "text-[#99f7ff] border-[#00f1fe]/50 bg-[#004145]/50 shadow-[0_0_10px_rgba(0,241,254,0.3)]"
+                                    )}>
+                                        {step + 1} / {QUESTIONS.length}
+                                    </span>
+                                </div>
+                                <div className="flex-1 ml-4 h-3 rounded-full overflow-hidden border bg-[#191923] border-white/10 relative">
+                                    <motion.div
+                                        className={clsx(
+                                            "absolute top-0 left-0 h-full transition-all duration-500 ease-out",
+                                            isViolet ? "bg-gradient-to-r from-[#7e22ce] to-[#c084fc] shadow-[0_0_20px_rgba(192,132,252,0.8)]" : "bg-gradient-to-r from-[#00b4d8] to-[#00f1fe] shadow-[0_0_15px_rgba(0,241,254,0.8)]"
+                                        )}
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${((step + 1) / QUESTIONS.length) * 100}%` }}
+                                    />
+                                </div>
                             </div>
-                        </div>
 
-                        {/* Dynamic DotLottie Mascot Guide */}
-                        <div className="relative mb-4 flex flex-col items-center group pointer-events-none">
-                            <MascotQuizGuide
-                                currentStep={step}
-                                lastAction={mascotAction}
-                                actionTimestamp={mascotActionTimestamp}
-                                isSaving={isSaving}
-                            />
-                            
-                            {/* Category Badge overlay */}
-                            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#191925]/90 border border-white/10 backdrop-blur-md shadow-md -mt-2 z-20">
-                                <Icon size={14} className={isViolet ? "text-[#c084fc]" : "text-[#00f1fe]"} />
-                                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-300">
-                                    {currentQ.dimension.replace('_', ' ')}
+                            {/* Reinstated Icon Badge */}
+                            <div className="relative mb-6 group">
+                                <div className={clsx(
+                                    "absolute inset-0 blur-xl opacity-60 animate-pulse transition-opacity duration-700 rounded-full",
+                                    isViolet ? "bg-[#c084fc]" : "bg-[#00f1fe]"
+                                )}></div>
+                                <div className={clsx(
+                                    "relative w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center shadow-[0_10px_20px_rgba(0,0,0,0.5)] border-4 z-10",
+                                    isViolet ? "bg-[#3b0764] border-[#9333ea] shadow-[0_0_30px_rgba(147,51,234,0.6)]" : "bg-slate-950 border-[#00f1fe] shadow-[0_0_20px_rgba(0,241,254,0.4)]"
+                                )}>
+                                    <Icon size={36} className={clsx(
+                                        "transition-colors", 
+                                        isViolet ? "text-[#e9d5ff] drop-shadow-[0_0_10px_#e9d5ff]" : "text-[#00f1fe] drop-shadow-[0_0_8px_rgba(0,241,254,0.8)]"
+                                    )} />
+                                    {/* Rotating Ring */}
+                                    {isViolet && (
+                                        <motion.div 
+                                            className="absolute inset-[-8px] border border-[#d8b4fe]/30 rounded-full border-t-[#d8b4fe]"
+                                            animate={{ rotateZ: 360 }}
+                                            transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+                                        />
+                                    )}
+                                </div>
+                            </div>
+
+                            <h2 className="text-2xl md:text-3xl font-black mb-2 leading-snug drop-shadow-md text-white">
+                                <span className={clsx("drop-shadow-lg", isViolet ? "drop-shadow-[0_0_10px_rgba(168,85,247,0.8)] text-[#faf5ff]" : "text-[#f2effb]")}>
+                                    {currentQ.text}
                                 </span>
-                            </div>
+                            </h2>
+                            {isSaving && <div className={clsx("mt-4 animate-pulse uppercase tracking-widest text-sm font-bold", isViolet ? "text-[#c084fc]" : "text-[#00f1fe]")}>Saving Profile...</div>}
                         </div>
-
-                        <h2 className="text-2xl md:text-3xl font-black mb-2 leading-snug drop-shadow-md text-white">
-                            <span className={clsx("drop-shadow-lg", isViolet ? "drop-shadow-[0_0_10px_rgba(168,85,247,0.8)] text-[#faf5ff]" : "text-[#f2effb]")}>
-                                {currentQ.text}
-                            </span>
-                        </h2>
-                        {isSaving && <div className={clsx("mt-4 animate-pulse uppercase tracking-widest text-sm font-bold", isViolet ? "text-[#c084fc]" : "text-[#00f1fe]")}>Saving Profile...</div>}
-                    </div>
 
                     <div className="flex-1 min-h-0 px-6 md:px-10 pb-8 pt-4 space-y-4 overflow-y-auto scrollbar-thin scroll-smooth [transform-style:preserve-3d]">
                         <AnimatePresence>
@@ -515,6 +523,18 @@ export function PersonalityAssessment() {
                     </AnimatePresence>
                 </motion.div>
             </div>
+
+            {/* Prominent Sidekick Mascot (Right Side Container) */}
+            <div className="hidden lg:flex shrink-0 items-center justify-center pointer-events-none select-none z-20">
+                <MascotQuizGuide
+                    currentStep={step}
+                    lastAction={mascotAction}
+                    actionTimestamp={mascotActionTimestamp}
+                    hasSelection={currentSelection.length > 0}
+                    isSaving={isSaving}
+                />
+            </div>
         </div>
-    );
+    </div>
+);
 }
