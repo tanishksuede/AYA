@@ -286,12 +286,12 @@ export function PersonalityAssessment() {
                     interest_domain: newProfile.interest_domain
                 };
 
-                // 2500ms delay so Winner Mascot animation plays fully before navigation
+                // Strict 3500ms delay so Winner Mascot animation plays fully before navigation
                 setTimeout(() => {
                     setIsSaving(false);
                     completeAssessment(newTraits, finalProfile);
                     navigate('/game');
-                }, 2500);
+                }, 3500);
             }
         }
     };
