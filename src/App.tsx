@@ -13,6 +13,7 @@ import { SettingsPage } from './pages/SettingsPage';
 import { JournalPage } from './pages/JournalPage';
 import { ThemeSwitcherPage } from './pages/ThemeSwitcherPage';
 import { NotificationOnboardingPage } from './pages/NotificationOnboardingPage';
+import { SocialPage } from './pages/SocialPage';
 import ReactGA from 'react-ga4';
 import { AnalyticsTracker } from './components/AnalyticsTracker';
 import { GoogleTranslateSync } from './components/GoogleTranslateSync';
@@ -75,6 +76,7 @@ function App() {
             <Route path="settings" element={<SettingsPage />} />
             <Route path="journal" element={<JournalPage />} />
             <Route path="theme" element={<ThemeSwitcherPage />} />
+            <Route path="social" element={<SocialPage />} />
             <Route path="admin" element={<AdminRouteHandler />} />
             <Route path="*" element={<Navigate to="/game" replace />} />
           </Route>

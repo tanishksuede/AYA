@@ -10,6 +10,7 @@ import { FutureSelfCard } from './FutureSelfCard';
 import { FutureSelfShareCard } from './FutureSelfShareCard';
 import { calculateLifeTraits, matchFutureArchetype } from '../../utils/futureSelfMatch';
 import { bgmManager } from '../../utils/bgmManager';
+import { getFollowerCount, getFollowingCount } from '../../services/followService';
 
 interface DnaProfileProps {
     onBack: () => void;
@@ -161,6 +162,21 @@ export function DnaProfile({ onBack }: DnaProfileProps) {
     const cardRef = useRef<HTMLDivElement>(null);
     const futureSelfCardRef = useRef<HTMLDivElement>(null);
 
+    // ── Social counts (followers / following) ────────────────────────────────
+    const [followerCount, setFollowerCount] = useState<number | null>(null);
+    const [followingCount, setFollowingCount] = useState<number | null>(null);
+
+    useEffect(() => {
+        if (!profile?.id) return;
+        Promise.all([
+            getFollowerCount(profile.id),
+            getFollowingCount(profile.id),
+        ]).then(([fc, fwc]) => {
+            setFollowerCount(fc);
+            setFollowingCount(fwc);
+        }).catch(() => { /* counts fail silently */ });
+    }, [profile?.id]);
+
     // ── Future Self Match computation ────────────────────────────────────────
     const futureMatch = useMemo(() => {
         // Use persisted lifeTraits if available, else recalculate from current traits
@@ -301,6 +317,20 @@ export function DnaProfile({ onBack }: DnaProfileProps) {
                         <p className="mt-1 text-[#00f1fe] font-bold tracking-widest text-sm">
                             @{profile.username}
                         </p>
+                    )}
+                    {/* Follower / following counts */}
+                    {(followerCount !== null || followingCount !== null) && (
+                        <div className="mt-2 flex items-center gap-4 text-xs font-bold uppercase tracking-widest">
+                            <span className="text-[#acaab5]">
+                                <span className="text-[#00f2ff] text-sm">{followerCount ?? '–'}</span>
+                                {' '}Followers
+                            </span>
+                            <span className="w-1 h-1 rounded-full bg-[#d575ff]" />
+                            <span className="text-[#acaab5]">
+                                <span className="text-[#d575ff] text-sm">{followingCount ?? '–'}</span>
+                                {' '}Following
+                            </span>
+                        </div>
                     )}
                     <div className="mt-2 text-[#acaab5] tracking-[0.3em] text-sm uppercase flex items-center gap-4">
                         <span>AGE: <span className="text-[#99f7ff] font-bold">{profile?.age || 18}</span></span>

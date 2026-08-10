@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Menu, X, Settings, Sun, Moon, Volume2, VolumeX, BookOpen } from 'lucide-react';
+import { Menu, X, Settings, Sun, Moon, Volume2, VolumeX, BookOpen, Users } from 'lucide-react';
 import clsx from 'clsx';
 import { VibeSpinnerButton } from '../MoodWheel/VibeSpinnerButton';
 
@@ -227,6 +227,24 @@ export function SideMenu({
                     >
                         <Settings size={24} className="opacity-80" />
                         <span className="text-[10px] font-bold uppercase tracking-widest opacity-80">Settings</span>
+                    </button>
+
+                    {/* People / Social */}
+                    <button
+                        onClick={() => {
+                            audioSynth.playClick();
+                            navigate('/game/social');
+                            setIsOpen(false);
+                        }}
+                        className={clsx(
+                            "flex flex-col items-center justify-center gap-2 p-3 rounded-2xl transition-all border shadow-sm",
+                            isCandyMode
+                                ? "bg-white/60 border-slate-200 hover:bg-white"
+                                : "bg-slate-800/60 border-[#00f2ff]/20 hover:bg-slate-700/80 hover:border-[#00f2ff]/40 text-[#00f2ff]"
+                        )}
+                    >
+                        <Users size={24} className="opacity-80" />
+                        <span className="text-[10px] font-bold uppercase tracking-widest opacity-80">People</span>
                     </button>
 
                     {/* Admin */}
