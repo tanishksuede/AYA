@@ -485,10 +485,10 @@ export function OnboardingWizard() {
     };
 
     // Derived style classes
-    const baseInputClasses = "w-full bg-black/40 border border-[#2b2b38] rounded-2xl px-6 py-4 text-white placeholder-[#76747f] font-medium outline-none transition-all duration-300";
+    const baseInputClasses = "w-full bg-black/40 border border-[#2b2b38] rounded-2xl px-6 py-4 text-white placeholder-[#76747f] font-medium outline-none transition-all duration-300 hover:border-[#9333ea]/50 hover:bg-black/60 focus:scale-[1.02] focus:bg-black/80";
 
     const cinematicBackground = useMemo(() => (
-        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
             <div className="absolute inset-0 bg-[#0f0f18] opacity-90 mix-blend-multiply" />
             <div className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] bg-[#9333ea] opacity-20 blur-[120px] rounded-full mix-blend-screen animate-pulse-slow" />
             <div className="absolute top-[40%] -right-[20%] w-[60%] h-[60%] bg-[#00f1fe] opacity-10 blur-[100px] rounded-full mix-blend-screen" />
@@ -497,10 +497,10 @@ export function OnboardingWizard() {
     ), []);
 
     return (
-        <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#0a0a0f] selection:bg-[#00f1fe] selection:text-black">
+        <div className="relative min-h-screen w-full overflow-y-auto overflow-x-hidden bg-[#0a0a0f] selection:bg-[#00f1fe] selection:text-black">
             
             {/* Background Grid Pattern */}
-            <div className="absolute inset-0 z-0 opacity-20 pointer-events-none" style={{
+            <div className="fixed inset-0 z-0 opacity-20 pointer-events-none" style={{
                 backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px)`,
                 backgroundSize: '40px 40px',
                 backgroundPosition: 'center center'
@@ -512,7 +512,7 @@ export function OnboardingWizard() {
             {cinematicBackground}
 
             {/* Main Center Content Container */}
-            <div className="relative z-10 w-full my-auto py-6 flex items-center justify-center">
+            <div className="relative z-10 w-full min-h-screen py-12 grid place-items-center">
                 
                 {/* 1. STRICT AUTH COMPONENT ("Welcome to AYA") */}
                 {!isRegisterMode && (
@@ -604,10 +604,11 @@ export function OnboardingWizard() {
                                 </motion.div>
                             )}
 
-                            <div className="space-y-4 w-full">
+                            <div className="space-y-5 w-full pb-8">
                                 <motion.div 
+                                    whileHover={{ y: -4, scale: 1.01 }}
                                     initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                                    className="glass-panel p-6 rounded-3xl relative w-full"
+                                    className="glass-panel p-6 rounded-3xl relative w-full transition-all duration-300 hover:shadow-[0_10px_40px_-10px_rgba(147,51,234,0.3)] border border-transparent hover:border-[#9333ea]/30"
                                 >
                                     <label className="block text-xs font-bold text-[#f2effb] mb-2 uppercase tracking-wider">Identity</label>
                                     <input
@@ -622,8 +623,9 @@ export function OnboardingWizard() {
 
                                 {isRegisterMode && (
                                     <motion.div 
+                                        whileHover={{ y: -4, scale: 1.01 }}
                                         initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-                                        className="glass-panel p-6 rounded-3xl relative"
+                                        className="glass-panel p-6 rounded-3xl relative transition-all duration-300 hover:shadow-[0_10px_40px_-10px_rgba(147,51,234,0.3)] border border-transparent hover:border-[#9333ea]/30"
                                     >
                                         <label className="block text-xs font-bold text-[#f2effb] mb-2 uppercase tracking-wider">Username</label>
                                         <input
@@ -640,15 +642,17 @@ export function OnboardingWizard() {
                                 )}
 
                                 <motion.div 
+                                    whileHover={{ y: -4, scale: 1.01 }}
                                     initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-                                    className="glass-panel p-6 rounded-3xl relative flex flex-col items-center w-full"
+                                    className="glass-panel p-6 rounded-3xl relative flex flex-col items-center w-full transition-all duration-300 hover:shadow-[0_10px_40px_-10px_rgba(0,241,254,0.2)] border border-transparent hover:border-[#00f1fe]/30"
                                 >
                                     <AgeSelector value={age} onChange={setAge} />
                                 </motion.div>
 
                                 <motion.div 
+                                    whileHover={{ y: -4, scale: 1.01 }}
                                     initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-                                    className="glass-panel p-6 rounded-3xl relative flex flex-col items-center w-full"
+                                    className="glass-panel p-6 rounded-3xl relative flex flex-col items-center w-full transition-all duration-300 hover:shadow-[0_10px_40px_-10px_rgba(0,241,254,0.2)] border border-transparent hover:border-[#00f1fe]/30"
                                 >
                                     <label className="block text-xs font-bold text-[#f2effb] mb-4 uppercase tracking-wider">Preferred Language</label>
                                     <div className="flex gap-4 w-full">
@@ -668,8 +672,9 @@ export function OnboardingWizard() {
                                 </motion.div>
 
                                 <motion.div 
+                                    whileHover={{ y: -4, scale: 1.01 }}
                                     initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
-                                    className="glass-panel p-6 rounded-3xl relative w-full"
+                                    className="glass-panel p-6 rounded-3xl relative w-full transition-all duration-300 hover:shadow-[0_10px_40px_-10px_rgba(0,241,254,0.2)] border border-transparent hover:border-[#00f1fe]/30"
                                 >
                                     <label className="block text-xs font-bold text-[#f2effb] mb-2 uppercase tracking-wider">Access Code (Mobile)</label>
                                     <input
