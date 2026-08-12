@@ -516,7 +516,7 @@ export function OnboardingWizard() {
                 
                 {/* 1. STRICT AUTH COMPONENT ("Welcome to AYA") */}
                 {!isRegisterMode && (
-                    <div className="relative z-10 w-full max-w-[400px] mx-auto px-6 flex flex-col items-center justify-center">
+                    <div className="relative z-10 w-full mx-auto px-6 flex flex-col items-center justify-center" style={{ maxWidth: '400px' }}>
                         <motion.div 
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -582,7 +582,7 @@ export function OnboardingWizard() {
 
                 {/* 2. STRICT ONBOARDING FORM COMPONENT ("Let's get to know you!") */}
                 {isRegisterMode && (
-                    <div className="relative z-10 w-full max-w-[400px] mx-auto px-6 flex flex-col items-center justify-center">
+                    <div className="relative z-10 w-full mx-auto px-6 flex flex-col items-center justify-center" style={{ maxWidth: '450px' }}>
                         <motion.div 
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
