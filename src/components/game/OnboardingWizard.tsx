@@ -9,7 +9,7 @@ import { useUsernameAvailability } from '../../hooks/useUsernameAvailability';
 import { UsernameField } from './UsernameField';
 
 import { motion, AnimatePresence } from 'framer-motion';
-
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 const AgeSelector = ({ value, onChange }: { value: number; onChange: (val: number) => void }) => {
     const MIN = 13;
@@ -83,6 +83,7 @@ export function OnboardingWizard() {
     const [prefLang, setPrefLang] = useState<'en' | 'hi'>('en');
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
+    const [mascotState] = useState<'waving' | 'happy'>('waving');
     
     // Google Auth State
     const [googleAuthId, setGoogleAuthId] = useState<string | null>(null);
@@ -507,7 +508,7 @@ export function OnboardingWizard() {
             </div>
 
             {/* Scrollable content — this is the actual scrolling wrapper */}
-            <div className="relative z-10 w-full min-h-screen flex flex-col items-center justify-center py-16 px-4">
+            <div className="relative z-10 w-full min-h-screen flex flex-col md:flex-row items-center justify-center py-16 px-4 gap-8 lg:gap-16">
 
                 {/* ── 1. WELCOME PAGE ("Welcome to AYA") ── */}
                 {!isRegisterMode && (
@@ -754,6 +755,27 @@ export function OnboardingWizard() {
                         </motion.div>
                     </div>
                 )}
+
+                {/* Onboarding Sidekick Mascot Container (Hidden on Mobile) */}
+                <div className="hidden md:flex flex-col items-center justify-center shrink-0 pointer-events-none select-none z-20">
+                    <div className="relative w-72 h-72 md:w-80 md:h-80 lg:w-[360px] lg:h-[360px] flex items-center justify-center drop-shadow-2xl">
+                        {/* Glowing Background Aura */}
+                        <div
+                            className={`absolute inset-4 rounded-full blur-3xl opacity-35 transition-colors duration-500 ${
+                                mascotState === 'happy' ? 'bg-amber-400 opacity-70 animate-pulse' : 'bg-purple-500 opacity-40'
+                            }`}
+                        />
+
+                        <DotLottieReact
+                            key={mascotState}
+                            src={encodeURI(mascotState === 'happy' ? '/assets/Macot/happy mascot.lottie' : '/assets/Macot/waving mascot.lottie')}
+                            loop
+                            autoplay
+                            style={{ width: '100%', height: '100%' }}
+                            className="w-full h-full object-contain relative z-10"
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     );
