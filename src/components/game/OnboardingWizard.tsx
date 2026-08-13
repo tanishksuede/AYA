@@ -1,13 +1,15 @@
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useUserStore } from '../../store/userStore';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { audioManager as audioSynth } from "../../utils/audioManager";
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { saveSession } from '../../utils/session';
 import { supabase } from '../../utils/supabase';
+import { useUsernameAvailability } from '../../hooks/useUsernameAvailability';
+import { UsernameField } from './UsernameField';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+
 
 const AgeSelector = ({ value, onChange }: { value: number; onChange: (val: number) => void }) => {
     const MIN = 13;
@@ -86,6 +88,12 @@ export function OnboardingWizard() {
     const [googleAuthId, setGoogleAuthId] = useState<string | null>(null);
 
     const isSubmitting = useRef(false);
+
+    // Live username availability check (only used in register mode)
+    const usernameAvailability = useUsernameAvailability(
+        isRegisterMode ? username : '',
+        null // no exclude for new users
+    );
 
     // Sync googleAuthId and name on register mode mount
     useEffect(() => {
@@ -187,14 +195,7 @@ export function OnboardingWizard() {
         return () => subscription.unsubscribe();
     }, [isRegisterMode]);
 
-    // Mascot Animation State for Onboarding Form
-    const [mascotState, setMascotState] = useState<'waving' | 'happy'>('waving');
 
-    // Preload onboarding mascot dotlotties
-    useEffect(() => {
-        fetch(encodeURI('/assets/Macot/waving mascot.lottie')).catch(() => {});
-        fetch(encodeURI('/assets/Macot/happy mascot.lottie')).catch(() => {});
-    }, []);
 
     const performLogin = async (userData: any, gId: string | null, isExisting: boolean) => {
         let userId = userData.id;
@@ -303,7 +304,6 @@ export function OnboardingWizard() {
         if (isSubmitting.current) return;
         isSubmitting.current = true;
         
-        setMascotState('happy');
         useUserStore.getState().setAppLanguage(prefLang);
         setIsLoading(true);
         setError("");
@@ -485,60 +485,57 @@ export function OnboardingWizard() {
     };
 
     // Derived style classes
-    const baseInputClasses = "w-full bg-black/40 border border-[#2b2b38] rounded-2xl px-6 py-4 text-white placeholder-[#76747f] font-medium outline-none transition-all duration-300 hover:border-[#9333ea]/50 hover:bg-black/60 focus:scale-[1.02] focus:bg-black/80";
-
-    const cinematicBackground = useMemo(() => (
-        <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-            <div className="absolute inset-0 bg-[#0f0f18] opacity-90 mix-blend-multiply" />
-            <div className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] bg-[#9333ea] opacity-20 blur-[120px] rounded-full mix-blend-screen animate-pulse-slow" />
-            <div className="absolute top-[40%] -right-[20%] w-[60%] h-[60%] bg-[#00f1fe] opacity-10 blur-[100px] rounded-full mix-blend-screen" />
-            <div className="absolute -bottom-[10%] left-[20%] w-[80%] h-[50%] bg-[#ff00ff] opacity-10 blur-[150px] rounded-full mix-blend-screen" />
-        </div>
-    ), []);
+    const baseInputClasses = "w-full bg-black/40 border border-[#2b2b38] rounded-xl px-4 py-3 text-white placeholder-[#76747f] font-medium outline-none transition-all duration-300 hover:border-[#9333ea]/50 hover:bg-black/60";
 
     return (
-        <div className="relative min-h-screen w-full overflow-y-auto overflow-x-hidden bg-[#0a0a0f] selection:bg-[#00f1fe] selection:text-black">
-            
-            {/* Background Grid Pattern */}
-            <div className="fixed inset-0 z-0 opacity-20 pointer-events-none" style={{
-                backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px)`,
-                backgroundSize: '40px 40px',
-                backgroundPosition: 'center center'
-            }}>
+        /* Outermost: just the background color, no overflow restriction */
+        <div className="w-full bg-[#0a0a0f] selection:bg-[#00f1fe] selection:text-black">
+
+            {/* Fixed background layers — won't scroll */}
+            <div className="fixed inset-0 z-0 pointer-events-none">
+                {/* Grid overlay */}
+                <div style={{
+                    backgroundImage: `linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)`,
+                    backgroundSize: '40px 40px',
+                }} className="absolute inset-0" />
+                {/* Gradient fade on edges */}
                 <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f] via-transparent to-[#0a0a0f]" />
+                {/* Cinematic blobs */}
+                <div className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] bg-[#9333ea] opacity-20 blur-[120px] rounded-full" />
+                <div className="absolute top-[40%] -right-[20%] w-[60%] h-[60%] bg-[#00f1fe] opacity-10 blur-[100px] rounded-full" />
+                <div className="absolute -bottom-[10%] left-[20%] w-[80%] h-[50%] bg-[#ff00ff] opacity-10 blur-[150px] rounded-full" />
             </div>
 
-            {/* Cinematic Background */}
-            {cinematicBackground}
+            {/* Scrollable content — this is the actual scrolling wrapper */}
+            <div className="relative z-10 w-full min-h-screen flex flex-col items-center justify-center py-16 px-4">
 
-            {/* Main Center Content Container */}
-            <div className="relative z-10 w-full min-h-screen py-12 grid place-items-center">
-                
-                {/* 1. STRICT AUTH COMPONENT ("Welcome to AYA") */}
+                {/* ── 1. WELCOME PAGE ("Welcome to AYA") ── */}
                 {!isRegisterMode && (
-                    <div className="relative z-10 w-full mx-auto px-6 flex flex-col items-center justify-center" style={{ maxWidth: '400px' }}>
-                        <motion.div 
+                    <div className="w-full" style={{ maxWidth: '420px' }}>
+                        <motion.div
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, ease: "easeOut" }}
+                            transition={{ duration: 0.8, ease: 'easeOut' }}
                             className="w-full text-center"
                         >
-                            <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#0f0f18] text-white drop-shadow-[0_0_20px_rgba(0,241,254,0.4)] text-center mb-6 leading-tight">
-                                Welcome to AYA
+                            <h2 className="text-4xl font-black text-white drop-shadow-[0_0_20px_rgba(0,241,254,0.4)] text-center mb-8 leading-tight">
+                                Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00f1fe] to-[#9333ea]">AYA</span>
                             </h2>
-                            
-                            <div className="flex flex-col gap-4 mt-6 w-full">
+
+                            <div className="flex flex-col gap-4 w-full">
                                 <motion.button
-                                    initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+                                    initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+                                    whileHover={{ scale: 1.02, boxShadow: '0 0 30px rgba(255,255,255,0.3)' }}
+                                    whileTap={{ scale: 0.98 }}
                                     disabled={isLoading}
                                     onClick={handleGoogleSignIn}
-                                    className="w-full py-4 bg-white text-black font-black text-xl rounded-full shadow-lg flex items-center justify-center space-x-3 transition-all hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="w-full py-4 bg-white text-black font-black text-lg rounded-2xl shadow-lg flex items-center justify-center space-x-3 transition-all hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {isLoading ? (
                                         <span>INITIALIZING...</span>
                                     ) : (
                                         <>
-                                            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-8 h-8" />
+                                            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-7 h-7" />
                                             <span>SIGN IN WITH GOOGLE</span>
                                         </>
                                     )}
@@ -546,16 +543,17 @@ export function OnboardingWizard() {
 
                                 {!isLoading && (
                                     <>
-                                        <div className="flex items-center gap-4 my-2 opacity-50 w-full">
+                                        <div className="flex items-center gap-4 my-1 opacity-40 w-full">
                                             <div className="h-px bg-white flex-1" />
                                             <span className="text-white text-sm font-bold uppercase tracking-widest">OR</span>
                                             <div className="h-px bg-white flex-1" />
                                         </div>
-
                                         <motion.button
-                                            initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+                                            initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+                                            whileHover={{ scale: 1.02 }}
+                                            whileTap={{ scale: 0.98 }}
                                             onClick={() => { audioSynth.playClick(); navigate('/game/setup'); }}
-                                            className="w-full py-4 bg-transparent border-2 border-[#2b2b38] text-white font-bold text-lg rounded-full hover:bg-white/10 transition-all shadow-lg"
+                                            className="w-full py-4 bg-transparent border-2 border-[#2b2b38] text-white font-bold text-lg rounded-2xl hover:bg-white/10 hover:border-white/30 transition-all shadow-lg"
                                         >
                                             USE MOBILE NUMBER
                                         </motion.button>
@@ -563,120 +561,127 @@ export function OnboardingWizard() {
                                 )}
                             </div>
                         </motion.div>
-
-                        {/* Auth Greeting Mascot (Pinned Absolutely to Right Side on Desktop) */}
-                        <div className="hidden lg:block absolute left-full ml-8 lg:ml-12 top-1/2 -translate-y-1/2 w-80 lg:w-[360px] pointer-events-none select-none z-20">
-                            <div className="relative w-80 h-80 lg:w-[360px] lg:h-[360px] flex items-center justify-center drop-shadow-2xl">
-                                <div className="absolute inset-4 rounded-full blur-3xl opacity-35 bg-purple-500 transition-colors duration-500" />
-                                <DotLottieReact
-                                    src={encodeURI('/assets/Macot/waving mascot.lottie')}
-                                    loop
-                                    autoplay
-                                    style={{ width: '100%', height: '100%' }}
-                                    className="w-full h-full object-contain relative z-10"
-                                />
-                            </div>
-                        </div>
                     </div>
                 )}
 
-                {/* 2. STRICT ONBOARDING FORM COMPONENT ("Let's get to know you!") */}
+                {/* ── 2. SETUP FORM ("Let's get to know you!") ── */}
                 {isRegisterMode && (
-                    <div className="relative z-10 w-full mx-auto px-6 flex flex-col items-center justify-center" style={{ maxWidth: '450px' }}>
-                        <motion.div 
-                            initial={{ opacity: 0, y: 30 }}
+                    <div className="w-full" style={{ maxWidth: '480px' }}>
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, ease: "easeOut" }}
+                            transition={{ duration: 0.6, ease: 'easeOut' }}
                             className="w-full"
                         >
-                            <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#0f0f18] text-white drop-shadow-[0_0_20px_rgba(0,241,254,0.4)] text-center mb-6 leading-tight">
-                                {googleAuthId ? "Link Your Account" : "Let's get to \n know you!"}
-                            </h2>
+                            {/* Header */}
+                            <div className="text-center mb-8">
+                                <motion.h2
+                                    initial={{ opacity: 0, y: -20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.1 }}
+                                    className="text-4xl font-black text-white drop-shadow-[0_0_20px_rgba(0,241,254,0.4)] leading-tight"
+                                >
+                                    {googleAuthId ? 'Link Your Account' : "Let's get to know you!"}
+                                </motion.h2>
+                                <motion.p
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 0.6 }}
+                                    transition={{ delay: 0.2 }}
+                                    className="text-white/60 text-sm mt-2"
+                                >
+                                    Fill in your details to begin the journey
+                                </motion.p>
+                            </div>
 
+                            {/* Google Auth Banner */}
                             {googleAuthId && (
-                                <motion.div 
-                                    initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                                    className="mb-6 p-4 bg-emerald-900/40 text-emerald-100 rounded-3xl border border-emerald-500/50 backdrop-blur-md text-center shadow-xl relative overflow-hidden w-full"
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+                                    className="mb-6 p-4 bg-emerald-900/40 text-emerald-100 rounded-2xl border border-emerald-500/50 backdrop-blur-md text-center shadow-xl relative overflow-hidden"
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent pointer-events-none" />
-                                    <h3 className="font-black text-xl text-emerald-400 mb-1">Google Authenticated!</h3>
-                                    <p className="text-xs font-medium">To restore progress, enter your mobile number. Or enter a new one to start fresh.</p>
+                                    <h3 className="font-black text-lg text-emerald-400 mb-1">✓ Google Authenticated!</h3>
+                                    <p className="text-xs font-medium opacity-80">Enter your mobile number to restore progress or start fresh.</p>
                                 </motion.div>
                             )}
 
-                            <div className="space-y-5 w-full pb-8">
-                                <motion.div 
-                                    whileHover={{ y: -4, scale: 1.01 }}
-                                    initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                                    className="glass-panel p-6 rounded-3xl relative w-full transition-all duration-300 hover:shadow-[0_10px_40px_-10px_rgba(147,51,234,0.3)] border border-transparent hover:border-[#9333ea]/30"
+                            {/* Form Fields */}
+                            <div className="space-y-4 w-full">
+
+                                {/* Name */}
+                                <motion.div
+                                    whileHover={{ y: -2 }}
+                                    initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }}
+                                    className="glass-panel p-5 rounded-2xl border border-white/10 hover:border-[#9333ea]/40 transition-all duration-300 hover:shadow-[0_8px_30px_-10px_rgba(147,51,234,0.4)]"
                                 >
-                                    <label className="block text-xs font-bold text-[#f2effb] mb-2 uppercase tracking-wider">Identity</label>
+                                    <label className="block text-[11px] font-bold text-[#00f1fe] mb-2 uppercase tracking-[0.15em]">Identity</label>
                                     <input
                                         type="text"
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
-                                        className={`${baseInputClasses} py-3 px-4 focus:ring-4 focus:ring-[#9333ea]/30 focus:border-[#9333ea] focus:shadow-[0_0_20px_rgba(147,51,234,0.3)]`}
+                                        className={`${baseInputClasses} focus:ring-2 focus:ring-[#9333ea]/40 focus:border-[#9333ea]`}
                                         placeholder="Enter your full name"
                                         disabled={isLoading}
                                     />
                                 </motion.div>
 
-                                {isRegisterMode && (
-                                    <motion.div 
-                                        whileHover={{ y: -4, scale: 1.01 }}
-                                        initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-                                        className="glass-panel p-6 rounded-3xl relative transition-all duration-300 hover:shadow-[0_10px_40px_-10px_rgba(147,51,234,0.3)] border border-transparent hover:border-[#9333ea]/30"
-                                    >
-                                        <label className="block text-xs font-bold text-[#f2effb] mb-2 uppercase tracking-wider">Username</label>
-                                        <input
-                                            type="text"
-                                            value={username}
-                                            onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
-                                            className={`${baseInputClasses} py-3 px-4 focus:ring-4 focus:ring-[#9333ea]/30 focus:border-[#9333ea] focus:shadow-[0_0_20px_rgba(147,51,234,0.3)]`}
-                                            placeholder="Choose a unique username"
-                                            disabled={isLoading}
-                                            minLength={3}
-                                        />
-                                        <p className="text-[#acaab5] text-[10px] mt-2 ml-1">Must be at least 3 characters. Letters, numbers, and underscores only.</p>
-                                    </motion.div>
-                                )}
-
-                                <motion.div 
-                                    whileHover={{ y: -4, scale: 1.01 }}
-                                    initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-                                    className="glass-panel p-6 rounded-3xl relative flex flex-col items-center w-full transition-all duration-300 hover:shadow-[0_10px_40px_-10px_rgba(0,241,254,0.2)] border border-transparent hover:border-[#00f1fe]/30"
+                                {/* Username — live availability check */}
+                                <motion.div
+                                    whileHover={{ y: -2 }}
+                                    initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}
+                                    className="glass-panel p-5 rounded-2xl border border-white/10 hover:border-[#9333ea]/40 transition-all duration-300 hover:shadow-[0_8px_30px_-10px_rgba(147,51,234,0.4)]"
                                 >
+                                    <UsernameField
+                                        value={username}
+                                        onChange={setUsername}
+                                        status={usernameAvailability.status}
+                                        errorMessage={usernameAvailability.errorMessage}
+                                        disabled={isLoading}
+                                        label="Username"
+                                        helperText="3–20 characters · letters, numbers and underscores only"
+                                    />
+                                </motion.div>
+
+                                {/* Age Selector */}
+                                <motion.div
+                                    whileHover={{ y: -2 }}
+                                    initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 }}
+                                    className="glass-panel p-5 rounded-2xl border border-white/10 hover:border-[#00f1fe]/40 transition-all duration-300 hover:shadow-[0_8px_30px_-10px_rgba(0,241,254,0.2)]"
+                                >
+                                    <label className="block text-[11px] font-bold text-[#00f1fe] mb-4 uppercase tracking-[0.15em]">Your Age</label>
                                     <AgeSelector value={age} onChange={setAge} />
                                 </motion.div>
 
-                                <motion.div 
-                                    whileHover={{ y: -4, scale: 1.01 }}
-                                    initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-                                    className="glass-panel p-6 rounded-3xl relative flex flex-col items-center w-full transition-all duration-300 hover:shadow-[0_10px_40px_-10px_rgba(0,241,254,0.2)] border border-transparent hover:border-[#00f1fe]/30"
+                                {/* Language */}
+                                <motion.div
+                                    whileHover={{ y: -2 }}
+                                    initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}
+                                    className="glass-panel p-5 rounded-2xl border border-white/10 hover:border-[#00f1fe]/40 transition-all duration-300 hover:shadow-[0_8px_30px_-10px_rgba(0,241,254,0.2)]"
                                 >
-                                    <label className="block text-xs font-bold text-[#f2effb] mb-4 uppercase tracking-wider">Preferred Language</label>
-                                    <div className="flex gap-4 w-full">
-                                        <button 
+                                    <label className="block text-[11px] font-bold text-[#00f1fe] mb-3 uppercase tracking-[0.15em]">Preferred Language</label>
+                                    <div className="flex gap-3 w-full">
+                                        <button
                                             onClick={() => { audioSynth.playClick(); setPrefLang('en'); }}
-                                            className={`flex-1 py-3 rounded-2xl font-bold transition-all border-2 ${prefLang === 'en' ? 'bg-[#00f1fe] text-[#004145] border-[#00f1fe] shadow-[0_0_15px_rgba(0,241,254,0.4)]' : 'bg-black/40 text-[#acaab5] border-[#2b2b38] hover:border-[#00f1fe]/50 hover:text-white'}`}
+                                            className={`flex-1 py-3 rounded-xl font-bold text-sm transition-all border-2 ${prefLang === 'en' ? 'bg-[#00f1fe] text-[#004145] border-[#00f1fe] shadow-[0_0_15px_rgba(0,241,254,0.4)]' : 'bg-black/40 text-white/60 border-white/10 hover:border-[#00f1fe]/50 hover:text-white'}`}
                                         >
                                             English
                                         </button>
-                                        <button 
+                                        <button
                                             onClick={() => { audioSynth.playClick(); setPrefLang('hi'); }}
-                                            className={`flex-1 py-3 rounded-2xl font-bold transition-all border-2 ${prefLang === 'hi' ? 'bg-[#00f1fe] text-[#004145] border-[#00f1fe] shadow-[0_0_15px_rgba(0,241,254,0.4)]' : 'bg-black/40 text-[#acaab5] border-[#2b2b38] hover:border-[#00f1fe]/50 hover:text-white'}`}
+                                            className={`flex-1 py-3 rounded-xl font-bold text-sm transition-all border-2 ${prefLang === 'hi' ? 'bg-[#00f1fe] text-[#004145] border-[#00f1fe] shadow-[0_0_15px_rgba(0,241,254,0.4)]' : 'bg-black/40 text-white/60 border-white/10 hover:border-[#00f1fe]/50 hover:text-white'}`}
                                         >
                                             हिंदी (Hindi)
                                         </button>
                                     </div>
                                 </motion.div>
 
-                                <motion.div 
-                                    whileHover={{ y: -4, scale: 1.01 }}
-                                    initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
-                                    className="glass-panel p-6 rounded-3xl relative w-full transition-all duration-300 hover:shadow-[0_10px_40px_-10px_rgba(0,241,254,0.2)] border border-transparent hover:border-[#00f1fe]/30"
+                                {/* Mobile */}
+                                <motion.div
+                                    whileHover={{ y: -2 }}
+                                    initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.35 }}
+                                    className="glass-panel p-5 rounded-2xl border border-white/10 hover:border-[#00f1fe]/40 transition-all duration-300 hover:shadow-[0_8px_30px_-10px_rgba(0,241,254,0.2)]"
                                 >
-                                    <label className="block text-xs font-bold text-[#f2effb] mb-2 uppercase tracking-wider">Access Code (Mobile)</label>
+                                    <label className="block text-[11px] font-bold text-[#00f1fe] mb-2 uppercase tracking-[0.15em]">Mobile Number</label>
                                     <input
                                         type="tel"
                                         inputMode="numeric"
@@ -684,83 +689,73 @@ export function OnboardingWizard() {
                                         autoComplete="tel"
                                         value={mobile}
                                         onChange={(e) => setMobile(e.target.value)}
-                                        className={`${baseInputClasses} py-3 px-4 focus:ring-4 focus:ring-[#00f1fe]/30 focus:border-[#00f1fe] focus:shadow-[0_0_20px_rgba(0,241,254,0.3)]`}
+                                        className={`${baseInputClasses} focus:ring-2 focus:ring-[#00f1fe]/40 focus:border-[#00f1fe]`}
                                         placeholder="E.g. 9876543210"
                                         disabled={isLoading}
                                     />
                                 </motion.div>
                             </div>
 
+                            {/* Error message */}
                             <AnimatePresence>
                                 {error && (
-                                    <motion.div 
-                                        initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
-                                        className="mt-4 p-4 bg-red-900/40 text-red-100 rounded-xl border border-red-500/50 backdrop-blur-md text-center font-bold w-full"
+                                    <motion.div
+                                        initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
+                                        className="mt-4 p-4 bg-red-900/40 text-red-200 rounded-xl border border-red-500/50 backdrop-blur-md text-center text-sm font-bold"
                                     >
-                                        <p>{error}</p>
+                                        ⚠️ {error}
                                     </motion.div>
                                 )}
                             </AnimatePresence>
 
-                            <div className="flex flex-col gap-4 mt-8 w-full">
+                            {/* Action Buttons */}
+                            <div className="flex flex-col gap-3 mt-6">
                                 <motion.button
-                                    initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }}
-                                    disabled={!mobile.trim() || isLoading}
+                                    initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}
+                                    whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(0,241,254,0.5)' }}
+                                    whileTap={{ scale: 0.98 }}
+                                    disabled={!mobile.trim() || isLoading || (isRegisterMode && sessionStorage.getItem('aya_temp_existing_user') !== 'true' && usernameAvailability.status !== 'available' && username.trim().length >= 3)}
                                     onClick={handleComplete}
-                                    className="w-full py-4 bg-[#00f1fe] text-[#004145] font-black text-xl rounded-full shadow-[0_0_30px_rgba(0,241,254,0.4)] flex items-center justify-center space-x-2 relative group overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#99f7ff] transition-all"
+                                    className="w-full py-4 bg-[#00f1fe] text-[#004145] font-black text-lg rounded-2xl shadow-[0_0_30px_rgba(0,241,254,0.35)] flex items-center justify-center space-x-2 relative overflow-hidden disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#7ff9ff] transition-all"
                                 >
-                                    <motion.div 
+                                    <motion.div
                                         className="absolute inset-0 bg-white"
-                                        animate={{ opacity: [0, 0.4, 0] }}
-                                        transition={{ duration: 2, repeat: Infinity }}
+                                        animate={{ opacity: [0, 0.25, 0] }}
+                                        transition={{ duration: 2.5, repeat: Infinity }}
                                     />
-                                    <span className="relative z-10">{isLoading ? 'INITIALIZING...' : (sessionStorage.getItem('aya_temp_existing_user') === 'true' ? 'CONFIRM & ENTER GAME' : (googleAuthId ? 'LINK ACCOUNT' : 'START MY JOURNEY'))}</span>
-                                    {!isLoading && <Check size={24} className="relative z-10 stroke-[4]" />}
+                                    <span className="relative z-10">
+                                        {isLoading ? 'INITIALIZING...' : (
+                                            sessionStorage.getItem('aya_temp_existing_user') === 'true'
+                                                ? 'CONFIRM & ENTER GAME'
+                                                : googleAuthId ? 'LINK ACCOUNT' : 'START MY JOURNEY'
+                                        )}
+                                    </span>
+                                    {!isLoading && <Check size={22} className="relative z-10 stroke-[3]" />}
                                 </motion.button>
-                                
+
                                 <motion.button
-                                    initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9 }}
+                                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.55 }}
                                     disabled={isLoading}
-                                    onClick={() => { 
-                                        audioSynth.playClick(); 
+                                    onClick={() => {
+                                        audioSynth.playClick();
                                         sessionStorage.removeItem('aya_temp_google_id');
                                         sessionStorage.removeItem('aya_temp_google_name');
                                         sessionStorage.removeItem('aya_temp_google_age');
                                         sessionStorage.removeItem('aya_temp_google_mobile');
                                         sessionStorage.removeItem('aya_temp_existing_user');
                                         sessionStorage.removeItem('aya_temp_user_data');
-                                        navigate('/game/welcome'); 
+                                        navigate('/game/welcome');
                                     }}
-                                    className="w-full py-2 bg-transparent text-white/70 font-bold text-sm rounded-full transition-all hover:text-white mt-1"
+                                    className="w-full py-2 text-white/50 hover:text-white/80 font-semibold text-sm rounded-full transition-all"
                                 >
-                                    BACK
+                                    ← Back
                                 </motion.button>
                             </div>
                         </motion.div>
-
-                        {/* Onboarding Sidekick Mascot (Pinned Absolutely to Right Side, Hidden on Mobile/Tablet) */}
-                        <div className="hidden lg:block absolute left-full ml-8 lg:ml-12 top-1/2 -translate-y-1/2 w-80 lg:w-[360px] pointer-events-none select-none z-20">
-                            <div className="relative w-80 h-80 lg:w-[360px] lg:h-[360px] flex items-center justify-center drop-shadow-2xl">
-                                {/* Glowing Background Aura */}
-                                <div
-                                    className={`absolute inset-4 rounded-full blur-3xl opacity-35 transition-colors duration-500 ${
-                                        mascotState === 'happy' ? 'bg-amber-400 opacity-70 animate-pulse' : 'bg-purple-500 opacity-40'
-                                    }`}
-                                />
-
-                                <DotLottieReact
-                                    key={mascotState}
-                                    src={encodeURI(mascotState === 'happy' ? '/assets/Macot/happy mascot.lottie' : '/assets/Macot/waving mascot.lottie')}
-                                    loop
-                                    autoplay
-                                    style={{ width: '100%', height: '100%' }}
-                                    className="w-full h-full object-contain relative z-10"
-                                />
-                            </div>
-                        </div>
                     </div>
                 )}
             </div>
         </div>
     );
 }
+
