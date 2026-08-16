@@ -4,6 +4,7 @@ import { supabase } from '../utils/supabase';
 import { getSessionId } from '../utils/session';
 import { useUserStore } from '../store/userStore';
 import clsx from 'clsx';
+import AddToWishlistButton from './feedback/AddToWishlistButton';
 
 interface SearchBarProps {
   personalities: string[];
@@ -34,13 +35,13 @@ export function SearchBar({ personalities, onMatch, onClose }: SearchBarProps) {
       setNotedMessage(null);
     } else {
       // No match found
-      setNotedMessage(`We don't have ${query.trim()} yet — but we've noted your request 👀`);
+      setNotedMessage(`We don't have ${query.trim()} yet.`);
       
-      // Clear message after 4 seconds
+      // Clear message after 8 seconds to give time to click
       if (messageTimer.current) clearTimeout(messageTimer.current);
       messageTimer.current = setTimeout(() => {
         setNotedMessage(null);
-      }, 4000);
+      }, 8000);
     }
 
     // Log to Supabase for ALL searches (matches and non-matches)
@@ -126,7 +127,8 @@ export function SearchBar({ personalities, onMatch, onClose }: SearchBarProps) {
             : "bg-black/60 border-[#00f2ff]/20 text-[#00f2ff]"
         )}
       >
-        {notedMessage}
+        <div className="mb-2">{notedMessage}</div>
+        {notedMessage && <AddToWishlistButton searchQuery={inputValue} />}
       </div>
     </div>
   );

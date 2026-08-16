@@ -4,9 +4,11 @@ import { audioManager as audioSynth } from "../../utils/audioManager";
 import { detectEmotion, EMOTION_THEMES } from '../../utils/storyEmotion';
 import type { EmotionTheme } from '../../utils/storyEmotion';
 import { bgmManager } from '../../utils/bgmManager';
+import { CheckCircle, AlertCircle, ChevronRight, Volume2, VolumeX, Loader2, Palette, Star } from 'lucide-react';
+import DifficultySlider from '../feedback/DifficultySlider';
+import { useJourneyTracking } from '../../hooks/useJourneyTracking';
 import type { Level, Lesson } from '../../types/gameTypes';
 import clsx from 'clsx';
-import { ChevronRight, Star, AlertCircle, CheckCircle, Palette, Loader2, Volume2, VolumeX } from 'lucide-react';
 import { supabase } from '../../utils/supabase';
 import { STORY_DATABASE } from '../../data/scenarios';
 import { IDOL_PROFILES } from '../../data/idolMindsets';
@@ -101,7 +103,10 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
     const [pauseStartTime, setPauseStartTime] = useState<number | null>(null);
 
     // Save status toast state
-    const [saveStatus, setSaveStatus] = useState<'idle' | 'saved' | 'failed'>('idle');
+    const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+
+    useJourneyTracking(level.id);
+
     const toggleCandyMode = useUserStore((state) => state.toggleCandyMode);
     const collectLesson = useUserStore((state) => state.collectLesson);
     const updateTraits = useUserStore((state) => state.updateTraits);
@@ -678,14 +683,14 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                     }).eq('id', userProfile.id);
                     if (usersErr) {
                         console.error('[AYA] users update error:', usersErr.message, usersErr.details);
-                        setSaveStatus('failed');
+                        setSaveStatus('error');
                     } else {
                         console.log('[AYA] ✓ users updated (XP + level_scores saved)');
                         setSaveStatus('saved');
                     }
                 } catch (e) {
                     console.error('[AYA] users update threw:', e);
-                    setSaveStatus('failed');
+                    setSaveStatus('error');
                 }
 
                 // ── 2. Upsert personality_profiles ────────────────────────────────────────
@@ -1125,8 +1130,14 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                                 style={{ fontSize: '0.95rem' }}>
                                     {lessonBody}
                                 </p>
+
+                                {/* Difficulty Slider */}
+                                <div className="mt-4 shrink-0 w-full">
+                                    <DifficultySlider journeyId={level.id} />
+                                </div>
+
                                 {/* Finish Chapter button — always visible on lesson screen */}
-                                <div className="mt-2 shrink-0">
+                                <div className="mt-4 shrink-0">
                                         {displayedChoices.map((choice, idx) => (
                                             <button
                                                 key={idx}

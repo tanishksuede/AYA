@@ -15,6 +15,7 @@ import { MapAmbience } from './MapAmbience';
 import { getUnlockedDayCount } from '../../utils/storyUnlock';
 import { SearchBar } from '../SearchBar';
 import { resolvePersonalityAvatar } from '../../utils/avatarUtils';
+import TopicPreferencesSurvey from '../feedback/TopicPreferencesSurvey';
 
 interface LevelMapProps {
     onPlayLevel: (level: any) => void;
@@ -471,6 +472,20 @@ export function LevelMap({ onPlayLevel, onOpenDnaProfile }: LevelMapProps) {
                 </motion.div>
             </div>
 
+            {/* Topic Survey Modal after 3rd Journey */}
+            {profile?.stories_completed === 3 && !localStorage.getItem('aya_topic_survey_done') && (
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+                    <div className="animate-fade-in-up">
+                        <TopicPreferencesSurvey 
+                            onComplete={() => {
+                                localStorage.setItem('aya_topic_survey_done', 'true');
+                                // Force a re-render to hide it
+                                setHighlightedNodeId('refresh');
+                            }} 
+                        />
+                    </div>
+                </div>
+            )}
         </div >
     );
 }
