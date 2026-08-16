@@ -82,6 +82,7 @@ interface UserState {
     setPendingStreakData: (data: { xpEarned: number, oldStreak: number, newStreak: number, isMilestone: boolean } | null) => void;
 
     resetProgress: () => void;
+    clearUserData: () => void;
 }
 const syncStoreToBackend = async (profile: any, currentLevelScores: Record<string, number>) => {
     if (!profile || !profile.id || profile.id.startsWith('offline-')) return;
@@ -553,6 +554,18 @@ export const useUserStore = create<UserState>()(
                 levelScores: {},
                 collectedLessons: []
                 // We keep 'isCandyMode' and audio settings as user preference
+            }),
+
+            clearUserData: () => set({
+                profile: null,
+                completedOnboarding: false,
+                levels: [],
+                levelScores: {},
+                xp: 0,
+                collectedLessons: [],
+                activeLevel: null,
+                pendingStreakData: null,
+                hasSolarLoadedThisSession: false,
             })
         }),
         {

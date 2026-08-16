@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../store/userStore';
 import { audioManager as audioSynth } from "../utils/audioManager";
 import { bgmManager } from '../utils/bgmManager';
-import { Volume2, VolumeX } from 'lucide-react';
+import { Volume2, VolumeX, Trash2, AlertTriangle } from 'lucide-react';
 import clsx from 'clsx';
 import { supabase } from '../utils/supabase';
 import { useUsernameAvailability } from '../hooks/useUsernameAvailability';
 import { UsernameField } from '../components/game/UsernameField';
+import { clearAllUserData } from '../utils/session';
 
 export function SettingsPage() {
     const navigate = useNavigate();
@@ -18,9 +19,15 @@ export function SettingsPage() {
     const [usernameSuccess, setUsernameSuccess] = useState('');
     const [isSavingUsername, setIsSavingUsername] = useState(false);
 
+    // Delete Account State
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+    const [deleteError, setDeleteError] = useState<string | null>(null);
+
     const profile = useUserStore((state) => state.profile);
     const setProfile = useUserStore((state) => state.setProfile);
     const resetProgress = useUserStore((state) => state.resetProgress);
+    const clearUserData = useUserStore((state) => state.clearUserData);
 
     const musicVolume = useUserStore((state) => state.musicVolume);
     const sfxVolume = useUserStore((state) => state.sfxVolume);
@@ -170,6 +177,68 @@ export function SettingsPage() {
         usernameInput.trim() !== '' &&
         usernameAvailability.status === 'available' &&
         !isSavingUsername;
+
+    const handleDeleteAccount = async () => {
+        setIsDeletingAccount(true);
+        setDeleteError(null);
+
+        const isGuest = !profile?.id || profile.id.startsWith('local_') || profile.id.startsWith('offline-');
+
+        try {
+            if (!isGuest && profile?.id) {
+                const { data: { session } } = await supabase.auth.getSession();
+                const token = session?.access_token;
+
+                let apiSuccess = false;
+                try {
+                    const response = await fetch('/api/delete-account', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                        },
+                        body: JSON.stringify({ userId: profile.id })
+                    });
+
+                    const resData = await response.json().catch(() => ({}));
+                    if (response.ok && resData.success) {
+                        apiSuccess = true;
+                    } else if (resData.error) {
+                        console.warn('[DeleteAccount] Endpoint returned error, trying DB fallback:', resData.error);
+                    }
+                } catch (fetchErr) {
+                    console.warn('[DeleteAccount] Endpoint fetch failed, using DB fallback:', fetchErr);
+                }
+
+                // Fallback direct DB soft-delete if API endpoint didn't succeed
+                if (!apiSuccess) {
+                    const { error: dbError } = await supabase
+                        .from('users')
+                        .update({ status: 'deactivated', deleted_at: new Date().toISOString() })
+                        .eq('id', profile.id);
+                    if (dbError) {
+                        throw new Error(`Database error: ${dbError.message}`);
+                    }
+                }
+
+                try {
+                    await supabase.auth.signOut();
+                } catch {}
+            }
+
+            // Clear store and localStorage
+            clearUserData();
+            clearAllUserData();
+
+            // Redirect
+            navigate('/game/welcome');
+        } catch (err: any) {
+            console.error('[DeleteAccount] Error during account deletion:', err);
+            setDeleteError(err.message || 'An error occurred while deleting your account. Please try again.');
+        } finally {
+            setIsDeletingAccount(false);
+        }
+    };
 
     return (
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-slate-950 p-4 animate-fade-in">
@@ -330,8 +399,8 @@ export function SettingsPage() {
                         onClick={async () => {
                             audioSynth.playClick();
                             await supabase.auth.signOut();
-                            localStorage.clear();
-                            sessionStorage.clear();
+                            clearUserData();
+                            clearAllUserData();
                             window.location.href = '/';
                         }}
                         className="w-full bg-slate-800 hover:bg-orange-900/50 text-orange-400 hover:text-orange-200 border border-slate-700 hover:border-orange-800 font-bold py-3 rounded-xl shadow-lg transform active:scale-95 transition-all uppercase tracking-wider text-xs"
@@ -339,11 +408,71 @@ export function SettingsPage() {
                         Sign Out
                     </button>
 
-                    <button onClick={() => { audioSynth.playBack(); navigate(-1); }} className="w-full text-slate-500 text-sm py-2 hover:text-white transition-colors">
-                        Go Back
-                    </button>
+                    {/* Bottom row: Go Back (left) & Delete Account (bottom right) */}
+                    <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
+                        <button
+                            onClick={() => { audioSynth.playBack(); navigate(-1); }}
+                            className="text-slate-500 text-xs font-semibold hover:text-white transition-colors py-2 px-1"
+                        >
+                            ← Go Back
+                        </button>
+                        <button
+                            onClick={() => { audioSynth.playClick(); setShowDeleteConfirm(true); }}
+                            className="px-3.5 py-2 bg-red-950/70 hover:bg-red-900 text-red-400 hover:text-red-100 border border-red-800/70 hover:border-red-600 rounded-xl text-[11px] font-extrabold uppercase tracking-wider flex items-center gap-1.5 shadow-md transition-all transform active:scale-95"
+                        >
+                            <Trash2 size={13} />
+                            <span>Delete Account</span>
+                        </button>
+                    </div>
                 </div>
             </div>
+
+            {/* 2-Step Confirmation Modal for Account Deletion */}
+            {showDeleteConfirm && (
+                <div className="fixed inset-0 z-[250] bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+                    <div className="bg-slate-900 border border-red-900/80 rounded-2xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl relative">
+                        <div className="w-12 h-12 rounded-full bg-red-950 border border-red-800 text-red-400 flex items-center justify-center mx-auto shadow-inner">
+                            <AlertTriangle size={24} />
+                        </div>
+                        
+                        <h3 className="text-lg font-black text-white tracking-wide">Delete Your Account?</h3>
+                        
+                        <p className="text-xs text-slate-300 leading-relaxed">
+                            Your account will be deactivated immediately and permanently erased after <strong className="text-red-400 font-bold">30 days</strong>. All your XP, levels, traits, and story progress will be lost.
+                        </p>
+
+                        {deleteError && (
+                            <div className="p-3 bg-red-950/90 border border-red-800 text-red-200 text-xs rounded-xl font-semibold">
+                                ⚠️ {deleteError}
+                            </div>
+                        )}
+
+                        <div className="flex flex-col gap-2.5 pt-2">
+                            <button
+                                disabled={isDeletingAccount}
+                                onClick={handleDeleteAccount}
+                                className="w-full py-3 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl text-xs uppercase tracking-widest shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 transition-all transform active:scale-95"
+                            >
+                                {isDeletingAccount ? (
+                                    <span>Deactivating Account…</span>
+                                ) : (
+                                    <>
+                                        <Trash2 size={14} />
+                                        <span>Confirm Account Deletion</span>
+                                    </>
+                                )}
+                            </button>
+                            <button
+                                disabled={isDeletingAccount}
+                                onClick={() => { setShowDeleteConfirm(false); setDeleteError(null); }}
+                                className="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl text-xs transition-colors"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

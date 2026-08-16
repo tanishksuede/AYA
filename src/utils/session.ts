@@ -46,6 +46,34 @@ export const clearSession = () => {
   console.log('[Session] Cleared.');
 };
 
+export const clearAllUserData = () => {
+  clearSession();
+  try {
+    const keysToRemove: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && (k.startsWith('aya_') || k === 'user-storage')) {
+        keysToRemove.push(k);
+      }
+    }
+    keysToRemove.forEach((k) => localStorage.removeItem(k));
+    localStorage.clear();
+  } catch {}
+
+  try {
+    const sessionKeys: string[] = [];
+    for (let i = 0; i < sessionStorage.length; i++) {
+      const k = sessionStorage.key(i);
+      if (k && (k.startsWith('aya_') || k === 'user-storage')) {
+        sessionKeys.push(k);
+      }
+    }
+    sessionKeys.forEach((k) => sessionStorage.removeItem(k));
+    sessionStorage.clear();
+  } catch {}
+  console.log('[Session] All user data cleared from local and session storage.');
+};
+
 export const markQuizDone = () => {
   safeSet(KEYS.quizDone, 'true');
 };
@@ -61,3 +89,4 @@ export function getSessionId(): string {
   }
   return id;
 }
+
