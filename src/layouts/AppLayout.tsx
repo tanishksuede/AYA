@@ -10,11 +10,11 @@ export function AppLayout() {
                        location.pathname.includes('/game/report');
 
     return (
-        <div className="flex flex-col h-screen bg-slate-950 text-white overflow-hidden">
+        <div className="flex flex-col min-h-screen bg-slate-950 text-white overflow-x-hidden">
             {/* Premium Neon PWA Header */}
             {!hideHeader && <PwaHeader />}
             {/* Main Content Area */}
-            <main className="flex-1 overflow-auto relative">
+            <main className="flex-1 relative">
                 <Outlet />
             </main>
         </div>

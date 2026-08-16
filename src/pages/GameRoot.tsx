@@ -387,7 +387,11 @@ export function GameRoot() {
     }
 
     return (
-        <div className="relative w-full h-[100dvh] bg-slate-900 text-slate-100 overflow-hidden font-sans">
+        <div className={`relative w-full font-sans bg-slate-900 text-slate-100 ${
+            location.pathname === '/game/welcome' || location.pathname === '/game/setup'
+                ? 'min-h-[100dvh] overflow-y-auto overflow-x-hidden'
+                : 'h-[100dvh] overflow-hidden'
+        }`}>
             <SupabaseChecker />
             <Outlet />
             {pendingStreakData && (

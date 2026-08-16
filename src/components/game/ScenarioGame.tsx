@@ -486,8 +486,8 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
             // Use the ref to get the definitive up-to-date list (avoids React stale closure)
             const finalSessionChoices = [...sessionChoicesRef.current, choiceData];
 
-            if (finalSessionChoices.length <= 1) {
-                console.warn(`[BUG 3] Data issue: Personality journey ${level.scenarioId} has only 1 question. Skipping completion screen.`);
+            if (finalSessionChoices.length === 0) {
+                console.warn(`Data issue: Personality journey ${level.scenarioId} has 0 questions. Skipping completion screen.`);
                 onBack();
                 return;
             }
@@ -558,8 +558,6 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                 empathy: safeClamp((oScores.empathy * currentSurveyWeight) + (newGameplayScores.empathy * gameplayWeight)),
                 leadership: safeClamp((oScores.leadership * currentSurveyWeight) + (newGameplayScores.leadership * gameplayWeight))
             };
-
-            console.log(`[BUG 5] DNA Recalculated using ${totalChoices} historical choices`);
 
             // Calculate Match Result against IDOL_PROFILES
             const idolTraits = IDOL_PROFILES[idolName] || IDOL_PROFILES["Default"];
