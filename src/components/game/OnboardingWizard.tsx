@@ -152,6 +152,7 @@ export function OnboardingWizard() {
                         .from('users')
                         .select('*')
                         .eq('google_id', googleId)
+                        .is('deleted_at', null)
                         .maybeSingle();
 
                     if (dbError) {
@@ -486,6 +487,7 @@ export function OnboardingWizard() {
                 .from('users')
                 .select('*')
                 .eq('mobile', cleanMobile)
+                .is('deleted_at', null)
                 .maybeSingle();
 
             if (searchError) throw searchError;

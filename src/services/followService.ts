@@ -125,6 +125,7 @@ export async function searchUsersByUsername(
     .from('users')
     .select('id, username, name')
     .not('username', 'is', null)
+    .is('deleted_at', null)
     .ilike('username', `${clean}%`)
     .order('username')
     .limit(20);
@@ -211,7 +212,8 @@ export async function getIncomingFollowRequests(): Promise<FollowRequest[]> {
   const { data: userRows, error: userError } = await supabase
     .from('users')
     .select('id, username, name')
-    .in('id', requesterIds);
+    .in('id', requesterIds)
+    .is('deleted_at', null);
 
   if (userError) throw new Error(formatSupabaseError(userError));
 

@@ -86,7 +86,7 @@ export function GameRoot() {
                         attempt++;
                         try {
                             const { data, error }: any = await withTimeout(
-                                supabase.from('users').select('*').eq('id', session.userId).maybeSingle()
+                                supabase.from('users').select('*').eq('id', session.userId).is('deleted_at', null).maybeSingle()
                             );
                             if (error) throw error;
                             user = data;
@@ -103,7 +103,7 @@ export function GameRoot() {
                 } else {
                     try {
                         const { data, error }: any = await withTimeout(
-                            supabase.from('users').select('*').eq('id', session.userId).maybeSingle()
+                            supabase.from('users').select('*').eq('id', session.userId).is('deleted_at', null).maybeSingle()
                         );
                         if (error) throw error;
                         user = data;
