@@ -5,6 +5,7 @@ import { audioManager as audioSynth } from "../../utils/audioManager";
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { saveSession } from '../../utils/session';
 import { supabase } from '../../utils/supabase';
+import { deriveMobileEmail, deriveMobilePassword } from '../../utils/authHelpers';
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
@@ -196,6 +197,76 @@ export function OnboardingWizard() {
         fetch(encodeURI('/assets/Macot/happy mascot.lottie')).catch(() => {});
     }, []);
 
+    /**
+     * Ensure this mobile user has a Supabase Auth session.
+     * Creates one via signUp (new) or restores via signInWithPassword (existing).
+     * Sets auth_user_id on the public.users row so RLS get_my_user_id() works.
+     *
+     * This is called for ALL mobile users — Google OAuth users already have
+     * an auth session from signInWithOAuth and do NOT go through this path.
+     */
+    const ensureMobileAuthSession = async (userData: any): Promise<void> => {
+        if (!userData.mobile) return;
+
+        const email = deriveMobileEmail(userData.mobile);
+        const password = deriveMobilePassword(userData.mobile);
+
+        // 1. Try signing in (most users will already have an auth account)
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        });
+
+        if (signInData?.session) {
+            // Session restored — link auth_user_id if not already set
+            const authUid = signInData.session.user.id;
+            if (!userData.auth_user_id) {
+                await supabase
+                    .from('users')
+                    .update({ auth_user_id: authUid })
+                    .eq('id', userData.id);
+            }
+            return;
+        }
+
+        // 2. signIn failed (no auth account yet) — create one
+        const isInvalidCredentials =
+            signInError?.message?.includes('Invalid login credentials') ||
+            signInError?.status === 400;
+
+        if (!isInvalidCredentials) {
+            // Unexpected error — log but don't block login
+            console.warn('[Auth] signInWithPassword unexpected error:', signInError?.message);
+            return;
+        }
+
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+            email,
+            password,
+        });
+
+        if (signUpError) {
+            console.warn('[Auth] signUp failed:', signUpError.message);
+            return;
+        }
+
+        if (signUpData?.session) {
+            const authUid = signUpData.session.user.id;
+            await supabase
+                .from('users')
+                .update({ auth_user_id: authUid })
+                .eq('id', userData.id);
+        } else {
+            // signUp succeeded but no session — likely email confirmation is still ON
+            // in the Supabase Dashboard. Log a clear error for the developer.
+            console.error(
+                '[Auth] signUp returned no session. ' +
+                'Please disable email confirmation in Supabase Dashboard: ' +
+                'Authentication → Settings → Enable email confirmations → OFF'
+            );
+        }
+    };
+
     const performLogin = async (userData: any, gId: string | null, isExisting: boolean) => {
         let userId = userData.id;
         let existingProfile: any = null;
@@ -232,6 +303,16 @@ export function OnboardingWizard() {
             if (profileError) console.warn('Supabase personality upsert failed', profileError);
         }
 
+        // ── Ensure Supabase Auth session for mobile users ─────────────────────
+        // Google OAuth users already have a session from signInWithOAuth.
+        // Mobile-only users need one created here so auth.uid() works for RLS.
+        const { data: { session: existingAuthSession } } = await supabase.auth.getSession();
+        const isGoogleSession = existingAuthSession?.user?.app_metadata?.provider === 'google';
+
+        if (!isGoogleSession && userData.mobile) {
+            await ensureMobileAuthSession(userData);
+        }
+
         // Persist session to localStorage + sessionStorage
         saveSession({ id: userId, mobile: userData.mobile, name: userData.name, age: userData.age, username: userData.username });
 
@@ -246,7 +327,7 @@ export function OnboardingWizard() {
             });
         }
 
-        // Check if user is an admin
+        // Check if user is an admin (by Google email or any auth email)
         let isAdmin = false;
         try {
             const { data: { session: authSession } } = await supabase.auth.getSession();

@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { audioManager as audioSynth } from "../../utils/audioManager";
-import { ArrowLeft, Copy, Check, Star, Shield, Download, ClipboardList, Flame } from 'lucide-react';
+import { ArrowLeft, Copy, Check, Star, Shield, Download, ClipboardList, Flame, Dna } from 'lucide-react';
 import { IDOL_MINDSETS, IDOL_PROFILES } from '../../data/idolMindsets';
 import { useUserStore } from '../../store/userStore';
 import { calculateLevelInfo } from '../../utils/levelSystem';
@@ -8,6 +8,7 @@ import domtoimage from 'dom-to-image';
 import { InstagramCard } from './InstagramCard';
 import { FutureSelfCard } from './FutureSelfCard';
 import { FutureSelfShareCard } from './FutureSelfShareCard';
+import { GenomicReportCard } from './GenomicReportCard';
 import { calculateLifeTraits, matchFutureArchetype } from '../../utils/futureSelfMatch';
 import { bgmManager } from '../../utils/bgmManager';
 import { getFollowerCount, getFollowingCount } from '../../services/followService';
@@ -159,6 +160,7 @@ export function DnaProfile({ onBack }: DnaProfileProps) {
     const [isGenerating, setIsGenerating] = useState(false);
     const [isFutureGenerating, setIsFutureGenerating] = useState(false);
     const [showOptions, setShowOptions] = useState(false);
+    const [activeTab, setActiveTab] = useState<'telemetry' | 'genomic'>('telemetry');
     const cardRef = useRef<HTMLDivElement>(null);
     const futureSelfCardRef = useRef<HTMLDivElement>(null);
 
@@ -340,11 +342,41 @@ export function DnaProfile({ onBack }: DnaProfileProps) {
                 </div>
 
                 {/* Profile Badge */}
-                <div className="mb-10 px-6 py-2 rounded-full border-2 border-[rgba(153,247,255,0.3)] bg-[rgba(0,85,90,0.8)] shadow-lg flex items-center gap-2">
+                <div className="mb-6 px-6 py-2 rounded-full border-2 border-[rgba(153,247,255,0.3)] bg-[rgba(0,85,90,0.8)] shadow-lg flex items-center gap-2">
                     <Shield size={16} className="text-[#99f7ff] animate-pulse" />
                     <span className="text-xs font-black uppercase tracking-widest text-[#99f7ff]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{dynamicProfileTag}</span>
                 </div>
 
+                {/* View Mode Navigation Tabs */}
+                <div className="mb-10 flex items-center justify-center p-1.5 rounded-full bg-[#13131c] border border-[rgba(0,242,255,0.3)] shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+                    <button
+                        onClick={() => { audioSynth.playClick(); setActiveTab('telemetry'); }}
+                        className={`px-5 sm:px-6 py-2.5 rounded-full text-[11px] sm:text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 ${
+                            activeTab === 'telemetry'
+                                ? 'bg-gradient-to-r from-[#00f2ff] to-[#00a2ff] text-slate-950 shadow-[0_0_15px_rgba(0,242,255,0.4)] scale-105'
+                                : 'text-slate-400 hover:text-white'
+                        }`}
+                    >
+                        <Shield size={15} /> Telemetry
+                    </button>
+                    <button
+                        onClick={() => { audioSynth.playClick(); setActiveTab('genomic'); }}
+                        className={`px-5 sm:px-6 py-2.5 rounded-full text-[11px] sm:text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 ${
+                            activeTab === 'genomic'
+                                ? 'bg-gradient-to-r from-[#d575ff] to-[#ff51fa] text-white shadow-[0_0_15px_rgba(213,117,255,0.4)] scale-105'
+                                : 'text-slate-400 hover:text-white'
+                        }`}
+                    >
+                        <Dna size={15} /> Genomic Report 🧬
+                    </button>
+                </div>
+
+                {activeTab === 'genomic' ? (
+                    <div className="w-full animate-fade-in-up">
+                        <GenomicReportCard username={profile?.username || profile?.name} />
+                    </div>
+                ) : (
+                    <>
                 {/* Trait Bars Card */}
                 <div className="w-full bg-[#191923] border-t border-l border-[#8300b4]/30 border-r border-b border-[#00e2ee]/30 rounded-[2rem] p-6 sm:p-8 mb-10 shadow-lg transition-colors duration-500 hover:border-[#00e2ee]/50">
                     <h3 className="text-sm font-black uppercase tracking-widest text-[#acaab5] mb-6">Core Telemetry</h3>
@@ -549,6 +581,8 @@ export function DnaProfile({ onBack }: DnaProfileProps) {
                         </div>
                     )}
                 </div>
+                </>
+                )}
 
                 {/* HIDDEN OFF-SCREEN INSTAGRAM CARD */}
                 <div className="absolute top-[-9999px] left-[-9999px]">

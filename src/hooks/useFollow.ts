@@ -19,6 +19,7 @@ import {
   unfollowUser,
   getIncomingRequestId,
   getOutgoingRequestId,
+  formatSupabaseError,
 } from '../services/followService';
 
 interface UseFollowReturn {
@@ -64,7 +65,7 @@ export function useFollow(
       setStatus(s);
       setError(null);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Failed to load follow status';
+      const msg = formatSupabaseError(err);
       setError(msg);
     } finally {
       setLoading(false);
@@ -82,14 +83,19 @@ export function useFollow(
     setError(null);
     try {
       await sendFollowRequest(targetUserId);
-      setStatus('REQUEST_SENT');
+      if (currentUserId) {
+        const verified = await getFollowStatus(currentUserId, targetUserId);
+        setStatus(verified === 'REQUEST_SENT' ? 'REQUEST_SENT' : verified);
+      } else {
+        setStatus('REQUEST_SENT');
+      }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Failed to send follow request';
+      const msg = formatSupabaseError(err);
       setError(msg);
     } finally {
       setLoading(false);
     }
-  }, [targetUserId]);
+  }, [currentUserId, targetUserId]);
 
   const acceptRequest = useCallback(async () => {
     if (!targetUserId) return;
@@ -101,7 +107,7 @@ export function useFollow(
       await acceptFollowRequest(requestId);
       setStatus('FOLLOWING');
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Failed to accept request';
+      const msg = formatSupabaseError(err);
       setError(msg);
     } finally {
       setLoading(false);
@@ -118,7 +124,7 @@ export function useFollow(
       await rejectFollowRequest(requestId);
       setStatus('NONE');
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Failed to reject request';
+      const msg = formatSupabaseError(err);
       setError(msg);
     } finally {
       setLoading(false);
@@ -135,7 +141,7 @@ export function useFollow(
       await cancelFollowRequest(requestId);
       setStatus('NONE');
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Failed to cancel request';
+      const msg = formatSupabaseError(err);
       setError(msg);
     } finally {
       setLoading(false);
@@ -150,7 +156,7 @@ export function useFollow(
       await unfollowUser(targetUserId);
       setStatus('NONE');
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Failed to unfollow';
+      const msg = formatSupabaseError(err);
       setError(msg);
     } finally {
       setLoading(false);

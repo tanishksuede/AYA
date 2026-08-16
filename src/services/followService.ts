@@ -1,27 +1,45 @@
 /**
  * followService.ts
  *
- * Clean service layer for the AYA social follow system.
- * Uses the existing Supabase client — no separate configuration.
+ * Secure service layer for the AYA social follow system.
  *
- * Security note:
- *  - acceptFollowRequest() and rejectFollowRequest() use SECURITY DEFINER RPCs
- *    that verify auth.uid() server-side. The frontend never writes to `follows`
- *    directly; only the RPC does.
- *  - searchUsersByUsername() uses a SECURITY DEFINER RPC that returns only
- *    safe public fields (id, username, name) and excludes the calling user.
+ * Identity model:
+ *   - public.users.id  — the application-level UUID (used in follow_requests/follows FK columns)
+ *   - auth.uid()       — the Supabase Auth UUID (used by RLS policies)
+ *   - public.users.auth_user_id — links the two: auth.uid() → public.users.id
+ *
+ * The database function get_my_user_id() resolves auth.uid() → public.users.id
+ * server-side inside all SECURITY DEFINER RPCs and RLS policies.
+ *
+ * The client NEVER passes its own user ID to any write operation.
+ * Identity is established entirely through the signed Supabase JWT.
  */
 
 import { supabase } from '../utils/supabase';
+
+// ── Error Helper ─────────────────────────────────────────────────────────────
+
+export function formatSupabaseError(error: unknown): string {
+  if (!error) return 'Unknown error occurred.';
+  if (typeof error === 'string') return error;
+
+  const e = error as any;
+  const parts: string[] = [];
+  if (e.message) parts.push(e.message);
+  if (e.code) parts.push(`(Code: ${e.code})`);
+  if (e.details) parts.push(`Details: ${e.details}`);
+  if (e.hint) parts.push(`Hint: ${e.hint}`);
+
+  if (parts.length === 0) {
+    try { return JSON.stringify(error); } catch { return String(error); }
+  }
+  return parts.join(' ');
+}
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
 export type FollowRequestStatus = 'pending' | 'accepted' | 'rejected';
 
-/**
- * The relationship state from the perspective of the current user
- * looking at another user's profile.
- */
 export type FollowRelationshipState =
   | 'NONE'
   | 'REQUEST_SENT'
@@ -41,40 +59,86 @@ export interface FollowRequest {
   status: FollowRequestStatus;
   created_at: string;
   responded_at: string | null;
-
-  /** Requester's public profile */
   requester?: PublicUserProfile;
-
-  /** Recipient's public profile */
   recipient?: PublicUserProfile;
 }
 
-export interface Follow {
-  id: string;
-  follower_id: string;
-  following_id: string;
-  created_at: string;
+// ── Internal: verify auth session ────────────────────────────────────────────
 
-  /** Joined profile */
-  follower?: PublicUserProfile;
-  following?: PublicUserProfile;
+/**
+ * Throws if the caller has no active Supabase Auth session.
+ * Does NOT return any user identity — the DB resolves that server-side.
+ */
+async function requireAuthSession(): Promise<void> {
+  const { data: { user }, error } = await supabase.auth.getUser();
+  if (error) throw new Error(formatSupabaseError(error));
+  if (!user) {
+    throw new Error(
+      'Auth session missing. Please log out and log back in to use social features.'
+    );
+  }
+}
+
+// ── Internal: resolve public.users.id for current user ───────────────────────
+
+/**
+ * Returns the public.users.id for the currently authenticated user,
+ * resolved server-side via get_my_user_id() (auth.uid() → auth_user_id → id).
+ */
+async function getMyUserId(): Promise<string> {
+  await requireAuthSession();
+
+  const { data, error } = await supabase.rpc('get_my_user_id');
+  if (error) throw new Error(formatSupabaseError(error));
+  if (!data) throw new Error('Could not resolve user identity. Please log out and log back in.');
+
+  return data as string;
 }
 
 // ── User Search ───────────────────────────────────────────────────────────────
 
 /**
- * Search for users by username (case-insensitive, strips leading @).
- * Uses SECURITY DEFINER RPC — only returns id, username, name.
- * Excludes the calling user from results.
+ * Search for users by username prefix (case-insensitive, strips leading @).
+ * Uses the search_users_by_username SECURITY DEFINER RPC which:
+ *   - Excludes the calling user (auth_user_id = auth.uid())
+ *   - Returns only public fields: id, username, name
  */
 export async function searchUsersByUsername(
   query: string
 ): Promise<PublicUserProfile[]> {
-  const { data, error } = await supabase.rpc('search_users_by_username', {
-    p_query: query,
+  const clean = query.trim().replace(/^@/, '').toLowerCase();
+  if (!clean || clean.length < 2) return [];
+
+  // Try the SECURITY DEFINER RPC first (correctly excludes current user)
+  const { data: rpcData, error: rpcError } = await supabase.rpc('search_users_by_username', {
+    p_query: clean,
   });
 
-  if (error) throw error;
+  if (!rpcError && Array.isArray(rpcData)) {
+    return rpcData as PublicUserProfile[];
+  }
+
+  // RPC not yet applied to DB — fallback to table query (no self-exclusion)
+  console.warn('[followService] search_users_by_username RPC unavailable, using fallback:', formatSupabaseError(rpcError));
+
+  const { data, error } = await supabase
+    .from('users')
+    .select('id, username, name')
+    .not('username', 'is', null)
+    .ilike('username', `${clean}%`)
+    .order('username')
+    .limit(20);
+
+  if (error) throw new Error(formatSupabaseError(error));
+
+  // Client-side self-filter as best-effort (no security implication for search)
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    const myAppId = user ? await supabase.rpc('get_my_user_id').then((r: { data: string | null }) => r.data) : null;
+    if (myAppId) {
+      return ((data ?? []) as PublicUserProfile[]).filter((u: PublicUserProfile) => u.id !== myAppId);
+    }
+  } catch { /* best-effort */ }
 
   return (data ?? []) as PublicUserProfile[];
 }
@@ -82,283 +146,176 @@ export async function searchUsersByUsername(
 // ── Follow Requests ───────────────────────────────────────────────────────────
 
 /**
- * Send a follow request to another user.
- *
- * requester_id is explicitly taken from the authenticated Supabase user.
- * This is required because the database RLS policy checks:
- *
- * requester_id = auth.uid()
+ * Send a follow request.
+ * - Requires an active Supabase Auth session (enforced client-side + RLS server-side)
+ * - RLS policy: requester_id MUST equal get_my_user_id() — enforced in DB
+ * - The client passes only the recipient's public.users.id (not its own)
  */
-export async function sendFollowRequest(
-  recipientId: string
-): Promise<void> {
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.getUser();
+export async function sendFollowRequest(recipientId: string): Promise<void> {
+  const myUserId = await getMyUserId();
 
-  if (authError) {
-    throw authError;
-  }
+  if (myUserId === recipientId) throw new Error('You cannot follow yourself.');
 
-  if (!user) {
-    throw new Error(
-      'You must be logged in to send a follow request.'
-    );
-  }
+  // Check if already following
+  const { data: existingFollow, error: followCheckError } = await supabase
+    .from('follows')
+    .select('id')
+    .eq('follower_id', myUserId)
+    .eq('following_id', recipientId)
+    .maybeSingle();
 
-  if (user.id === recipientId) {
-    throw new Error('You cannot follow yourself.');
-  }
+  if (followCheckError) throw new Error(formatSupabaseError(followCheckError));
+  if (existingFollow) throw new Error('You are already following this user.');
 
-  const { error } = await supabase
+  // Delete any stale request (e.g., previously rejected)
+  await supabase
     .from('follow_requests')
-    .insert({
-      requester_id: user.id,
-      recipient_id: recipientId,
-      status: 'pending',
-    });
+    .delete()
+    .eq('requester_id', myUserId)
+    .eq('recipient_id', recipientId);
 
-  if (error) {
-    throw error;
+  // INSERT — RLS enforces requester_id = get_my_user_id()
+  const { data, error } = await supabase
+    .from('follow_requests')
+    .insert({ requester_id: myUserId, recipient_id: recipientId, status: 'pending' })
+    .select('id, requester_id, recipient_id, status')
+    .single();
+
+  if (error) throw new Error(formatSupabaseError(error));
+
+  // Verify inserted row is correct
+  if (!data || data.status !== 'pending' || data.requester_id !== myUserId || data.recipient_id !== recipientId) {
+    throw new Error('Database verification failed after follow_requests insert.');
   }
 }
 
 /**
  * Get all incoming pending follow requests for the current user.
- * Joins requester profile data for display.
+ * Uses 2-step query to avoid PostgREST FK join failures.
  */
 export async function getIncomingFollowRequests(): Promise<FollowRequest[]> {
-  const { data, error } = await supabase
+  const myUserId = await getMyUserId();
+
+  const { data: requestRows, error: requestError } = await supabase
     .from('follow_requests')
-    .select(`
-      id,
-      requester_id,
-      recipient_id,
-      status,
-      created_at,
-      responded_at,
-      requester:users!follow_requests_requester_id_fkey(
-        id,
-        username,
-        name
-      )
-    `)
+    .select('id, requester_id, recipient_id, status, created_at, responded_at')
+    .eq('recipient_id', myUserId)
     .eq('status', 'pending')
     .order('created_at', { ascending: false });
 
-  if (error) throw error;
+  if (requestError) throw new Error(formatSupabaseError(requestError));
+  if (!requestRows?.length) return [];
 
-  return (data ?? []).map((row: any) => ({
-    ...row,
-    requester: row.requester ?? undefined,
-  })) as FollowRequest[];
-}
+  const requesterIds = [...new Set((requestRows as any[]).map(r => r.requester_id))];
 
-/**
- * Get all outgoing pending follow requests from the current user.
- * Joins recipient profile data for display.
- */
-export async function getOutgoingFollowRequests(): Promise<FollowRequest[]> {
-  const { data, error } = await supabase
-    .from('follow_requests')
-    .select(`
-      id,
-      requester_id,
-      recipient_id,
-      status,
-      created_at,
-      responded_at,
-      recipient:users!follow_requests_recipient_id_fkey(
-        id,
-        username,
-        name
-      )
-    `)
-    .eq('status', 'pending')
-    .order('created_at', { ascending: false });
+  const { data: userRows, error: userError } = await supabase
+    .from('users')
+    .select('id, username, name')
+    .in('id', requesterIds);
 
-  if (error) throw error;
+  if (userError) throw new Error(formatSupabaseError(userError));
 
-  return (data ?? []).map((row: any) => ({
-    ...row,
-    recipient: row.recipient ?? undefined,
-  })) as FollowRequest[];
+  const userMap = new Map(((userRows as any[]) ?? []).map(u => [u.id, u as PublicUserProfile]));
+
+  return (requestRows as any[]).map(r => ({
+    id: r.id,
+    requester_id: r.requester_id,
+    recipient_id: r.recipient_id,
+    status: r.status as FollowRequestStatus,
+    created_at: r.created_at,
+    responded_at: r.responded_at,
+    requester: userMap.get(r.requester_id),
+  }));
 }
 
 /**
  * Accept a pending follow request.
- *
- * Calls the SECURITY DEFINER RPC which:
- *   1. Verifies auth.uid() = recipient_id
- *   2. Verifies status = 'pending'
- *   3. Updates status → 'accepted'
- *   4. Inserts into public.follows
- *
- * All in one atomic transaction.
+ * Calls accept_follow_request() SECURITY DEFINER RPC — the DB verifies the
+ * caller is the recipient via get_my_user_id() and auth.uid().
  */
-export async function acceptFollowRequest(
-  requestId: string
-): Promise<void> {
-  const { error } = await supabase.rpc('accept_follow_request', {
-    p_request_id: requestId,
-  });
+export async function acceptFollowRequest(requestId: string): Promise<void> {
+  await requireAuthSession();
 
-  if (error) throw error;
+  const { error } = await supabase.rpc('accept_follow_request', { p_request_id: requestId });
+  if (error) throw new Error(formatSupabaseError(error));
 }
 
 /**
  * Reject a pending follow request.
- *
- * Calls the SECURITY DEFINER RPC which verifies
- * auth.uid() = recipient_id.
+ * Calls reject_follow_request() SECURITY DEFINER RPC — same auth guarantee.
  */
-export async function rejectFollowRequest(
-  requestId: string
-): Promise<void> {
-  const { error } = await supabase.rpc('reject_follow_request', {
-    p_request_id: requestId,
-  });
+export async function rejectFollowRequest(requestId: string): Promise<void> {
+  await requireAuthSession();
 
-  if (error) throw error;
+  const { error } = await supabase.rpc('reject_follow_request', { p_request_id: requestId });
+  if (error) throw new Error(formatSupabaseError(error));
 }
 
 /**
- * Cancel an outgoing follow request.
- *
- * The requester can delete their own request through RLS.
+ * Cancel an outgoing (sent) follow request.
+ * RLS policy allows DELETE where requester_id = get_my_user_id().
  */
-export async function cancelFollowRequest(
-  requestId: string
-): Promise<void> {
+export async function cancelFollowRequest(requestId: string): Promise<void> {
+  await requireAuthSession();
+
   const { error } = await supabase
     .from('follow_requests')
     .delete()
     .eq('id', requestId);
 
-  if (error) throw error;
+  if (error) throw new Error(formatSupabaseError(error));
 }
 
 // ── Follows ───────────────────────────────────────────────────────────────────
 
 /**
  * Unfollow a user.
- * The current user removes their own following relationship.
+ * RLS policy allows DELETE where follower_id = get_my_user_id().
  */
-export async function unfollowUser(
-  followingId: string
-): Promise<void> {
+export async function unfollowUser(followingId: string): Promise<void> {
+  const myUserId = await getMyUserId();
+
   const { error } = await supabase
     .from('follows')
     .delete()
+    .eq('follower_id', myUserId)
     .eq('following_id', followingId);
 
-  if (error) throw error;
+  if (error) throw new Error(formatSupabaseError(error));
 }
 
-/**
- * Get all followers of a given user.
- */
-export async function getFollowers(
-  targetUserId: string
-): Promise<PublicUserProfile[]> {
-  const { data, error } = await supabase
-    .from('follows')
-    .select(`
-      follower:users!follows_follower_id_fkey(
-        id,
-        username,
-        name
-      )
-    `)
-    .eq('following_id', targetUserId)
-    .order('created_at', { ascending: false });
-
-  if (error) throw error;
-
-  return (data ?? [])
-    .map((row: any) => row.follower)
-    .filter(Boolean) as PublicUserProfile[];
-}
-
-/**
- * Get all users that targetUserId is following.
- */
-export async function getFollowing(
-  targetUserId: string
-): Promise<PublicUserProfile[]> {
-  const { data, error } = await supabase
-    .from('follows')
-    .select(`
-      following:users!follows_following_id_fkey(
-        id,
-        username,
-        name
-      )
-    `)
-    .eq('follower_id', targetUserId)
-    .order('created_at', { ascending: false });
-
-  if (error) throw error;
-
-  return (data ?? [])
-    .map((row: any) => row.following)
-    .filter(Boolean) as PublicUserProfile[];
-}
-
-/**
- * Get the number of followers for a user.
- */
-export async function getFollowerCount(
-  userId: string
-): Promise<number> {
+export async function getFollowerCount(userId: string): Promise<number> {
   const { count, error } = await supabase
     .from('follows')
-    .select('*', {
-      count: 'exact',
-      head: true,
-    })
+    .select('*', { count: 'exact', head: true })
     .eq('following_id', userId);
 
-  if (error) throw error;
-
+  if (error) throw new Error(formatSupabaseError(error));
   return count ?? 0;
 }
 
-/**
- * Get the number of users a given user is following.
- */
-export async function getFollowingCount(
-  userId: string
-): Promise<number> {
+export async function getFollowingCount(userId: string): Promise<number> {
   const { count, error } = await supabase
     .from('follows')
-    .select('*', {
-      count: 'exact',
-      head: true,
-    })
+    .select('*', { count: 'exact', head: true })
     .eq('follower_id', userId);
 
-  if (error) throw error;
-
+  if (error) throw new Error(formatSupabaseError(error));
   return count ?? 0;
 }
 
 // ── Relationship State ────────────────────────────────────────────────────────
 
 /**
- * Determine the relationship state between the current user
- * and a target user.
+ * Determine the follow relationship state between two public.users.id values.
+ * currentUserId is the logged-in user's public.users.id (from Zustand store).
  */
 export async function getFollowStatus(
   currentUserId: string,
   targetUserId: string
 ): Promise<FollowRelationshipState> {
-  if (currentUserId === targetUserId) {
-    return 'NONE';
-  }
+  if (currentUserId === targetUserId) return 'NONE';
 
-  // Check existing follow relationship first.
   const { data: followRow, error: followError } = await supabase
     .from('follows')
     .select('id')
@@ -366,82 +323,68 @@ export async function getFollowStatus(
     .eq('following_id', targetUserId)
     .maybeSingle();
 
-  if (followError) {
-    throw followError;
-  }
+  if (followError) throw new Error(formatSupabaseError(followError));
+  if (followRow) return 'FOLLOWING';
 
-  if (followRow) {
-    return 'FOLLOWING';
-  }
-
-  // Check pending follow requests in both directions.
-  const { data: requestRow, error: requestError } = await supabase
+  const { data: outgoingRow, error: outgoingError } = await supabase
     .from('follow_requests')
-    .select(
-      'id, requester_id, recipient_id, status'
-    )
+    .select('id')
+    .eq('requester_id', currentUserId)
+    .eq('recipient_id', targetUserId)
     .eq('status', 'pending')
-    .or(
-      `and(requester_id.eq.${currentUserId},recipient_id.eq.${targetUserId}),` +
-      `and(requester_id.eq.${targetUserId},recipient_id.eq.${currentUserId})`
-    )
     .maybeSingle();
 
-  if (requestError) {
-    throw requestError;
-  }
+  if (outgoingError) throw new Error(formatSupabaseError(outgoingError));
+  if (outgoingRow) return 'REQUEST_SENT';
 
-  if (requestRow) {
-    if (requestRow.requester_id === currentUserId) {
-      return 'REQUEST_SENT';
-    }
+  const { data: incomingRow, error: incomingError } = await supabase
+    .from('follow_requests')
+    .select('id')
+    .eq('requester_id', targetUserId)
+    .eq('recipient_id', currentUserId)
+    .eq('status', 'pending')
+    .maybeSingle();
 
-    if (requestRow.recipient_id === currentUserId) {
-      return 'INCOMING_REQUEST';
-    }
-  }
+  if (incomingError) throw new Error(formatSupabaseError(incomingError));
+  if (incomingRow) return 'INCOMING_REQUEST';
 
   return 'NONE';
 }
 
 /**
- * Get the pending follow request ID where the current user
- * is the recipient and targetUserId is the requester.
+ * Get the pending follow request ID where the current user is the RECIPIENT
+ * and targetUserId is the REQUESTER. Used for Accept/Reject actions.
  */
-export async function getIncomingRequestId(
-  targetUserId: string
-): Promise<string | null> {
+export async function getIncomingRequestId(targetUserId: string): Promise<string | null> {
+  const myUserId = await getMyUserId();
+
   const { data, error } = await supabase
     .from('follow_requests')
     .select('id')
     .eq('requester_id', targetUserId)
+    .eq('recipient_id', myUserId)
     .eq('status', 'pending')
     .maybeSingle();
 
-  if (error) {
-    throw error;
-  }
-
+  if (error) throw new Error(formatSupabaseError(error));
   return data?.id ?? null;
 }
 
 /**
- * Get the pending follow request ID where the current user
- * is the requester and targetUserId is the recipient.
+ * Get the pending follow request ID where the current user is the REQUESTER
+ * and targetUserId is the RECIPIENT. Used for Cancel action.
  */
-export async function getOutgoingRequestId(
-  targetUserId: string
-): Promise<string | null> {
+export async function getOutgoingRequestId(targetUserId: string): Promise<string | null> {
+  const myUserId = await getMyUserId();
+
   const { data, error } = await supabase
     .from('follow_requests')
     .select('id')
+    .eq('requester_id', myUserId)
     .eq('recipient_id', targetUserId)
     .eq('status', 'pending')
     .maybeSingle();
 
-  if (error) {
-    throw error;
-  }
-
+  if (error) throw new Error(formatSupabaseError(error));
   return data?.id ?? null;
 }

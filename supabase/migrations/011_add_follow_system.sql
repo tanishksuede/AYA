@@ -1,5 +1,5 @@
 -- ============================================================
--- Migration 011: Social Follow System
+-- Migration 011: Social Follow System (Strict RLS & SECURITY DEFINER)
 -- ============================================================
 -- Depends on: public.users (from base migration)
 --             username column (from migration 010)
@@ -53,9 +53,10 @@ CREATE INDEX IF NOT EXISTS idx_follows_following ON public.follows(following_id)
 ALTER TABLE public.follow_requests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.follows          ENABLE ROW LEVEL SECURITY;
 
--- ── 5. RLS Policies: follow_requests ─────────────────────────
+-- ── 5. Strict RLS Policies: follow_requests ──────────────────
 
--- Requester can create a request (DB constraint ensures requester_id = auth.uid())
+-- Requester can create a request ONLY for themselves (requester_id MUST equal auth.uid())
+DROP POLICY IF EXISTS "follow_requests_insert" ON public.follow_requests;
 CREATE POLICY "follow_requests_insert"
     ON public.follow_requests
     FOR INSERT
@@ -63,6 +64,7 @@ CREATE POLICY "follow_requests_insert"
     WITH CHECK (requester_id = auth.uid());
 
 -- Both parties can see requests involving themselves
+DROP POLICY IF EXISTS "follow_requests_select" ON public.follow_requests;
 CREATE POLICY "follow_requests_select"
     ON public.follow_requests
     FOR SELECT
@@ -70,6 +72,7 @@ CREATE POLICY "follow_requests_select"
     USING (requester_id = auth.uid() OR recipient_id = auth.uid());
 
 -- Only the RECIPIENT can update (accept/reject) — requester cannot touch status
+DROP POLICY IF EXISTS "follow_requests_update" ON public.follow_requests;
 CREATE POLICY "follow_requests_update"
     ON public.follow_requests
     FOR UPDATE
@@ -77,27 +80,31 @@ CREATE POLICY "follow_requests_update"
     USING (recipient_id = auth.uid())
     WITH CHECK (recipient_id = auth.uid());
 
--- Requester can delete (cancel) their own pending request
+-- Requester or recipient can delete pending requests
+DROP POLICY IF EXISTS "follow_requests_delete" ON public.follow_requests;
 CREATE POLICY "follow_requests_delete"
     ON public.follow_requests
     FOR DELETE
     TO authenticated
-    USING (requester_id = auth.uid());
+    USING (requester_id = auth.uid() OR recipient_id = auth.uid());
 
--- ── 6. RLS Policies: follows ─────────────────────────────────
+-- ── 6. Strict RLS Policies: follows ──────────────────────────
 
--- SELECT is public to authenticated users (follow counts / lists are social info)
+-- SELECT is readable by authenticated users
+DROP POLICY IF EXISTS "follows_select" ON public.follows;
 CREATE POLICY "follows_select"
     ON public.follows
     FOR SELECT
     TO authenticated
     USING (true);
 
--- IMPORTANT: No INSERT policy for authenticated users.
--- Rows are ONLY inserted by the accept_follow_request() SECURITY DEFINER RPC below.
--- This prevents any client from forging a follow relationship.
+-- NO INSERT policy for authenticated/public users.
+-- Rows are ONLY inserted by the accept_follow_request() SECURITY DEFINER RPC.
+-- Prevents any client from forging follow relationships.
+DROP POLICY IF EXISTS "follows_insert" ON public.follows;
 
--- A user can only unfollow themselves (delete their own following relationship)
+-- A user can only unfollow themselves (delete their own follower relationship)
+DROP POLICY IF EXISTS "follows_delete" ON public.follows;
 CREATE POLICY "follows_delete"
     ON public.follows
     FOR DELETE
@@ -105,16 +112,6 @@ CREATE POLICY "follows_delete"
     USING (follower_id = auth.uid());
 
 -- ── 7. accept_follow_request() — SECURITY DEFINER RPC ────────
---
--- This function runs with the privileges of the function owner (postgres/service role),
--- bypassing RLS. It performs the full acceptance in a single atomic transaction:
---   1. Lock + verify the request exists
---   2. Verify auth.uid() is the recipient
---   3. Verify status is still 'pending'
---   4. Update status → 'accepted'
---   5. Insert the follow relationship
---
--- Returns TRUE on success, raises EXCEPTION on any violation.
 
 CREATE OR REPLACE FUNCTION public.accept_follow_request(p_request_id UUID)
 RETURNS BOOLEAN
@@ -127,35 +124,30 @@ DECLARE
     v_recipient_id UUID;
     v_status       TEXT;
 BEGIN
-    -- Lock the request row for the duration of this transaction
     SELECT requester_id, recipient_id, status
     INTO   v_requester_id, v_recipient_id, v_status
     FROM   public.follow_requests
     WHERE  id = p_request_id
     FOR UPDATE;
 
-    -- 1. Request must exist
     IF NOT FOUND THEN
         RAISE EXCEPTION 'Follow request % not found', p_request_id;
     END IF;
 
-    -- 2. Caller must be the recipient
+    -- Strict authentication check: caller MUST be recipient
     IF v_recipient_id <> auth.uid() THEN
         RAISE EXCEPTION 'Only the recipient can accept a follow request';
     END IF;
 
-    -- 3. Must still be pending
     IF v_status <> 'pending' THEN
         RAISE EXCEPTION 'Follow request is not pending (status: %)', v_status;
     END IF;
 
-    -- 4. Update the request status
     UPDATE public.follow_requests
     SET    status       = 'accepted',
            responded_at = NOW()
     WHERE  id = p_request_id;
 
-    -- 5. Insert the follow relationship (ON CONFLICT DO NOTHING handles race conditions)
     INSERT INTO public.follows (follower_id, following_id)
     VALUES (v_requester_id, v_recipient_id)
     ON CONFLICT (follower_id, following_id) DO NOTHING;
@@ -164,14 +156,9 @@ BEGIN
 END;
 $$;
 
--- Grant to authenticated users
 GRANT EXECUTE ON FUNCTION public.accept_follow_request(UUID) TO authenticated;
 
 -- ── 8. search_users_by_username() — SECURITY DEFINER RPC ─────
---
--- Returns ONLY public-safe fields: id, username, name.
--- Excludes the calling user from results.
--- Case-insensitive search on username prefix/contains.
 
 CREATE OR REPLACE FUNCTION public.search_users_by_username(p_query TEXT)
 RETURNS TABLE (
@@ -186,7 +173,6 @@ AS $$
 DECLARE
     v_clean TEXT;
 BEGIN
-    -- Strip leading @ if the user typed @username
     v_clean := LOWER(TRIM(LEADING '@' FROM TRIM(p_query)));
 
     IF v_clean = '' THEN
@@ -200,7 +186,7 @@ BEGIN
     FROM    public.users u
     WHERE   u.username IS NOT NULL
       AND   LOWER(u.username) LIKE (v_clean || '%')
-      AND   u.id <> auth.uid()   -- Exclude current user
+      AND   u.id <> auth.uid()   -- Exclude current authenticated user
     ORDER BY LOWER(u.username)
     LIMIT 20;
 END;
@@ -209,8 +195,6 @@ $$;
 GRANT EXECUTE ON FUNCTION public.search_users_by_username(TEXT) TO authenticated;
 
 -- ── 9. reject_follow_request() — SECURITY DEFINER RPC ────────
---
--- Atomically verifies caller = recipient, status = pending, then sets rejected.
 
 CREATE OR REPLACE FUNCTION public.reject_follow_request(p_request_id UUID)
 RETURNS BOOLEAN
@@ -232,6 +216,7 @@ BEGIN
         RAISE EXCEPTION 'Follow request % not found', p_request_id;
     END IF;
 
+    -- Strict authentication check: caller MUST be recipient
     IF v_recipient_id <> auth.uid() THEN
         RAISE EXCEPTION 'Only the recipient can reject a follow request';
     END IF;

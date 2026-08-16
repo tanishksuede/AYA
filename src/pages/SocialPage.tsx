@@ -47,10 +47,13 @@ import {
   unfollowUser,
   getFollowerCount,
   getFollowingCount,
+  formatSupabaseError,
   type PublicUserProfile,
   type FollowRequest,
   type FollowRelationshipState,
 } from '../services/followService';
+
+import { supabase } from '../utils/supabase';
 
 // ── Follow Button ─────────────────────────────────────────────────────────────
 
@@ -194,10 +197,18 @@ export function SocialPage() {
   const [followingCount, setFollowingCount] =
     useState<number>(0);
 
+  // Helper to ensure active user ID
+  const getActiveUserId = useCallback(async (): Promise<string | null> => {
+    if (profile?.id) return profile.id;
+    const { data } = await supabase.auth.getUser();
+    return data.user?.id ?? null;
+  }, [profile?.id]);
+
   // ── Load Requests ──────────────────────────────────────────────────────────
 
   const loadRequests = useCallback(async () => {
-    if (!profile?.id) return;
+    const userId = await getActiveUserId();
+    if (!userId) return;
 
     setRequestsLoading(true);
     setRequestsError(null);
@@ -209,8 +220,8 @@ export function SocialPage() {
         fwc,
       ] = await Promise.all([
         getIncomingFollowRequests(),
-        getFollowerCount(profile.id),
-        getFollowingCount(profile.id),
+        getFollowerCount(userId),
+        getFollowingCount(userId),
       ]);
 
       setIncomingRequests(requests);
@@ -222,15 +233,11 @@ export function SocialPage() {
         err
       );
 
-      setRequestsError(
-        err instanceof Error
-          ? err.message
-          : 'Failed to load requests'
-      );
+      setRequestsError(formatSupabaseError(err));
     } finally {
       setRequestsLoading(false);
     }
-  }, [profile?.id]);
+  }, [getActiveUserId]);
 
   useEffect(() => {
     loadRequests();
@@ -256,7 +263,10 @@ export function SocialPage() {
 
     debounceRef.current = setTimeout(async () => {
       try {
-        if (!profile?.id) return;
+        const currentUserId = await getActiveUserId();
+        if (!currentUserId) {
+          throw new Error('Not authenticated');
+        }
 
         const users =
           await searchUsersByUsername(trimmed);
@@ -266,7 +276,7 @@ export function SocialPage() {
             users.map(async (user) => {
               const status =
                 await getFollowStatus(
-                  profile.id!,
+                  currentUserId,
                   user.id
                 );
 
@@ -286,12 +296,7 @@ export function SocialPage() {
           err
         );
 
-        setSearchError(
-          err instanceof Error
-            ? err.message
-            : 'Search failed'
-        );
-
+        setSearchError(formatSupabaseError(err));
         setSearchResults([]);
       } finally {
         setIsSearching(false);
@@ -303,7 +308,7 @@ export function SocialPage() {
         clearTimeout(debounceRef.current);
       }
     };
-  }, [query, profile?.id]);
+  }, [query, getActiveUserId]);
 
   // ── Search Result Helpers ───────────────────────────────────────────────────
 
@@ -344,20 +349,24 @@ export function SocialPage() {
 
   async function handleSend(userId: string) {
     setResultLoading(userId, true);
+    setSearchError(null);
 
     try {
       await sendFollowRequest(userId);
 
-      setResultStatus(
-        userId,
-        'REQUEST_SENT'
-      );
-    } catch (err) {
+      const currentUserId = await getActiveUserId();
+      if (currentUserId) {
+        const verified = await getFollowStatus(currentUserId, userId);
+        setResultStatus(userId, verified === 'REQUEST_SENT' ? 'REQUEST_SENT' : verified);
+      } else {
+        setResultStatus(userId, 'REQUEST_SENT');
+      }
+    } catch (err: any) {
       console.error(
         '[SocialPage] sendFollowRequest error:',
         err
       );
-
+      setSearchError(`Follow request failed: ${formatSupabaseError(err)}`);
       setResultLoading(userId, false);
     }
   }
@@ -366,6 +375,7 @@ export function SocialPage() {
 
   async function handleCancel(userId: string) {
     setResultLoading(userId, true);
+    setSearchError(null);
 
     try {
       const requestId =
@@ -381,7 +391,7 @@ export function SocialPage() {
         '[SocialPage] cancelFollowRequest error:',
         err
       );
-
+      setSearchError(`Cancel request failed: ${formatSupabaseError(err)}`);
       setResultLoading(userId, false);
     }
   }
@@ -395,6 +405,7 @@ export function SocialPage() {
     if (!requestId) return;
 
     setResultLoading(userId, true);
+    setSearchError(null);
 
     try {
       await acceptFollowRequest(requestId);
@@ -410,7 +421,7 @@ export function SocialPage() {
         '[SocialPage] acceptFollowRequest error:',
         err
       );
-
+      setSearchError(`Accept request failed: ${formatSupabaseError(err)}`);
       setResultLoading(userId, false);
     }
   }
@@ -424,6 +435,7 @@ export function SocialPage() {
     if (!requestId) return;
 
     setResultLoading(userId, true);
+    setSearchError(null);
 
     try {
       await rejectFollowRequest(requestId);
@@ -437,7 +449,7 @@ export function SocialPage() {
         '[SocialPage] rejectFollowRequest error:',
         err
       );
-
+      setSearchError(`Reject request failed: ${formatSupabaseError(err)}`);
       setResultLoading(userId, false);
     }
   }
@@ -446,6 +458,7 @@ export function SocialPage() {
 
   async function handleUnfollow(userId: string) {
     setResultLoading(userId, true);
+    setSearchError(null);
 
     try {
       await unfollowUser(userId);
@@ -459,7 +472,7 @@ export function SocialPage() {
         '[SocialPage] unfollowUser error:',
         err
       );
-
+      setSearchError(`Unfollow failed: ${formatSupabaseError(err)}`);
       setResultLoading(userId, false);
     }
   }
@@ -469,6 +482,7 @@ export function SocialPage() {
   async function handleAcceptRequest(
     request: FollowRequest
   ) {
+    setRequestsError(null);
     try {
       await acceptFollowRequest(request.id);
 
@@ -486,12 +500,14 @@ export function SocialPage() {
         '[SocialPage] acceptRequest error:',
         err
       );
+      setRequestsError(`Accept failed: ${formatSupabaseError(err)}`);
     }
   }
 
   async function handleRejectRequest(
     request: FollowRequest
   ) {
+    setRequestsError(null);
     try {
       await rejectFollowRequest(request.id);
 
@@ -505,6 +521,7 @@ export function SocialPage() {
         '[SocialPage] rejectRequest error:',
         err
       );
+      setRequestsError(`Reject failed: ${formatSupabaseError(err)}`);
     }
   }
 
@@ -671,9 +688,9 @@ export function SocialPage() {
 
             {/* Search Error */}
             {searchError && (
-              <p className="text-xs text-red-400 bg-red-900/20 border border-red-800/40 rounded-xl px-3 py-2">
+              <div className="text-xs text-red-400 bg-red-900/20 border border-red-800/40 rounded-xl px-3 py-2">
                 {searchError}
-              </p>
+              </div>
             )}
 
             {/* No Results */}
@@ -781,9 +798,9 @@ export function SocialPage() {
             )}
 
             {requestsError && (
-              <p className="text-xs text-red-400 bg-red-900/20 border border-red-800/40 rounded-xl px-3 py-2">
+              <div className="text-xs text-red-400 bg-red-900/20 border border-red-800/40 rounded-xl px-3 py-2">
                 {requestsError}
-              </p>
+              </div>
             )}
 
             {!requestsLoading &&
