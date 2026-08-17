@@ -7,18 +7,23 @@ import { supabase } from './supabase';
  * @param eventType - 'journey_start', 'choice_selected', 'journey_complete', etc.
  * @param eventData - Additional data (choice_id, time_spent, etc.)
  */
+const isValidUuid = (id?: string | null): boolean => {
+  if (!id) return false;
+  return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(id);
+};
+
+/**
+ * Log a journey event (passive tracking)
+ */
 export async function logJourneyEvent(userId: string, journeyId: string, eventType: string, eventData: any = {}) {
-  if (!userId || !journeyId) {
-    console.error('logJourneyEvent: Missing userId or journeyId');
-    return null;
-  }
+  if (!journeyId) return null;
 
   try {
     const { data, error } = await supabase
       .from('journey_events')
       .insert([
         {
-          user_id: userId,
+          user_id: isValidUuid(userId) ? userId : null,
           journey_id: journeyId,
           event_type: eventType,
           event_data: eventData,
@@ -30,8 +35,6 @@ export async function logJourneyEvent(userId: string, journeyId: string, eventTy
       console.error('Error logging journey event:', error);
       return null;
     }
-
-    console.log(`✓ Logged: ${eventType} for journey ${journeyId}`);
     return data;
   } catch (err) {
     console.error('Exception in logJourneyEvent:', err);
@@ -41,11 +44,6 @@ export async function logJourneyEvent(userId: string, journeyId: string, eventTy
 
 /**
  * Log sentiment feedback after journey completion
- * @param userId
- * @param journeyId
- * @param sentimentScore - 0-4 (😕 to 🔥)
- * @param emoji
- * @param sessionDurationSeconds
  */
 export async function logJourneyFeedback(
   userId: string,
@@ -54,17 +52,14 @@ export async function logJourneyFeedback(
   emoji: string,
   sessionDurationSeconds: number | null = null
 ) {
-  if (sentimentScore < 0 || sentimentScore > 4) {
-    console.error('Sentiment score must be 0-4');
-    return null;
-  }
+  if (sentimentScore < 0 || sentimentScore > 4) return null;
 
   try {
     const { data, error } = await supabase
       .from('journey_feedback')
       .insert([
         {
-          user_id: userId,
+          user_id: isValidUuid(userId) ? userId : null,
           journey_id: journeyId,
           sentiment_score: sentimentScore,
           emoji: emoji,
@@ -77,8 +72,6 @@ export async function logJourneyFeedback(
       console.error('Error logging feedback:', error);
       return null;
     }
-
-    console.log(`✓ Feedback logged: ${emoji} (${sentimentScore}/4) for journey ${journeyId}`);
     return data;
   } catch (err) {
     console.error('Exception in logJourneyFeedback:', err);
@@ -88,9 +81,6 @@ export async function logJourneyFeedback(
 
 /**
  * Log feature usage (passive)
- * @param userId
- * @param featureName - 'dna_profile', 'journal', 'search', etc.
- * @param sessionId - Optional session identifier
  */
 export async function logFeatureUsage(userId: string, featureName: string, sessionId: string | null = null) {
   try {
@@ -98,7 +88,7 @@ export async function logFeatureUsage(userId: string, featureName: string, sessi
       .from('feature_usage')
       .insert([
         {
-          user_id: userId,
+          user_id: isValidUuid(userId) ? userId : null,
           feature_name: featureName,
           session_id: sessionId,
           accessed_at: new Date().toISOString(),
@@ -109,7 +99,6 @@ export async function logFeatureUsage(userId: string, featureName: string, sessi
       console.error('Error logging feature usage:', error);
       return null;
     }
-
     return data;
   } catch (err) {
     console.error('Exception in logFeatureUsage:', err);
@@ -119,20 +108,16 @@ export async function logFeatureUsage(userId: string, featureName: string, sessi
 
 /**
  * Log an unmatched search query (story request demand signal)
- * @param userId
- * @param searchQuery - What they searched for
  */
 export async function logUnmatchedSearch(userId: string, searchQuery: string) {
-  if (!searchQuery || searchQuery.trim().length === 0) {
-    return null;
-  }
+  if (!searchQuery || searchQuery.trim().length === 0) return null;
 
   try {
     const { data, error } = await supabase
       .from('unmatched_searches')
       .insert([
         {
-          user_id: userId,
+          user_id: isValidUuid(userId) ? userId : null,
           search_query: searchQuery.trim(),
           searched_at: new Date().toISOString(),
         }
@@ -142,8 +127,6 @@ export async function logUnmatchedSearch(userId: string, searchQuery: string) {
       console.error('Error logging unmatched search:', error);
       return null;
     }
-
-    console.log(`✓ Search request logged: "${searchQuery}"`);
     return data;
   } catch (err) {
     console.error('Exception in logUnmatchedSearch:', err);
@@ -153,40 +136,44 @@ export async function logUnmatchedSearch(userId: string, searchQuery: string) {
 
 /**
  * Add/vote on personality wish list
- * @param userId
- * @param personalityName
  */
 export async function addToWishlist(userId: string, personalityName: string) {
-  if (!personalityName || personalityName.trim().length === 0) {
-    console.error('Personality name cannot be empty');
-    return null;
-  }
+  const cleanName = personalityName?.trim();
+  if (!cleanName) return null;
+
+  const validUserId = isValidUuid(userId) ? userId : null;
 
   try {
-    // First, try to upsert (insert or update)
+    // Attempt insert first
     const { data, error } = await supabase
       .from('personality_wishlist')
-      .upsert(
-        [
-          {
-            user_id: userId,
-            personality_name: personalityName.trim(),
-            vote_count: 1,
-            requested_at: new Date().toISOString(),
-          }
-        ],
+      .insert([
         {
-          onConflict: 'user_id,personality_name',
-          ignoreDuplicates: false
+          user_id: validUserId,
+          personality_name: cleanName,
+          vote_count: 1,
+          requested_at: new Date().toISOString(),
         }
-      );
+      ]);
 
     if (error) {
-      console.error('Error adding to wishlist:', error);
-      return null;
+      console.warn('Initial wishlist insert warning (may be duplicate), trying fallback:', error.message);
+      // Fallback: update vote_count if matching name exists
+      const { data: existing } = await supabase
+        .from('personality_wishlist')
+        .select('id, vote_count')
+        .eq('personality_name', cleanName)
+        .maybeSingle();
+
+      if (existing) {
+        await supabase
+          .from('personality_wishlist')
+          .update({ vote_count: (existing.vote_count || 1) + 1 })
+          .eq('id', existing.id);
+      }
     }
 
-    console.log(`✓ Added to wishlist: ${personalityName}`);
+    console.log(`✓ Wishlist updated: "${cleanName}"`);
     return data;
   } catch (err) {
     console.error('Exception in addToWishlist:', err);

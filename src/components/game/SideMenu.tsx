@@ -33,11 +33,12 @@ export function SideMenu({
 
     const handleWishlistSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!wishlistInput.trim() || !profile?.id) return;
+        if (!wishlistInput.trim()) return;
         setWishlistStatus('loading');
         try {
-            await logUnmatchedSearch(profile.id, wishlistInput);
-            await addToWishlist(profile.id, wishlistInput);
+            const userId = profile?.id || '';
+            await logUnmatchedSearch(userId, wishlistInput);
+            await addToWishlist(userId, wishlistInput);
             setWishlistStatus('added');
             setTimeout(() => {
                 setWishlistStatus('idle');
