@@ -38,7 +38,14 @@ export function SideMenu({
         try {
             const userId = profile?.id || '';
             await logUnmatchedSearch(userId, wishlistInput);
-            await addToWishlist(userId, wishlistInput);
+            const res = await addToWishlist(userId, wishlistInput);
+            
+            if (!res) {
+                alert("Failed to save wishlist. Please check the browser console for details.");
+                setWishlistStatus('idle');
+                return;
+            }
+
             setWishlistStatus('added');
             setTimeout(() => {
                 setWishlistStatus('idle');

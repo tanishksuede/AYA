@@ -137,28 +137,25 @@ export async function logUnmatchedSearch(userId: string, searchQuery: string) {
 /**
  * Add/vote on personality wish list
  */
-export async function addToWishlist(userId: string, personalityName: string) {
+export async function addToWishlist(userId: string, personalityName: string): Promise<boolean> {
   const cleanName = personalityName?.trim();
-  if (!cleanName) return null;
+  if (!cleanName) return false;
 
   const validUserId = isValidUuid(userId) ? userId : null;
 
   try {
-    // Attempt insert first
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('personality_wishlist')
-      .insert([
-        {
+      .insert([{
           user_id: validUserId,
           personality_name: cleanName,
           vote_count: 1,
           requested_at: new Date().toISOString(),
-        }
-      ]);
+      }]);
 
     if (error) {
-      console.warn('Initial wishlist insert warning (may be duplicate), trying fallback:', error.message);
-      // Fallback: update vote_count if matching name exists
+      console.warn('Insert wishlist failed:', error);
+      
       const { data: existing } = await supabase
         .from('personality_wishlist')
         .select('id, vote_count')
@@ -166,18 +163,24 @@ export async function addToWishlist(userId: string, personalityName: string) {
         .maybeSingle();
 
       if (existing) {
-        await supabase
+        const { error: updateError } = await supabase
           .from('personality_wishlist')
           .update({ vote_count: (existing.vote_count || 1) + 1 })
           .eq('id', existing.id);
+          
+        if (updateError) {
+          console.error('Update wishlist vote failed:', updateError);
+          return false;
+        }
+        return true;
       }
+      return false;
     }
 
-    console.log(`✓ Wishlist updated: "${cleanName}"`);
-    return data;
+    return true;
   } catch (err) {
     console.error('Exception in addToWishlist:', err);
-    return null;
+    return false;
   }
 }
 
