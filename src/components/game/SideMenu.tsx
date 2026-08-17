@@ -40,8 +40,8 @@ export function SideMenu({
             await logUnmatchedSearch(userId, wishlistInput);
             const res = await addToWishlist(userId, wishlistInput);
             
-            if (!res) {
-                alert("Failed to save wishlist. Please check the browser console for details.");
+            if (!res.success) {
+                alert(`Failed to save wishlist. Database Error: ${res.error}`);
                 setWishlistStatus('idle');
                 return;
             }

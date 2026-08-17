@@ -150,12 +150,24 @@ export async function logUnmatchedSearch(userId: string, searchQuery: string) {
 /**
  * Add/vote on personality wish list
  */
-export async function addToWishlist(userId: string, personalityName: string): Promise<boolean> {
+// Fallback UUID generator for insecure contexts (like mobile testing over HTTP)
+function generateUUID() {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+export async function addToWishlist(userId: string, personalityName: string): Promise<{ success: boolean; error?: string }> {
   const cleanName = personalityName?.trim();
-  if (!cleanName) return false;
+  if (!cleanName) return { success: false, error: 'Empty name' };
 
   const validUserId = isValidUuid(userId) ? userId : null;
-  const insertId = crypto.randomUUID();
+  const insertId = generateUUID();
 
   try {
     const { error } = await supabase
@@ -187,17 +199,17 @@ export async function addToWishlist(userId: string, personalityName: string): Pr
           
         if (updateError) {
           console.error('Update wishlist vote failed:', updateError);
-          return false;
+          return { success: false, error: `Update failed: ${updateError.message}` };
         }
-        return true;
+        return { success: true };
       }
-      return false;
+      return { success: false, error: `Insert failed: ${error.message} (Code: ${error.code})` };
     }
 
-    return true;
-  } catch (err) {
+    return { success: true };
+  } catch (err: any) {
     console.error('Exception in addToWishlist:', err);
-    return false;
+    return { success: false, error: `Exception: ${err.message}` };
   }
 }
 
