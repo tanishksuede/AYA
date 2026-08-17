@@ -399,6 +399,117 @@ export async function getFeatureUsageStats() {
   }
 }
 
+export async function getStoryAnalytics(journeyId: string) {
+  try {
+    const { data, error } = await supabase
+      .from('journey_events')
+      .select('event_type, event_data')
+      .eq('journey_id', journeyId);
+
+    if (error || !data) return null;
+
+    let completions = 0;
+    let abandons = 0;
+    const frameTimes: Record<string, number[]> = {};
+    const choiceDistribution: Record<string, Record<string, number>> = {};
+
+    data.forEach(ev => {
+      const { frame_id, time_taken_ms, choice_text } = ev.event_data || {};
+      
+      if (ev.event_type === 'story_completed') completions++;
+      if (ev.event_type === 'story_abandoned') abandons++;
+      
+      if (ev.event_type === 'frame_completed' && frame_id) {
+        if (!frameTimes[frame_id]) frameTimes[frame_id] = [];
+        if (time_taken_ms) frameTimes[frame_id].push(time_taken_ms);
+
+        if (choice_text) {
+          if (!choiceDistribution[frame_id]) choiceDistribution[frame_id] = {};
+          choiceDistribution[frame_id][choice_text] = (choiceDistribution[frame_id][choice_text] || 0) + 1;
+        }
+      }
+    });
+
+    const avgFrameTimes = Object.keys(frameTimes).map(f => ({
+      frame_id: f,
+      avg_time_s: parseFloat((frameTimes[f].reduce((a, b) => a + b, 0) / frameTimes[f].length / 1000).toFixed(1))
+    })).sort((a, b) => b.avg_time_s - a.avg_time_s);
+
+    const totalStarts = completions + abandons;
+    const completionRate = totalStarts > 0 ? (completions / totalStarts) * 100 : 0;
+
+    return {
+      completions,
+      abandons,
+      completionRate: completionRate.toFixed(1) + '%',
+      avgFrameTimes,
+      choiceDistribution
+    };
+  } catch (err) {
+    return null;
+  }
+}
+
+export async function getUserAnalytics(userId: string) {
+  if (!isValidUuid(userId)) return null;
+
+  try {
+    const { data: events, error: evErr } = await supabase
+      .from('journey_events')
+      .select('event_type, event_data, journey_id, created_at')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (evErr) return null;
+
+    let storiesStarted = new Set();
+    let storiesCompleted = new Set();
+    let avgTimes: number[] = [];
+
+    events?.forEach(ev => {
+      if (ev.journey_id) storiesStarted.add(ev.journey_id);
+      if (ev.event_type === 'story_completed') storiesCompleted.add(ev.journey_id);
+      if (ev.event_type === 'frame_completed' && ev.event_data?.time_taken_ms) {
+        avgTimes.push(ev.event_data.time_taken_ms);
+      }
+    });
+
+    const avgDecisionTimeS = avgTimes.length > 0 
+      ? (avgTimes.reduce((a, b) => a + b, 0) / avgTimes.length / 1000).toFixed(1)
+      : '0.0';
+
+    const { data: feedback } = await supabase
+      .from('journey_feedback')
+      .select('sentiment_score, journey_id')
+      .eq('user_id', userId);
+
+    const avgSentiment = feedback && feedback.length > 0 
+      ? (feedback.reduce((sum, f) => sum + f.sentiment_score, 0) / feedback.length).toFixed(1)
+      : 'N/A';
+
+    return {
+      totalStoriesStarted: storiesStarted.size,
+      totalStoriesCompleted: storiesCompleted.size,
+      completionRate: storiesStarted.size > 0 ? ((storiesCompleted.size / storiesStarted.size) * 100).toFixed(1) + '%' : '0%',
+      avgDecisionTimeS,
+      avgSentiment,
+      recentActivity: events?.slice(0, 5) || []
+    };
+  } catch (err) {
+    return null;
+  }
+}
+
+export async function getAllJourneyIds() {
+  try {
+    const { data } = await supabase.from('journey_events').select('journey_id');
+    if (!data) return [];
+    return Array.from(new Set(data.map(d => d.journey_id)));
+  } catch {
+    return [];
+  }
+}
+
 export default {
   logJourneyEvent,
   logJourneyFeedback,
@@ -412,4 +523,7 @@ export default {
   getGlobalSentimentDistribution,
   getGlobalDifficultyStats,
   getFeatureUsageStats,
+  getStoryAnalytics,
+  getUserAnalytics,
+  getAllJourneyIds
 };

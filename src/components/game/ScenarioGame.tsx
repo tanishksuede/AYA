@@ -11,6 +11,7 @@ import { useJourneyTracking } from '../../hooks/useJourneyTracking';
 import type { Level, Lesson } from '../../types/gameTypes';
 import clsx from 'clsx';
 import { supabase } from '../../utils/supabase';
+import { logJourneyEvent } from '../../utils/feedbackUtils';
 import { STORY_DATABASE } from '../../data/scenarios';
 import { IDOL_PROFILES } from '../../data/idolMindsets';
 import { calculateLevelInfo } from '../../utils/levelSystem';
@@ -460,8 +461,18 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
         // Skip trait calculation for navigation-only choices
         const isNavChoice = NAVIGATION_CHOICES.some(nav => choice.text.toLowerCase() === nav);
 
-        const timeTakenSeconds = Math.max(1, Math.round((Date.now() - frameStartTime) / 1000));
+        const timeTakenMs = Date.now() - frameStartTime;
+        const timeTakenSeconds = Math.max(1, Math.round(timeTakenMs / 1000));
         
+        // --- NEW: TELEMETRY LOGGING ---
+        if (!isNavChoice && scenario?.id) {
+            logJourneyEvent(useUserStore.getState().profile?.id || '', scenario.id, 'frame_completed', {
+                frame_id: currentFrameId,
+                choice_text: choice.text,
+                time_taken_ms: timeTakenMs
+            });
+        }
+
         const rawImpacts = isNavChoice
             ? { risk_taker: 0, creative: 0, analytical: 0, social: 0, ambitious: 0 }
             : calculateTraitImpacts(choice.text, choice.score);
@@ -1016,6 +1027,16 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                     onClick={() => {
                         audioSynth.playClick();
                         bgmManager.stop(1);
+                        
+                        // --- NEW: ABANDON LOGGING ---
+                        const isComplete = currentFrameId === 'COMPLETE' || currentFrameId.startsWith('LEARNING');
+                        if (!isComplete && scenario?.id) {
+                            logJourneyEvent(useUserStore.getState().profile?.id || '', scenario.id, 'story_abandoned', {
+                                frame_id: currentFrameId,
+                                time_spent_on_frame_ms: Date.now() - frameStartTime
+                            });
+                        }
+                        
                         onBack();
                     }}
                     className="flex items-center gap-2 px-4 py-2 rounded-full bg-black/40 backdrop-blur-md border border-white/10 hover:bg-white/10 transition-all text-xs uppercase tracking-widest"

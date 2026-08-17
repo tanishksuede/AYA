@@ -5,6 +5,7 @@ import { audioManager as audioSynth } from "../../utils/audioManager";
 import { Flame, Briefcase, Eye, Shield, Award, Zap, Check, ChevronLeft } from 'lucide-react';
 import { supabase } from '../../utils/supabase';
 import { markQuizDone } from '../../utils/session';
+import { logJourneyEvent } from '../../utils/feedbackUtils';
 import { motion, AnimatePresence } from 'framer-motion';
 import clsx from 'clsx';
 import type { PersonalityTraits, PsychologicalProfile, MotivationType, RiskAppetite, EmotionalStyle, SocialRole, PassionType, CoreValue } from '../../types/gameTypes';
@@ -156,9 +157,16 @@ export function PersonalityAssessment() {
         answers: string[]
     }[]>([]);
 
-    // Mascot Controller Action State
     const [mascotAction, setMascotAction] = useState<MascotAction>('none');
     const [mascotActionTimestamp, setMascotActionTimestamp] = useState<number>(0);
+
+    // Telemetry tracking
+    const [questionStartTime, setQuestionStartTime] = useState<number>(Date.now());
+
+    useEffect(() => {
+        // Reset timer when step changes
+        setQuestionStartTime(Date.now());
+    }, [step]);
 
     const triggerMascotAction = (action: MascotAction) => {
         setMascotAction(action);
@@ -233,6 +241,14 @@ export function PersonalityAssessment() {
         setProfileBuilder(newProfile);
         setAnswers(newAnswers);
         setCurrentSelection([]);
+
+        // --- NEW: TELEMETRY LOGGING ---
+        const timeTakenMs = Date.now() - questionStartTime;
+        logJourneyEvent(userProfile?.id || '', 'onboarding_quiz', 'frame_completed', {
+            frame_id: `question_${step + 1}`,
+            choice_text: textMerged,
+            time_taken_ms: timeTakenMs
+        });
 
         if (step < QUESTIONS.length - 1) {
             triggerMascotAction('next');
