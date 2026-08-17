@@ -760,7 +760,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
 
                 // ── 4. Insert game_sessions (history log — no scenario_choices to avoid JSONB errors) ──
                 try {
-                    const insertData = {
+                    const insertData: any = {
                         user_id: userProfile.id,
                         level_id: String(level.id),
                         selected_personality: String(level.personality || level.archetype || ''),
@@ -770,13 +770,26 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                     const { data, error: insertError } = await supabase.from('game_sessions').insert(insertData).select();
                     
                     if (insertError) {
+                        if (insertError.code === '23503') {
+                            // Foreign key violation for guest user, retry without user_id
+                            insertData.user_id = null;
+                            const { data: retryData, error: retryError } = await supabase.from('game_sessions').insert(insertData).select();
+                            if (!retryError) {
+                                console.log('[AYA] ✓ game_sessions inserted (guest mode):', retryData);
+                                return;
+                            }
+                        }
                         console.error('[AYA] game_sessions INSERT ERROR:', insertError.message, insertError.details, insertError.hint);
                         // Fallback: Try inserting without new columns if they haven't been created yet
-                        const fallbackData = {
+                        const fallbackData: any = {
                              user_id: userProfile.id,
                              match_score: matchPercent,
                         };
-                        await supabase.from('game_sessions').insert(fallbackData);
+                        const { error: fallbackError } = await supabase.from('game_sessions').insert(fallbackData);
+                        if (fallbackError && fallbackError.code === '23503') {
+                             fallbackData.user_id = null;
+                             await supabase.from('game_sessions').insert(fallbackData);
+                        }
                     } else {
                         console.log('[AYA] ✓ game_sessions inserted:', data);
                     }

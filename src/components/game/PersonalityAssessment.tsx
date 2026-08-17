@@ -258,7 +258,7 @@ export function PersonalityAssessment() {
             setIsSaving(true);
             try {
                 if (userProfile?.id) {
-                    await supabase.from('quiz_responses').insert([{
+                    const qrData: any = {
                         user_id: userProfile.id,
                         responses: {
                             question_1: newAnswers[0] || '',
@@ -268,9 +268,14 @@ export function PersonalityAssessment() {
                             question_5: newAnswers[4] || '',
                             question_6: newAnswers[5] || ''
                         }
-                    }]);
+                    };
+                    const { error: qrError } = await supabase.from('quiz_responses').insert([qrData]);
+                    if (qrError && qrError.code === '23503') {
+                        qrData.user_id = null;
+                        await supabase.from('quiz_responses').insert([qrData]);
+                    }
 
-                    await supabase.from('personality_profiles').upsert([{
+                    const ppData: any = {
                         user_id: userProfile.id,
                         mobile: userProfile.mobile,
                         trait_risk_taker: newTraits.risk,
@@ -281,7 +286,13 @@ export function PersonalityAssessment() {
                         interest_goal: newProfile.interest_goal || '',
                         interest_struggle: newProfile.interest_struggle || '',
                         interest_domain: newProfile.interest_domain || ''
-                    }], { onConflict: 'user_id' });
+                    };
+                    
+                    const { error: ppError } = await supabase.from('personality_profiles').upsert([ppData], { onConflict: 'user_id' });
+                    if (ppError && ppError.code === '23503') {
+                        ppData.user_id = null;
+                        await supabase.from('personality_profiles').insert([ppData]).catch(() => {});
+                    }
 
                     markQuizDone();
                 }

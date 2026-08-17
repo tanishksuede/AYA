@@ -19,19 +19,24 @@ export async function logJourneyEvent(userId: string, journeyId: string, eventTy
   if (!journeyId) return null;
 
   try {
-    const { data, error } = await supabase
-      .from('journey_events')
-      .insert([
-        {
-          user_id: isValidUuid(userId) ? userId : null,
-          journey_id: journeyId,
-          event_type: eventType,
-          event_data: eventData,
-          created_at: new Date().toISOString(),
-        }
-      ]);
+    const payload = {
+      id: generateUUID(),
+      user_id: isValidUuid(userId) ? userId : null,
+      journey_id: journeyId,
+      event_type: eventType,
+      event_data: eventData,
+      created_at: new Date().toISOString(),
+    };
+
+    const { data, error } = await supabase.from('journey_events').insert([payload]);
 
     if (error) {
+      if (error.code === '23503') {
+        payload.user_id = null;
+        payload.id = generateUUID();
+        const { data: retryData, error: retryError } = await supabase.from('journey_events').insert([payload]);
+        if (!retryError) return retryData;
+      }
       console.error('Error logging journey event:', error);
       return null;
     }
@@ -55,20 +60,25 @@ export async function logJourneyFeedback(
   if (sentimentScore < 0 || sentimentScore > 4) return null;
 
   try {
-    const { data, error } = await supabase
-      .from('journey_feedback')
-      .insert([
-        {
-          user_id: isValidUuid(userId) ? userId : null,
-          journey_id: journeyId,
-          sentiment_score: sentimentScore,
-          emoji: emoji,
-          session_duration_seconds: sessionDurationSeconds,
-          created_at: new Date().toISOString(),
-        }
-      ]);
+    const payload = {
+      id: generateUUID(),
+      user_id: isValidUuid(userId) ? userId : null,
+      journey_id: journeyId,
+      sentiment_score: sentimentScore,
+      emoji: emoji,
+      session_duration_seconds: sessionDurationSeconds,
+      created_at: new Date().toISOString(),
+    };
+
+    const { data, error } = await supabase.from('journey_feedback').insert([payload]);
 
     if (error) {
+      if (error.code === '23503') {
+        payload.user_id = null;
+        payload.id = generateUUID();
+        const { data: retryData, error: retryError } = await supabase.from('journey_feedback').insert([payload]);
+        if (!retryError) return retryData;
+      }
       console.error('Error logging feedback:', error);
       return null;
     }
@@ -84,18 +94,23 @@ export async function logJourneyFeedback(
  */
 export async function logFeatureUsage(userId: string, featureName: string, sessionId: string | null = null) {
   try {
-    const { data, error } = await supabase
-      .from('feature_usage')
-      .insert([
-        {
-          user_id: isValidUuid(userId) ? userId : null,
-          feature_name: featureName,
-          session_id: sessionId,
-          accessed_at: new Date().toISOString(),
-        }
-      ]);
+    const payload = {
+      id: generateUUID(),
+      user_id: isValidUuid(userId) ? userId : null,
+      feature_name: featureName,
+      session_id: sessionId,
+      accessed_at: new Date().toISOString(),
+    };
+
+    const { data, error } = await supabase.from('feature_usage').insert([payload]);
 
     if (error) {
+      if (error.code === '23503') {
+        payload.user_id = null;
+        payload.id = generateUUID();
+        const { data: retryData, error: retryError } = await supabase.from('feature_usage').insert([payload]);
+        if (!retryError) return retryData;
+      }
       console.error('Error logging feature usage:', error);
       return null;
     }
@@ -255,19 +270,24 @@ export async function logDifficultyFeedback(userId: string, journeyId: string, d
   }
 
   try {
-    const { data, error } = await supabase
-      .from('story_difficulty_feedback')
-      .insert([
-        {
-          user_id: userId,
-          journey_id: journeyId,
-          difficulty_rating: difficultyRating,
-          part: part,
-          created_at: new Date().toISOString(),
-        }
-      ]);
+    const payload = {
+      id: generateUUID(),
+      user_id: isValidUuid(userId) ? userId : null,
+      journey_id: journeyId,
+      difficulty_rating: difficultyRating,
+      part: part,
+      created_at: new Date().toISOString(),
+    };
+
+    const { data, error } = await supabase.from('story_difficulty_feedback').insert([payload]);
 
     if (error) {
+      if (error.code === '23503') {
+        payload.user_id = null;
+        payload.id = generateUUID();
+        const { data: retryData, error: retryError } = await supabase.from('story_difficulty_feedback').insert([payload]);
+        if (!retryError) return retryData;
+      }
       console.error('Error logging difficulty feedback:', error);
       return null;
     }
@@ -287,17 +307,22 @@ export async function logDifficultyFeedback(userId: string, journeyId: string, d
  */
 export async function saveTopicPreference(userId: string, topic: string) {
   try {
-    const { data, error } = await supabase
-      .from('user_topic_preferences')
-      .insert([
-        {
-          user_id: userId,
-          topic: topic,
-          selected_at: new Date().toISOString(),
-        }
-      ]);
+    const payload = {
+      id: generateUUID(),
+      user_id: isValidUuid(userId) ? userId : null,
+      topic: topic,
+      selected_at: new Date().toISOString(),
+    };
+
+    const { data, error } = await supabase.from('user_topic_preferences').insert([payload]);
 
     if (error) {
+      if (error.code === '23503') {
+        payload.user_id = null;
+        payload.id = generateUUID();
+        const { data: retryData, error: retryError } = await supabase.from('user_topic_preferences').insert([payload]);
+        if (!retryError) return retryData;
+      }
       console.error('Error saving topic preference:', error);
       return null;
     }
@@ -318,19 +343,24 @@ export async function saveTopicPreference(userId: string, topic: string) {
  */
 export async function saveSurveyResponse(userId: string, questionKey: string, response: string | number) {
   try {
-    const { data, error } = await supabase
-      .from('survey_responses')
-      .insert([
-        {
-          user_id: userId,
-          question_key: questionKey,
-          response_text: typeof response === 'string' ? response : null,
-          response_rating: typeof response === 'number' ? response : null,
-          responded_at: new Date().toISOString(),
-        }
-      ]);
+    const payload = {
+      id: generateUUID(),
+      user_id: isValidUuid(userId) ? userId : null,
+      question_key: questionKey,
+      response_text: typeof response === 'string' ? response : null,
+      response_rating: typeof response === 'number' ? response : null,
+      responded_at: new Date().toISOString(),
+    };
+
+    const { data, error } = await supabase.from('survey_responses').insert([payload]);
 
     if (error) {
+      if (error.code === '23503') {
+        payload.user_id = null;
+        payload.id = generateUUID();
+        const { data: retryData, error: retryError } = await supabase.from('survey_responses').insert([payload]);
+        if (!retryError) return retryData;
+      }
       console.error('Error saving survey response:', error);
       return null;
     }
