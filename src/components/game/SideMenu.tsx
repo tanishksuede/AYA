@@ -81,7 +81,7 @@ export function SideMenu({
             {/* Sliding Panel */}
             <div
                 className={clsx(
-                    "fixed top-0 right-0 h-[100dvh] w-72 sm:w-80 transition-transform duration-300 ease-in-out pointer-events-auto flex flex-col pt-8 px-6 gap-6 shadow-[-10px_0_30px_rgba(0,0,0,0.5)] z-[110]",
+                    "fixed top-0 right-0 h-[100dvh] w-72 sm:w-80 transition-transform duration-300 ease-in-out pointer-events-auto flex flex-col pt-8 px-6 gap-6 shadow-[-10px_0_30px_rgba(0,0,0,0.5)] z-[110] overflow-y-auto pb-safe",
                     isOpen ? "translate-x-0" : "translate-x-full",
                     isCandyMode 
                         ? "bg-white/95 backdrop-blur-xl border-l border-white/40 text-slate-800"
