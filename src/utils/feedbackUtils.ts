@@ -113,15 +113,28 @@ export async function logUnmatchedSearch(userId: string, searchQuery: string) {
   if (!searchQuery || searchQuery.trim().length === 0) return null;
 
   try {
+    const cleanQuery = searchQuery.trim();
+    
+    // Check if it already exists to avoid unique constraint 409 errors
+    const { data: existingRecords } = await supabase
+      .from('unmatched_searches')
+      .select('id')
+      .ilike('search_query', cleanQuery)
+      .limit(1);
+
+    if (existingRecords && existingRecords.length > 0) {
+      // If it exists, just return to prevent 409 conflicts
+      return existingRecords[0];
+    }
+
     const { data, error } = await supabase
       .from('unmatched_searches')
-      .insert([
-        {
+      .insert([{
+          id: crypto.randomUUID(),
           user_id: isValidUuid(userId) ? userId : null,
-          search_query: searchQuery.trim(),
+          search_query: cleanQuery,
           searched_at: new Date().toISOString(),
-        }
-      ]);
+      }]);
 
     if (error) {
       console.error('Error logging unmatched search:', error);
@@ -142,11 +155,13 @@ export async function addToWishlist(userId: string, personalityName: string): Pr
   if (!cleanName) return false;
 
   const validUserId = isValidUuid(userId) ? userId : null;
+  const insertId = crypto.randomUUID();
 
   try {
     const { error } = await supabase
       .from('personality_wishlist')
       .insert([{
+          id: insertId,
           user_id: validUserId,
           personality_name: cleanName,
           vote_count: 1,
@@ -154,13 +169,15 @@ export async function addToWishlist(userId: string, personalityName: string): Pr
       }]);
 
     if (error) {
-      console.warn('Insert wishlist failed:', error);
+      console.warn('Insert wishlist failed (might be unique constraint):', error);
       
-      const { data: existing } = await supabase
+      const { data: existingRecords } = await supabase
         .from('personality_wishlist')
         .select('id, vote_count')
-        .eq('personality_name', cleanName)
-        .maybeSingle();
+        .ilike('personality_name', cleanName)
+        .limit(1);
+
+      const existing = existingRecords?.[0];
 
       if (existing) {
         const { error: updateError } = await supabase
