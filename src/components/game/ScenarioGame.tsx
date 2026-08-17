@@ -6,6 +6,7 @@ import type { EmotionTheme } from '../../utils/storyEmotion';
 import { bgmManager } from '../../utils/bgmManager';
 import { CheckCircle, AlertCircle, ChevronRight, Volume2, VolumeX, Loader2, Palette, Star } from 'lucide-react';
 import DifficultySlider from '../feedback/DifficultySlider';
+import PostJourneyFeedback from '../feedback/PostJourneyFeedback';
 import { useJourneyTracking } from '../../hooks/useJourneyTracking';
 import type { Level, Lesson } from '../../types/gameTypes';
 import clsx from 'clsx';
@@ -105,6 +106,10 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
     // Save status toast state
     const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
+    // Post-journey feedback state
+    const [showPostFeedback, setShowPostFeedback] = useState(false);
+    const [pendingCompletionStars, setPendingCompletionStars] = useState<number>(0);
+
     useJourneyTracking(level.id);
 
     const toggleCandyMode = useUserStore((state) => state.toggleCandyMode);
@@ -116,7 +121,13 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
     const levelScores = useUserStore((state) => state.levelScores);
 
     const handleLevelComplete = (stars: number) => {
-        onComplete(stars);
+        setPendingCompletionStars(stars);
+        setShowPostFeedback(true);
+    };
+
+    const finalizeLevelComplete = () => {
+        setShowPostFeedback(false);
+        onComplete(pendingCompletionStars);
     };
 
     // Use the global mode (renamed variable mapping for easier refactor)
@@ -1321,6 +1332,19 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                         : "bg-red-900/80 border-red-400/50 text-red-300"
                 )}>
                     {saveStatus === 'saved' ? '✓ Progress Saved' : '✗ Save Failed — check connection'}
+                </div>
+            )}
+
+            {/* Post Journey Feedback Popup */}
+            {showPostFeedback && (
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+                    <div className="w-full max-w-lg bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl p-6 relative animate-fade-in-up">
+                        <PostJourneyFeedback
+                            journeyId={level.id}
+                            sessionDurationSeconds={null}
+                            onFeedbackComplete={finalizeLevelComplete}
+                        />
+                    </div>
                 </div>
             )}
         </div>

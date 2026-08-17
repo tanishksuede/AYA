@@ -2,8 +2,6 @@ import { useEffect, useState, useMemo } from 'react';
 import clsx from 'clsx';
 import { audioManager as audioSynth } from "../../utils/audioManager";
 import { RefreshCw, Shield, Heart, Zap, Grid3x3, Check, Sparkles, Star, Flame, Copy, Brain } from 'lucide-react';
-import { useParams } from 'react-router-dom';
-import PostJourneyFeedback from '../feedback/PostJourneyFeedback';
 import type { PersonalityTraits, PsychologicalProfile } from '../../types/gameTypes';
 import { IDOL_PROFILES } from '../../data/idolMindsets';
 import { useUserStore } from '../../store/userStore';
@@ -212,7 +210,7 @@ const ToughCookieMeter = ({ score, isCandyMode }: { score: number, isCandyMode: 
 import { resolvePersonalityAvatar, PERSONALITY_AVATAR_MAP } from '../../utils/avatarUtils';
 
 export function MatchReport({ userTraits, userProfile, idolName, onClose }: MatchReportProps) {
-    const { id } = useParams();
+    // useParams used to have 'id' here, but it is no longer used for PostJourneyFeedback
     const [animatedPercent, setAnimatedPercent] = useState(0);
     const isCandyMode = useUserStore((state) => state.isCandyMode);
     const cleanIdolName = (idolName || "Default").trim();
@@ -679,16 +677,6 @@ export function MatchReport({ userTraits, userProfile, idolName, onClose }: Matc
                             </FrostedGrapePanel>
                         </div>
 
-                    </div>
-                    {/* Post Journey Feedback */}
-                    <div className="w-full max-w-lg mx-auto mt-12 mb-8">
-                        <PostJourneyFeedback
-                            journeyId={id || 'unknown'}
-                            sessionDurationSeconds={null}
-                            onFeedbackComplete={() => {
-                                console.log('Feedback submitted from MatchReport');
-                            }}
-                        />
                     </div>
                 </div>
             </div>
