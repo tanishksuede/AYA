@@ -81,7 +81,7 @@ export function SideMenu({
             {/* Sliding Panel */}
             <div
                 className={clsx(
-                    "fixed top-0 right-0 h-[100dvh] w-72 sm:w-80 transition-transform duration-300 ease-in-out pointer-events-auto flex flex-col pt-8 px-6 gap-6 shadow-[-10px_0_30px_rgba(0,0,0,0.5)] z-[110] overflow-y-auto pb-safe",
+                    "fixed top-0 right-0 h-[100dvh] w-72 sm:w-80 transition-transform duration-300 ease-in-out pointer-events-auto flex flex-col shadow-[-10px_0_30px_rgba(0,0,0,0.5)] z-[110]",
                     isOpen ? "translate-x-0" : "translate-x-full",
                     isCandyMode 
                         ? "bg-white/95 backdrop-blur-xl border-l border-white/40 text-slate-800"
@@ -89,7 +89,7 @@ export function SideMenu({
                 )}
             >
                 {/* Header with Close Button */}
-                <div className="flex justify-between items-center mb-1">
+                <div className="flex justify-between items-center px-6 pt-8 pb-4 shrink-0">
                     <span className={clsx(
                         "text-lg font-black uppercase tracking-widest",
                         isCandyMode ? "text-pink-500" : "text-[#00f2ff]"
@@ -105,6 +105,8 @@ export function SideMenu({
                     </button>
                 </div>
 
+                {/* Scrollable Content */}
+                <div className="flex-1 overflow-y-auto overscroll-contain [-webkit-overflow-scrolling:touch] px-6 pb-8 flex flex-col gap-6">
                 {/* User Profile Identity Banner */}
                 {profile && (
                     <div className={clsx(
@@ -350,6 +352,7 @@ export function SideMenu({
                     <X size={20} strokeWidth={3} />
                     Close Menu
                 </button>
+                </div>
             </div>
         </div>
     );
