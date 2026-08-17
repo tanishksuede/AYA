@@ -137,6 +137,19 @@ export async function logUnmatchedSearch(userId: string, searchQuery: string) {
       }]);
 
     if (error) {
+      if (error.code === '23503') {
+        // Foreign key violation - user doesn't exist in parent table (guest user)
+        // Retry with null user_id
+        const { data: retryData, error: retryError } = await supabase
+          .from('unmatched_searches')
+          .insert([{
+              id: crypto.randomUUID(),
+              user_id: null,
+              search_query: cleanQuery,
+              searched_at: new Date().toISOString(),
+          }]);
+        if (!retryError) return retryData;
+      }
       console.error('Error logging unmatched search:', error);
       return null;
     }
@@ -181,6 +194,21 @@ export async function addToWishlist(userId: string, personalityName: string): Pr
       }]);
 
     if (error) {
+      if (error.code === '23503') {
+        // Foreign key violation - user doesn't exist in parent table (guest user)
+        // Retry with null user_id to bypass constraint
+        const { error: retryError } = await supabase
+          .from('personality_wishlist')
+          .insert([{
+              id: generateUUID(),
+              user_id: null,
+              personality_name: cleanName,
+              vote_count: 1,
+              requested_at: new Date().toISOString(),
+          }]);
+        if (!retryError) return { success: true };
+      }
+
       console.warn('Insert wishlist failed (might be unique constraint):', error);
       
       const { data: existingRecords } = await supabase
