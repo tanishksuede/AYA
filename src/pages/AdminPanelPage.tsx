@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Send, AlertTriangle, UserPlus, Trash2, Shield, Search, BarChart2, Activity } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import clsx from 'clsx';
+import FeedbackDashboard from '../components/admin/FeedbackDashboard';
 
 export function AdminPanelPage() {
     const navigate = useNavigate();
@@ -363,6 +364,10 @@ export function AdminPanelPage() {
                 </div>
 
                 <SearchAnalyticsView />
+                
+                <div className="mt-8">
+                    <FeedbackDashboard />
+                </div>
             </div>
         </div>
     );
