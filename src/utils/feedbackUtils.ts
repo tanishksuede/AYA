@@ -302,16 +302,26 @@ export async function getTopRequestedPersonalities(limit: number = 50) {
   try {
     const { data, error } = await supabase
       .from('personality_wishlist')
-      .select('personality_name, COUNT(*) as vote_count')
-      .order('vote_count', { ascending: false })
-      .limit(limit);
+      .select('personality_name, vote_count');
 
     if (error) {
       console.error('Error fetching top personalities:', error);
       return [];
     }
 
-    return data || [];
+    if (!data) return [];
+
+    // Group and sum votes by personality
+    const counts: Record<string, number> = {};
+    data.forEach((row: any) => {
+      const name = row.personality_name;
+      counts[name] = (counts[name] || 0) + (row.vote_count || 1);
+    });
+
+    return Object.entries(counts)
+      .map(([personality_name, vote_count]) => ({ personality_name, vote_count }))
+      .sort((a, b) => b.vote_count - a.vote_count)
+      .slice(0, limit);
   } catch (err) {
     console.error('Exception in getTopRequestedPersonalities:', err);
     return [];
@@ -319,41 +329,86 @@ export async function getTopRequestedPersonalities(limit: number = 50) {
 }
 
 /**
- * Get journey feedback summary (for admin dashboard)
+ * Get global sentiment distribution
  */
-export async function getJourneyFeedbackSummary(journeyId: string) {
+export async function getGlobalSentimentDistribution() {
   try {
     const { data, error } = await supabase
       .from('journey_feedback')
-      .select('sentiment_score, emoji')
-      .eq('journey_id', journeyId);
+      .select('sentiment_score, emoji');
 
-    if (error) {
-      console.error('Error fetching feedback summary:', error);
-      return null;
-    }
+    if (error) return null;
 
     const total = data.length;
     const avgSentiment = total > 0
       ? (data.reduce((sum: number, fb: any) => sum + fb.sentiment_score, 0) / total).toFixed(2)
       : 0;
 
-    const sentimentBreakdown = {
-      0: data.filter((fb: any) => fb.sentiment_score === 0).length,
-      1: data.filter((fb: any) => fb.sentiment_score === 1).length,
-      2: data.filter((fb: any) => fb.sentiment_score === 2).length,
-      3: data.filter((fb: any) => fb.sentiment_score === 3).length,
-      4: data.filter((fb: any) => fb.sentiment_score === 4).length,
-    };
+    const sentimentBreakdown = [
+      { name: '😕', value: data.filter((fb: any) => fb.sentiment_score === 0).length, fill: '#ef4444' },
+      { name: '😐', value: data.filter((fb: any) => fb.sentiment_score === 1).length, fill: '#f97316' },
+      { name: '🙂', value: data.filter((fb: any) => fb.sentiment_score === 2).length, fill: '#facc15' },
+      { name: '😊', value: data.filter((fb: any) => fb.sentiment_score === 3).length, fill: '#4ade80' },
+      { name: '🔥', value: data.filter((fb: any) => fb.sentiment_score === 4).length, fill: '#3b82f6' },
+    ];
 
-    return {
-      total_feedbacks: total,
-      average_sentiment: parseFloat(avgSentiment as string),
-      sentiment_breakdown: sentimentBreakdown,
-    };
+    return { total, avgSentiment: parseFloat(avgSentiment as string), distribution: sentimentBreakdown };
   } catch (err) {
-    console.error('Exception in getJourneyFeedbackSummary:', err);
     return null;
+  }
+}
+
+/**
+ * Get global difficulty stats
+ */
+export async function getGlobalDifficultyStats() {
+  try {
+    const { data, error } = await supabase
+      .from('story_difficulty_feedback')
+      .select('difficulty_rating');
+
+    if (error) return null;
+
+    const total = data.length;
+    const avgDifficulty = total > 0
+      ? (data.reduce((sum: number, fb: any) => sum + fb.difficulty_rating, 0) / total).toFixed(2)
+      : 0;
+
+    const difficultyBreakdown = [
+      { name: 'Too Easy (1)', count: data.filter((fb: any) => fb.difficulty_rating === 1).length },
+      { name: 'Easy (2)', count: data.filter((fb: any) => fb.difficulty_rating === 2).length },
+      { name: 'Just Right (3)', count: data.filter((fb: any) => fb.difficulty_rating === 3).length },
+      { name: 'Hard (4)', count: data.filter((fb: any) => fb.difficulty_rating === 4).length },
+      { name: 'Too Hard (5)', count: data.filter((fb: any) => fb.difficulty_rating === 5).length },
+    ];
+
+    return { total, avgDifficulty: parseFloat(avgDifficulty as string), distribution: difficultyBreakdown };
+  } catch (err) {
+    return null;
+  }
+}
+
+/**
+ * Get feature usage
+ */
+export async function getFeatureUsageStats() {
+  try {
+    const { data, error } = await supabase
+      .from('feature_usage')
+      .select('feature_name');
+
+    if (error) return [];
+
+    const counts: Record<string, number> = {};
+    data.forEach((row: any) => {
+      counts[row.feature_name] = (counts[row.feature_name] || 0) + 1;
+    });
+
+    return Object.entries(counts)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count);
+  } catch (err) {
+    return [];
   }
 }
 
@@ -367,5 +422,7 @@ export default {
   saveTopicPreference,
   saveSurveyResponse,
   getTopRequestedPersonalities,
-  getJourneyFeedbackSummary,
+  getGlobalSentimentDistribution,
+  getGlobalDifficultyStats,
+  getFeatureUsageStats,
 };

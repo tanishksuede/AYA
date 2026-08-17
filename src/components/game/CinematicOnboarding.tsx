@@ -74,7 +74,7 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
   const welcomeWords = "Your journey begins now.".split(" ");
 
   return (
-    <div className="w-full h-screen bg-[#0d0d16] text-[#f2effb] overflow-y-auto relative font-['Space_Grotesk',sans-serif] perspective-[2000px] [-webkit-overflow-scrolling:touch]" style={{scrollbarWidth:'none', msOverflowStyle:'none'}} >
+    <div className="w-full h-[100dvh] bg-[#0d0d16] text-[#f2effb] overflow-y-auto relative font-['Space_Grotesk',sans-serif] perspective-[2000px] [-webkit-overflow-scrolling:touch]" style={{scrollbarWidth:'none', msOverflowStyle:'none'}} >
       <style>{`::-webkit-scrollbar { display: none; }`}</style>
       
       {/* Universal Scene Elements */}
@@ -97,7 +97,7 @@ export function CinematicOnboarding({ onComplete }: { onComplete?: () => void })
       )}
 
       {/* Main Slide Content — Scrollable inner wrapper with header clearance */}
-      <div className="relative z-10 w-full min-h-screen flex flex-col items-start justify-center px-4 md:px-6 pt-28 sm:pt-32 pb-28">
+      <div className="relative z-10 w-full min-h-[100dvh] flex flex-col items-start justify-center px-4 md:px-6 pt-28 sm:pt-32 pb-28">
         <AnimatePresence mode="wait">
           {/* SLIDE 1: The Hook */}
           {slide === 1 && (

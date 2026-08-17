@@ -156,7 +156,7 @@ export function LevelUpRouteHandler() {
     const levelInfo = calculateLevelInfo(profile.level || 1);
 
     return (
-        <div className="w-full min-h-screen bg-slate-950">
+        <div className="w-full min-h-[100dvh] bg-slate-950">
             <LevelUpCelebration
                 levelName={levelInfo.title}
                 levelNumber={profile.level || 1}

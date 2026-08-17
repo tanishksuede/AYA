@@ -38,7 +38,7 @@ export function PersonalityIntro({ level, onStart, onBack }: PersonalityIntroPro
 
     return (
         <div className={clsx(
-            "w-full min-h-screen flex items-center justify-center transition-opacity duration-500 p-4 pb-safe",
+            "w-full min-h-[100dvh] flex items-center justify-center transition-opacity duration-500 p-4 pb-safe",
             isCandyMode ? "bg-pink-50" : "bg-slate-950",
             isVisible ? "opacity-100" : "opacity-0"
         )}>

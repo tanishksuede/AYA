@@ -861,7 +861,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
 
     if (isLoadingScenario || !scenario) {
         return (
-            <div className="w-full h-screen bg-slate-950 flex flex-col items-center justify-center">
+            <div className="w-full h-[100dvh] bg-slate-950 flex flex-col items-center justify-center">
                 <Loader2 className="w-8 h-8 text-cyan-400 animate-spin mb-4" />
                 <p className="text-cyan-400 text-sm tracking-widest animate-pulse">LOADING SCENARIO...</p>
             </div>

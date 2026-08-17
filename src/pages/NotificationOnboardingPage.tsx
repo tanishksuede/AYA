@@ -46,7 +46,7 @@ export function NotificationOnboardingPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0510] flex items-center justify-center p-6 relative overflow-hidden">
+        <div className="min-h-[100dvh] bg-[#0a0510] flex items-center justify-center p-6 relative overflow-hidden">
             {/* Background elements */}
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-purple-900/20 via-transparent to-fuchsia-900/10 pointer-events-none" />
             <div className="absolute top-1/4 -left-32 w-96 h-96 bg-purple-600/20 rounded-full blur-[100px] pointer-events-none" />

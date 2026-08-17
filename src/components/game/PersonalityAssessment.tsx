@@ -321,7 +321,7 @@ export function PersonalityAssessment() {
             <CyberpunkAmbientBackground isViolet={isViolet} isCyan={isCyan} />
 
             {/* Main Outer Layout: Side-by-Side Flex Container */}
-            <div className="relative z-10 w-full max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-center h-full md:h-auto min-h-screen p-4 gap-6 lg:gap-12">
+            <div className="relative z-10 w-full max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-center h-full md:h-auto min-h-[100dvh] p-4 gap-6 lg:gap-12">
                 
                 {/* Quiz Card Container */}
                 <div 

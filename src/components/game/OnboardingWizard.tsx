@@ -591,7 +591,7 @@ export function OnboardingWizard() {
             </div>
 
             {/* Scrollable content — this is the actual scrolling wrapper */}
-            <div className="relative z-10 w-full min-h-screen flex flex-col md:flex-row items-center justify-center py-16 px-4 gap-8 lg:gap-16">
+            <div className="relative z-10 w-full min-h-[100dvh] flex flex-col md:flex-row items-center justify-center py-16 px-4 gap-8 lg:gap-16">
 
                 {/* ── 1. WELCOME PAGE ("Welcome to AYA") ── */}
                 {!isRegisterMode && (

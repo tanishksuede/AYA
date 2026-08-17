@@ -167,7 +167,7 @@ export function AdminPanelPage() {
     // Loading state
     if (isAdmin === null) {
         return (
-            <div className="min-h-screen bg-[#0a0510] flex items-center justify-center">
+            <div className="min-h-[100dvh] bg-[#0a0510] flex items-center justify-center">
                 <div className="text-purple-300 text-lg animate-pulse">Verifying admin access...</div>
             </div>
         );
@@ -176,7 +176,7 @@ export function AdminPanelPage() {
     // Access denied
     if (!isAdmin) {
         return (
-            <div className="min-h-screen bg-[#0a0510] flex items-center justify-center p-6">
+            <div className="min-h-[100dvh] bg-[#0a0510] flex items-center justify-center p-6">
                 <div className="bg-red-900/40 p-6 rounded-2xl border border-red-500/50 text-center">
                     <AlertTriangle className="mx-auto mb-4 text-red-400" size={48} />
                     <h2 className="text-xl font-bold text-red-100 mb-2">Access Denied</h2>

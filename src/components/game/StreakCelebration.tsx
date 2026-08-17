@@ -32,7 +32,7 @@ export const StreakCelebration: React.FC<StreakCelebrationProps> = ({ streak, xp
 
     return (
         <div 
-            className="w-full min-h-screen z-[250] flex flex-col items-center justify-center bg-black/95 overflow-hidden select-none cursor-pointer"
+            className="w-full min-h-[100dvh] z-[250] flex flex-col items-center justify-center bg-black/95 overflow-hidden select-none cursor-pointer"
             onClick={onComplete}
         >
             {/* Celebration Particles FX */}

@@ -353,7 +353,7 @@ export function GameRoot() {
 
     if (sessionStatus === 'checking') {
         return (
-            <div className="w-full h-screen bg-[#0d0d16] flex flex-col items-center justify-center gap-4 p-6 text-center">
+            <div className="w-full h-[100dvh] bg-[#0d0d16] flex flex-col items-center justify-center gap-4 p-6 text-center">
                 <div className="w-16 h-16 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin" />
                 <p className="text-cyan-400 text-lg font-bold tracking-widest animate-pulse">
                     LOADING YOUR UNIVERSE...
