@@ -413,7 +413,7 @@ export async function getStoryAnalytics(journeyId: string) {
     const frameTimes: Record<string, number[]> = {};
     const choiceDistribution: Record<string, Record<string, number>> = {};
 
-    data.forEach(ev => {
+    data.forEach((ev: any) => {
       const { frame_id, time_taken_ms, choice_text } = ev.event_data || {};
       
       if (ev.event_type === 'story_completed') completions++;
@@ -466,7 +466,7 @@ export async function getUserAnalytics(userId: string) {
     let storiesCompleted = new Set();
     let avgTimes: number[] = [];
 
-    events?.forEach(ev => {
+    events?.forEach((ev: any) => {
       if (ev.journey_id) storiesStarted.add(ev.journey_id);
       if (ev.event_type === 'story_completed') storiesCompleted.add(ev.journey_id);
       if (ev.event_type === 'frame_completed' && ev.event_data?.time_taken_ms) {
@@ -484,7 +484,7 @@ export async function getUserAnalytics(userId: string) {
       .eq('user_id', userId);
 
     const avgSentiment = feedback && feedback.length > 0 
-      ? (feedback.reduce((sum, f) => sum + f.sentiment_score, 0) / feedback.length).toFixed(1)
+      ? (feedback.reduce((sum: number, f: any) => sum + f.sentiment_score, 0) / feedback.length).toFixed(1)
       : 'N/A';
 
     return {
@@ -500,11 +500,11 @@ export async function getUserAnalytics(userId: string) {
   }
 }
 
-export async function getAllJourneyIds() {
+export async function getAllJourneyIds(): Promise<string[]> {
   try {
     const { data } = await supabase.from('journey_events').select('journey_id');
     if (!data) return [];
-    return Array.from(new Set(data.map(d => d.journey_id)));
+    return Array.from(new Set(data.map((d: any) => d.journey_id))) as string[];
   } catch {
     return [];
   }
