@@ -117,7 +117,7 @@ export function FeedbackDashboard() {
                   cx="50%"
                   cy="50%"
                   outerRadius={100}
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent = 0 }: any) => `${name} ${(percent * 100).toFixed(0)}%`}
                 >
                   {(sentimentData?.distribution || []).map((entry: any, index: number) => (
                     <Cell key={`cell-${index}`} fill={entry.fill} />
