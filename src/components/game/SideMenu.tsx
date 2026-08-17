@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Menu, X, Settings, Sun, Moon, Volume2, VolumeX, BookOpen, Users } from 'lucide-react';
+import { Menu, X, Settings, Sun, Moon, Volume2, VolumeX, BookOpen, Users, Star } from 'lucide-react';
 import clsx from 'clsx';
 import { VibeSpinnerButton } from '../MoodWheel/VibeSpinnerButton';
+import { addToWishlist, logUnmatchedSearch } from '../../utils/feedbackUtils';
 
 interface SideMenuProps {
     isCandyMode: boolean;
@@ -27,6 +28,26 @@ export function SideMenu({
     onOpenDnaProfile
 }: SideMenuProps) {
     const [isOpen, setIsOpen] = useState(false);
+    const [wishlistInput, setWishlistInput] = useState('');
+    const [wishlistStatus, setWishlistStatus] = useState<'idle' | 'loading' | 'added'>('idle');
+
+    const handleWishlistSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!wishlistInput.trim() || !profile?.id) return;
+        setWishlistStatus('loading');
+        try {
+            await logUnmatchedSearch(profile.id, wishlistInput);
+            await addToWishlist(profile.id, wishlistInput);
+            setWishlistStatus('added');
+            setTimeout(() => {
+                setWishlistStatus('idle');
+                setWishlistInput('');
+            }, 3000);
+        } catch (err) {
+            console.error(err);
+            setWishlistStatus('idle');
+        }
+    };
 
     const toggleMenu = () => {
         audioSynth.playClick();
@@ -269,6 +290,52 @@ export function SideMenu({
                 </div>
 
                 <div className="flex-grow" />
+
+                {/* Personality Wishlist Section */}
+                <div className={clsx(
+                    "w-full p-4 mt-auto mb-4 rounded-2xl border shadow-sm",
+                    isCandyMode ? "bg-white/60 border-slate-200" : "bg-slate-800/60 border-slate-700"
+                )}>
+                    <div className="flex items-center gap-2 mb-2">
+                        <Star size={16} className={isCandyMode ? "text-amber-500" : "text-amber-400"} />
+                        <span className={clsx("text-xs font-bold uppercase tracking-wider", isCandyMode ? "text-slate-700" : "text-slate-300")}>
+                            Wishlist a Personality
+                        </span>
+                    </div>
+                    {wishlistStatus === 'added' ? (
+                        <div className="text-sm font-semibold text-emerald-500 bg-emerald-500/10 p-2 rounded-xl text-center">
+                            ✓ Added to wishlist!
+                        </div>
+                    ) : (
+                        <form onSubmit={handleWishlistSubmit} className="flex gap-2">
+                            <input
+                                type="text"
+                                placeholder="E.g., Leonardo da Vinci"
+                                value={wishlistInput}
+                                onChange={(e) => setWishlistInput(e.target.value)}
+                                disabled={wishlistStatus === 'loading'}
+                                className={clsx(
+                                    "flex-grow px-3 py-2 rounded-xl text-sm border outline-none transition-all",
+                                    isCandyMode 
+                                        ? "bg-slate-50 border-slate-200 focus:border-amber-400 text-slate-800" 
+                                        : "bg-slate-900 border-slate-700 focus:border-amber-500 text-white placeholder-slate-500"
+                                )}
+                            />
+                            <button
+                                type="submit"
+                                disabled={!wishlistInput.trim() || wishlistStatus === 'loading'}
+                                className={clsx(
+                                    "px-3 py-2 rounded-xl font-bold text-sm transition-all disabled:opacity-50",
+                                    isCandyMode
+                                        ? "bg-amber-400 text-amber-900 hover:bg-amber-300"
+                                        : "bg-amber-500 text-amber-950 hover:bg-amber-400"
+                                )}
+                            >
+                                {wishlistStatus === 'loading' ? '...' : 'Add'}
+                            </button>
+                        </form>
+                    )}
+                </div>
 
                 {/* Dedicated Close Button */}
                 <button

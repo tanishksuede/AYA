@@ -4,7 +4,6 @@ import { supabase } from '../utils/supabase';
 import { getSessionId } from '../utils/session';
 import { useUserStore } from '../store/userStore';
 import clsx from 'clsx';
-import AddToWishlistButton from './feedback/AddToWishlistButton';
 
 interface SearchBarProps {
   personalities: string[];
@@ -128,7 +127,6 @@ export function SearchBar({ personalities, onMatch, onClose }: SearchBarProps) {
         )}
       >
         <div className="mb-2">{notedMessage}</div>
-        {notedMessage && <AddToWishlistButton searchQuery={inputValue} />}
       </div>
     </div>
   );
