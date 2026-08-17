@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useUserStore } from '../../store/userStore';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { MascotQuizGuide } from './MascotQuizGuide';
 import { audioManager as audioSynth } from "../../utils/audioManager";
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { saveSession } from '../../utils/session';
@@ -595,13 +596,15 @@ export function OnboardingWizard() {
 
                 {/* ── 1. WELCOME PAGE ("Welcome to AYA") ── */}
                 {!isRegisterMode && (
-                    <div className="w-full" style={{ maxWidth: '420px' }}>
-                        <motion.div
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, ease: 'easeOut' }}
-                            className="w-full text-center"
-                        >
+                    <>
+                        <MascotQuizGuide currentStep={0} className="w-64 h-64 lg:w-96 lg:h-96 hidden md:flex" />
+                        <div className="w-full" style={{ maxWidth: '420px' }}>
+                            <motion.div
+                                initial={{ opacity: 0, y: 30 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.8, ease: 'easeOut' }}
+                                className="w-full text-center"
+                            >
                             <h2 className="text-4xl font-black text-white drop-shadow-[0_0_20px_rgba(0,241,254,0.4)] text-center mb-8 leading-tight">
                                 Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00f1fe] to-[#9333ea]">AYA</span>
                             </h2>
@@ -646,6 +649,7 @@ export function OnboardingWizard() {
                             </div>
                         </motion.div>
                     </div>
+                    </>
                 )}
 
                 {/* ── 2. SETUP FORM ("Let's get to know you!") ── */}
