@@ -47,27 +47,46 @@ self.addEventListener('push', function(event) {
     }
   }
 
+  const title = data.title || 'At Your Age (AYA)';
   const options = {
     body: data.body || 'Your daily challenge is ready!',
-    icon: '/icons/icon-192.png',
-    badge: '/icons/icon-192.png',
+    icon: data.icon || '/icons/icon-192.png',
+    badge: data.badge || data.icon || '/icons/icon-192.png',
     vibrate: [100, 50, 100],
-    data: { url: data.url || '/' },
+    data: { url: data.url || '/game' },
     actions: [
-      { action: 'open', title: '🔥 Start Challenge' },
-      { action: 'close', title: 'Later' }
+      { action: 'open', title: '🔥 Open AYA' },
+      { action: 'close', title: 'Dismiss' }
     ]
   };
 
   event.waitUntil(
-    self.registration.showNotification(data.title || 'AYA', options)
+    self.registration.showNotification(title, options)
   );
 });
 
 self.addEventListener('notificationclick', function(event) {
   event.notification.close();
-  if (event.action === 'open' || !event.action) {
-    event.waitUntil(clients.openWindow(event.data.url || '/'));
+
+  if (event.action === 'close') {
+    return;
   }
+
+  const targetUrl = event.notification.data?.url || '/game';
+
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
+      for (let i = 0; i < clientList.length; i++) {
+        const client = clientList[i];
+        if (client.url.includes(targetUrl) && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow(targetUrl);
+      }
+    })
+  );
 });
+
 

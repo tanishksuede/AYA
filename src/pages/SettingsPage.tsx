@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../store/userStore';
 import { audioManager as audioSynth } from "../utils/audioManager";
 import { bgmManager } from '../utils/bgmManager';
-import { Volume2, VolumeX, Trash2, AlertTriangle } from 'lucide-react';
+import { Volume2, VolumeX, Trash2, AlertTriangle, Bell } from 'lucide-react';
 import clsx from 'clsx';
 import { supabase } from '../utils/supabase';
 import { useUsernameAvailability } from '../hooks/useUsernameAvailability';
 import { UsernameField } from '../components/game/UsernameField';
 import { clearAllUserData } from '../utils/session';
+import { subscribeToPush, unsubscribeFromPush, sendTestNotification, getNotificationSupportStatus, getExistingSubscription } from '../utils/pushNotifications';
 
 export function SettingsPage() {
     const navigate = useNavigate();
@@ -18,6 +19,24 @@ export function SettingsPage() {
     const [usernameError, setUsernameError] = useState('');
     const [usernameSuccess, setUsernameSuccess] = useState('');
     const [isSavingUsername, setIsSavingUsername] = useState(false);
+
+    // Push Notifications State
+    const [pushState, setPushState] = useState<'unsupported' | 'granted' | 'denied' | 'default' | 'subscribing'>(() => getNotificationSupportStatus());
+    const [pushMessage, setPushMessage] = useState('');
+
+    // Check active PushSubscription status on mount
+    useEffect(() => {
+        const checkActiveSubscription = async () => {
+            const status = getNotificationSupportStatus();
+            if (status === 'granted') {
+                const sub = await getExistingSubscription();
+                setPushState(sub ? 'granted' : 'default');
+            } else {
+                setPushState(status);
+            }
+        };
+        checkActiveSubscription();
+    }, []);
 
     // Delete Account State
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -240,6 +259,50 @@ export function SettingsPage() {
         }
     };
 
+    const handleEnablePush = async () => {
+        audioSynth.playClick();
+        setPushState('subscribing');
+        setPushMessage('');
+        try {
+            const sub = await subscribeToPush(profile?.id);
+            if (sub) {
+                setPushState('granted');
+                setPushMessage('Notifications enabled!');
+                setTimeout(() => setPushMessage(''), 3000);
+            } else {
+                const currentStatus = getNotificationSupportStatus();
+                setPushState(currentStatus);
+                if (currentStatus === 'denied') {
+                    setPushMessage('Permission denied in browser settings.');
+                } else {
+                    setPushMessage('Failed to enable push notifications.');
+                }
+            }
+        } catch (e: any) {
+            setPushState(getNotificationSupportStatus());
+            setPushMessage(e?.message || 'Error subscribing to notifications');
+        }
+    };
+
+    const handleTestPush = async () => {
+        audioSynth.playClick();
+        await sendTestNotification();
+    };
+
+    const handleDisablePush = async () => {
+        audioSynth.playClick();
+        setPushState('subscribing');
+        try {
+            await unsubscribeFromPush();
+            setPushState('default');
+            setPushMessage('Notifications disabled.');
+            setTimeout(() => setPushMessage(''), 3000);
+        } catch (e: any) {
+            setPushState('granted');
+            setPushMessage('Failed to disable notifications.');
+        }
+    };
+
     return (
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-slate-950 p-4 animate-fade-in">
             <div className="bg-slate-900 border border-slate-700 p-6 rounded-2xl max-w-sm w-full shadow-2xl relative max-h-[90vh] overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
@@ -314,6 +377,66 @@ export function SettingsPage() {
                                 </button>
                             </div>
                         </div>
+                    </div>
+
+                    {/* Push Notifications Section */}
+                    <div className="bg-slate-800/50 p-3.5 rounded-xl border border-slate-700 space-y-3">
+                        <div className="flex justify-between items-center">
+                            <div className="flex items-center gap-2">
+                                <Bell size={16} className="text-purple-400" />
+                                <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">Push Notifications</span>
+                            </div>
+                            <span className={clsx(
+                                "text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider",
+                                pushState === 'granted' ? "bg-emerald-900/50 text-emerald-400 border border-emerald-700/50" :
+                                pushState === 'denied' ? "bg-red-900/50 text-red-400 border border-red-700/50" :
+                                pushState === 'unsupported' ? "bg-amber-900/50 text-amber-400 border border-amber-700/50" :
+                                pushState === 'subscribing' ? "bg-blue-900/50 text-blue-400 border border-blue-700/50 animate-pulse" :
+                                "bg-slate-700 text-slate-300"
+                            )}>
+                                {pushState === 'granted' ? 'Enabled' :
+                                 pushState === 'denied' ? 'Blocked' :
+                                 pushState === 'unsupported' ? 'Unsupported' :
+                                 pushState === 'subscribing' ? 'Enabling...' : 'Disabled'}
+                            </span>
+                        </div>
+
+                        {pushMessage && (
+                            <p className="text-xs font-medium text-purple-300">{pushMessage}</p>
+                        )}
+
+                        {pushState === 'granted' ? (
+                            <div className="flex flex-col gap-2">
+                                <button
+                                    onClick={handleTestPush}
+                                    className="w-full bg-purple-600/30 hover:bg-purple-600/50 text-purple-200 border border-purple-500/40 font-bold py-2 rounded-xl text-xs uppercase tracking-wider transition-all"
+                                >
+                                    🔔 Send Test Notification
+                                </button>
+                                <button
+                                    onClick={handleDisablePush}
+                                    className="w-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 border border-slate-700 font-semibold py-1.5 rounded-xl text-[11px] uppercase tracking-wider transition-all"
+                                >
+                                    Disable Notifications
+                                </button>
+                            </div>
+                        ) : pushState === 'denied' ? (
+                            <p className="text-[11px] text-slate-400 leading-snug">
+                                Notifications are blocked in your browser settings. Unblock them in your browser URL bar.
+                            </p>
+                        ) : pushState === 'unsupported' ? (
+                            <p className="text-[11px] text-slate-400 leading-snug">
+                                Push notifications are not supported in this browser.
+                            </p>
+                        ) : (
+                            <button
+                                onClick={handleEnablePush}
+                                disabled={pushState === 'subscribing'}
+                                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider shadow-md transition-all disabled:opacity-50"
+                            >
+                                {pushState === 'subscribing' ? 'Enabling Notifications...' : 'Enable Notifications'}
+                            </button>
+                        )}
                     </div>
 
                     <hr className="border-slate-700" />

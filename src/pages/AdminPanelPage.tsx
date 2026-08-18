@@ -112,7 +112,11 @@ export function AdminPanelPage() {
     const handleCheckSubs = async () => {
         setSubCheckLoading(true);
         try {
-            const res = await fetch('/api/push-subscribe');
+            const res = await fetch('/api/subscribe-push', {
+                headers: {
+                    'x-admin-email': currentEmail
+                }
+            });
             const data = await res.json();
             setSubCount(data.count ?? 0);
         } catch (err: any) {
@@ -135,6 +139,7 @@ export function AdminPanelPage() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'x-admin-email': currentEmail
                 },
                 body: JSON.stringify({ title, body, url: '/game' }),
             });
@@ -146,9 +151,9 @@ export function AdminPanelPage() {
 
             const data = await res.json();
             
-            if (data.sent === 0 && data.message) {
+            if (data.sent === 0 && data.total === 0) {
                 setNotifStatus('error');
-                setNotifMessage(data.message + ' — Users must click "Test Push" in Settings first to register their device.');
+                setNotifMessage('No registered devices found. Users must enable notifications in Settings to register their device.');
             } else if (data.failed > 0) {
                 setNotifStatus('error');
                 setNotifMessage(`Sent to ${data.sent} device(s), but failed for ${data.failed} device(s).`);

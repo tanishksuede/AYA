@@ -12,14 +12,12 @@ import { useUserStore } from '../store/userStore';
  * This is the canonical implementation — matches the web-push npm package
  * and the W3C Push API spec exactly.
  */
-function urlBase64ToUint8Array(base64String: string): Uint8Array<ArrayBuffer> {
+function urlBase64ToUint8Array(base64String: string): Uint8Array {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
   const base64 = (base64String + padding)
     .replace(/\-/g, '+')
     .replace(/_/g, '/');
   const rawData = window.atob(base64);
-  // Allocate with an explicit ArrayBuffer so the type satisfies the Push API's
-  // BufferSource constraint (which requires ArrayBuffer, not ArrayBufferLike).
   const buffer = new ArrayBuffer(rawData.length);
   const outputArray = new Uint8Array(buffer);
   for (let i = 0; i < rawData.length; ++i) {
@@ -32,83 +30,145 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array<ArrayBuffer> {
 // Public API
 // ---------------------------------------------------------------------------
 
-export async function subscribeUserToPush(): Promise<PushSubscription | null> {
-  // ── Requested early diagnostic logs ───────────────────────────────────────
+export type PushNotificationState = 'unsupported' | 'granted' | 'denied' | 'default';
+
+/**
+ * Check if the current browser supports Web Push notifications.
+ */
+export function isPushSupported(): boolean {
+  if (typeof window === 'undefined') return false;
+  return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+}
+
+/**
+ * Get current browser notification permission state.
+ */
+export function getNotificationPermission(): NotificationPermission | 'unsupported' {
+  if (!isPushSupported()) return 'unsupported';
+  return Notification.permission;
+}
+
+/**
+ * Check browser support and current Notification permission status.
+ */
+export function getNotificationSupportStatus(): PushNotificationState {
+  if (!isPushSupported()) return 'unsupported';
+  return Notification.permission as PushNotificationState;
+}
+
+/**
+ * Retrieve current active push subscription if one exists.
+ */
+export async function getExistingSubscription(): Promise<PushSubscription | null> {
+  if (!isPushSupported()) return null;
+  try {
+    const registration = await navigator.serviceWorker.ready;
+    return await registration.pushManager.getSubscription();
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Unsubscribe current browser device from push notifications.
+ */
+export async function unsubscribeFromPush(): Promise<boolean> {
+  try {
+    if (!isPushSupported()) return false;
+    const registration = await navigator.serviceWorker.ready;
+    const subscription = await registration.pushManager.getSubscription();
+
+    if (subscription) {
+      const endpoint = subscription.endpoint;
+      await subscription.unsubscribe();
+
+      // Delete from backend Supabase table
+      try {
+        await fetch('/api/subscribe-push', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ endpoint })
+        });
+      } catch (err) {
+        console.warn('[Push] Error deleting subscription from DB:', err);
+      }
+
+      console.log('[Push] Unsubscribed successfully.');
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.error('[Push] unsubscribeFromPush failed:', err);
+    return false;
+  }
+}
+
+export async function subscribeToPush(userId?: string): Promise<PushSubscription | null> {
+  return subscribeUserToPush(userId);
+}
+
+export async function subscribeUserToPush(passedUserId?: string): Promise<PushSubscription | null> {
   console.log('[Push] Starting subscription...');
-  console.log('[Push] VAPID key:', import.meta.env.VITE_VAPID_PUBLIC_KEY?.substring(0, 20));
 
   try {
     // ── 1. Feature-detect ──────────────────────────────────────────────────
-    if (!('serviceWorker' in navigator)) {
-      console.error('[Push] FAIL — serviceWorker not supported in this browser.');
+    if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) {
+      console.error('[Push] FAIL — Web push features not supported in this browser.');
       return null;
     }
-    if (!('PushManager' in window)) {
-      console.error('[Push] FAIL — PushManager not supported in this browser.');
+
+    // If permission is already denied, do not prompt repeatedly
+    if (Notification.permission === 'denied') {
+      console.warn('[Push] Notification permission has been denied by the user.');
       return null;
     }
 
     // ── 2. Validate VAPID key ──────────────────────────────────────────────
     const DEFAULT_VAPID_KEY = 'BKuBEyjIX-OtnnyJ7cyBMLwAycYv6POyGVFIxPnlzbReZLxv3S-QP9wcJ-YIE38w_al1tqIDwSf41MUG8JgipZE';
     const VAPID_KEY = (import.meta.env.VITE_VAPID_PUBLIC_KEY as string | undefined) || DEFAULT_VAPID_KEY;
-    console.log('[Push] VAPID key length:', VAPID_KEY.length, '(expected 87 for unpadded base64url)');
+    console.log('[Push] Using VAPID key prefix:', VAPID_KEY.substring(0, 15));
 
-    // ── 3. Wait for the controlling service worker ─────────────────────────
-    // We do NOT register sw.js here — main.tsx already handles registration
-    // on page load. We just wait for whatever SW is in control.
-    console.log('[Push] Step 1 — waiting for service worker via navigator.serviceWorker.ready…');
-    const registration = await navigator.serviceWorker.ready;
-    console.log('[Push] Step 1 ✓ SW ready. Scope:', registration.scope, '| Active SW:', registration.active?.scriptURL);
+    // ── 3. Wait for or register the service worker ─────────────────────────
+    let registration: ServiceWorkerRegistration;
+    try {
+      registration = await navigator.serviceWorker.ready;
+    } catch {
+      registration = await navigator.serviceWorker.register('/sw.js');
+    }
 
     // ── 4. Request notification permission ────────────────────────────────
-    console.log('[Push] Step 2 — requesting Notification permission…');
+    console.log('[Push] Requesting Notification permission…');
     const permission = await Notification.requestPermission();
-    console.log('[Push] Step 2 — permission result:', permission);
     if (permission !== 'granted') {
-      console.warn('[Push] Step 2 — user did not grant permission. Aborting.');
+      console.warn('[Push] User did not grant permission. Permission state:', permission);
       return null;
     }
 
     // ── 5. Convert VAPID key ───────────────────────────────────────────────
-    console.log('[Push] Step 3 — converting VAPID key to Uint8Array…');
     let applicationServerKey: Uint8Array;
     try {
       applicationServerKey = urlBase64ToUint8Array(VAPID_KEY);
     } catch (e) {
-      console.error('[Push] Step 3 ✗ — VAPID key conversion threw:', e);
+      console.error('[Push] VAPID key conversion failed:', e);
       throw e;
     }
-    console.log('[Push] Step 3 ✓ — key byte length:', applicationServerKey.length, '(expected 65)');
 
     // ── 6. Subscribe ───────────────────────────────────────────────────────
-    console.log('[Push] Step 4 — calling pushManager.subscribe()…');
-    let subscription: PushSubscription;
-    try {
-      // Pass the key read fresh from env (not a cached module-level variable)
-      // to match exactly what the user requested.
+    console.log('[Push] Calling pushManager.subscribe()…');
+    let subscription = await registration.pushManager.getSubscription();
+    
+    if (!subscription) {
       subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(VAPID_KEY),
+        applicationServerKey: applicationServerKey as unknown as BufferSource,
       });
-    } catch (subErr: any) {
-      console.error(
-        '[Push] Step 4 ✗ — pushManager.subscribe() threw:', subErr.name, subErr.message,
-        '\n  Common causes of AbortError / "push service error":',
-        '\n  • VITE_VAPID_PUBLIC_KEY does not match the private key used by web-push on the server',
-        '\n  • The SW scope is not at root "/" (current scope:', registration.scope, ')',
-        '\n  • The browser cannot reach the FCM/Mozilla push endpoint (network issue)',
-        '\n  • An existing subscription used a different VAPID key — try unsubscribing first',
-        '\n  Full error object:', subErr
-      );
-      throw subErr;
     }
-    console.log('[Push] Step 4 ✓ — subscribed. Endpoint prefix:', subscription.endpoint.slice(0, 50) + '…');
-
-    // ── 7. Persist via server-side API (uses service role key) ─────────────
-    console.log('[Push] Step 5 — saving subscription via /api/push-subscribe…');
-    let targetUserId: string | null = useUserStore.getState().profile?.id || localStorage.getItem('aya_user_id') || null;
     
-    // Fallback to supabase auth user if present
+    console.log('[Push] Subscribed successfully. Endpoint:', subscription.endpoint.slice(0, 40) + '…');
+
+    // ── 7. Persist via server-side API ──────────────────────────────────────
+    let targetUserId: string | null = passedUserId || useUserStore.getState().profile?.id || localStorage.getItem('aya_user_id') || null;
+    
     if (!targetUserId) {
       try {
         const { data: { user: authUser } } = await supabase.auth.getUser();
@@ -121,33 +181,24 @@ export async function subscribeUserToPush(): Promise<PushSubscription | null> {
     const subJson = subscription.toJSON();
 
     try {
-      console.log('[Push] Step 5 — POSTing to /api/push-subscribe with endpoint:', subJson.endpoint?.substring(0, 50));
-      const apiRes = await fetch('/api/push-subscribe', {
+      const apiRes = await fetch('/api/subscribe-push', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ subscription: subJson, userId: targetUserId })
       });
 
-      const apiText = await apiRes.text();
-      console.log('[Push] Step 5 — API response status:', apiRes.status, 'body:', apiText);
-
-      let apiData: any;
-      try { apiData = JSON.parse(apiText); } catch { apiData = { raw: apiText }; }
-
-      if (!apiRes.ok || !apiData.success) {
-        console.error('[Push] Step 5 ✗ — Server save failed:', apiData);
-      } else {
-        console.log('[Push] Step 5 ✓ — subscription saved via API:', apiData.id || apiData.message);
+      if (!apiRes.ok) {
+        // Fallback endpoint if needed
+        await fetch('/api/push-subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ subscription: subJson, userId: targetUserId })
+        });
       }
-    } catch (apiErr) {
-      console.error('[Push] Step 5 ✗ — Network error saving subscription:', apiErr);
-    }
 
-    // ── 8. Fire immediate welcome/test notification ───────────────────────
-    try {
-      await sendTestNotification();
-    } catch (e) {
-      console.warn('[Push] Immediate welcome notification could not be shown:', e);
+      console.log('[Push] Subscription stored in database.');
+    } catch (apiErr) {
+      console.error('[Push] Network error saving subscription to DB:', apiErr);
     }
 
     return subscription;
@@ -185,8 +236,8 @@ export async function sendTestNotification(): Promise<boolean> {
         if (registration && registration.showNotification) {
           await registration.showNotification('🌟 AYA Notifications Active!', {
             body: 'Welcome! You will receive daily mindset reminders and streak alerts.',
-            icon: '/icons/icon-192x192.png',
-            badge: '/icons/icon-192x192.png',
+            icon: '/icons/icon-192.png',
+            badge: '/icons/icon-192.png',
             tag: 'aya-test-notification'
           } as NotificationOptions);
           return true;
@@ -199,7 +250,7 @@ export async function sendTestNotification(): Promise<boolean> {
     // Attempt 2: Direct Window Notification fallback
     new Notification('🌟 AYA Notifications Active!', {
       body: 'Welcome! You will receive daily mindset reminders and streak alerts.',
-      icon: '/icons/icon-192x192.png'
+      icon: '/icons/icon-192.png'
     });
     return true;
   } catch (err: any) {
@@ -223,3 +274,4 @@ export async function autoSubscribeIfGranted(): Promise<void> {
     }
   }
 }
+
