@@ -301,6 +301,10 @@
   border-radius: 999px;
   border: 1px solid;
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  isolation: isolate;
   flex-shrink: 0;
   margin-top: 10px;
 }
@@ -315,6 +319,10 @@
   border: 2px solid #FF8C00;
   background: linear-gradient(135deg, rgba(255,140,0,0.10) 0%, rgba(255,45,120,0.07) 100%);
   backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  isolation: isolate;
   color: #fff;
   font-family: 'Space Grotesk', sans-serif;
   font-size: clamp(14px, 4.5vw, 17px);

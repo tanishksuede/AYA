@@ -21,6 +21,9 @@
   background: rgba(10, 15, 25, 0.85);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  isolation: isolate;
   cursor: pointer;
   white-space: nowrap;
 
@@ -226,6 +229,10 @@
   color: rgba(255, 255, 255, 0.7);
   font-family: 'Space Grotesk', sans-serif;
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  isolation: isolate;
   z-index: 200;
   animation: vsb-toast-in 0.2s ease;
   pointer-events: none;

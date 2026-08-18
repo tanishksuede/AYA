@@ -5,12 +5,24 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <link rel="manifest" href="/manifest.json">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="AYA">
+  
+  <!-- CRITICAL: iOS viewport fix — prevents black screen from viewport height issues -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0" />
+
+  <!-- iOS Safari web app meta tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="At Your Age" />
+  <meta name="mobile-web-app-capable" content="yes" />
+
+  <!-- Force iOS Safari to use hardware acceleration -->
+  <meta name="format-detection" content="telephone=no" />
+
+  <!-- Prevent iOS link preview popups from breaking layout -->
+  <meta name="apple-touch-fullscreen" content="yes" />
+
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>At Your Age</title>
+  <title>At Your Age — AYA</title>
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-30ZXCBJXSQ"></script>

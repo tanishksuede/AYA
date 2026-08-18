@@ -55,12 +55,31 @@ if ('serviceWorker' in navigator) {
 
 // Global Error Handler moved to index.html for better coverage
 
+// ============================================================
+// iOS Safari Viewport Height Fix
+// Must run before React renders
+// ============================================================
+function setVhVariable() {
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+
+// Set on load
+setVhVariable();
+
+// Update on resize (iOS fires this when address bar shows/hides)
+window.addEventListener('resize', setVhVariable, { passive: true });
+window.addEventListener('orientationchange', () => {
+  setTimeout(setVhVariable, 200); // Delay for iOS orientation animation
+}, { passive: true });
+
 console.log('[AYA Boot] localStorage aya_user_id:', 
   localStorage.getItem('aya_user_id'))
 console.log('[AYA Boot] sessionStorage aya_user_id:', 
   sessionStorage.getItem('aya_user_id'))
 console.log('[AYA Boot] Zustand persisted store:', 
   localStorage.getItem('aya-user-store'))
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
