@@ -54,8 +54,64 @@
     }
   </script>
   <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-  <div id="root"></div>
-  <script type="module" src="/src/main.tsx"></script>
+
+    <!-- 
+      Loading screen shown before React mounts.
+      Prevents black flash on iOS.
+      Hidden by JS once app is ready.
+    -->
+    <div id="app-loader" style="
+      position: fixed;
+      inset: 0;
+      background: #04070f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      font-family: 'Inter', sans-serif;
+      transition: opacity 0.4s ease;
+    ">
+      <div style="
+        width: 40px;
+        height: 40px;
+        border: 2px solid rgba(224, 176, 96, 0.2);
+        border-top-color: #e0b060;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      "></div>
+      <p style="
+        color: rgba(224, 176, 96, 0.6);
+        font-size: 0.85rem;
+        margin-top: 1.5rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+      ">Loading</p>
+    </div>
+
+    <style>
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    </style>
+
+    <div id="root"></div>
+
+    <script>
+      // Hide loader once page is interactive
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          var loader = document.getElementById('app-loader');
+          if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(function() {
+              loader.style.display = 'none';
+            }, 400);
+          }
+        }, 300);
+      });
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
 </body>
 
 </html>

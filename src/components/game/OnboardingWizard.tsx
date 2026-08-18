@@ -671,7 +671,6 @@ export function OnboardingWizard() {
                             </div>
                         </motion.div>
                     </div>
-                    </>
                 )}
 
                 {/* ── 2. SETUP FORM ("Let's get to know you!") ── */}
