@@ -5,7 +5,7 @@ import App from './App.tsx'
 import { ErrorBoundary } from './components/ErrorBoundary.tsx';
 import { autoSubscribeIfGranted } from './utils/pushNotifications.ts';
 
-const FORCE_RELOAD_VERSION = 'v1.1.2';
+const FORCE_RELOAD_VERSION = 'v1.1.3';
 if (localStorage.getItem('aya_pwa_version') !== FORCE_RELOAD_VERSION) {
     localStorage.setItem('aya_pwa_version', FORCE_RELOAD_VERSION);
     
