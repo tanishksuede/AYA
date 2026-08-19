@@ -592,27 +592,11 @@ export function OnboardingWizard() {
             </div>
 
             {/* Scrollable content — this is the actual scrolling wrapper */}
-            <div className="relative z-10 w-full min-h-[100dvh] flex flex-col items-center justify-center py-16 px-4 gap-8 lg:gap-16">
+            <div className="relative z-10 w-full min-h-[100dvh] flex flex-col md:flex-row items-center justify-center py-16 px-4 gap-8 lg:gap-16">
 
                 {/* ── 1. WELCOME PAGE ("Welcome to AYA") ── */}
                 {!isRegisterMode && (
-                    <div className="w-full flex flex-col items-center" style={{ maxWidth: '420px' }}>
-                        {/* Centered Mascot watching the buttons */}
-                        <div 
-                            className="w-48 h-48 md:w-64 md:h-64 mb-6 transition-all duration-500 ease-out z-20 pointer-events-none"
-                            style={{
-                                transform: isHoveringBtn ? 'rotateX(-25deg) translateY(15px) scale(1.05)' : 'rotateX(0deg) translateY(0) scale(1)',
-                                perspective: '1000px'
-                            }}
-                        >
-                            <DotLottieReact
-                                src={encodeURI(isHoveringBtn ? '/assets/Macot/happy mascot.lottie' : '/assets/Macot/waving mascot.lottie')}
-                                loop
-                                autoplay
-                                className="w-full h-full object-contain drop-shadow-[0_10px_30px_rgba(147,51,234,0.3)]"
-                            />
-                        </div>
-
+                    <div className="w-full" style={{ maxWidth: '420px' }}>
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -863,6 +847,27 @@ export function OnboardingWizard() {
                         </motion.div>
                     </div>
                 )}
+
+                {/* Onboarding Sidekick Mascot Container (Right Side, Hidden on Mobile) */}
+                <div className="hidden md:flex flex-col items-center justify-center shrink-0 pointer-events-none select-none z-20">
+                    <div className="relative w-72 h-72 md:w-80 md:h-80 lg:w-[360px] lg:h-[360px] flex items-center justify-center drop-shadow-2xl">
+                        {/* Glowing Background Aura */}
+                        <div
+                            className={`absolute inset-4 rounded-full blur-3xl opacity-35 transition-colors duration-500 ${
+                                isHoveringBtn ? 'bg-amber-400 opacity-70 animate-pulse' : 'bg-purple-500 opacity-40'
+                            }`}
+                        />
+
+                        <DotLottieReact
+                            key={isHoveringBtn ? 'happy' : 'waving'}
+                            src={encodeURI(isHoveringBtn ? '/assets/Macot/happy mascot.lottie' : '/assets/Macot/waving mascot.lottie')}
+                            loop
+                            autoplay
+                            style={{ width: '100%', height: '100%' }}
+                            className="w-full h-full object-contain relative z-10"
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     );
