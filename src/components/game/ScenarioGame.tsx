@@ -5,7 +5,7 @@ import { detectEmotion, EMOTION_THEMES } from '../../utils/storyEmotion';
 import type { EmotionTheme } from '../../utils/storyEmotion';
 import { bgmManager } from '../../utils/bgmManager';
 import { CheckCircle, AlertCircle, ChevronRight, Volume2, VolumeX, Loader2, Palette, Star } from 'lucide-react';
-import DifficultySlider from '../feedback/DifficultySlider';
+
 import PostJourneyFeedback from '../feedback/PostJourneyFeedback';
 import { useJourneyTracking } from '../../hooks/useJourneyTracking';
 import type { Level, Lesson } from '../../types/gameTypes';
@@ -1176,10 +1176,6 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                                     {lessonBody}
                                 </p>
 
-                                {/* Difficulty Slider */}
-                                <div className="mt-4 shrink-0 w-full">
-                                    <DifficultySlider journeyId={level.id} />
-                                </div>
 
                                 {/* Finish Chapter button — always visible on lesson screen */}
                                 <div className="mt-4 shrink-0">

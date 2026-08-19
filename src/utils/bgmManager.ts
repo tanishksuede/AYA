@@ -11,12 +11,18 @@ class BGMManager {
   private pendingTrack: string | null = null
   private mapReady: boolean = false
 
-  private getContext(): AudioContext {
+  private getContext(): AudioContext | null {
     if (!this.audioContext) {
-      this.audioContext = new (
-        window.AudioContext || 
-        (window as any).webkitAudioContext
-      )()
+      try {
+        this.audioContext = new (
+          window.AudioContext || 
+          (window as any).webkitAudioContext
+        )()
+      } catch (e) {
+        // iOS Safari may block AudioContext outside user gesture
+        console.warn('[BGMManager] Could not create AudioContext:', e);
+        return null;
+      }
     }
     return this.audioContext
   }
@@ -24,6 +30,7 @@ class BGMManager {
   // Must be called on user gesture to initialize and resume audio
   async unlock() {
     const ctx = this.getContext()
+    if (!ctx) return; // iOS blocked AudioContext — skip silently
     
     // Always attempt to resume if suspended (common on mobile after backgrounding)
     if (ctx.state === 'suspended') {
@@ -77,6 +84,7 @@ class BGMManager {
     if (this.targetTrack !== trackName) return
 
     const ctx = this.getContext()
+    if (!ctx) return; // iOS blocked AudioContext
     let buffer = this.buffers.get(trackName)
     
     if (!buffer) {
@@ -96,6 +104,7 @@ class BGMManager {
           return
       }
     }
+
 
     // Fade out current track
     if (this.gainNode && this.currentSource) {
@@ -142,6 +151,7 @@ class BGMManager {
     onComplete?: () => void
   ) {
     const ctx = this.getContext()
+    if (!ctx) { onComplete?.(); return; }
     const now = ctx.currentTime
     // FIX FOR OVERLAPPING AUDIO: Use exponential decay from current actual volume
     gain.gain.cancelScheduledValues(now)
@@ -149,7 +159,7 @@ class BGMManager {
     
     setTimeout(
       () => {
-        try { gain.gain.linearRampToValueAtTime(0, ctx.currentTime) } catch(e) {}
+        try { gain.gain.linearRampToValueAtTime(0, ctx!.currentTime) } catch(e) {}
         onComplete?.()
       }, 
       duration * 1000

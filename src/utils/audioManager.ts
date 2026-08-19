@@ -3,39 +3,49 @@ let ctx: AudioContext | null = null;
 let masterGain: GainNode | null = null;
 let sfxGain: GainNode | null = null;
 
-const getCtx = (): AudioContext => {
+const getCtx = (): AudioContext | null => {
   if (!ctx) {
-    ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-    masterGain = ctx.createGain();
-    masterGain.gain.value = 1.0;
-    masterGain.connect(ctx.destination);
+    try {
+      ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      masterGain = ctx.createGain();
+      masterGain.gain.value = 1.0;
+      masterGain.connect(ctx.destination);
 
-    sfxGain = ctx.createGain();
-    sfxGain.gain.value = 1.0;
-    sfxGain.connect(masterGain);
+      sfxGain = ctx.createGain();
+      sfxGain.gain.value = 1.0;
+      sfxGain.connect(masterGain);
+    } catch (e) {
+      // iOS Safari may block AudioContext outside user gesture — fail silently
+      console.warn('[AudioManager] Could not create AudioContext:', e);
+      return null;
+    }
   }
   return ctx;
 };
+
 
 // MUST be called directly inside a user gesture handler (onClick, onTouchEnd)
 // This is the only way Safari iOS allows AudioContext to resume
 export const unlockAudio = async (): Promise<void> => {
   const context = getCtx();
+  if (!context) return; // iOS blocked AudioContext
   if (context.state === 'suspended') {
     await context.resume();
   }
   // Safari extra unlock: play a silent buffer
-  const buffer = context.createBuffer(1, 1, 22050);
-  const source = context.createBufferSource();
-  source.buffer = buffer;
-  source.connect(context.destination);
-  source.start(0);
+  try {
+    const buffer = context.createBuffer(1, 1, 22050);
+    const source = context.createBufferSource();
+    source.buffer = buffer;
+    source.connect(context.destination);
+    source.start(0);
+  } catch { /* ignore */ }
 };
 
 export const playTick = (): void => {
   try {
     const context = getCtx();
-    if (context.state !== 'running' || !sfxGain) return;
+    if (!context || context.state !== 'running' || !sfxGain) return;
     const osc = context.createOscillator();
     const gain = context.createGain();
     osc.connect(gain);
@@ -51,10 +61,11 @@ export const playTick = (): void => {
   }
 };
 
+
 export const playWin = (): void => {
   try {
     const context = getCtx();
-    if (context.state !== 'running' || !sfxGain) return;
+    if (!context || context.state !== 'running' || !sfxGain) return;
     const notes = [523.25, 659.25, 783.99]; // C5, E5, G5
     notes.forEach((freq, i) => {
       const osc = context.createOscillator();
@@ -77,7 +88,7 @@ export const playWin = (): void => {
 export const playClick = (): void => {
   try {
     const context = getCtx();
-    if (context.state !== 'running' || !sfxGain) return;
+    if (!context || context.state !== 'running' || !sfxGain) return;
     const now = context.currentTime;
     
     // Digital Glass Click: Noise pulse + high sine
@@ -110,7 +121,7 @@ export const playClick = (): void => {
 export const playReveal = (): void => {
   try {
     const context = getCtx();
-    if (context.state !== 'running' || !sfxGain) return;
+    if (!context || context.state !== 'running' || !sfxGain) return;
     const now = context.currentTime;
     const osc = context.createOscillator();
     const gain = context.createGain();
@@ -141,7 +152,7 @@ export const playReveal = (): void => {
 export const playBack = (): void => {
   try {
     const context = getCtx();
-    if (context.state !== 'running' || !sfxGain) return;
+    if (!context || context.state !== 'running' || !sfxGain) return;
     const now = context.currentTime;
     const osc = context.createOscillator();
     const gain = context.createGain();
@@ -168,7 +179,7 @@ export const playAchievementMajor = (): void => {
 export const playAchievementMinor = (): void => {
   try {
     const context = getCtx();
-    if (context.state !== 'running' || !sfxGain) return;
+    if (!context || context.state !== 'running' || !sfxGain) return;
     const now = context.currentTime;
     [880, 1108.73, 1318.51].forEach((freq, i) => {
       const osc = context.createOscillator();
@@ -189,7 +200,7 @@ export const playAchievementMinor = (): void => {
 export const playSparkle = (): void => {
   try {
     const context = getCtx();
-    if (context.state !== 'running' || !sfxGain) return;
+    if (!context || context.state !== 'running' || !sfxGain) return;
     const now = context.currentTime;
     const count = 3;
     const scale = [523.25, 587.33, 659.25, 783.99, 880.00];
@@ -213,7 +224,7 @@ export const playSparkle = (): void => {
 export const playHover = (): void => {
     try {
         const context = getCtx();
-        if (context.state !== 'running' || !sfxGain) return;
+        if (!context || context.state !== 'running' || !sfxGain) return;
         const now = context.currentTime;
         const bufferSize = context.sampleRate * 0.02;
         const buffer = context.createBuffer(1, bufferSize, context.sampleRate);
@@ -238,7 +249,7 @@ export const playHover = (): void => {
 export const playStartup = (): void => {
     try {
         const context = getCtx();
-        if (context.state !== 'running' || !sfxGain) return;
+        if (!context || context.state !== 'running' || !sfxGain) return;
         const now = context.currentTime;
         const osc = context.createOscillator();
         const gain = context.createGain();
@@ -263,7 +274,7 @@ export const playStartup = (): void => {
 export const playError = (): void => {
     try {
         const context = getCtx();
-        if (context.state !== 'running' || !sfxGain) return;
+        if (!context || context.state !== 'running' || !sfxGain) return;
         const now = context.currentTime;
         const osc = context.createOscillator();
         const gain = context.createGain();
@@ -294,7 +305,7 @@ let glideGain: GainNode | null = null;
 export const startGlide = (): void => {
     try {
         const context = getCtx();
-        if (context.state !== 'running' || !sfxGain) return;
+        if (!context || context.state !== 'running' || !sfxGain) return;
         if (glideOsc) return;
         glideOsc = context.createOscillator();
         glideGain = context.createGain();
@@ -314,7 +325,7 @@ export const startGlide = (): void => {
 export const updateGlide = (speed: number): void => {
     try {
         const context = getCtx();
-        if (!glideOsc || !glideGain) return;
+        if (!context || !glideOsc || !glideGain) return;
         const s = Math.min(1, Math.abs(speed) / 50);
         glideGain.gain.setTargetAtTime(0.02 + (s * 0.05), context.currentTime, 0.1);
         glideOsc.frequency.setTargetAtTime(150 + (s * 50), context.currentTime, 0.1);
@@ -325,6 +336,7 @@ export const stopGlide = (): void => {
     try {
         if (!glideGain || !glideOsc) return;
         const context = getCtx();
+        if (!context) return;
         glideGain.gain.setTargetAtTime(0, context.currentTime, 0.2);
         const oldOsc = glideOsc;
         setTimeout(() => {
@@ -371,3 +383,4 @@ export const audioManager = {
     playError,
     playLevelComplete: playAchievementMajor,
 };
+

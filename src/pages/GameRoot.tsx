@@ -64,9 +64,32 @@ export function GameRoot() {
         const restoreSession = async () => {
             console.log('[Session] Checking for existing session...')
 
+            // ── iOS FAST PATH ──────────────────────────────────────────────────────
+            // If the Zustand store already has a persisted profile AND the session
+            // keys match, show the app immediately without waiting for Supabase.
+            // We still fetch from DB in the background to stay up-to-date.
+            const store = useUserStore.getState();
+            const sessionQuick = getSession();
+            if (store.profile && sessionQuick.userId && store.profile.id === sessionQuick.userId) {
+                console.log('[Session] Fast-path: using cached Zustand profile, skipping DB wait');
+                setSessionStatus('found');
+                // Hydrate from DB silently in background (don't block UI)
+                withTimeout(
+                    supabase.from('users').select('*').eq('id', sessionQuick.userId).is('deleted_at', null).maybeSingle(),
+                    6000
+                ).then(({ data: freshUser }: any) => {
+                    if (freshUser) {
+                        store.setProfile({ ...store.profile!, ...freshUser });
+                    }
+                }).catch(() => { /* silent — cached profile already shown */ });
+                return;
+            }
+            // ──────────────────────────────────────────────────────────────────────
+
+            // Reduced from 20s → 8s for faster iOS failure recovery
             const maxWait = setTimeout(() => {
                 setSessionStatus(prev => prev === 'checking' ? 'not_found' : prev);
-            }, 20000);
+            }, 8000);
 
             try {
                 const session = getSession();
@@ -77,7 +100,6 @@ export function GameRoot() {
                 }
 
                 let user: any = null;
-                const store = useUserStore.getState();
                 const isJeeNeet = store.profile?.access_type === 'jee15' || store.profile?.access_type === 'neet15';
 
                 if (isJeeNeet) {
@@ -102,8 +124,10 @@ export function GameRoot() {
                     }
                 } else {
                     try {
+                        // Reduced timeout from 20s → 6s for iOS
                         const { data, error }: any = await withTimeout(
-                            supabase.from('users').select('*').eq('id', session.userId).is('deleted_at', null).maybeSingle()
+                            supabase.from('users').select('*').eq('id', session.userId).is('deleted_at', null).maybeSingle(),
+                            6000
                         );
                         if (error) throw error;
                         user = data;
@@ -144,10 +168,12 @@ export function GameRoot() {
                     return;
                 }
 
+
                 let profileData: any = null;
                 try {
                     const { data }: any = await withTimeout(
-                        supabase.from('personality_profiles').select('*').eq('user_id', session.userId).maybeSingle()
+                        supabase.from('personality_profiles').select('*').eq('user_id', session.userId).maybeSingle(),
+                        5000
                     );
                     profileData = data;
                 } catch { }
@@ -156,7 +182,8 @@ export function GameRoot() {
                 if (!quizCompleted) {
                     try {
                         const { data: qr }: any = await withTimeout(
-                            supabase.from('quiz_responses').select('id').eq('user_id', session.userId).limit(1)
+                            supabase.from('quiz_responses').select('id').eq('user_id', session.userId).limit(1),
+                            5000
                         );
                         quizCompleted = !!(qr && qr.length > 0);
                         if (quizCompleted) markQuizDone();

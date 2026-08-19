@@ -11,6 +11,15 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.error('[Supabase] Missing environment variables! VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY not set.');
 }
 
+// On iOS Safari, detectSessionInUrl can cause a hang/loop when the URL doesn't
+// contain an auth callback hash. Only enable it when we're actually on an OAuth
+// redirect URL (i.e. the URL contains #access_token or ?code=).
+const isOAuthCallback = typeof window !== 'undefined' && (
+    window.location.hash.includes('access_token') ||
+    window.location.hash.includes('refresh_token') ||
+    window.location.search.includes('code=')
+);
+
 let supabaseInstance: any;
 
 try {
@@ -21,7 +30,8 @@ try {
       auth: {
         persistSession: true,
         autoRefreshToken: true,
-        detectSessionInUrl: true,
+        detectSessionInUrl: isOAuthCallback,
+        storageKey: 'aya-supabase-auth',
       },
       global: {
         headers: {
