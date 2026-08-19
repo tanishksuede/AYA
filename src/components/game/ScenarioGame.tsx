@@ -88,7 +88,18 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
     const [floatTexts, setFloatTexts] = useState<FloatText[]>([]);
 
     // Emotion / Cinematic Theme State
-    const [currentTheme, setCurrentTheme] = useState<EmotionTheme>(EMOTION_THEMES['calm']);
+    const initialEmotion = useMemo(() => {
+        const targetId = level?.scenarioId || 'lvl_age_19';
+        const local = STORY_DATABASE[targetId];
+        const rawEmo = local?.frames?.[0]?.emotion || local?.emotion;
+        if (rawEmo && EMOTION_THEMES[rawEmo as keyof typeof EMOTION_THEMES]) {
+            return rawEmo as keyof typeof EMOTION_THEMES;
+        }
+        return 'wonder';
+    }, [level?.scenarioId]);
+
+    const [currentTheme, setCurrentTheme] = useState<EmotionTheme>(() => EMOTION_THEMES[initialEmotion] || EMOTION_THEMES['wonder']);
+
     const [bgmEnabled, setBgmEnabled] = useState<boolean>(true);
     const [typeSoundEnabled, setTypeSoundEnabled] = useState<boolean>(true);
     // Ref for text scroll container — allows auto-scroll-to-top on frame change
@@ -196,12 +207,15 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                     throw new Error("Supabase fetch failed or returned null");
                 }
                 
-                // Merge local audio fields into Supabase frames (Supabase may not have audio yet)
+                // Merge local audio & emotion fields into Supabase frames (Supabase may not have latest emotion/audio)
                 const localData = STORY_DATABASE[targetId];
                 const mergedFrames = data.frames.map((frame: any) => {
                     if (localData) {
                         const localFrame = localData.frames.find((lf: any) => lf.id === frame.id);
                         const updatedFrame = { ...frame };
+                        if (localFrame?.emotion) {
+                            updatedFrame.emotion = localFrame.emotion;
+                        }
                         if (localFrame?.audio) {
                             updatedFrame.audio = localFrame.audio;
                         }
@@ -291,20 +305,27 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const typingSpeedRef = useRef<number>(20);
 
-    // Emotion detection + ambient music when frame changes
+    // Emotion detection + ambient music when frame changes or scenario finishes loading
     useEffect(() => {
-        const textToAnalyse = frame.emotion
-            ? (frame.emotion as string)  // explicit override in story data: use emotion string directly
-            : frame.text;
+        const targetId = level?.scenarioId || 'lvl_age_19';
+        const localData = STORY_DATABASE[targetId];
+        const localFrame = localData?.frames?.find((lf: any) => lf.id === currentFrameId);
         
-        const badgeLabel = feedbackChoice ? feedbackChoice.feedbackTitle : (frame.id === 'intro' ? 'Narrator' : 'You');
+        // Priority 1: frame.emotion from loaded scenario, Priority 2: localFrame.emotion
+        const activeEmotion = frame?.emotion || localFrame?.emotion;
+
+        const textToAnalyse = activeEmotion
+            ? (activeEmotion as string)  // explicit override in story data: use emotion string directly
+            : (frame?.text || '');
+        
+        const badgeLabel = feedbackChoice ? feedbackChoice.feedbackTitle : (frame?.id === 'intro' ? 'Narrator' : 'You');
         
         // If frame has an explicit emotion field matching a theme key, use it directly
-        const emotion = (frame.emotion && EMOTION_THEMES[frame.emotion as keyof typeof EMOTION_THEMES])
-            ? frame.emotion as keyof typeof EMOTION_THEMES
+        const emotion = (activeEmotion && EMOTION_THEMES[activeEmotion as keyof typeof EMOTION_THEMES])
+            ? activeEmotion as keyof typeof EMOTION_THEMES
             : detectEmotion(textToAnalyse, badgeLabel);
         
-        const theme = EMOTION_THEMES[emotion];
+        const theme = EMOTION_THEMES[emotion] || EMOTION_THEMES['calm'];
         setCurrentTheme(theme);
 
         // Play matching ambient music — unlock listener in bgmManager handles autoplay policy
@@ -316,7 +337,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
         return () => {
             // Don't fade out on every frame change — let crossfade handle it
         };
-    }, [currentFrameId, feedbackChoice]);
+    }, [currentFrameId, feedbackChoice, frame?.id, frame?.emotion, frame?.text, scenario]);
 
     // Stop music when component unmounts (user exits story)
     useEffect(() => {

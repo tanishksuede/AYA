@@ -1904,6 +1904,7 @@ export const STORY_DATABASE: Record<string, any> = {
         frames: [
             {
                 id: 'intro',
+                emotion: 'determination',
                 bg: '/assets/bg_musk_office.png',
                 bgPosition: 'object-left',
                 text: "It's 1995. You are 24. You start Zip2. You have one computer and $2,000.",
@@ -4885,7 +4886,9 @@ export const STORY_DATABASE: Record<string, any> = {
         title: "The Hardest Day",
         source: "Source: Virat Kohli, Delhi Ranji Trophy, 2006",
         frames: [
-            { id: 'intro', bg: '/assets/virat_18/1.png', text: " ", choices: [{ text: "Next", next: 'frame_2' }] },
+            {
+                id: 'intro',
+                emotion: 'grief', bg: '/assets/virat_18/1.png', text: " ", choices: [{ text: "Next", next: 'frame_2' }] },
             { id: 'frame_2', bg: '/assets/virat_18/2.png', text: " ", choices: [{ text: "Back", next: 'intro' }, { text: "Next", next: 'frame_3' }] },
             { id: 'frame_3', bg: '/assets/virat_18/3.png', text: " ", choices: [{ text: "Back", next: 'frame_2' }, { text: "Next", next: 'frame_4' }] },
             { id: 'frame_4', bg: '/assets/virat_18/4.png', text: " ", choices: [{ text: "Back", next: 'frame_3' }, { text: "Next", next: 'frame_5' }] },
