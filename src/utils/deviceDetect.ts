@@ -43,7 +43,8 @@ export function isLowMemoryDevice() {
   if (/Android/.test(navigator.userAgent)) return true;
   
   // Devices with <= 4GB RAM
-  if (navigator?.deviceMemory && navigator.deviceMemory <= 4) return true;
+  const nav = navigator as unknown as { deviceMemory?: number };
+  if (nav?.deviceMemory && nav.deviceMemory <= 4) return true;
   
   return false;
 }
