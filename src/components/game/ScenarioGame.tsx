@@ -6,6 +6,7 @@ import type { EmotionTheme } from '../../utils/storyEmotion';
 import { bgmManager } from '../../utils/bgmManager';
 import { CheckCircle, AlertCircle, ChevronRight, Volume2, VolumeX, Loader2, Palette, Star } from 'lucide-react';
 
+import PostJourneyFeedback from '../feedback/PostJourneyFeedback';
 import { useJourneyTracking } from '../../hooks/useJourneyTracking';
 import type { Level, Lesson } from '../../types/gameTypes';
 import clsx from 'clsx';
@@ -29,7 +30,7 @@ interface ScenarioGameProps {
     level: Level;
     onComplete: (stars: number) => void;
     onBack: () => void;
-    onDailyChallengeComplete?: (streakData: any) => void;
+    onDailyChallengeComplete?: (streakData: { xpEarned: number, oldStreak: number, newStreak: number, isMilestone: boolean }) => void;
 }
 
 // Choice Interface
@@ -74,7 +75,6 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
     // Ref tracks session choices — avoids React stale closure when reading at COMPLETE time
     const sessionChoicesRef = useRef<SessionChoiceData[]>([]);
     const hasInsertedSession = useRef(false);
-    const isProcessingRef = useRef(false);
     const addChoiceToSession = (c: SessionChoiceData) => {
         sessionChoicesRef.current = [...sessionChoicesRef.current, c];
     };
@@ -115,8 +115,12 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
     const [isPaused, setIsPaused] = useState(false);
     const [pauseStartTime, setPauseStartTime] = useState<number | null>(null);
 
-    // Completion state to prevent double clicks and ensure smooth navigation to match report
-    const [isCompleting, setIsCompleting] = useState(false);
+    // Save status toast state
+    const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+
+    // Post-journey feedback state
+    const [showPostFeedback, setShowPostFeedback] = useState(false);
+    const [pendingCompletionStars, setPendingCompletionStars] = useState<number>(0);
 
     useJourneyTracking(level.id);
 
@@ -129,8 +133,13 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
     const levelScores = useUserStore((state) => state.levelScores);
 
     const handleLevelComplete = (stars: number) => {
-        bgmManager.stop(0.8);
-        onComplete(stars);
+        setPendingCompletionStars(stars);
+        setShowPostFeedback(true);
+    };
+
+    const finalizeLevelComplete = () => {
+        setShowPostFeedback(false);
+        onComplete(pendingCompletionStars);
     };
 
     // Use the global mode (renamed variable mapping for easier refactor)
@@ -461,7 +470,6 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
     };
 
     const handleChoiceClick = async (choice: Choice) => {
-        if (isProcessingRef.current) return;
         audioSynth.playClick();
         // Stop any playing narration immediately
         if (audioRef.current) {
@@ -523,8 +531,6 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
         }
 
         if (choice.next === 'COMPLETE') {
-            isProcessingRef.current = true;
-            setIsCompleting(true);
             // Use the ref to get the definitive up-to-date list (avoids React stale closure)
             const finalSessionChoices = [...sessionChoicesRef.current, choiceData];
 
@@ -719,12 +725,15 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                         level_scores: updatedLevelScores,   // Save stars directly here as primary backup
                     }).eq('id', userProfile.id);
                     if (usersErr) {
-                        console.warn('[AYA] users update background notice:', usersErr.message);
+                        console.error('[AYA] users update error:', usersErr.message, usersErr.details);
+                        setSaveStatus('error');
                     } else {
                         console.log('[AYA] ✓ users updated (XP + level_scores saved)');
+                        setSaveStatus('saved');
                     }
                 } catch (e) {
-                    console.warn('[AYA] users update threw (saved offline):', e);
+                    console.error('[AYA] users update threw:', e);
+                    setSaveStatus('error');
                 }
 
                 // ── 2. Upsert personality_profiles ────────────────────────────────────────
@@ -752,9 +761,9 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                         life_risk_intelligence: futureLT.risk_intelligence,
                         life_consistency: futureLT.consistency,
                     }, { onConflict: 'user_id' });
-                    if (ppErr) console.warn('[AYA] personality_profiles notice:', ppErr.message);
+                    if (ppErr) console.error('[AYA] personality_profiles upsert error:', ppErr.message, ppErr.details);
                     else console.log('[AYA] ✓ personality_profiles upserted');
-                } catch (e) { console.warn('[AYA] personality_profiles background threw:', e); }
+                } catch (e) { console.error('[AYA] personality_profiles upsert threw:', e); }
 
                 // ── 3. Streak & Daily Challenge ────────────────────────────────────────────
                 try {
@@ -768,7 +777,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                         }).eq('id', userProfile.id);
                         if (onDailyChallengeComplete) onDailyChallengeComplete(streakResult);
                     }
-                } catch (e) { console.warn('[AYA] streak update background threw:', e); }
+                } catch (e) { console.error('[AYA] streak update threw:', e); }
 
                 // ── 4. Insert game_sessions (history log — no scenario_choices to avoid JSONB errors) ──
                 try {
@@ -791,7 +800,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                                 return;
                             }
                         }
-                        console.warn('[AYA] game_sessions notice:', insertError.message);
+                        console.error('[AYA] game_sessions INSERT ERROR:', insertError.message, insertError.details, insertError.hint);
                         // Fallback: Try inserting without new columns if they haven't been created yet
                         const fallbackData: any = {
                              user_id: userProfile.id,
@@ -805,10 +814,10 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                     } else {
                         console.log('[AYA] ✓ game_sessions inserted:', data);
                     }
-                } catch (e) { console.warn('[AYA] game_sessions background threw:', e); }
+                } catch (e) { console.error('[AYA] game_sessions insert threw:', e); }
 
             } else if (!userProfile?.id) {
-                console.warn('[AYA] No userProfile.id — saved to local storage. Profile:', userProfile);
+                console.warn('[AYA] No userProfile.id — cannot save to Supabase. Profile:', userProfile);
             } else if (hasInsertedSession.current) {
                 console.log('[AYA] Skipping duplicate game_sessions insert — already saved this session');
             }
@@ -830,19 +839,24 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
 
             // Float the XP events visually before demounting the view!
             triggerFloatText(`+50 XP`, 'positive');
+            
+            let delayMs = 1200;
             if (matchPercent > 80) {
-                setTimeout(() => triggerFloatText(`+20 XP (Outstanding)`, 'positive'), 150);
+                setTimeout(() => triggerFloatText(`+20 XP (Outstanding)`, 'positive'), 800);
+                delayMs += 800;
             }
             if (isFirstTime) {
-                setTimeout(() => triggerFloatText(`+30 XP (First Run)`, 'positive'), 250);
+                setTimeout(() => triggerFloatText(`+30 XP (First Run)`, 'positive'), 1600);
+                delayMs += 800;
             }
 
             console.log('[AYA DEBUG] All done, calling handleLevelComplete with stars:', starCount, 'and session XP:', sessionTotalXp);
             
-            // Queue fast, smooth transition directly to match report
+            // Queue transition out allowing particles to run
             setTimeout(() => {
+                bgmManager.stop(1);
                 handleLevelComplete(starCount);
-            }, 400);
+            }, delayMs);
             return;
         }
 
@@ -1190,8 +1204,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                                             <button
                                                 key={idx}
                                                 onClick={() => handleChoiceClick(choice as Choice)}
-                                                disabled={isCompleting}
-                                                className="cinematic-continue w-full py-4 rounded-full font-bold uppercase tracking-widest text-white transition-all active:scale-95 disabled:opacity-75 disabled:cursor-not-allowed"
+                                                className="cinematic-continue w-full py-4 rounded-full font-bold uppercase tracking-widest text-white transition-all active:scale-95"
                                                 style={!isCandyMode ? {
                                                     backgroundColor: currentTheme.badgeColor,
                                                     boxShadow: `0 8px 16px rgba(0,0,0,0.4), ${currentTheme.badgeGlow}`,
@@ -1204,7 +1217,7 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                                                     e.currentTarget.style.boxShadow = `0 8px 16px rgba(0,0,0,0.4), ${currentTheme.badgeGlow}`;
                                                 }}
                                             >
-                                                {isCompleting ? 'Completing...' : choice.text}
+                                                {choice.text}
                                             </button>
                                         ))}
                                     </div>
@@ -1222,69 +1235,60 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                                             : isCandyMode ? "bg-yellow-400/20 border-yellow-400 text-yellow-400" : "bg-transparent text-white"
                                     )}
                                     style={!isCandyMode && !feedbackChoice ? {
-                                        backgroundColor: currentTheme.badgeColor,
                                         borderColor: currentTheme.badgeColor,
+                                        color: currentTheme.badgeColor,
                                         boxShadow: currentTheme.badgeGlow,
-                                        color: '#ffffff'
-                                    } : undefined}
+                                        backgroundColor: `${currentTheme.badgeColor}33`,
+                                    } : {}}
                                 >
                                     {feedbackChoice
-                                        ? feedbackChoice.score > 0 ? "Mastery" : "Distraction"
-                                        : (frame.id === 'intro' ? 'Narrator' : 'You')
-                                    }
+                                        ? feedbackChoice.feedbackTitle
+                                        : (frame.id === 'intro' ? 'Narrator' : 'You')}
                                 </div>
                             </div>
                         )}
-                        {/* Story Content / Feedback Text */}
-                        <div 
-                            ref={textContainerRef}
-                            className="story-text-container overflow-y-auto flex-1 min-h-0 w-full"
-                        >
-                            {feedbackChoice ? (
-                                <div className="space-y-4">
-                                    <h2 className="text-2xl md:text-3xl font-black text-white leading-tight">
-                                        {feedbackChoice.feedbackTitle || (feedbackChoice.score > 0 ? "Insight" : "Consequence")}
-                                    </h2>
-                                    <p className="text-base md:text-lg text-white/90 leading-relaxed">
-                                        {feedbackChoice.feedback}
-                                    </p>
-                                </div>
-                            ) : (
-                                <p 
-                                    className={clsx(
-                                        "story-text-paragraph leading-relaxed tracking-wide select-none",
-                                        isCandyTheme 
-                                            ? "text-xl md:text-2xl font-serif text-pink-950 font-bold" 
-                                            : "text-lg md:text-xl font-medium text-white/95 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
-                                    )}
-                                    style={{
-                                        fontFamily: isCandyTheme ? '"Bubblegum Sans", "Comic Sans MS", cursive, sans-serif' : 'inherit',
-                                    }}
-                                >
-                                    {displayedText}
-                                    {isTyping && !feedbackChoice && (
-                                        <span className={clsx(
-                                            "inline-block w-2.5 h-5 ml-1 animate-pulse",
-                                            isCandyTheme ? "bg-pink-500" : "bg-cyan-400"
-                                        )} />
-                                    )}
+                        {/* Text Content */}
+                        <div className="pb-2">
+                            {level.age_mirror_text && (frame.id === 'intro') && !feedbackChoice && (
+                                <p className="italic text-sm md:text-base mb-4 text-center" style={{ color: '#00f1fe' }}>
+                                    At YOUR age ({useUserStore.getState().profile?.age || 18}), {level.personality} was {level.age_mirror_text}.
                                 </p>
                             )}
+                            <p 
+                                key={activeText}
+                                className={clsx(
+                                "leading-relaxed",
+                                isCandyTheme
+                                    ? "text-[17px] md:text-2xl font-bold font-comic text-pink-900 drop-shadow-none"
+                                    : "text-[17px] md:text-2xl font-comic text-white drop-shadow-md"
+                            )}
+                            >
+                                {appLanguage === 'hi' ? activeText : displayedText}
+                                {isTyping && <span className={clsx("inline-block w-2 h-6 ml-1 animate-cursor-blink align-middle", isCandyTheme ? "bg-pink-500" : "bg-yellow-400")} />}
+                            </p>
                         </div>
 
-                        {/* Interactive Choices (Only shown when not in feedback mode) */}
-                        {!feedbackChoice && (
-                            <div className="flex flex-col gap-3 shrink-0">
+                        {/* Choice buttons — flex-shrink-0 so they never get compressed */}
+                        {!isTyping && !feedbackChoice && (
+                            <div
+                                className="mt-3 animate-fade-in"
+                                    style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        gap: window.innerWidth < 768 ? '8px' : '12px',
+                                        width: '100%',
+                                        flexShrink: 0,
+                                    }}
+                            >
                                 {displayedChoices.map((choice, idx) => (
                                     <button
                                         key={idx}
                                         onClick={() => handleChoiceClick(choice as Choice)}
-                                        disabled={isCompleting}
                                         className={clsx(
-                                            "cinematic-choice group relative flex items-center justify-between text-left rounded-2xl border transition-all active:scale-[0.98] disabled:opacity-75 disabled:cursor-not-allowed",
+                                            "cinematic-choice group w-full text-left border-2 transition-all flex items-center justify-between shadow-lg",
                                             isCandyTheme
-                                                ? "bg-gradient-to-r from-pink-500/80 to-purple-500/80 hover:from-pink-500 hover:to-purple-500 text-white shadow-lg border-pink-300/50"
-                                                : "bg-black/60 hover:bg-black/80 backdrop-blur-md"
+                                                ? "bg-gradient-to-r from-teal-400 to-cyan-500 text-white font-bold border-b-4 border-teal-700 hover:translate-y-1 hover:border-b-0 active:scale-95 shadow-lg rounded-full"
+                                                : "border-white/10 rounded-2xl"
                                         )}
                                         style={{
                                             minHeight: '60px',
@@ -1369,6 +1373,31 @@ export function ScenarioGame({ level, onComplete, onBack, onDailyChallengeComple
                     {ft.text}
                 </div>
             ))}
+
+            {/* Save Status Toast — visible indicator so user knows if DB save worked */}
+            {saveStatus !== 'idle' && (
+                <div className={clsx(
+                    "fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] px-5 py-2.5 rounded-full font-bold text-sm tracking-wide shadow-2xl border backdrop-blur-md transition-all animate-fade-in-up",
+                    saveStatus === 'saved'
+                        ? "bg-emerald-900/80 border-emerald-400/50 text-emerald-300"
+                        : "bg-red-900/80 border-red-400/50 text-red-300"
+                )}>
+                    {saveStatus === 'saved' ? '✓ Progress Saved' : '✗ Save Failed — check connection'}
+                </div>
+            )}
+
+            {/* Post Journey Feedback Popup */}
+            {showPostFeedback && (
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+                    <div className="w-full max-w-lg bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl p-6 relative animate-fade-in-up">
+                        <PostJourneyFeedback
+                            journeyId={level.id}
+                            sessionDurationSeconds={null}
+                            onFeedbackComplete={finalizeLevelComplete}
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
